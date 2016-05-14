@@ -596,7 +596,7 @@ extern  cvar_t	*game_dir;
 extern  cvar_t  *sv_botdetection;
 extern  cvar_t  *server_ip;
 extern  cvar_t  *warmup_time;
-extern  cvar_t  *filter;
+extern  cvar_t  *g_filter;
 
 extern  cvar_t  *flood_msgs;
 extern  cvar_t  *flood_persecond;

@@ -2642,7 +2642,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	}
 	
 	//RAV
-	if(filter->value)
+	if(g_filter->value)
 		FilterText(s);
 	//
 

@@ -5,35 +5,55 @@
 #
 # ELF only
 #
-# Probably requires GNU make
+# Edited May 5, 2016 by QwazyWabbit
+#
+# Requires GNU make
 #
 
 ARCH=i386
-CC=gcc
-OBJDIR=obj
-BASE_CFLAGS=-Dstricmp=strcasecmp -D_strnicmp=strncasecm -Dstrnicmp=strncasecmp -Dstrcmpi=strcasecmp
 
-#use these cflags to optimize it
-CFLAGS=$(BASE_CFLAGS) -march=i486 -O6 -ffast-math -funroll-loops \
-	-fomit-frame-pointer -fexpensive-optimizations -falign-loops=2 \
-	-falign-jumps=2 -falign-functions=2
+# on x64 machines do this preparation:
+# sudo apt-get install ia32-libs
+# sudo apt-get install libc6-dev-i386
+# this will let you build 32-bits on ia64 systems
+#
+
+#use these cflags to optimize this build
+CFLAGS=-O3 -m32 -march=$(ARCH) -DARCH="$(ARCH)"
 #use these when debugging 
-#CFLAGS=$(BASE_CFLAGS) -g
+#CFLAGS=-g -m32 -DARCH="$(ARCH)" -Wall
 
-LDFLAGS=-ldl -lm
+# flavors of Linux
+ifeq ($(shell uname),Linux)
+#SVNDEV := -D'SVN_REV="$(shell svnversion -n .)"'
+#CFLAGS += $(SVNDEV)
+CFLAGS += -DLINUX
+LIBTOOL = ldd
+endif
+
+# OS X wants to be Linux and FreeBSD too.
+ifeq ($(shell uname),Darwin)
+#SVNDEV := -D'SVN_REV="$(shell svnversion -n .)"'
+#CFLAGS += $(SVNDEV)
+CFLAGS += -DLINUX
+LIBTOOL = otool
+endif
+
 SHLIBEXT=so
+#set position independent code
 SHLIBCFLAGS=-fPIC
-SHLIBLDFLAGS=-shared
 
-DO_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
+ORIGDIR=Source
+
+DO_SHLIB_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
+
+.c.o:
+	$(DO_SHLIB_CC)
 
 #############################################################################
 # SETUP AND BUILD
 # GAME
 #############################################################################
-
-.c.o:
-	$(DO_CC)
 
 GAME_OBJS = \
 	anticheat.o bot.o bot_fire.o bot_func.o bot_za.o camper.o e_hook.o eavy.o filehand.o \
@@ -44,7 +64,8 @@ GAME_OBJS = \
 	runes.o stdlog.o timer.o vote.o
 
 game$(ARCH).$(SHLIBEXT) : $(GAME_OBJS)
-	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(GAME_OBJS)
+	$(CC) $(CFLAGS) -shared -o $@ $(GAME_OBJS) -ldl -lm
+	$(LIBTOOL) -r $@
 
 
 #############################################################################
@@ -52,8 +73,18 @@ game$(ARCH).$(SHLIBEXT) : $(GAME_OBJS)
 #############################################################################
 
 clean:
-	-rm -f *.o
+	/bin/rm -f $(GAME_OBJS) game$(ARCH).$(SHLIBEXT)
 
 depend:
 	gcc -MM $(GAME_OBJS:.o=.c)
+
+depends:
+	$(CC) $(CFLAGS) -MM *.c > dependencies
+
+all:
+	make clean
+	make depends
+	make
+
+-include dependencies
 

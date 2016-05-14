@@ -40,6 +40,14 @@ typedef enum {false, true}	qboolean;
 #define NULL ((void *)0)
 #endif
 
+#ifndef _WIN32
+#define stricmp strcasecmp
+#define strnicmp strncasecmp
+#endif
+
+#ifdef _WIN32
+#define PATH_MAX _MAX_PATH
+#endif
 
 // angle indexes
 #define	PITCH				0		// up / down

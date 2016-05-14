@@ -1427,7 +1427,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 		}
 	}
 
-	if(filter->value) // this is for text filtering out any unwanted text (textfilter.cfg)
+	if(g_filter->value) // this is for text filtering out any unwanted text (textfilter.cfg)
 	{
 		if (FilterText(text2))
 			gi.dprintf("(^^^^filtered^^^^filtered^^^^filtered^^^^)\n");

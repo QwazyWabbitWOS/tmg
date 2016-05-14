@@ -77,7 +77,7 @@ cvar_t *sv_botdetection;
 cvar_t  *server_ip;
 
 cvar_t  *warmup_time;
-cvar_t  *filter;
+cvar_t  *g_filter;
 
 cvar_t  *flood_msgs;
 cvar_t  *flood_persecond;
