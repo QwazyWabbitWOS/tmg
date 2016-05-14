@@ -1,0 +1,15 @@
+//
+//  p_hud.h
+//  tmg
+//
+//  Created by Geoff Joy on 5/11/16.
+//  Copyright © 2016 Geoff Joy. All rights reserved.
+//
+
+#ifndef p_hud_h
+#define p_hud_h
+
+void Cmd_Help_f (edict_t *ent);
+void Cmd_Score_f (edict_t *ent);
+
+#endif /* p_hud_h */

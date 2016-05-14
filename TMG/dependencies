@@ -1,0 +1,97 @@
+anticheat.o: anticheat.c g_local.h q_shared.h game.h g_cmds.h p_hud.h \
+  g_chase.h g_items.h g_ctf.h anticheat.h timer.h e_hook.h runes.h
+bot.o: bot.c m_player.h bot.h g_local.h q_shared.h game.h g_cmds.h \
+  p_hud.h g_chase.h g_items.h g_ctf.h anticheat.h timer.h
+bot_fire.o: bot_fire.c m_player.h g_local.h q_shared.h game.h g_cmds.h \
+  p_hud.h g_chase.h g_items.h g_ctf.h anticheat.h timer.h
+bot_func.o: bot_func.c m_player.h g_local.h q_shared.h game.h g_cmds.h \
+  p_hud.h g_chase.h g_items.h g_ctf.h anticheat.h timer.h e_hook.h
+bot_za.o: bot_za.c m_player.h g_local.h q_shared.h game.h g_cmds.h \
+  p_hud.h g_chase.h g_items.h g_ctf.h anticheat.h timer.h
+camper.o: camper.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h
+e_hook.o: e_hook.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h m_player.h e_hook.h
+eavy.o: eavy.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h eavy.h
+filehand.o: filehand.c g_local.h q_shared.h game.h g_cmds.h p_hud.h \
+  g_chase.h g_items.h g_ctf.h anticheat.h timer.h filehand.h
+filtering.o: filtering.c g_local.h q_shared.h game.h g_cmds.h p_hud.h \
+  g_chase.h g_items.h g_ctf.h anticheat.h timer.h
+g_chase.o: g_chase.c g_local.h q_shared.h game.h g_cmds.h p_hud.h \
+  g_chase.h g_items.h g_ctf.h anticheat.h timer.h
+g_cmds.o: g_cmds.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h m_player.h e_hook.h runes.h \
+  filehand.h
+g_combat.o: g_combat.c g_local.h q_shared.h game.h g_cmds.h p_hud.h \
+  g_chase.h g_items.h g_ctf.h anticheat.h timer.h runes.h
+g_ctf.o: g_ctf.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h runes.h stdlog.h e_hook.h
+g_func.o: g_func.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h
+g_items.o: g_items.c g_local.h q_shared.h game.h g_cmds.h p_hud.h \
+  g_chase.h g_items.h g_ctf.h anticheat.h timer.h runes.h
+g_main.o: g_main.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h s_map.h e_hook.h runes.h gslog.h \
+  hud.h
+g_misc.o: g_misc.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h e_hook.h
+g_monster.o: g_monster.c g_local.h q_shared.h game.h g_cmds.h p_hud.h \
+  g_chase.h g_items.h g_ctf.h anticheat.h timer.h
+g_phys.o: g_phys.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h
+g_save.o: g_save.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h hud.h s_map.h filehand.h gslog.h
+g_spawn.o: g_spawn.c g_local.h q_shared.h game.h g_cmds.h p_hud.h \
+  g_chase.h g_items.h g_ctf.h anticheat.h timer.h stdlog.h gslog.h \
+  eavy.h runes.h
+g_svcmds.o: g_svcmds.c g_local.h q_shared.h game.h g_cmds.h p_hud.h \
+  g_chase.h g_items.h g_ctf.h anticheat.h timer.h filehand.h
+g_target.o: g_target.c g_local.h q_shared.h game.h g_cmds.h p_hud.h \
+  g_chase.h g_items.h g_ctf.h anticheat.h timer.h
+g_trigger.o: g_trigger.c g_local.h q_shared.h game.h g_cmds.h p_hud.h \
+  g_chase.h g_items.h g_ctf.h anticheat.h timer.h
+g_utils.o: g_utils.c g_local.h q_shared.h game.h g_cmds.h p_hud.h \
+  g_chase.h g_items.h g_ctf.h anticheat.h timer.h
+g_weapon.o: g_weapon.c g_local.h q_shared.h game.h g_cmds.h p_hud.h \
+  g_chase.h g_items.h g_ctf.h anticheat.h timer.h
+gslog.o: gslog.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h stdlog.h
+highscore.o: highscore.c g_local.h q_shared.h game.h g_cmds.h p_hud.h \
+  g_chase.h g_items.h g_ctf.h anticheat.h timer.h
+hud.o: hud.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h hud.h runes.h
+intro.o: intro.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h hud.h
+locdamage.o: locdamage.c g_local.h q_shared.h game.h g_cmds.h p_hud.h \
+  g_chase.h g_items.h g_ctf.h anticheat.h timer.h
+m_move.o: m_move.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h
+models.o: models.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h
+p_client.o: p_client.c g_local.h q_shared.h game.h g_cmds.h p_hud.h \
+  g_chase.h g_items.h g_ctf.h anticheat.h timer.h m_player.h e_hook.h \
+  runes.h hud.h stdlog.h gslog.h filehand.h
+p_hud.o: p_hud.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h runes.h hud.h
+p_light.o: p_light.c g_local.h q_shared.h game.h g_cmds.h p_hud.h \
+  g_chase.h g_items.h g_ctf.h anticheat.h timer.h
+p_menu.o: p_menu.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h
+p_trail.o: p_trail.c g_local.h q_shared.h game.h g_cmds.h p_hud.h \
+  g_chase.h g_items.h g_ctf.h anticheat.h timer.h
+p_view.o: p_view.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h m_player.h runes.h
+p_weapon.o: p_weapon.c g_local.h q_shared.h game.h g_cmds.h p_hud.h \
+  g_chase.h g_items.h g_ctf.h anticheat.h timer.h m_player.h runes.h
+q_shared.o: q_shared.c q_shared.h
+runes.o: runes.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h runes.h
+s_map.o: s_map.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h
+stdlog.o: stdlog.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h stdlog.h
+timer.o: timer.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h
+vote.o: vote.c g_local.h q_shared.h game.h g_cmds.h p_hud.h g_chase.h \
+  g_items.h g_ctf.h anticheat.h timer.h

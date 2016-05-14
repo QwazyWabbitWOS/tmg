@@ -1,0 +1,356 @@
+#ifndef ANTICHEAT_H
+#define ANTICHEAT_H
+
+
+// FIXME this should be defined elsewhere
+#define IP_LENGTH 40
+
+// sv_botdetection flags
+#define BOT_LOG       1
+#define BOT_KICK      2
+#define BOT_NOTIFY    4
+#define BOT_IMPULSE   8
+#define BOT_BAN       16
+
+char serverip[256];
+
+extern int botdetection;
+
+char *ConvertName(char name[IP_LENGTH]);
+void BadPlayer(edict_t *ent);
+qboolean CheckForConnection(edict_t *player);
+
+void BotDetection(edict_t *ent, usercmd_t *ucmd);
+void OnBotDetection(edict_t *ent, char *msg);
+void InitBotDetection(void);
+void EndBotDetection(void);
+void addEntry (char *filename, char ip[IP_LENGTH]);
+void addEntry2 (char *filename, char ip[IP_LENGTH]);
+void ClientDisconnect (edict_t *ent);
+FILE *tn_open (const char *filename, const char *t);
+
+#define RANDCHAR()		(random() < 0.3) ? '0' + (int)(9.9 * random()) : 'A' + (int)(26.9 * random())
+#define DEFAULTUSERDISPLAY "%s is using a client side proxy!!!"
+#define DEFAULTTSDISPLAY "%s is using a speed cheat quake2!!!"
+#define DEFAULTFLOODMSG "%s changes names too many times!"
+#define DEFAULTCHATFLOODMSG "%s is making to much noise!"
+#define DEFAULTSKINFLOODMSG "%s changes skins too many times!"
+#define DEFAULTCL_PITCHSPEED_KICKMSG "cl_pitchspeed changes not allowed on this server."
+
+typedef struct banstruct
+{
+  qboolean            exclude;
+  byte				  type;
+  long                bannum;
+  byte                loadType;
+  char				  nick[80];
+  char                password[80];
+  byte                ip[4];
+  byte                subnetmask;
+  long                maxnumberofconnects;
+  long                numberofconnects;
+  float				  timeout;
+  char               *msg;
+  struct banstruct   *next;
+} baninfo_t;
+
+#define NOTUSED		        0
+#define NICKALL           1
+#define NICKEQ	          2
+#define NICKLIKE   	      3
+#define NICKRE            4
+#define NICKBLANK  	      5
+
+#define LT_PERM           1
+#define LT_TEMP           2
+
+typedef struct 
+{
+  byte command;
+  float timeout;
+  unsigned long data;
+  char *str;
+} CMDQUEUE;
+
+typedef struct
+{
+  unsigned char retries;
+  unsigned char rbotretries;
+  CMDQUEUE      cmdQueue[20];         // command queue
+  int           maxCmds;
+  unsigned long	clientcommand;				// internal proxy commands
+  char			teststr[9];
+  int			charindex;
+  int           logfilenum;
+  long          logfilecheckpos;
+  char          buffer[256];          // log buffer
+  char			ipaddress[40];
+  byte          ipaddressBinary[4];
+  byte			impulse;
+  byte          inuse;
+  char			name[16];
+  char          skin[40];  // skin/model information.
+  int           rate;
+  int           cl_pitchspeed;
+  baninfo_t     *baninfo;
+  long          namechangetimeout;
+  int           namechangecount;
+  long          skinchangetimeout;
+  int           skinchangecount;
+  char		    userinfo[MAX_INFO_STRING];
+  FILE          *stuffFile;
+  int           impulsesgenerated;
+  char          lastcmd[8192];
+  int           msg;
+  int			tries;
+  char			conaddress[40];
+  char			conaddress1[40];
+  float         connecttime;
+  char			port[5];
+  char			firstport[5];
+} proxyinfo_t;
+
+typedef struct
+{
+  byte          inuse;
+  char			name[16];
+} proxyreconnectinfo_t;
+
+#define MAXDETECTRETRIES    3
+
+#define CCMD_STARTUPTEST	    0x000001
+#define CCMD_ZPROXYCHECK2	    0x000002
+#define CCMD_ZBOTDETECTED	    0x000004
+#define CCMD_NITRO2PROXY	    0x000008
+#define CCMD_RATBOTDETECT       0x000010
+#define CCMD_RATBOTDETECTNAME   0x000020
+#define CCMD_ZBOTCLEAR          0x000040
+#define CCMD_RBOTCLEAR          0x000080
+#define CCMD_RECONNECT          0x000100
+#define CCMD_NCSILENCE			0x000200
+#define CCMD_SCSILENCE			0x000400
+
+enum _commands 
+{
+  QCMD_STARTUP,
+  QCMD_STARTUPTEST,
+  QCMD_CLEAR,
+  QCMD_DISCONNECT,
+  QCMD_CUSTOM,
+  QCMD_ZPROXYCHECK1,
+  QCMD_ZPROXYCHECK2,
+  QCMD_CONNECTCMD,
+  QCMD_GETIPALT,
+  QCMD_RESTART,
+  QCMD_FORCEUDATAUPDATE,
+  QCMD_CHANGENAME,
+  QCMD_CHANGESKIN,
+  QCMD_STUFFCLIENT,
+  QCMD_TESTRATBOT,
+  QCMD_TESTRATBOT2,
+  QCMD_TESTRATBOT3,
+  QCMD_TESTRATBOT4,
+  QCMD_TESTSTANDARDPROXY,
+  QCMD_SETUPCL_PITCHSPEED,
+  QCMD_FORCEUDATAUPDATEPS,
+  QCMD_RECONNECT,
+  QCMD_KICK,
+};
+#define MINIMUMTIMEOUT	5
+#define MAXSTARTTRY     500
+
+#define getEntOffset(ent) (((char *)ent - (char *)globals.edicts) / globals.edict_size)
+#define getEnt(entnum) (edict_t *)((char *)globals.edicts + (globals.edict_size * entnum))
+
+// where the command can't be run?
+
+#define CMDWHERE_CFGFILE          0x01
+#define CMDWHERE_CLIENTCONSOLE    0x02
+#define CMDWHERE_SERVERCONSOLE    0x04
+
+
+// type of command
+
+#define CMDTYPE_NONE      0
+#define CMDTYPE_LOGICAL   1
+#define CMDTYPE_NUMBER    2
+#define CMDTYPE_STRING    3
+typedef void CMDRUNFUNC(int startarg, edict_t *ent, int client);
+typedef void CMDINITFUNC(char *arg);
+
+typedef struct 
+{
+  char *cmdname;
+  byte  cmdwhere;
+  byte  cmdtype;
+  void *datapoint;
+  CMDRUNFUNC *runfunc;
+  CMDINITFUNC *initfunc;
+
+} zbotcmd_t;
+
+extern int proxy_bwproxy;
+extern int proxy_nitro2;
+
+extern char buffer[0x10000];
+extern char buffer2[256];
+
+extern char customServerCmd[256];
+extern char customClientCmd[256];
+extern char customClientCmdConnect[256];
+extern char customServerCmdConnect[256];
+
+extern qboolean nameChangeFloodProtect;
+extern int nameChangeFloodProtectNum;
+extern int nameChangeFloodProtectSec;
+extern int nameChangeFloodProtectSilence;
+extern char nameChangeFloodProtectMsg[256];
+
+extern qboolean skinChangeFloodProtect;
+extern int skinChangeFloodProtectNum;
+extern int skinChangeFloodProtectSec;
+extern int skinChangeFloodProtectSilence;
+extern char skinChangeFloodProtectMsg[256];
+
+extern proxyinfo_t *proxyinfo;
+extern proxyinfo_t *proxyinfoBase;
+extern proxyreconnectinfo_t *reconnectproxyinfo;
+
+extern int lframenum;
+extern float	l_time;
+
+extern int clientsidetimeout;
+
+extern int zbotdetectactivetimeout;
+
+extern qboolean cl_pitchspeed_enable;
+extern qboolean cl_pitchspeed_kick;
+extern qboolean cl_pitchspeed_display;
+extern char cl_pitchspeed_kickmsg[256];
+
+extern qboolean filternonprintabletext;
+
+extern char reconnect_address[256];
+extern int reconnect_time;
+extern int reconnect_checklevel;
+
+extern int entity_classname_offset;
+
+typedef struct
+{
+  long          reconnecttimeout;
+  int           retrylistidx;
+  char          userinfo[MAX_INFO_STRING];
+
+} reconnect_info;
+
+typedef struct
+{
+  long          retry;
+  char  	    ip[MAX_INFO_STRING];
+
+} retrylist_info;
+
+extern reconnect_info* reconnectlist;
+extern retrylist_info* retrylist;
+extern int maxReconnectList;
+extern int maxretryList;
+
+#define ZBOT_TESTSTRING1			"q2startxx\n"
+
+#define ZBOT_TESTSTRING_TEST1 "q2startxx"
+#define ZBOT_TESTSTRING_TEST2	"q2exx"
+
+#define ZBOT_TESTSTRING_TEST1_OLD "q2start"
+#define ZBOT_TESTSTRING_TEST2_OLD	"q2e"
+
+extern char zbot_teststring1[];
+extern char zbot_teststring_test1[];
+extern char zbot_teststring_test2[];
+extern char zbot_testchar1;
+extern char zbot_testchar2;
+
+extern char testchars[];
+extern int testcharslength;
+
+#define RATBOT_CHANGENAMETEST   "pwsnskle"
+#define BOTDETECT_CHAR1         'F'
+#define BOTDETECT_CHAR2         'U'
+
+#define FALSE 0
+#define TRUE 1
+
+
+#define SKIPBLANK(str) \
+  {\
+    while(*str == ' ' || *str == '\t') \
+    { \
+      str++; \
+    } \
+  }
+
+// zb_cmd.c
+void readCfgFiles(void);
+void dprintf_internal (char *fmt, ...);
+void cprintf_internal(edict_t *ent, int printlevel, char *fmt, ...);
+void bprintf_internal(int printlevel, char *fmt, ...);
+void AddCommandString_internal(char *text);
+void stuffNextLine(edict_t *ent, int client);
+char *getArgs(void);
+int getClientsFromArg(int client, edict_t *ent, char *cp, char **text);
+edict_t *getClientFromArg(int client, edict_t *ent, int *cleintret, char *cp, char **text);
+int checkForOverflows(edict_t *ent, int client);
+void	Pmove_internal (pmove_t *pmove);
+
+void addCmdQueue(int client, byte command, float timeout, unsigned long data, char *str);
+qboolean getCommandFromQueue(int client, byte *command, unsigned long *data, char **str);
+void removeClientCommand(int client, byte command);
+void removeClientCommands(int client);
+
+// zb_flood.c
+void freeFloodLists(void);
+void readFloodLists(void);
+void reloadFloodFileRun(int startarg, edict_t *ent, int client);
+void nameChangeFloodProtectInit(char *arg);
+void nameChangeFloodProtectRun(int startarg, edict_t *ent, int client);
+void chatFloodProtectInit(char *arg);
+void chatFloodProtectRun(int startarg, edict_t *ent, int client);
+void muteRun(int startarg, edict_t *ent, int client);
+void clientchatfloodprotectRun(int startarg, edict_t *ent, int client);
+qboolean checkForMute(int client, edict_t *ent, qboolean displayMsg);
+qboolean checkForFlood(int client);
+qboolean checkforfloodcmds(char *cp);
+void listfloodsRun(int startarg, edict_t *ent, int client);
+void displayNextFlood(edict_t *ent, int client, long floodcmd);
+void floodcmdRun(int startarg, edict_t *ent, int client);
+void floodDelRun(int startarg, edict_t *ent, int client);
+void skinChangeFloodProtectInit(char *arg);
+void skinChangeFloodProtectRun(int startarg, edict_t *ent, int client);
+
+qboolean zbc_ZbotCheck(int client, usercmd_t *ucmd);
+int isBlank(char *buff1);
+qboolean checkReconnectUserInfoSame(char *userinfo1, char *userinfo2);
+qboolean checkForSkinChange(int client, edict_t *ent, char *userinfo);
+qboolean checkForNameChange(int client, edict_t *ent, char *userinfo);
+qboolean checkReconnectList(char *username);
+
+#define q2a_strcpy			strcpy
+#define q2a_strncpy			strncpy
+#define q2a_strcat			strcat
+#define q2a_strcmp			strcmp
+#define q2a_strstr			strstr
+#define q2a_strchr			strchr
+#define q2a_strlen			strlen
+
+#define q2a_atoi				atoi
+#define q2a_atof				atof
+
+#define q2a_memcmp			memcmp
+#define q2a_memcpy			memcpy
+#define q2a_memmove			memmove
+#define q2a_memset			memset
+#define LEVELCHANGE_KEEP			(CCMD_SCSILENCE | CCMD_ZBOTDETECTED | CCMD_NITRO2PROXY | CCMD_ZBOTCLEAR | CCMD_RBOTCLEAR | CCMD_RECONNECT)
+extern char moddir[256];
+
+#endif //ANTICHEAT_H
+
