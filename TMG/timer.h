@@ -16,14 +16,21 @@
 extern int match_state;
 extern float match_state_end;
 
-extern void RavCheckTeams(void);
+extern void ResetItems (void);
+extern void RestartLevel (void);
+extern void TimerThink (void);  //unused
+
+//QW// declared but doesn't exist?
 void MatchInit (int resetall);
+void MatchThink (void);
+//QW//
+
 int CountDownInFinalMinute (void);
 void CountDown (void);
-void MatchThink (void);
-void TimerThink (void);
 void CheckState(void);
-void Check_Bot_Number (void);
+
+// defined in bot_func.c
+extern void Check_Bot_Number (void);
 
 /**
  start the server in a 'waiting for players' state
@@ -39,6 +46,5 @@ for(INDEX = 1;INDEX <= maxclients->value; INDEX++) \
 	if ((JOE_BLOGGS = &g_edicts[INDEX]) && JOE_BLOGGS && JOE_BLOGGS->inuse && !JOE_BLOGGS->bot_client)
 
 #define STAT_COUNTDOWN          28
-qboolean allow_bots; 
 
 #endif  //timer_h

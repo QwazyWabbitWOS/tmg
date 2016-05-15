@@ -73,7 +73,7 @@ void GetTime()
 //
 //MAP STUFF
 //
-int CountConnectedClients ()
+int CountConnectedClients (void)
 {
 	int n, count;
 	edict_t *player;

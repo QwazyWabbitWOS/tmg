@@ -1,4 +1,5 @@
 #include "g_local.h"
+#include "s_map.h"
 
 typedef struct
 {
@@ -90,12 +91,13 @@ edict_t *mdsoft_NextMap( void )
                         MAP_ENTRY *newone;
 
                         newone = realloc( mdsoft_map,
-                                          (mdsoft_map_size + 1) * sizeof(*newone) );
+										 (mdsoft_map_size + 1) * sizeof(*newone) );
 
                         if( newone )
                         {
                             mdsoft_map = newone;
-                            memcpy( &mdsoft_map[mdsoft_map_size], &temp, sizeof(temp) );
+                            memcpy( &mdsoft_map[mdsoft_map_size],
+								   &temp, sizeof(temp) );
                             mdsoft_map_size++;
                         }
                     }
@@ -107,7 +109,8 @@ edict_t *mdsoft_NextMap( void )
 				{
 				for (i = 0; i < maplist->nummaps; i++)
 				{
-					gi.dprintf("Map loaded: %s \"%s\"\n", maplist->mapname[i], maplist->mapnick[i]);
+					gi.dprintf("Map loaded: %s \"%s\"\n",
+							   maplist->mapname[i], maplist->mapnick[i]);
 				}
 				gi.dprintf("%d maps loaded.\n", maplist->nummaps);
 				}
@@ -349,7 +352,7 @@ static int mdsoft_read_map_entry(  FILE   *fpFile,
 } /* end of mdsoft_read_map_entry() */
 
 //Clear the map votes
-void ClearMapVotes() 
+void ClearMapVotes(void)
 { 
 	int i;
 	for (i=0; i < maplist->nummaps; ++i)
@@ -362,7 +365,7 @@ void ClearMapVotes()
     -1  No votes
 	0-31 Index to selected map  
 */
-int MapMaxVotes() 
+int MapMaxVotes(void)
 { 
 	int i;
 	int numvotes;
@@ -390,7 +393,7 @@ void VoteForMap(int i)
 		++maplist->votes[i];
 }
 
-void DumpMapVotes()
+void DumpMapVotes(void)
 {
 	int i;
 	for (i = 0; i < maplist->nummaps; ++i)
@@ -410,7 +413,7 @@ void DumpMapVotes()
 // 
 // Return: (none) 
 // 
-void ClearMapList() 
+void ClearMapList(void)
 { 
    maplist->nummaps = 0; 
    ClearMapVotes();

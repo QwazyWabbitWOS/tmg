@@ -4,7 +4,6 @@
 
 void sv_addop (edict_t *ent);
 //void sv_addmop (edict_t *ent);
-void sv_ban_ip (edict_t *ent);
 
 
 //ƒ‹[ƒgC³

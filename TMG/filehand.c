@@ -1,5 +1,5 @@
 #include "g_local.h"
-#include "ctype.h"
+#include <ctype.h>
 #include <string.h>
 #include "filehand.h"
 
@@ -19,7 +19,7 @@ int checkAllowed (char *userinfo)
 	FILE *ipfile;
 	char line[IP_LENGTH], ip[IP_LENGTH], aline[IP_LENGTH];
 	int stop;
-    
+
 	// let loopback match.
 	if (strcmp(Info_ValueForKey (userinfo, "ip"), "loopback") == 0)
 		return (0);
@@ -39,15 +39,15 @@ int checkAllowed (char *userinfo)
 				{
 					stop=0;
 				}
-			} 
+			}
 		}
 		fclose(ipfile);
-	} else 
+	} else
 	{
 		stop=0;
 	}
 
-	if (stop==1) 
+	if (stop==1)
 		return (1);
 
 	if ((ipfile = tn_open("ip_banned.txt","r")))
@@ -69,7 +69,7 @@ int checkAllowed (char *userinfo)
 	{
 		if ((ipfile = tn_open("ip_allowed.txt","r")))
 		{
-			while ((fgets(aline,IP_LENGTH,ipfile)) && (stop==1)) 
+			while ((fgets(aline,IP_LENGTH,ipfile)) && (stop==1))
 			{
 				if (!strchr("#",*aline))
 				{
@@ -79,14 +79,14 @@ int checkAllowed (char *userinfo)
 						// gi.dprintf ("%s, %s <->%s\n", ip, aline, line);
 						stop=0;
 					}
-				} 
+				}
 			}
 			fclose(ipfile);
 		}
 	}
 
 	return stop; // 1 if client is banned, otherwise 0.
-	}
+}
 
 char *NameAndIp (edict_t *ent)
 {
@@ -610,7 +610,8 @@ void LogConnect (edict_t *ent, qboolean connect)
 	char file_name[256];
 	char client[256];
 
-	sprintf(file_name, "%s/%s/%s/logs/connect.log", basedir->string, game_dir->string, cfgdir->string);
+	sprintf(file_name, "%s/%s/%s/logs/connect.log",
+			basedir->string, game_dir->string, cfgdir->string);
 
 	if (!ent)
 	{
@@ -619,7 +620,10 @@ void LogConnect (edict_t *ent, qboolean connect)
 			fclose (file);
 		}
 		else
-			gi.dprintf("Could not open/create connect log! Please make sure you have a logs folder in your cfg directory.\n");
+		{
+			gi.dprintf("Error opening/creating %s!\n", file_name);
+			gi.dprintf("Please make sure you have a logs folder in your cfg directory.\n");
+		}
 		return;
 	}
 
@@ -647,10 +651,11 @@ void LogConnect (edict_t *ent, qboolean connect)
 void LogChat (char *text)
 {
 	FILE *file;
-	char file_name[256];
+	char file_name[PATH_MAX];
 	char entry[2048];
 
-	sprintf(file_name, "%s/%s/%s/logs/%schat.log", basedir->string, game_dir->string, cfgdir->string, sys_date);
+	sprintf(file_name, "%s/%s/%s/logs/%schat.log",
+			basedir->string, game_dir->string, cfgdir->string, sys_date);
 
 	if (text == NULL)
 	{
@@ -659,7 +664,10 @@ void LogChat (char *text)
 			fclose (file);
 		}
 		else
-			gi.dprintf("Could not open/create chat log! Please make sure you have a logs folder in your cfg directory.\n");
+		{
+			gi.dprintf("Error opening/creating %s!\n", file_name);
+			gi.dprintf("Please make sure you have a logs folder in your cfg directory.\n");
+		}
 		return;
 	}
 	convert_string(entry, 128, 255, -128, entry);  //make white text

@@ -948,7 +948,6 @@ void tolower_text(char *src, char *dest);
 qboolean CheckFlood(edict_t *who);
 void LogConnect(edict_t *ent, qboolean connect);
 void LogChat(char *text);
-void RestartLevel(void);
 float yesvotes;
 float novotes;
 qboolean mapvoteactive;
@@ -1769,16 +1768,6 @@ void CheckForCamping (edict_t *ent);
 #define rndnum(y,z) ((random()*((z)-((y)+1)))+(y))
 extern gitem_t *flag1_item;
 extern gitem_t *flag2_item;
-//map.c
-int  LoadMapList(edict_t *ent, char *filename); 
-void ClearMapList(void);
-void Cmd_Maplist_f (edict_t *ent); 
-void Display_Maplist_Usage(edict_t *ent);
-void ClearMapVotes(void) ;
-int MapMaxVotes(void);
-void VoteForMap(int i);
-void DumpMapVotes(void);
-void MaplistNextMap(edict_t *ent);
 
 //
 // models.c

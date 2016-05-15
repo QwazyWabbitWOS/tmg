@@ -6,6 +6,7 @@
 //aim	aimƒXƒLƒ‹
 //yaw	dist
 //wep	weapon
+static
 void Get_AimAngle(edict_t *ent,float aim,float dist,int weapon)
 {
 	edict_t *target;
@@ -207,6 +208,7 @@ void Get_AimAngle(edict_t *ent,float aim,float dist,int weapon)
  Decide if player can use weapon, set weaponstate appropriately.
  Returns: true if ready, 2 if not. Why 2?
  */
+static
 int CanUsewep(edict_t *ent,int weapon)
 {
 	gitem_t *item;
@@ -432,6 +434,7 @@ int CanUsewep(edict_t *ent,int weapon)
 //	Use BFG
 
 //------------------------------------------------------------
+static
 qboolean B_UseBfg(edict_t *ent,edict_t *target,int enewep,float aim,float distance,int skill)
 {
 	int k,mywep;
@@ -507,6 +510,7 @@ qboolean B_UseBfg(edict_t *ent,edict_t *target,int enewep,float aim,float distan
 //	Use Hyper Blaster
 
 //------------------------------------------------------------
+static
 qboolean B_UseHyperBlaster(edict_t *ent,edict_t *target,int enewep,float aim,float distance,int skill)
 {
 	int k,mywep;
@@ -533,6 +537,7 @@ qboolean B_UseHyperBlaster(edict_t *ent,edict_t *target,int enewep,float aim,flo
 //	Use Rocket
 
 //------------------------------------------------------------
+static
 qboolean B_UseRocket(edict_t *ent,edict_t *target,int enewep,float aim,float distance,int skill)
 {
 	int k, mywep;
@@ -616,6 +621,7 @@ qboolean B_UseRocket(edict_t *ent,edict_t *target,int enewep,float aim,float dis
 //	Use Railgun
 
 //------------------------------------------------------------
+static
 qboolean B_UseRailgun(edict_t *ent,edict_t *target,int enewep,float aim,float distance,int skill)
 {
 	int k,mywep;
@@ -641,6 +647,7 @@ qboolean B_UseRailgun(edict_t *ent,edict_t *target,int enewep,float aim,float di
 //	Use Grenade Launcher
 
 //------------------------------------------------------------
+static
 qboolean B_UseGrenadeLauncher(edict_t *ent,edict_t *target,int enewep,float aim,float distance,int skill)
 {
 	int k,mywep;
@@ -694,6 +701,7 @@ qboolean B_UseGrenadeLauncher(edict_t *ent,edict_t *target,int enewep,float aim,
 //	Use Chain Gun
 
 //------------------------------------------------------------
+static
 qboolean B_UseChainGun(edict_t *ent,edict_t *target,int enewep,float aim,float distance,int skill)
 {
 	int k,mywep;
@@ -720,6 +728,7 @@ qboolean B_UseChainGun(edict_t *ent,edict_t *target,int enewep,float aim,float d
 //	Use Machine Gun
 
 //------------------------------------------------------------
+static
 qboolean B_UseMachineGun(edict_t *ent,edict_t *target,int enewep,float aim,float distance,int skill)
 {
 	int k,mywep;
@@ -745,6 +754,7 @@ qboolean B_UseMachineGun(edict_t *ent,edict_t *target,int enewep,float aim,float
 //	Use S-Shotgun
 
 //------------------------------------------------------------
+static
 qboolean B_UseSuperShotgun(edict_t *ent,edict_t *target,int enewep,float aim,float distance,int skill)
 {
 	int k,mywep;
@@ -770,6 +780,7 @@ qboolean B_UseSuperShotgun(edict_t *ent,edict_t *target,int enewep,float aim,flo
 //	Use Shotgun
 
 //------------------------------------------------------------
+static
 qboolean B_UseShotgun(edict_t *ent,edict_t *target,int enewep,float aim,float distance,int skill)
 {
 	int k,mywep;
@@ -795,6 +806,7 @@ qboolean B_UseShotgun(edict_t *ent,edict_t *target,int enewep,float aim,float di
 //	Use Hand Grenade
 
 //------------------------------------------------------------
+static
 qboolean B_UseHandGrenade(edict_t *ent,edict_t *target,int enewep,float aim,float distance,int skill)
 {
 	int k,mywep;
@@ -822,6 +834,7 @@ qboolean B_UseHandGrenade(edict_t *ent,edict_t *target,int enewep,float aim,floa
 //	Use Blaster
 
 //------------------------------------------------------------
+static
 qboolean B_UseBlaster(edict_t *ent,edict_t *target,int enewep,float aim,float distance,int skill)
 {
 	int k,mywep;

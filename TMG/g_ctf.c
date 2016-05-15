@@ -4,6 +4,7 @@
 #include "runes.h"
 #include "stdlog.h"
 #include "e_hook.h"
+#include "hud.h"
 //
 
 //3ZB
@@ -11,12 +12,10 @@ qboolean bots_moveok ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bott
 //
 
 char menustring[24][64];
-int CountConnectedClients ();
-void CTFJoinTeam1(edict_t *ent, pmenu_t *p);
-void CTFJoinTeam2(edict_t *ent, pmenu_t *p);
+
+// in p_client.c
 void TossClientWeapon (edict_t *self);
-void ChangeNow (edict_t *ent, pmenu_t *menu);
-void ChangeLater (edict_t *ent, pmenu_t *menu);
+
 
 // private
 static void old_teleporter_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);

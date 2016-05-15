@@ -1,12 +1,13 @@
 #include "g_local.h"
 #include "timer.h"
 
-
+// global
 int match_state;
 float match_state_end;
+
+// static
 float match_nextthink;
-qboolean allow_bots = false;
-void CTFResetFlags(void);
+
 void ResetItems (void)
 {
 	int i;

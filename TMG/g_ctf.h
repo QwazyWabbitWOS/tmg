@@ -1,3 +1,5 @@
+#ifndef G_CTF_H
+#define G_CTF_H
 
 #define CTF_VERSION			1.02
 #define CTF_VSTRING2(x) #x
@@ -73,7 +75,6 @@ extern cvar_t *ctf;
 
 void CTFInit(void);
 
-//#include "g_ctf.h"
 //JSW
 void	ShowFile (edict_t *ent, char *filename);
 void	ResetCaps(void);
@@ -96,6 +97,8 @@ int CountSpecClients (void);
 void SP_info_player_team1(edict_t *self);
 void SP_info_player_team2(edict_t *self);
 
+void CTFJoinTeam1(edict_t *ent, pmenu_t *p);
+void CTFJoinTeam2(edict_t *ent, pmenu_t *p);
 char *CTFTeamName(int team);
 char *CTFOtherTeamName(int team);
 void CTFAssignSkin(edict_t *ent, char *s);
@@ -103,6 +106,7 @@ void CTFAssignTeam(gclient_t *who);
 void CTFJobAssign (void);
 void CTFSetupNavSpawn(void);
 edict_t *SelectCTFSpawnPoint (edict_t *ent);
+void CTFResetFlags(void);
 qboolean CTFPickup_Flag(edict_t *ent, edict_t *other);
 void CTFDrop_Flag(edict_t *ent, gitem_t *item);//RAV
 void CTFEffects(edict_t *player);
@@ -195,3 +199,7 @@ void UpdatePlayerMenu(edict_t *ent);
 char *GetIp(edict_t *ent);
 void VoteMap(edict_t *ent, pmenu_t *p);
 void SpawnExtra(vec3_t position, char *classname);
+void ChangeNow (edict_t *ent, pmenu_t *menu);
+void ChangeLater (edict_t *ent, pmenu_t *menu);
+
+#endif	/* G_CTF_H */

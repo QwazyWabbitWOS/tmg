@@ -5,16 +5,15 @@
 #include "runes.h"	
 #include "filehand.h"
 #include "filtering.h"
+#include "hud.h"
 
 //
-void sv_ban_ip(edict_t *ent);
 void RaV_hook (edict_t *ent);
 void RaV_unhook (edict_t *ent);
 void CTFChaseCam(edict_t *ent, pmenu_t *p);//RAV
 int LIGHTS = 0;
 void no (edict_t *ent);
 void yes (edict_t *ent);//RAV
-int CountConnectedClients ();
 
 char *ClientTeam1 (edict_t *ent)
 {
@@ -1455,30 +1454,30 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 
 
 //RAV Spectator MODE
+static
 void player_set_observer(edict_t *ent, int value)
-
 {
 	if (value)
 	{
 		// no weapons available
 		ent->client->newweapon = NULL;
 		ChangeWeapon (ent);
-      		
-// kill the flashlight if its on 
-	if ( ent->flashlight )
-	{	
-		G_FreeEdict(ent->flashlight);
-		ent->flashlight = NULL;
-    }
-	//ZOID
-if(ctf->value)
-{
-	CTFDeadDropFlag(ent);
-	CTFDeadDropTech(ent);
-	ent->client->resp.ctf_team = CTF_NOTEAM; 
-}
-//ZOID
-// drop the rune if we have one
+
+		// kill the flashlight if its on
+		if ( ent->flashlight )
+		{
+			G_FreeEdict(ent->flashlight);
+			ent->flashlight = NULL;
+		}
+		//ZOID
+		if(ctf->value)
+		{
+			CTFDeadDropFlag(ent);
+			CTFDeadDropTech(ent);
+			ent->client->resp.ctf_team = CTF_NOTEAM;
+		}
+		//ZOID
+		// drop the rune if we have one
 		runes_drop(ent);
 		ent->client->resp.score = 0;
 		ent->client->pers.pl_state = PL_SPECTATOR;
@@ -1487,17 +1486,17 @@ if(ctf->value)
 		ent->svflags |= SVF_NOCLIENT;
 		ent->client->ps.gunindex = 0;
 		gi.linkentity (ent);
-    }
+	}
 	else
 	{
-	if(ent->client->pers.motd == true)//RAV
-	{
-	//nothing
-	}
+		if(ent->client->pers.motd == true)//RAV
+		{
+			//nothing
+		}
 		else
-	if (CTFStartClient(ent))
-		return;
-
+			if (CTFStartClient(ent))
+				return;
+		
 
 	}
 }
