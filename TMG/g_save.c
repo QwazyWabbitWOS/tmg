@@ -3,6 +3,7 @@
 #include "hud.h"
 #include "s_map.h"
 #include "filehand.h"
+#include "filtering.h"
 
 //RAV
 #include "gslog.h"	//	StdLog - Mark Davies
@@ -166,9 +167,7 @@ only happens when a new game is begun
 ============
 */
 qboolean default_exec = false;
-//RAV
-void LoadTextFilterInfo();
-//
+
 void SetBotFlag1(edict_t *ent);	//チーム1の旗
 void SetBotFlag2(edict_t *ent);  //チーム2の旗
 

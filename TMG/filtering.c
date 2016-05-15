@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include "filtering.h"
 
 #define TEXT_FILTER_FILE		"textfilter.cfg"
 #define DIM(a) ( sizeof(a) / sizeof(a[0]) )
@@ -27,10 +28,10 @@ typedef struct
 */
 /**************************************************************************/
 
-void Strcpyn(
-	char			*pszDest,
-	const char	*pszSrc,
-	int			 nDestSize)
+/**
+ A wrapper for strncpy that unlike strncpy, always terminates strings with NUL.
+ */
+static void Strcpyn(char *pszDest, const char *pszSrc, int nDestSize)
 {
 	strncpy( pszDest, pszSrc, nDestSize);
 	pszDest[nDestSize-1] = '\0';
@@ -38,9 +39,10 @@ void Strcpyn(
 
 /**************************************************************************/
 
-char *strstri(
-	char *str1,
-	char *str2)
+/**
+ Case insensitive strstr
+ */
+static char *strstri(char *str1, char *str2)
 {
 	char *cp = (char *) str1;
 	char *s1, *s2;
@@ -57,9 +59,9 @@ char *strstri(
 			s1++, s2++;
 
 		if (!*s2)
-   		return(cp);
+			return(cp);
 
-  		 cp++;
+		cp++;
 	}
 
 	return(NULL);
@@ -71,7 +73,7 @@ char *strstri(
  Search for pszSubstring inside pszString, but consider identical
  characters between letters in pszSubstring to be a match.
 */
-char *StrStrSpanNoCase(char *pszString,	char *pszSubstring)
+static char *StrStrSpanNoCase(char *pszString, char *pszSubstring)
 {
 	//QW// Unused char *cp = (char *) pszString;
 	char *s1, *s2;
@@ -141,11 +143,7 @@ char *StrStrSpanNoCase(char *pszString,	char *pszSubstring)
 /** 
  Does an fgets() but strips any trailing whitespace.
  */
-
-char *fgets_endws(
-	char *pszBuffer,
-	int	nSize,
-	FILE *pStream)
+static char *fgets_endws(char *pszBuffer, int nSize, FILE *pStream)
 {
 	char *psz;
 	char *pszReturn = fgets( pszBuffer, nSize, pStream);
@@ -168,9 +166,8 @@ char *fgets_endws(
 	return pszReturn;
 }
 
-/**************************************************************************/
 
-/**
+/*
  Replaces bad strings in the text with an asterisk.
  */
 qboolean FilterText(char *pszText)
@@ -243,8 +240,8 @@ qboolean FilterText(char *pszText)
 
 		// Check for skip character matches, but don't check if the filter
 		// string is only two characters or less.
-		if ( strlen( game.apszTextFilterStrings[i] ) > 2 &&
-			  NULL != (p = StrStrSpanNoCase( szBuffer, game.apszTextFilterStrings[i])) )
+		if ( strlen( game.apszTextFilterStrings[i] ) > 2
+			&& NULL != (p = StrStrSpanNoCase( szBuffer, game.apszTextFilterStrings[i])) )
 		{
 			// Replace matched characters with a chr(1)
 			for ( nMatchLen = strlen( game.apszTextFilterStrings[i] );
@@ -320,7 +317,7 @@ qboolean FilterText(char *pszText)
 
 /**************************************************************************/
 
-void PurgeTextFilterInfo()
+static void PurgeTextFilterInfo(void)
 {
 	int i;
 
@@ -343,7 +340,10 @@ void PurgeTextFilterInfo()
 
 /**************************************************************************/
 
-int CompareStringLength(void const *a, void const *b)
+/**
+ Comparison function for use with qsort function
+ */
+static int CompareStringLength(void const *a, void const *b)
 {
 	size_t n1, n2;
 
@@ -356,7 +356,7 @@ int CompareStringLength(void const *a, void const *b)
 
 /**************************************************************************/
 
-void LoadTextFilterInfo()
+void LoadTextFilterInfo(void)
 {
 	FILE	  *f;
 	char		szFile[256];
@@ -365,7 +365,8 @@ void LoadTextFilterInfo()
 	PurgeTextFilterInfo();
 
 	// Create the pathname to the filter file.
-	sprintf(szFile, "%s/%s/%s/textfilter.cfg", basedir->string, game_dir->string, cfgdir->string);
+	sprintf(szFile, "%s/%s/%s/textfilter.cfg",
+			basedir->string, game_dir->string, cfgdir->string);
 
 	// Try to open the filter file.
 	f = fopen( szFile, "rt");
@@ -406,7 +407,7 @@ void LoadTextFilterInfo()
 			Strcpyn( game.apszTextNonFilterStrings[game.nTextNonFilterCount],
 				szLineBuffer + 2, (int) nLength + 1);
 
-			if ( ++game.nTextNonFilterCount >= DIM(game.apszTextNonFilterStrings) )
+			if (++game.nTextNonFilterCount >= DIM(game.apszTextNonFilterStrings))
 			{
 				safe_cprintf( NULL, PRINT_HIGH,
 					"Could not store more than %d text non-filter strings.\n", 

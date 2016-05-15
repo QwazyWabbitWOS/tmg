@@ -6,6 +6,7 @@
 #include "stdlog.h"	//	StdLog - Mark Davies
 #include "gslog.h"	//	StdLog - Mark Davies
 #include "filehand.h"
+#include "filtering.h"
 //
 #include <sys/timeb.h>
 #include <time.h>
@@ -15,7 +16,6 @@ void TauntVictim(edict_t *ent, edict_t *victim);
 void InsultVictim(edict_t *ent, edict_t *victim);
 int	num_clients	= 0;
 void SP_item_health_mega (edict_t *self);//RAV
-qboolean FilterText(char *pszText);//RAV
 void SpawnItem2 (edict_t *ent, gitem_t *item);//RAV
 void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 

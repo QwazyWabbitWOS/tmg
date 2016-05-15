@@ -4,12 +4,12 @@
 //RAV
 #include "runes.h"	
 #include "filehand.h"
+#include "filtering.h"
 
 //
 void sv_ban_ip(edict_t *ent);
 void RaV_hook (edict_t *ent);
 void RaV_unhook (edict_t *ent);
-qboolean FilterText(char *pszText);//RAV
 void CTFChaseCam(edict_t *ent, pmenu_t *p);//RAV
 int LIGHTS = 0;
 void no (edict_t *ent);
