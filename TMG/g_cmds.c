@@ -570,22 +570,19 @@ Cmd_Inven_f
 */
 void Cmd_Inven_f (edict_t *ent)
 {
-//	int			i;
-	gclient_t	*cl;
 
-	cl = ent->client;
-
-//ZOID
-	if (ent->client->menu) {
+	if (ent->client->menu)
+	{
 		PMenu_Close(ent);
 		ent->client->update_chase = true;
 		return;
 	}
-//ZOID
 
-	if (cl->showinventory)
+	//QW// this should never be true in rails
+	// test and schedule for deletion later
+	if (ent->client->showinventory)
 	{
-		cl->showinventory = false;
+		ent->client->showinventory = false;
 		return;
 	}
 
@@ -595,30 +592,11 @@ void Cmd_Inven_f (edict_t *ent)
 		return;
 	}
 
-
-//ZOID
-	if (ctf->value )//&& cl->resp.ctf_team == CTF_NOTEAM)
+	if (ctf->value)// && cl->resp.ctf_team == CTF_NOTEAM)
 	{
 		CTFOpenJoinMenu(ent);
 		return;
 	}
-	else
-	{
-		OpenJoinMenu(ent);
-		return;
-	}
-//ZOID
-
-	//QW// dead code
-//	cl->showinventory = true;
-//	cl->showscores = false;
-
-//	gi.WriteByte (svc_inventory);
-//	for (i=0 ; i<MAX_ITEMS ; i++)
-//	{
-//		gi.WriteShort (cl->pers.inventory[i]);
-//	}
-//	gi.unicast (ent, true);
 }
 
 /*
