@@ -1,6 +1,5 @@
 #include "g_local.h"
 #include "eavy.h"
-#include <stdio.h>
 #include <ctype.h>
 
 char *ReadTextFile(char *filename)
@@ -213,8 +212,6 @@ void EAVYSetupFlagSpots(void)
         }
     }
 }
-
-void SP_misc_teleporter_dest (edict_t *ent);
 
 void EAVYCallSpawnCompatibilityCheck(edict_t *ent)
 {

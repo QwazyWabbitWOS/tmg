@@ -1022,6 +1022,7 @@ void ThrowHead (edict_t *self, char *gibname, int damage, int type);
 void ThrowClientHead (edict_t *self, int damage);
 void ThrowGib (edict_t *self, char *gibname, int damage, int type);
 void BecomeExplosion1(edict_t *self);
+void SP_misc_teleporter_dest (edict_t *ent);
 
 //
 // g_ai.c
