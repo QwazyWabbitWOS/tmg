@@ -579,31 +579,35 @@ char *tn_showHud (edict_t *ent)
 
 		//only show if hud is active
 		//stuff on lower left hand area
-		//JSW
-		if (ent->client->pers.isop == 1)
-			j += sprintf (layout+j, "xl 2 yb -20 string2 \"Operator Level %d\" ", ent->client->pers.oplevel);
 		if(ent->client->pers.db_hud)
-			j += sprintf (layout+j, "xl 2 yb -10 string2 \" %s %s\" ", MOD, MOD_VERSION);
-
-		//QW// Area in HUD "xl 0 yb -40 thru -70" are player messages
-
-		if(show_time->value)
 		{
-			j += sprintf (layout+j, "xl 2 yb -90 string2 \" Server Time\" ");
-			j += sprintf (layout+j, "xl 2 yb -80 string \" %s\" ", sys_time);
-		}
+			/* Very bottom left corner */
+			j += sprintf (layout+j, "xl 2 yb -10 string2 \"%s %s\" ", MOD , MOD_VERSION);
 
-		if (ent->is_muted)
-			j += sprintf (layout+j, "xl 120 yb -90 string2 \"You are Muted\" ");
-		if (ent->is_blocked)
-			j += sprintf (layout+j, "xl 120 yb -80 string2 \"You are Flood-blocked\" ");
-		if (notfairBLUE)
-			j += sprintf (layout+j, "xl 22 yb -200 string2 \"UNFAIR: Red Has Too many Players\" ");
-		if(notfairRED)
-			j += sprintf (layout+j, "xl 22 yb -200 string2 \"UNFAIR: Blue  Has Too many Players\" ");
-		if(redtime >level.time || bluetime >level.time)
-			j += sprintf (layout+j, "xl 340 yb -220 string \"Even Teams Please!\" ");
-		// j += sprintf (layout+j, "xl 2 yb -80 string2 \"%s\" ", hostname->string);
+			//JSW
+			if (ent->client->pers.isop == 1)
+				j += sprintf (layout+j, "xl 2 yb -20 string2 \"Operator Level %d\" ", ent->client->pers.oplevel);
+
+			if(show_time->value)
+			{
+				j += sprintf (layout+j, "xl 2 yb -90 string2 \" Server Time\" ");
+				j += sprintf (layout+j, "xl 2 yb -80 string \" %s\" ", sys_time);
+			}
+
+			//QW// Area in HUD "xl 0 yb -40 thru -70" are player messages
+
+			if (ent->is_muted)
+				j += sprintf (layout+j, "xl 120 yb -90 string2 \"You are Muted\" ");
+			if (ent->is_blocked)
+				j += sprintf (layout+j, "xl 120 yb -80 string2 \"You are Flood-blocked\" ");
+			if (notfairBLUE)
+				j += sprintf (layout+j, "xl 22 yb -200 string2 \"UNFAIR: Red Has Too many Players\" ");
+			if(notfairRED)
+				j += sprintf (layout+j, "xl 22 yb -200 string2 \"UNFAIR: Blue  Has Too many Players\" ");
+			if(redtime >level.time || bluetime >level.time)
+				j += sprintf (layout+j, "xl 340 yb -220 string \"Even Teams Please!\" ");
+			// j += sprintf (layout+j, "xl 2 yb -80 string2 \"%s\" ",hostname->string);
+		}
 	}
 	//id disabling added 12-14-99 raven
 
