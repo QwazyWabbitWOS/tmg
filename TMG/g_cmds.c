@@ -1008,7 +1008,7 @@ void Cmd_MapVote (edict_t *ent)
 		safe_cprintf(ent, PRINT_HIGH, "Enter a map name such as 'mapvote q2ctf1' to start a mapvote.\n");
 		for (i = 0; i < maplist->nummaps; i++)
 		{
-			safe_cprintf(ent, PRINT_HIGH, "%s - '%s'   ", maplist->mapname[i], maplist->mapnick[i]);
+			safe_cprintf(ent, PRINT_HIGH, "%s - '%s'   \n", maplist->mapname[i], maplist->mapnick[i]);
 		}
 		return;
 	}
