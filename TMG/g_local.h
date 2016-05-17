@@ -16,7 +16,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.09"
+#define MOD_VERSION "0.2.10"
 #define MOD "TMG_MOD"
 // protocol bytes that can be directly added to messages
 #define	svc_muzzleflash		1
@@ -1715,6 +1715,7 @@ float   flastime;//flashlight timer (stops laggers)
 	float		commandtimeout;
 
 	qboolean is_muted;
+	qboolean is_blocked; // For HUD
 	qboolean busted;
 	int		display;
 	float   pausetime;

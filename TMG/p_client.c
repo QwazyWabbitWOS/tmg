@@ -3581,6 +3581,13 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	
 	if(ent->stealth > level.time)
 		is_invis = true;
+
+	//QW// Flood protection CheckFlood()
+	if (level.time < ent->client->flood_locktill)
+		ent->is_blocked = true; // show in hud
+	else
+		ent->is_blocked = false;
+
 	//
 	//--------------------------------------------------------------------------------------
 	//Target check
