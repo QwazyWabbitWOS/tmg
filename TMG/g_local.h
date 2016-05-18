@@ -1,5 +1,20 @@
 // g_local.h -- local definitions for game module
 
+#ifdef _WIN32
+  #define WIN32_LEAN_AND_MEAN	//non-MFC
+  #include <windows.h>
+  #define CRTDBG_MAP_ALLOC
+  #include <stdlib.h>
+  #include <crtdbg.h>
+  #ifndef __func__
+    #define __func__ __FUNCTION__
+  #endif
+  _CrtMemState startup1;	// memory diagnostics
+//  #include "performance.h"
+#else
+  #define OutputDebugString	//not doing Windows
+#endif
+
 #include "q_shared.h"
 #include <sys/timeb.h>
 

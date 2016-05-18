@@ -175,13 +175,17 @@ void InitGame (void)
 {
 	edict_t	*ent;
 	int i;//RAV
-	gi.dprintf("\n=====================================\n");
-	gi.dprintf("   %s %s\n", MOD, MOD_VERSION);
-	gi.dprintf(" This game library contains the bot\n");
-	gi.dprintf("    detection system developed\n");
-	gi.dprintf("        by Doug 'RaVeN' Buckley.\n");
-	gi.dprintf("TMGBot 'Base' Bot code developed By Ponpoko\n");
-	gi.dprintf("=====================================\n\n");
+	
+#ifdef	_WIN32
+	_CrtMemCheckpoint(&startup1);
+#endif
+	gi.dprintf ("==== InitGame (TMG "MOD_VERSION" built "__DATE__") ====\n");
+	gi.dprintf ("\n===========================================\n");
+	gi.dprintf (" This game library contains the bot\n");
+	gi.dprintf ("    detection system developed\n");
+	gi.dprintf ("        by Doug 'RaVeN' Buckley.\n");
+	gi.dprintf ("TMGBot 'Base' Bot code developed By Ponpoko\n");
+	gi.dprintf ("===========================================\n\n");
 	bot_team_flag1 = NULL;
 	bot_team_flag2 = NULL;
 
@@ -513,8 +517,7 @@ void InitGame (void)
     maxretryList = 0;
 	reconnect_time = 60;
 
-	
-	for(i = -1; i < maxclients->value; i++)
+	for( i = -1; i < maxclients->value; i++)
 	{
 		proxyinfo[i].inuse = 0;
 		proxyinfo[i].clientcommand = 0;

@@ -447,6 +447,7 @@ void G_FreeEdict (edict_t *ed)
 	ed->classname = "freed";
 	ed->freetime = level.time;
 	ed->inuse = false;
+	//ed->chain = NULL;
 }
 
 

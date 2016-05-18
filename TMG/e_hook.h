@@ -11,9 +11,6 @@
 
 qboolean Ended_Grappling (gclient_t *client);
 qboolean Is_Grappling (gclient_t *client);
-void hackLift(edict_t *player);
-void hook_laser_think(edict_t *self);
-void hook_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
 
 void abandon_hook_laser_think (edict_t *self);			// Hook laser think routine 
    

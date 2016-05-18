@@ -1037,6 +1037,34 @@ void Cmd_MapVote (edict_t *ent)
 }
 //end
 
+// server side skinlist command to allow users to get
+// skins list from server when using clients like r1q2 that
+// kill the skins command. //QW//
+void Cmd_SkinList_f(edict_t *ent)
+{
+	int		i;
+	char	*skin, *name, string[64];
+	edict_t	*edict;
+	
+	if (!level.intermissiontime) 
+	{
+		// make it all look nice
+		gi.cprintf (ent, PRINT_HIGH, "\nnum name             skin");
+		gi.cprintf (ent, PRINT_HIGH, "\n--- ---------------- ---------------------\n");
+		for (i=0, edict=g_edicts + 1 + i; i < maxclients->value; i++, edict++)
+		{
+			if (!edict->inuse) 
+				continue;
+			skin = Info_ValueForKey(edict->client->pers.userinfo, "skin");
+			name = Info_ValueForKey(edict->client->pers.userinfo, "name");
+			sprintf (string,"%3i %16s %s\n", i, name, skin);
+			gi.cprintf (ent, PRINT_HIGH, string);
+		}
+		sprintf (string, "\n");
+		gi.cprintf (ent, PRINT_HIGH, string);
+	}
+}
+
 /*
 =================
 Cmd_Wave_f
@@ -1787,6 +1815,8 @@ void ClientCommand (edict_t *ent)
 		Cmd_WeapLast_f (ent);
 	else if (Q_stricmp (cmd, "kill") == 0)
 		Cmd_Kill_f (ent);
+	else if (Q_strcasecmp (cmd, "skinlist") == 0)
+		Cmd_SkinList_f (ent);
 	else if (Q_stricmp (cmd, "putaway") == 0)
 		Cmd_PutAway_f (ent);
 	else if (Q_stricmp (cmd, "wave") == 0)

@@ -392,7 +392,7 @@ void LoadTextFilterInfo(void)
 		// Allocate space to store the string.
 		nLength = strlen( szLineBuffer);
 
-		if ( NULL == (psz = malloc( nLength + 1)) )
+		if ( NULL == (psz = (char*) gi.TagMalloc( nLength, TAG_GAME)) )
 		{
 			safe_cprintf( NULL, PRINT_HIGH,
 				"Could not allocate memory to store text filter string.\n");
@@ -405,7 +405,7 @@ void LoadTextFilterInfo(void)
 			game.apszTextNonFilterStrings[ game.nTextNonFilterCount ] = psz;
 
 			Strcpyn( game.apszTextNonFilterStrings[game.nTextNonFilterCount],
-				szLineBuffer + 2, (int) nLength + 1);
+				szLineBuffer + 2, (int) nLength);
 
 			if (++game.nTextNonFilterCount >= DIM(game.apszTextNonFilterStrings))
 			{
@@ -419,8 +419,7 @@ void LoadTextFilterInfo(void)
 		{
 			game.apszTextFilterStrings[ game.nTextFilterCount ] = psz;
 
-			Strcpyn( game.apszTextFilterStrings[game.nTextFilterCount],
-				szLineBuffer + 1, (int) nLength + 1);
+			Strcpyn( game.apszTextFilterStrings[game.nTextFilterCount], szLineBuffer + 1, (int) nLength);
 
 			if ( ++game.nTextFilterCount >= DIM(game.apszTextFilterStrings) )
 			{
