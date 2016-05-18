@@ -5,12 +5,6 @@
 
 //void P_ProjectSource (gclient_t *client, vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result);
 void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int *pause_frames, int *fire_frames, void (*fire)(edict_t *ent));
-void P_ProjectSource_Reverse(gclient_t *client,
-vec3_t point,
-vec3_t distance,
-vec3_t forward,
-vec3_t right,
-vec3_t result);
 
 
 void hackLift(edict_t *player) 
@@ -375,7 +369,8 @@ void abandon_hook_track(edict_t *self) {
 // Argument         : edict_t *other
 // Argument         : cplane_t *plane
 // Argument         : csurface_t *surf
-void hook_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf) {
+void hook_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+{
 	vec3_t	dir, normal;
 	short	i;
 

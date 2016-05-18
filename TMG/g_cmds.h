@@ -15,7 +15,7 @@ int ClientTeam (edict_t *ent);
 int ClientPermTeam (edict_t *ent);
 qboolean OnSameTeam (edict_t *ent1, edict_t *ent2);
 
-//private to g_cmds.c, defined here to catch errors
+//private to g_cmds.c
 void SelectNextItem (edict_t *ent, int itflags);
 void SelectPrevItem (edict_t *ent, int itflags);
 void Cmd_Give_f (edict_t *ent);
@@ -41,6 +41,7 @@ void Cmd_Players_f (edict_t *ent);
 void Cmd_Operators_f (edict_t *ent);
 void MapVoteThink(qboolean passed, qboolean now);
 void Cmd_MapVote (edict_t *ent);
+void Cmd_SkinList_f(edict_t *ent);
 void Cmd_Wave_f (edict_t *ent);
 void Say_Op(edict_t *who, char *msg);
 void Cmd_ShowVotes_f(edict_t *ent);
