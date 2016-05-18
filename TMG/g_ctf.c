@@ -66,7 +66,7 @@ char *rail_statusbar =
 	// have flag graph
 	"if 21 "
 	"yb -24 "
-	"xl 79 "
+	"xl 130 "
 	"pic 21 "
 	"endif "
 
