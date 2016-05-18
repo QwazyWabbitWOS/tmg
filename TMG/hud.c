@@ -13,6 +13,7 @@ float timer;
 
 int vote_state, vote_pro, vote_con, newdmflags;
 edict_t *votestarter, *votetarget;
+//QW// Perhaps a countdown for a mapvote timer? Unused.
 float vote_end;
 qboolean nextmap;
 qboolean nextcycle;
@@ -137,7 +138,7 @@ int rav_getFPM(gclient_t* cl)
 	float fFPM;
 
 	if(fCLTimeSecs > 0.0)
-		fFPM = (cl->resp.score * 3600.0/fCLTimeSecs);
+		fFPM = (cl->resp.score * 3600.0 / fCLTimeSecs);
 	else
 		fFPM = cl->resp.score;
 
@@ -172,38 +173,40 @@ int rav_getnumclients()
 	return rCount;
 }
 
-char *tn_id (edict_t *ent)
+static char *tn_id (edict_t *ent)
 {
 	int j = 0;
 	long	playernum;
-    float dist;//, mindist; JSW no longer used
+	float dist;//, mindist; JSW no longer used
 	static char stats[200];
-    vec3_t  start, forward, end, v;
+	vec3_t  start, forward, end, v;
 	trace_t tr;
 
-    Com_sprintf(stats, sizeof(stats), "");
-	VectorCopy(ent->s.origin, start);    
+	Com_sprintf(stats, sizeof(stats), "");
+	VectorCopy(ent->s.origin, start);
 	start[2] += ent->viewheight;
-    AngleVectors(ent->client->v_angle, forward, NULL, NULL);
-    VectorMA(start, 8192, forward, end);
-    tr = gi.trace(start, NULL, NULL, end, ent, MASK_SHOT|CONTENTS_SLIME|CONTENTS_LAVA);
+	AngleVectors(ent->client->v_angle, forward, NULL, NULL);
+	VectorMA(start, 8192, forward, end);
+	tr = gi.trace(start, NULL, NULL, end, ent, MASK_SHOT|CONTENTS_SLIME|CONTENTS_LAVA);
 
 	if ((Q_stricmp (tr.ent->classname, "player")==0 && tr.ent->inuse) /*|| tr.ent->bot_client*/)
 	{
 		playernum = tr.ent - g_edicts - 1;
 		VectorSubtract (ent->s.origin, tr.ent->s.origin, v);
 		dist=VectorLength (v) / 32; // 32 units = 1 metre?
-//		mindist = ((light_comp->value/100) * tr.ent->light_level);
-//JSW Comment - why use this? they are either there or they aren't,
-//no matter what the light situation.  Who cares about dist varying
 
-//		if (dist <= (float)ent->client->resp.iddist)
-			j += sprintf(stats + j, "xv 0 yb -58 string \"Viewing %s\" " , tr.ent->client->pers.netname );
-		
-/*		if ((mindist >= dist) && (dist <= max_hud_dist->value))
-JSW			j += sprintf(stats + j, "xv 0 yb -58 string \"%s\" "
-remvd			, tr.ent->client->pers.netname );
-*/	} 
+//		mindist = ((light_comp->value/100) * tr.ent->light_level);
+		//JSW Comment - why use this? they are either there or they aren't,
+		//no matter what the light situation.  Who cares about dist varying
+
+		//		if (dist <= (float)ent->client->resp.iddist)
+		j += sprintf(stats + j, "xv 0 yb -58 string \"Viewing %s\" " , tr.ent->client->pers.netname );
+
+	/*		if ((mindist >= dist) && (dist <= max_hud_dist->value))
+	 JSW			j += sprintf(stats + j, "xv 0 yb -58 string \"%s\" "
+	 remvd			, tr.ent->client->pers.netname );
+	 */
+	}
 	return (stats); 
 }
 
@@ -251,11 +254,11 @@ char *tn_votewait (edict_t *ent)
 
 int rav_getFPH(gclient_t* cl)
 {
-	float fCLTimeSecs = (level.newframenum - cl->resp.startframe)/10.0;
+	float fCLTimeSecs = (level.newframenum - cl->resp.startframe) / 10.0;
 	float fFPH;
 
 	if(fCLTimeSecs > 0.0)
-		fFPH = (cl->resp.frags * 3600.0/fCLTimeSecs);
+		fFPH = (cl->resp.frags * 3600.0 / fCLTimeSecs);
 	else
 		fFPH = cl->resp.frags;
 
@@ -271,7 +274,7 @@ int rav_getFPH(gclient_t* cl)
 		return (int)(fFPH - 0.5);
 } 
 
-int rav_time()
+static int rav_time()
 {
 	long sec;
 
@@ -289,7 +292,7 @@ int rav_time()
 	return 0;
 }
 
-int rav_getrank(edict_t *ent)
+static int rav_getrank(edict_t *ent)
 {
 	int total,i,j,k,score;
 	edict_t *cl_ent;
@@ -332,7 +335,7 @@ int rav_getrank(edict_t *ent)
 }
 
 
-int rav_getdied(gclient_t* cl)
+static int rav_getdied(gclient_t* cl)
 {
 	int dead = 0;
 
@@ -345,7 +348,7 @@ int rav_getdied(gclient_t* cl)
 	return (int)(dead);
 }
 
-char *rav_gettech(edict_t *ent)
+static char *rav_gettech(edict_t *ent)
 {
 	gitem_t *rune;
 	int i;
@@ -381,7 +384,7 @@ char *tn_showHud (edict_t *ent)
 	static char layout[1024];
 	int j = 0;
 	gclient_t	*cl;
-	int	score, ping, fph, frags, died, num_ppl, rank ;
+	int	score, ping, fph, fpm, frags, died, num_ppl, rank ;
 	int bigspree;
 
 	//	int	team1score = 0;
@@ -492,6 +495,8 @@ char *tn_showHud (edict_t *ent)
 			ping = cl->chase_target->client->ping;
 			died = rav_getdied(cl->chase_target->client);
 			fph = rav_getFPH(cl->chase_target->client);
+			//QW// fpm is unused for now.
+			fpm = rav_getFPM(cl->chase_target->client);
 			rank = rav_getrank(cl->chase_target);
 			bigspree = cl->chase_target->client->resp.spree;
 			//score

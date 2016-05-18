@@ -13,7 +13,7 @@
 #include "g_local.h"
 
 #include "stdlog.h"
-
+#include "gslog.h"
 
 /*
  *  PUBLIC FUNCTIONS

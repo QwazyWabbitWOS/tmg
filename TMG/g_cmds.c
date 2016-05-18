@@ -1858,11 +1858,14 @@ void ClientCommand (edict_t *ent)
 		}
 		ent->client->pers.pl_state = PL_SPECTATOR;
 		ent->client->resp.spectator = 1;
+
 		if (ent->client->menu)
 			PMenu_Close(ent);
+
 		Spec (ent, NULL);
 		//CTFChaseCam(ent, NULL);
 		//player_set_observer (ent, true);
+
 		CheckPlayers();
 		if (ctf->value)
 			my_bprintf(PRINT_HIGH, "%s has become a spectator. (%d red, %d blue, %d spectators)\n", ent->client->pers.netname, ctfgame.players1, ctfgame.players2, ctfgame.specs);

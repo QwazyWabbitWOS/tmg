@@ -1772,6 +1772,12 @@ extern gitem_t *flag1_item;
 extern gitem_t *flag2_item;
 
 //
+// locdamage.c
+//
+int GetHitLocation (vec3_t point, edict_t *ent, int mod);
+int ApplyLocationalSystem (edict_t *attacker, edict_t *targ, vec3_t point, int mod, int d_damage);
+
+//
 // models.c
 //
 qboolean CheckModel(edict_t *ent ,char *s);

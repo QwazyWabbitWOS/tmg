@@ -3668,7 +3668,6 @@ void CTFReturnToMain(edict_t *ent, pmenu_t *p)
 }
 
 #define MAX_MENU_MAPS	14
-void CTFCredits(edict_t *ent, pmenu_t *p);
 void DeathmatchScoreboard (edict_t *ent);
 
 void CTFShowScores(edict_t *ent, pmenu_t *p)
@@ -3680,10 +3679,8 @@ void CTFShowScores(edict_t *ent, pmenu_t *p)
 	DeathmatchScoreboard (ent);
 }
 
-void OPMenu(edict_t *ent, pmenu_t *p);
 
-void KickMe(edict_t *ent, pmenu_t *p);
-//RAV
+
 void LightsOn(edict_t *ent, pmenu_t *menu)
 {
 	PMenu_Close(ent);

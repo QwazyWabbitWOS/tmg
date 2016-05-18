@@ -86,7 +86,21 @@ void MapVote(edict_t *ent);
 
 void OpenJoinMenu(edict_t *ent);
 void Spec(edict_t *ent, pmenu_t *menu);
+void CTFChaseCam(edict_t *ent, pmenu_t *p);
+void RAVspec(edict_t *ent, pmenu_t *p);
+void CTFReturnToMain(edict_t *ent, pmenu_t *p);
+void CTFCredits(edict_t *ent, pmenu_t *p);
+void CTFShowScores(edict_t *ent, pmenu_t *p);
+
 void JoinGame(edict_t *ent, pmenu_t *menu);
+void OPMenu(edict_t *ent, pmenu_t *p);
+void KickMe(edict_t *ent, pmenu_t *p);
+
+void LightsOn(edict_t *ent, pmenu_t *menu);
+void LightsOff(edict_t *ent, pmenu_t *menu);
+
+void VoteYes (edict_t *ent, pmenu_t *menu);
+void VoteNo (edict_t *ent, pmenu_t *menu);
 
 
 /**
@@ -101,6 +115,7 @@ void CTFJoinTeam1(edict_t *ent, pmenu_t *p);
 void CTFJoinTeam2(edict_t *ent, pmenu_t *p);
 char *CTFTeamName(int team);
 char *CTFOtherTeamName(int team);
+int CTFOtherTeam(int team);
 void CTFAssignSkin(edict_t *ent, char *s);
 void CTFAssignTeam(gclient_t *who);
 void CTFJobAssign (void);
@@ -108,6 +123,7 @@ void CTFSetupNavSpawn(void);
 edict_t *SelectCTFSpawnPoint (edict_t *ent);
 void CTFResetFlags(void);
 qboolean CTFPickup_Flag(edict_t *ent, edict_t *other);
+void CTFDropFlagTouch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf);
 void CTFDrop_Flag(edict_t *ent, gitem_t *item);//RAV
 void CTFEffects(edict_t *player);
 void CTFCalcScores(void);
@@ -118,8 +134,11 @@ void CTFTeam_f (edict_t *ent, int desired_team);
 void CTFID_f (edict_t *ent);
 void CTFSay_Team_Location(edict_t *who, char *buf);
 void CTFSay_Team(edict_t *who, char *msg);
+void CTFJoinTeam(edict_t *ent, int desired_team);
+
 void CTFFlagSetup (edict_t *ent);
 void CTFResetFlag(int ctf_team);
+
 void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker);
 void CTFCheckHurtCarrier(edict_t *targ, edict_t *attacker);
 
@@ -128,8 +147,16 @@ void CTFWeapon_Grapple (edict_t *ent);
 void CTFPlayerResetGrapple(edict_t *ent);
 void CTFGrapplePull(edict_t *self);
 void CTFResetGrapple(edict_t *self);
+void CTFGrappleTouch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
+void P_ProjectSource_Reverse(gclient_t *client,
+							 vec3_t point,
+							 vec3_t distance,
+							 vec3_t forward,
+							 vec3_t right,
+							 vec3_t result);
 
 //TECH
+void CTFHasTech(edict_t *who);
 gitem_t *CTFWhat_Tech(edict_t *ent);
 qboolean CTFPickup_Tech (edict_t *ent, edict_t *other);
 void CTFDrop_Tech(edict_t *ent, gitem_t *item);
