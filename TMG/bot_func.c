@@ -419,11 +419,12 @@ void Load_BotInfo(void)
 	}
 	else
 	{
-		fseek( fp, 0, SEEK_SET);	//先頭へ移動
+		fseek( fp, 0, SEEK_SET);
 		while(1)
 		{
 			if(fgets( Buff, sizeof(Buff), fp ) == NULL) goto MESS_NOTFOUND;
-			if(!strnicmp(MessageSection,Buff,strlen(MessageSection))) break;
+			if(!strnicmp(MessageSection,Buff,strlen(MessageSection))) 
+				break;
 		}
 
 		while(1)
@@ -438,7 +439,7 @@ MESS_NOTFOUND:
 		//if(botlist->string == NULL) strcpy(MessageSection,BOTLIST_SECTION_DM);
 		//else
 		sprintf(MessageSection,"[%s]",botlist->string);
-		fseek( fp, 0, SEEK_SET);	//先頭へ移動
+		fseek( fp, 0, SEEK_SET);
 		while(1)
 		{
 			if(fgets( Buff, sizeof(Buff), fp ) == NULL)
@@ -446,17 +447,19 @@ MESS_NOTFOUND:
 				MessageSection[0] = 0;
 				break;
 			}
-			if(!strnicmp(MessageSection,Buff,strlen(MessageSection))) break;
+			if(!strnicmp(MessageSection,Buff,strlen(MessageSection))) 
+				break;
 		}
 		//when not found
 		if(MessageSection[0] == 0)
 		{
 			strcpy(MessageSection,BOTLIST_SECTION_DM);
-			fseek( fp, 0, SEEK_SET);	//先頭へ移動
+			fseek( fp, 0, SEEK_SET);
 			while(1)
 			{
 				if(fgets( Buff, sizeof(Buff), fp ) == NULL) goto BOTLIST_NOTFOUND;
-				if(!strnicmp(MessageSection,Buff,strlen(MessageSection))) break;
+				if(!strnicmp(MessageSection,Buff,strlen(MessageSection))) 
+					break;
 			}
 		}
 
@@ -525,7 +528,7 @@ MESS_NOTFOUND:
 					Buff[k] = 0;
 					Bot[i].spflg = atoi(&Buff[j]);
 //gi.dprintf("%i %s\n",Bot[i].spflg,&Buff[j]);
-					if(Bot[i].spflg == BOT_SPRESERVED && autospawn->value && !chedit->value) SpawnWaitingBots++;
+					if(Bot[i].spflg == BOT_SPRESERVED && autospawn->value && !chedit->value) SpawnWaitingBots++; 
 					else Bot[i].spflg = BOT_SPAWNNOT;
 				}
 				else break;
@@ -536,7 +539,7 @@ MESS_NOTFOUND:
 BOTLIST_NOTFOUND:
 	fclose(fp);
 
-	gi.dprintf("%i Bots are in cfg file.\n",ListedBots);
+	gi.dprintf("%i bots parsed\n",ListedBots);
 	spawncycle = level.time + FRAMETIME * 100;
 }
 
@@ -547,7 +550,7 @@ BOTLIST_NOTFOUND:
 //
 //----------------------------------------------------------------
 
-int Get_NumOfPlayer (void) //Botも含めたplayerの数
+int Get_NumOfPlayer (void) //Bots plus players
 {
 	int i,j;
 	edict_t *ent;
@@ -611,7 +614,7 @@ void Bot_Think (edict_t *self)
 		return;	
 
  // Check if bot stuck in wall..
- if (!((int)level.time%10))
+ if (!((int)level.time % 10))
     if (InsideWall(self))
 	{
       Cmd_Kill_f(self); // suicide
@@ -628,7 +631,7 @@ if (self->linkcount != self->monsterinfo.linkcount)
 	if(self->deadflag)
 	{
 		if(self->client->ctf_grapple)
-		CTFPlayerResetGrapple(self);
+			CTFPlayerResetGrapple(self);
 		
 
 		if(self->s.modelindex == skullindex || self->s.modelindex == headindex) self->s.frame = 0;
@@ -644,6 +647,7 @@ if (self->linkcount != self->monsterinfo.linkcount)
 			if(self->svflags & SVF_MONSTER)
 			{
 				self->client->respawn_time = level.time;
+				//QW//added per laulau CopyToBodyQue (self);
 				PutBotInServer(self);
 			}
 		}
@@ -660,7 +664,7 @@ if (self->linkcount != self->monsterinfo.linkcount)
   //-------------------------------------------
   if (self->client->camptime > level.time) {
     VectorCopy(self->client->lastorigin,self->s.origin);
-	}//
+	}
 
 		client = self->client;
 
@@ -1152,7 +1156,8 @@ if (sa_slugs->value)
 	client->ctf_grapple = NULL;
 
 	item = FindItem("Grapple");
-	if(ctf->value || use_hook->value)	client->pers.inventory[ITEM_INDEX(item)] = 1; //ponpoko
+	if(ctf->value || use_hook->value)
+		client->pers.inventory[ITEM_INDEX(item)] = 1; //ponpoko
 //ZOID
 
 	// clear entity values
@@ -1167,6 +1172,7 @@ if (sa_slugs->value)
 	ent->max_health = ent->client->pers.max_health;
 	ent->gib_health = -40;
 
+	ent->gravity = 1.0;
 	ent->mass = 200;
 	ent->target_ent = NULL;
 	ent->s.frame = 0;
@@ -1188,8 +1194,8 @@ if (sa_slugs->value)
 	ent->pain_debounce_time = level.time;
 	ent->targetname = NULL;
 
-	ent->moveinfo.speed = 1.0;	//ジャンプ中の移動率について追加
-	ent->moveinfo.state = GETTER;	//CTFステータス初期化
+	ent->moveinfo.speed = 1.0;
+	ent->moveinfo.state = GETTER;
 
 	ent->prethink = NULL;
 	ent->think = Bot_Think;
@@ -1297,7 +1303,7 @@ qboolean SpawnBot(int i)
 	int			k,j;
 
 
-//gi.cprintf (NULL,PRINT_HIGH,"Called %s %s %s\n",Bot[i].netname,Bot[i].model,Bot[i].skin);
+//gi.cprintf (NULL,PRINT_HIGH,"Called %s %s %s?n",Bot[i].netname,Bot[i].model,Bot[i].skin);
 //return false;
 
 	if(	Get_NumOfPlayer () >= game.maxclients )
@@ -1401,7 +1407,7 @@ void SpawnBotReserving(void)
 			return;
 		}
 	}
-	gi.cprintf (NULL, PRINT_HIGH, "Now max of bots(%i) already spawned.\n",MAXBOTS);
+	gi.cprintf (NULL, PRINT_HIGH, "Maximum bots (%i) spawned: Unable to spawn bot\n",MAXBOTS);
 }
 //----------------------------------------------------------------
 //Spawn Bot Reserving 2
@@ -1459,7 +1465,7 @@ void RemoveBot(void)
 
 	if(i < 0)
 	{
-		gi.cprintf (NULL, PRINT_HIGH, "No Bots in server.");
+		gi.cprintf (NULL, PRINT_HIGH, "No bots found");
 		return;
 	}
 
@@ -1480,8 +1486,9 @@ void RemoveBot(void)
 				if(Bot[botindex].spflg != BOT_NEXTLEVEL) Bot[botindex].spflg = BOT_SPAWNNOT;
 				else Bot[botindex].spflg = BOT_SPRESERVED;
 
-				gi.bprintf (PRINT_HIGH, "%s disconnected\n", e->client->pers.netname);
-
+				if (!level.intermissiontime)
+					gi.bprintf (PRINT_HIGH, "%s disconnected\n", e->client->pers.netname);
+	
 				// send effect
 				gi.WriteByte (svc_muzzleflash);
 				gi.WriteShort (e-g_edicts);
@@ -1491,10 +1498,13 @@ void RemoveBot(void)
 				e->s.modelindex = 0;
 				e->solid = SOLID_NOT;
 
-	if(ctf->value) 
-	{
-		CTFPlayerResetGrapple(e);
-	}
+				if (ctf->value) 
+				{
+					CTFPlayerResetGrapple(e);
+					//CTFDeadDropFlag(e);
+					//CTFDeadDropTech(e);
+				}
+				
 				gi.linkentity (e);
 
 				e->inuse = false;
@@ -1638,7 +1648,6 @@ void AirStrike_Think(edict_t *ent)
 
 		if( target->classname[0] == 'p')
 		{
-			//ctf ならチームメイト無視
 			if(!ctf->value || (ctf->value && ent->owner->client->resp.ctf_team != target->client->resp.ctf_team))
 			{
 				rs_trace = gi.trace (point,NULL,NULL,target->s.origin,ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
@@ -1687,7 +1696,8 @@ void Cmd_AirStrike(edict_t *ent)
 	}*/
 
 	VectorCopy(rs_trace.endpos,strpoint);
-	strpoint[2] -= 16;	//ちょっとだけ下へずらす
+	strpoint[2] -= 16;	//I shifted down a little bit
+
 
 	f = ent->s.angles[YAW]*M_PI*2 / 360;
 	tts[0] = cos(f) * (-8190) ;

@@ -97,9 +97,9 @@ void BotEndServerFrame (edict_t *ent);
 void Bots_Move_NORM (edict_t *ent);		//normal AI
 
 //spawn
-void SetBotFlag1(edict_t *ent);	//チーム1の旗
-void SetBotFlag2(edict_t *ent);  //チーム2の旗
-void CTFSetupNavSpawn(void);	//ナビの設置
+void SetBotFlag1(edict_t *ent);
+void SetBotFlag2(edict_t *ent);
+void CTFSetupNavSpawn(void);
 
 //ctf
 void CTFJobAssign (void);		//job assign
@@ -219,27 +219,27 @@ void CTFJobAssign (void);		//job assign
 #define FIRE_CHIKEN			0x00000008	//X chiken fire
 #define FIRE_RUSH			0x00000010	//X	rush
 #define FIRE_JUMPNRUSH		0x00000020	//
-#define	FIRE_ESTIMATE		0x00000040	//X estimate 予測
-#define FIRE_SCATTER		0x00000080	//scatter バラ撒き
+#define	FIRE_ESTIMATE		0x00000040	//X estimate Prediction
+#define FIRE_SCATTER		0x00000080	//scatter 
 #define	FIRE_RUNNIN			0x00000100	//run & shot(normal)
-#define FIRE_JUMPROC		0x00000200	//X ジャンプふぁいあ
+#define FIRE_JUMPROC		0x00000200	//X Jump Fire
 
-#define FIRE_REFUGE			0x00001000	//X	避難
-#define FIRE_EXPAVOID		0x00002000	//X	爆発よけ
+#define FIRE_REFUGE			0x00001000	//X	evacuation
+#define FIRE_EXPAVOID		0x00002000	//X	explosion avoid
 
-#define FIRE_QUADUSE		0x00004000	//X	Quad時の連射武器選択
-#define FIRE_AVOIDINV		0x00008000	//X 相手がペンタの時逃げる
+#define FIRE_QUADUSE		0x00004000	//X	Quad weapon select
+#define FIRE_AVOIDINV		0x00008000	//X run away
 
-#define FIRE_BFG			0x00010000	//X 普通にBFGを撃つ
+#define FIRE_BFG			0x00010000	//X normally shoot the BFG
 
-#define FIRE_SHIFT_R		0x00020000	//X 右スライド
-#define FIRE_SHIFT_L		0x00040000	//X 左スライド
+#define FIRE_SHIFT_R		0x00020000	//X right slide
+#define FIRE_SHIFT_L		0x00040000	//X left slide
 
-#define FIRE_SHIFT			(FIRE_SHIFT_R | FIRE_SHIFT_L)//X 右スライド
+#define FIRE_SHIFT			(FIRE_SHIFT_R | FIRE_SHIFT_L)//X alternate?
 
-#define FIRE_REFLECT		0x00080000	// 壁に反射させる
+#define FIRE_REFLECT		0x00080000	// reflect on the wall
 
-#define FIRE_IGNORE			0x10000000	//無視して逃げる
+#define FIRE_IGNORE			0x10000000	//flee to ignore
 
 // means of death
 
@@ -331,8 +331,8 @@ void CTFJobAssign (void);		//job assign
 #define BOP_COMBATSKILL	4	//combat skill
 #define BOP_ROCJ		5	//rocket jump
 #define BOP_REACTION	6	//reaction skill exp. frq SEARCH ENEMY
-#define BOP_VRANGE		7	//V-View of RANGE	縦
-#define BOP_HRANGE		8	//H-View of Range	横
+#define BOP_VRANGE		7	//V-View of RANGE	longitudinal
+#define BOP_HRANGE		8	//H-View of Range	side
 #define BOP_PRIWEP		9	//primary weapon
 #define BOP_SECWEP		10	//secondary weapon
 #define BOP_DODGE		11	//dodge
@@ -378,6 +378,8 @@ extern edict_t*		LaserIndex[MAX_LASERINDEX];
 extern edict_t*		ExplIndex[MAX_EXPLINDEX];
 //
 
+#define BOT_PUSH_IDLE_TIME_AIR 2.5 		// somewhat arbitrary, but works for tltf.bsp
+#define BOT_PUSH_IDLE_TIME_GROUND 0.5 	// somewhat arbitrary, but works for stellar.bsp
 
 extern	int			cumsindex;
 extern	int			targetindex;		//debugtarget

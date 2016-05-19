@@ -50,7 +50,7 @@ void SpawnItem4 (edict_t *ent, gitem_t *item)
 //=====================================
 
 //
-// BOT—p‰ÂŽ‹”»’è
+// BOT Using a visual determination
 //
 
 qboolean Bot_trace (edict_t *ent,edict_t *other)
@@ -139,7 +139,7 @@ qboolean Bot_traceY (edict_t *ent,edict_t *other)
 }
 
 //
-// BOT—p‰ÂŽ‹”»’è 2
+// Bot_trace2
 //
 
 qboolean Bot_trace2 (edict_t *ent,vec3_t ttz)
@@ -156,7 +156,7 @@ qboolean Bot_trace2 (edict_t *ent,vec3_t ttz)
 }
 
 //
-// BOT—p‰ÂŽ‹”»’è 3
+// Bot_traceS
 //
 
 qboolean Bot_traceS (edict_t *ent,edict_t *other)

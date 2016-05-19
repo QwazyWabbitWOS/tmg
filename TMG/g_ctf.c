@@ -1147,9 +1147,9 @@ static void CTFFlagThink(edict_t *ent)
 void droptofloor (edict_t *ent);
 void SpawnItem3 (edict_t *ent, gitem_t *item);
 void ChainPodThink (edict_t *ent);
-qboolean ChkTFlg(void);//旗セットアップ済み？
-void SetBotFlag1(edict_t *ent);	//チーム1の旗
-void SetBotFlag2(edict_t *ent);  //チーム2の旗
+qboolean ChkTFlg(void);
+void SetBotFlag1(edict_t *ent);
+void SetBotFlag2(edict_t *ent);
 
 //
 void CTFFlagSetup (edict_t *ent)

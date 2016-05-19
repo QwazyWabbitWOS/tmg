@@ -87,8 +87,6 @@ int			FFlg[MAX_BOTSKILL]
 	FIRE_EXPAVOID | FIRE_IGNORE | FIRE_QUADUSE | FIRE_AVOIDINV| FIRE_IGNORE | FIRE_JUMPROC
 };
 
-
-//
 qboolean BotApplyStrength(edict_t *ent)
 {
 	static gitem_t *tech = NULL;
@@ -268,7 +266,7 @@ int Bot_SearchEnemy (edict_t *ent)
 					}
 				}
 			}
-			//‰¹‚Ì‚Ý‚ÅêŠ‚ð”»’f
+			// Determine the location only by the sound
 			else
 			{
 				if(Bot[ent->client->zc.botindex].param[BOP_NOISECHK]
@@ -808,8 +806,7 @@ void Bot_SearchItems (edict_t *ent)
 }
 
 //-----------------------------------------------------------------------------------------
-//ƒoƒNƒnƒc•¨‰ñ”ð
-//Avoid explotion
+// Avoid explosion
 //
 #define EXPLO_BOXSIZE	64
 qboolean Bot_ExploAvoid(edict_t *ent,vec3_t	v)
@@ -850,7 +847,6 @@ qboolean Bot_ExploAvoid(edict_t *ent,vec3_t	v)
 	return true;
 }
 
-//ƒŒ[ƒU[‚Ìƒ`ƒFƒbƒN
 qboolean CheckLaser(vec3_t pos,vec3_t maxs,vec3_t mins)
 {
 	int	i;
@@ -896,7 +892,6 @@ qboolean CheckLaser(vec3_t pos,vec3_t maxs,vec3_t mins)
 }
 
 //-----------------------------------------------------------------------------------------
-// BOTˆÚ“®‰Â”\”»’ènew
 // bot move test
 //  return	false	can't
 //			true	stand
@@ -915,7 +910,7 @@ int Bot_moveT ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom)
 
 
 
-	tcontents =/* MASK_BOTSOLID*/MASK_BOTSOLIDX;//MASK_PLAYERSOLID /*| CONTENTS_TRANSLUCENT*/;  //ƒŒ[ƒU[‚É‚ÍG‚ç‚È‚¢
+	tcontents =/* MASK_BOTSOLID*/MASK_BOTSOLIDX;//MASK_PLAYERSOLID /*| CONTENTS_TRANSLUCENT*/;  //???[?U?[?É‚ÍG???È‚?
 //	if(!ent->waterlevel) tcontents |= CONTENTS_WATER;
 
 	if(/*ent->client->zc.waterstate == WAS_FLOAT*/ent->waterlevel >= 1/*2*/) tracelimit = 75;//75;//61;
@@ -943,7 +938,6 @@ int Bot_moveT ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom)
 		if((v[2] - ent->s.origin[2]) > 20) trmax[2] = 31;
 	}
 
-	//ˆÚ“®æ‚ª‚Ç‚¤‚È‚Á‚Ä‚¢‚é‚Ì‚©’²‚×‚é
 	yaw = ryaw*M_PI*2 / 360;
 	trend[0] = cos(yaw) * dist ;				//start
 	trend[1] = sin(yaw) * dist ;
@@ -955,7 +949,7 @@ int Bot_moveT ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom)
 	rs_trace = gi.trace (trstart, trmin, trmax, trend,ent, tcontents);
 
 	trmax[2] += 1;
-	if(rs_trace.allsolid || rs_trace.startsolid || rs_trace.fraction != 1.0)	//‘O‚É‚Íi‚ß‚È‚¢ê‡
+	if(rs_trace.allsolid || rs_trace.startsolid || rs_trace.fraction != 1.0)
 	{
 		moveok = false;
 		VectorCopy (trstart, trend);
@@ -1041,7 +1035,7 @@ int Bot_moveT ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom)
 		if(!rs_trace.allsolid && !rs_trace.startsolid)	return true;
 		return 2;*/
 	}
-	else								//i‚ß‚½‚Æ‚µ‚Ä‚à—Ž‚¿‚½‚­‚È‚¢Žž‚Ì‚½‚ß‚Ìƒ`ƒFƒbƒN
+	else								// fall avoidance
 	{
 		pos[0] = trstart[0];
 		pos[1] = trstart[1];
@@ -1140,8 +1134,7 @@ int Bot_Watermove ( edict_t *ent,vec3_t pos,float dist,float upd)
 		if(rs_trace.fraction > 0)
 		{
 			VectorCopy(rs_trace.endpos,pos);
-			if (/* DISABLES CODE */ (1))
-				return true;
+			return true;
 			if(upd < 0) ent->velocity[2] = 0;
 		}
 	}
@@ -1197,8 +1190,8 @@ int Bot_Watermove ( edict_t *ent,vec3_t pos,float dist,float upd)
 //gi.bprintf(PRINT_HIGH,"Water MOVE OK %f %f!\n",dist,upd);
 	VectorCopy(trmax,pos);
 	if(upd < 0) ent->velocity[2] = 0;
-	if (/* DISABLES CODE */ (1)) return true;
-
+	return true;
+	
 	touchmin[0] = cos(vec) * 16;//dist ;
 	touchmin[1] = sin(vec) * 16;//dist ;
 	touchmin[2] = 0;
@@ -1214,7 +1207,7 @@ int Bot_Watermove ( edict_t *ent,vec3_t pos,float dist,float upd)
 	}
 
 	VectorCopy(rs_trace.endpos,pos);
-	if (1) return true;
+	return true;
 
 
 	VectorCopy(rs_trace.plane.normal,trmin);
@@ -1251,7 +1244,6 @@ int Bot_moveW ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom)
 	tcontents = MASK_BOTSOLIDX/*MASK_PLAYERSOLID*/;
 	tcontents |= CONTENTS_WATER;
 
-	//ˆÚ“®æ‚ª‚Ç‚¤‚È‚Á‚Ä‚¢‚é‚Ì‚©’²‚×‚é
 	yaw = ryaw*M_PI*2 / 360;
 	trend[0] = cos(yaw) * dist ;				//start
 	trend[1] = sin(yaw) * dist ;
@@ -1660,7 +1652,7 @@ qboolean Bot_Fall(edict_t *ent,vec3_t pos,float dist)
 
 		VectorCopy(v,vv);
 		vv[2] = 0;
-		//vell—¶‚Ì—Ž‰º
+
 		if(Route[zc->routeindex].state == GRS_ONTRAIN)
 		{
 			if(1/*Route[zc->routeindex].ent->trainteam == NULL*/)
@@ -1740,7 +1732,6 @@ JUMPCATCH:
 	vv[2] = 0;
 	if(mode == 2)
 	{
-		//vell—¶‚Ì—Ž‰º
 		if(Route[zc->routeindex].state == GRS_ONTRAIN)
 		{
 			if(1/*Route[zc->routeindex].ent->trainteam == NULL*/)
@@ -2281,11 +2272,40 @@ void Bots_Move_NORM (edict_t *ent)
 		if(ent->groundentity == NULL && !ent->waterlevel)
 		{
 			VectorCopy(ent->s.origin,v);
+//			v[2] -= GROUND_TEST_EPSILON;
+//			rs_trace = gi.trace(ent->s.origin,ent->mins,ent->maxs,v,ent,MASK_BOTGROUND);		
 			v[2] -= 1.0;
 			rs_trace = gi.trace(ent->s.origin,ent->mins,ent->maxs,v,ent,MASK_BOTSOLIDX);
 			if(!rs_trace.allsolid && !rs_trace.startsolid) ent->groundentity = rs_trace.ent;
 		}
 	}
+	
+	// chill out for a bit if just pushed
+//	if ((ent->client->zc.push_time > 0)
+//		&& (((ent->groundentity == NULL) && (ent->client->zc.push_time + BOT_PUSH_IDLE_TIME_AIR) > level.time)
+//		||	((ent->groundentity != NULL) && (ent->client->zc.push_time + BOT_PUSH_IDLE_TIME_GROUND) > level.time)
+//		)) {
+//
+//		// unless push was purely vertical, we assume it's taking us somewhere specific
+//		// and we shouldn't do bot movement for awhile
+//		qboolean pure_vertical = (ent->client->zc.push_norm[2] > 0.95);
+//		if (!pure_vertical) {
+//
+//			// on stellar.bsp, there's a "fan" that pushes players/bots literally into another room
+//			// If we're on the ground, we allow the bot movement code to fight the push sometimes anyway,
+//			// as while allowing bot movement all the time looks bad, never allowing movement leads to
+//			// occasionally becoming stuck. :/
+//			qboolean move_regardless = (ent->groundentity != NULL) && (random() >= 0.80);
+//			if (!move_regardless) {
+//			
+//				gi.linkentity(ent);
+//				G_TouchTriggers(ent);
+//
+//				return;
+//			}
+//		}
+//	}
+
 	//	VectorCopy(ent->s.origin,Origin);
 	//	VectorCopy(ent->velocity,Velocity);
 	//	OYaw = ent->s.angles[YAW];
@@ -2537,7 +2557,7 @@ void Bots_Move_NORM (edict_t *ent)
 			ent->maxs[2] = 4;
 		}
 	}
-DCHCANC://‚µ‚á‚ª‚Ý‚Á‚Ï‚È‚µ
+DCHCANC:// keep squatting
 	//--------------------------------------------------------------------------------------
 	//movingspeed set
 	if(ent->groundentity || ent->waterlevel)
@@ -2668,7 +2688,7 @@ DCHCANC://‚µ‚á‚ª‚Ý‚Á‚Ï‚È‚µ
 					}
 				}
 			}
-			//Œ‚‚ÄGrapple
+			// Fire Grapple
 			else if(Route[zc->routeindex - 1].state == GRS_GRAPSHOT
 					&& ent->client->ctf_grapple == NULL
 					&& zc->first_target == NULL)
@@ -2994,11 +3014,11 @@ DCHCANC://‚µ‚á‚ª‚Ý‚Á‚Ï‚È‚µ
 	}
 
 	//--------------------------------------------------------------------------------------
-	//go up ladder
+	// Climb up ladder
 	//
 	//
 	//
-	//	’òŽq‚ð“o‚é
+	//
 	//
 	//
 	//--------------------------------------------------------------------------------------
@@ -3186,7 +3206,7 @@ DCHCANC://‚µ‚á‚ª‚Ý‚Á‚Ï‚È‚µ
 	//
 	//
 	//
-	//	ˆÚ“®•ûŒüŒˆ’è
+	//
 	//
 	//
 	//--------------------------------------------------------------------------------------
@@ -3273,7 +3293,7 @@ DCHCANC://‚µ‚á‚ª‚Ý‚Á‚Ï‚È‚µ
 		ent->s.angles[PITCH] = Get_pitch(temppos);
 	 }
 	 */
-	//ƒ`[ƒ€ƒvƒŒƒCŽž‚Ìƒ‹[ƒ`ƒ“
+	// Team play
 	//JSW	if(ctf->value ||((int)(dmflags->value) & (DF_MODELTEAMS | DF_SKINTEAMS)))
 	if(ctf->value ||(dmflag & (DF_MODELTEAMS | DF_SKINTEAMS | DF_NO_FRIENDLY_FIRE))) //JSW added FF
 	{
@@ -3455,7 +3475,7 @@ DCHCANC://‚µ‚á‚ª‚Ý‚Á‚Ï‚È‚µ
 
 	if(1/*!(zc->zcstate & STS_WAITSMASK)*/)
 	{
-		//ƒ‹[ƒgƒgƒŒ[ƒX—pindexŒŸõ
+		// route trace search index
 		if(!zc->route_trace && zc->rt_releasetime <= level.time)
 		{
 			//zc->routeindex;
@@ -3601,7 +3621,7 @@ DCHCANC://‚µ‚á‚ª‚Ý‚Á‚Ï‚È‚µ
 					}
 				}
 
-				//ƒgƒŠƒK‚ðŒ‚‚Â
+				// Shoot trigger
 				if(k && !(ent->client->buttons & BUTTON_ATTACK))
 				{
 					//gi.bprintf(PRINT_HIGH,"ooooooo!\n");
@@ -3621,7 +3641,6 @@ DCHCANC://‚µ‚á‚ª‚Ý‚Á‚Ï‚È‚µ
 					else VectorSubtract(v,ent->s.origin,trmax);
 
 					//gi.bprintf(PRINT_HIGH,"shoot!\n");
-					//”š”­ƒ‚ƒm‚ÌŽž‚ÍŽ‚¿‘Ö‚¦
 					i = Get_KindWeapon(ent->client->pers.weapon);
 					if(!zc->first_target && it_ent->takedamage)
 					{
@@ -3694,7 +3713,7 @@ DCHCANC://‚µ‚á‚ª‚Ý‚Á‚Ï‚È‚µ
 					}
 					else f1 = -(JumpMax + 64);
 				}
-				//“ž’Bƒ`ƒFƒbƒN
+				// reaching check
 				if( Route[zc->routeindex].state == GRS_ONROTATE) yaw = -48;
 				else yaw = 12;
 				if(v[0] <= (ent->absmax[0] - yaw) && v[0] >= (ent->absmin[0] + yaw))
@@ -3707,7 +3726,7 @@ DCHCANC://‚µ‚á‚ª‚Ý‚Á‚Ï‚È‚µ
 						{
 							if(zc->routeindex < CurrentIndex /*&& TraceX(ent,Route[zc->routeindex + 1].Pt)*/)
 							{
-								//ƒAƒCƒeƒ€ƒŠƒ“ƒNƒ`ƒFƒbƒN1>>
+								// Item link check>>
 								if(Route[zc->routeindex].state <= GRS_ITEMS)
 								{
 									if(zc->havetarget)
@@ -3745,7 +3764,7 @@ DCHCANC://‚µ‚á‚ª‚Ý‚Á‚Ï‚È‚µ
 										}
 									}
 								}
-								//ƒAƒCƒeƒ€ƒŠƒ“ƒNƒ`ƒFƒbƒN<<
+								// Item link check<<
 								zc->routeindex++;
 								//not a normal pod
 								if(zc->routeindex < CurrentIndex)
@@ -3819,7 +3838,7 @@ DCHCANC://‚µ‚á‚ª‚Ý‚Á‚Ï‚È‚µ
 											VectorCopy(temppos,ent->s.origin);
 											VectorCopy(v,trmin);
 											dist -= x;
-											//ƒAƒCƒeƒ€ƒŠƒ“ƒNƒ`ƒFƒbƒN2>>
+											//Item Link Check 2 >>
 											if(Route[zc->routeindex].state <= GRS_ITEMS)
 											{
 												if(zc->havetarget)
@@ -3838,7 +3857,7 @@ DCHCANC://‚µ‚á‚ª‚Ý‚Á‚Ï‚È‚µ
 													}
 												}
 											}
-											//ƒAƒCƒeƒ€ƒŠƒ“ƒNƒ`ƒFƒbƒN<<
+											//Item Link Check <<
 											zc->routeindex++;
 											if(i == 2) ent->client->ps.pmove.pm_flags |= PMF_DUCKED;
 
@@ -3962,7 +3981,7 @@ DCHCANC://‚µ‚á‚ª‚Ý‚Á‚Ï‚È‚µ
 	//
 	//
 	//
-	//	‚ ‚µ‚à‚ÆŠm”F
+	//
 	//
 	//
 	//--------------------------------------------------------------------------------------
@@ -4599,7 +4618,7 @@ DCHCANC://‚µ‚á‚ª‚Ý‚Á‚Ï‚È‚µ
 				PlayerNoise(ent, ent->s.origin, PNOISE_SELF);	//pon
 				Set_BotAnim(ent,ANIM_JUMP,FRAME_jump1-1,FRAME_jump6);
 				ent->client->buttons |= BUTTON_ATTACK;
-				goto VCHCANSEL;		//ˆÚ“®ˆ—ƒLƒƒƒ“ƒZƒ‹
+				goto VCHCANSEL;		// Movement process canceled
 			}
 			else zc->second_target = NULL;
 		}
@@ -5111,7 +5130,7 @@ GOMOVE:
 					//fall2
 					if(Bot_Fall(ent,temppos,dist))
 					{
-						//						ent->client->ps.pmove.pm_flags &= ~PMF_DUCKED;
+//						ent->client->ps.pmove.pm_flags &= ?PMF_DUCKED;
 						break;
 					}
 				}
@@ -5166,7 +5185,7 @@ GOMOVE:
 				x = zc->second_target->s.origin[2] - ent->s.origin[2];
 				if(x > 13/*8*/) x = 13;//8;
 				else if(x < -13/*8*/) x = -13;//8;
-				if(x < 0)//ƒAƒCƒeƒ€‰º•û
+				if(x < 0)// Item downward
 				{
 					if( Bot_Watermove (ent,temppos,dist,x))
 					{
@@ -5175,7 +5194,7 @@ GOMOVE:
 					}
 				}
 				else if(x >0 && zc->waterstate == WAS_IN
-						&& !(ent->client->ps.pmove.pm_flags & PMF_DUCKED)) //ƒAƒCƒeƒ€ã•û
+						&& !(ent->client->ps.pmove.pm_flags & PMF_DUCKED)) // Item upward
 				{
 					if(ent->velocity[2] < 0) ent->velocity[2] = 0;
 					if( Bot_Watermove (ent,temppos,dist,x))
@@ -5193,7 +5212,7 @@ GOMOVE:
 				x = v[2] - ent->s.origin[2];
 				if(x > 13/*8*/) x = 13;//8;
 				else if(x < -13/*8*/) x = -13;//8;
-				if(x < 0)//ƒAƒCƒeƒ€‰º•û
+				if(x < 0)// Item downward
 				{
 					if( Bot_Watermove (ent,temppos,dist,x))
 					{
@@ -5203,7 +5222,7 @@ GOMOVE:
 					}
 				}
 				else if(x > 0 && zc->waterstate == WAS_IN
-						&& !(ent->client->ps.pmove.pm_flags & PMF_DUCKED)) //ƒAƒCƒeƒ€ã•û
+						&& !(ent->client->ps.pmove.pm_flags & PMF_DUCKED)) // Item upward
 				{
 					//gi.bprintf(PRINT_HIGH,"UP! %f\n",x);
 					if(ent->velocity[2] < -10) ent->velocity[2] = 0;
@@ -5243,7 +5262,7 @@ GOMOVE:
 				}
 			}
 			if(zc->waterstate == WAS_IN)  ent->moveinfo.decel = level.time;
-			else if(!k)	//…–Ê‚É‚¸‚Á‚Æ‚¢‚½‚Æ‚«
+			else if(!k)
 			{
 				if( ( level.time - ent->moveinfo.decel) > 4.0 && !zc->route_trace)
 				{
@@ -5479,11 +5498,11 @@ GOMOVE:
 									zc->second_target = trent;
 									trent->target_ent = ent;
 
-									//ƒgƒOƒ‹Ž®‚Í‚·‚®‘–‚é
+									// Toggle type is run immediately
 									if(e->spawnflags & PDOOR_TOGGLE)
 									{
 										f1 = e->moveinfo.start_origin[2] - e->moveinfo.end_origin[2];
-										//ƒXƒ^[ƒg’n“_‚ªã
+										// above the start point
 										if(f1 > 0 )
 										{
 											k = true;
@@ -5509,11 +5528,11 @@ GOMOVE:
 											}
 										}
 									}
-									//ƒm[ƒ}ƒ‹
+									// normal
 									else
 									{
 										f1 = e->moveinfo.start_origin[2] - e->moveinfo.end_origin[2];
-										//ƒXƒ^[ƒg’n“_‚ªã
+										// Above the start point
 										if(f1 > 0 )
 										{
 											if(e->moveinfo.state == PSTATE_BOTTOM || e->moveinfo.state == PSTATE_UP)
