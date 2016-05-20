@@ -1,7 +1,6 @@
 #include "g_local.h"
-//3ZB
-void SpawnItem3 (edict_t *ent, gitem_t *item);
-//
+#include "bot.h"
+
 /*
 =========================================================
 

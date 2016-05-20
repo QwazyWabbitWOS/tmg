@@ -5,10 +5,11 @@
 #include "stdlog.h"
 #include "e_hook.h"
 #include "hud.h"
-//
+#include "bot.h"
+
 
 //3ZB
-qboolean bots_moveok ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom);
+//qboolean bots_moveok ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom);
 //
 
 char menustring[24][64];
@@ -1145,11 +1146,7 @@ static void CTFFlagThink(edict_t *ent)
 
 //3ZB
 void droptofloor (edict_t *ent);
-void SpawnItem3 (edict_t *ent, gitem_t *item);
 void ChainPodThink (edict_t *ent);
-qboolean ChkTFlg(void);
-void SetBotFlag1(edict_t *ent);
-void SetBotFlag2(edict_t *ent);
 
 //
 void CTFFlagSetup (edict_t *ent)
@@ -1853,12 +1850,6 @@ void CTFGrappleDrawCable(edict_t *self)
 	}
 }
 
-void hackLift(edict_t *player) ;
-void SV_AddGravity (edict_t *ent);
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-
 // pull the player toward the grapple
 void CTFGrapplePull(edict_t *self)
 {
@@ -2197,9 +2188,7 @@ void CTFWeapon_Grapple (edict_t *ent)
 	}
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////
-
-//RaVeN aded offhand hook for map chaining 
+//RaVeN added offhand hook for map chaining
 void RaV_hook (edict_t *ent)
 {
 	if (ent->client->pers.weapon != FindItem ("Grapple"))
@@ -2214,8 +2203,6 @@ void RaV_unhook (edict_t *ent)
 	return;
 }
 
-
-qboolean hook_cond_reset(edict_t *self);
 
 void CTFTeam_f (edict_t *ent, int desired_team)
 {
@@ -4378,7 +4365,7 @@ void VoteChangeMap(edict_t *ent, pmenu_t *p)
 	}
 }
 
-void VoteMapNames3()
+void VoteMapNames3(void)
 {
 	int i;
 	int pos;
@@ -4419,7 +4406,7 @@ void VoteMap3(edict_t *ent, pmenu_t *p)
 	PMenu_Open(ent, votemapmenu3, -1, sizeof(votemapmenu3) / sizeof(pmenu_t), true, false);
 }
 
-void VoteMapNames2()
+void VoteMapNames2(void)
 {
 	int i;
 	int pos;
@@ -4470,7 +4457,7 @@ void VoteMap2(edict_t *ent, pmenu_t *p)
 	PMenu_Open(ent, votemapmenu2, -1, sizeof(votemapmenu2) / sizeof(pmenu_t), true, false);
 }
 
-void VoteMapNames()
+void VoteMapNames(void)
 {
 	int i;
 	int pos;
@@ -5121,7 +5108,7 @@ void OpChangeMap(edict_t *ent, pmenu_t *p)
 	OPEndDMLevel (i, ent);
 }
 
-void OpMapNames3()
+void OpMapNames3(void)
 {
 	int i;
 	int pos;
@@ -5162,7 +5149,7 @@ void OpMap3(edict_t *ent, pmenu_t *p)
 	PMenu_Open(ent, opmapmenu3, -1, sizeof(opmapmenu3) / sizeof(pmenu_t), true, false);
 }
 
-void OpMapNames2()
+void OpMapNames2(void)
 {
 	int i;
 	int pos;
@@ -5213,7 +5200,7 @@ void OpMap2(edict_t *ent, pmenu_t *p)
 	PMenu_Open(ent, opmapmenu2, -1, sizeof(opmapmenu2) / sizeof(pmenu_t), true, false);
 }
 
-void OpMapNames()
+void OpMapNames(void)
 {
 	int i;
 	int pos;

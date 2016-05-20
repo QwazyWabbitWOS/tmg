@@ -2,11 +2,14 @@
 #include "m_player.h"
 #include "g_local.h"
 #include "e_hook.h"
+#include "bot.h"
+
 extern float myrand; // Note: Continuous random generation is CPU expensive
 extern float myrandom;
 
+/* global */
+int NumBotsInGame = 0; // [1..MAXBOTS]
 
-int NumBotsInGame=0; // [1..MAXBOTS]
 qboolean Get_YenPos(char *Buff,int *curr)
 {
 	int i;
@@ -58,6 +61,7 @@ int rav_getnumbots()
 
 	return rCount;
 }
+
 void ClientDisconnect (edict_t *ent);
 
 void Check_Bot_Number (void)

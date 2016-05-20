@@ -1,10 +1,39 @@
+#include "g_local.h"
 #include "m_player.h"
 #include "bot.h"
 
-void droptofloor (edict_t *ent);
+// instantiate cvars here
+cvar_t  *use_bots;
+cvar_t	*bot_num;
+cvar_t	*bot_free_clients;
+cvar_t	*bot_insult;
+cvar_t	*bot_chat;
+cvar_t	*bot_camptime;
+cvar_t	*bot_walkspeed;//20
+cvar_t	*bot_runspeed;//32
+cvar_t	*bot_duckpeed;//10
+cvar_t	*bot_waterspeed;//16
+
 
 edict_t *bot_team_flag1;
 edict_t *bot_team_flag2;
+
+void Bot_InitCvars(void)
+{
+	// bot commands
+	use_bots = gi.cvar ("use_bots", "1", CVAR_LATCH);
+	bot_num = gi.cvar ("bot_num", "0", 0);
+	bot_free_clients = gi.cvar ("bot_free_clients", "2", CVAR_ARCHIVE);
+	bot_insult = gi.cvar ("bot_insult", "1", 0);
+	bot_chat = gi.cvar ("bot_chat", "1", 0);
+	bot_camptime = gi.cvar ("bot_camptime", "30", 0);
+	bot_walkspeed = gi.cvar ("bot_walkspeed", "25", 0);//20
+	bot_runspeed = gi.cvar ("bot_runspeed", "40", 0);//32
+	bot_duckpeed = gi.cvar ("bot_duckpeed", "20", 0);//10
+	bot_waterspeed = gi.cvar ("bot_waterspeed", "20", 0);//16
+
+}
+
 
 void SetBotFlag1(edict_t *ent)
 {
@@ -32,15 +61,13 @@ qboolean ChkTFlg( void )
 
 void SpawnItem4 (edict_t *ent, gitem_t *item)
 {
-//	PrecacheItem (item);
-
 	ent->item = item;
 	ent->nextthink = level.time ;    // items start after other solids
 	ent->think = droptofloor;
 	ent->s.effects = 0;
 	ent->s.renderfx = RF_GLOW;
-//	if (ent->model)
-//		gi.modelindex (ent->model);
+	//	if (ent->model)
+	//		gi.modelindex (ent->model);
 	droptofloor (ent);
 	ent->s.modelindex = 0;
 	ent->nextthink = level.time + 100 * FRAMETIME;    // items start after other solids

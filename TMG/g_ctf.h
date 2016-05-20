@@ -154,6 +154,16 @@ void P_ProjectSource_Reverse(gclient_t *client,
 							 vec3_t forward,
 							 vec3_t right,
 							 vec3_t result);
+void CTFFireGrapple (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect);
+void CTFGrappleFire (edict_t *ent, vec3_t g_offset, int damage, int effect);
+void CTFWeapon_Grapple_Fire (edict_t *ent);
+
+// RaVeN hook for map chaining
+void RaV_hook (edict_t *ent);
+void RaV_unhook (edict_t *ent);
+
+
+void CTFGrappleDrawCable(edict_t *self);
 
 //TECH
 void CTFHasTech(edict_t *who);
@@ -176,15 +186,47 @@ qboolean CTFStartClient(edict_t *ent);
 
 qboolean CTFCheckRules(void);
 
+// CTF Voting
+void VoteMapNames3(void);
+void VoteChangeMap(edict_t *ent, pmenu_t *p);
+void VoteMap3(edict_t *ent, pmenu_t *p);
+void VoteMapNames2(void);
+void VoteMap2(edict_t *ent, pmenu_t *p);
+void VoteMapNames(void);
+void VoteMap(edict_t *ent, pmenu_t *p);
+
+// OP level
+char *GetIpOp(edict_t *ent);
+void List_Op(edict_t *ent);
+void OpPlayer(edict_t *ent, pmenu_t *p);
+void OpMe(edict_t *ent, pmenu_t *p);
+void OpLockServer(edict_t *ent, pmenu_t *p);
+void OpLock(edict_t *ent, pmenu_t *p);
+void List_Switch(edict_t *ent);
+void OpRestart(edict_t *ent, pmenu_t *p);
+void OpChangeMap(edict_t *ent, pmenu_t *p);
+void OpMap(edict_t *ent, pmenu_t *p);
+void OpMapNames3(void);
+void OpMap3(edict_t *ent, pmenu_t *p);
+void OpMapNames2(void);
+void OpMap2(edict_t *ent, pmenu_t *p);
+void OpMapNames(void);
+
+
+void SpecMe(edict_t *ent, pmenu_t *p);
+void List_Spec(edict_t *ent);
+void SpecPlayer(edict_t *ent, pmenu_t *p);
+void List_Kick(edict_t *ent);
+
+
+
+////////////////////////////////
 void SP_misc_ctf_banner (edict_t *ent);
 void SP_misc_ctf_small_banner (edict_t *ent);
 
 extern char *ctf_statusbar;
 extern char *rail_statusbar;//rav
 
-void UpdateChaseCam(edict_t *ent);
-void ChaseNext(edict_t *ent);
-void ChasePrev(edict_t *ent);
 
 void SP_trigger_teleport (edict_t *ent);
 void SP_info_teleport_destination (edict_t *ent);
@@ -193,15 +235,14 @@ void PickMap(edict_t *ent, pmenu_t *p);
 void List_Players(edict_t *ent);
 void ListPlayers(edict_t *ent, pmenu_t *p);
 void LightsMenu(edict_t *ent, pmenu_t *p);
+void PlayerMenu(edict_t *ent, pmenu_t *p);
+void List_KickBan(edict_t *ent);
+void KicknBanPlayer(edict_t *ent, pmenu_t *p);
 void KickPlayer(edict_t *ent, pmenu_t *p);
 void KickMe(edict_t *ent, pmenu_t *p);
-void OpChangeMap(edict_t *ent, pmenu_t *p);
-void OpMapNames(void);
-void OpMap(edict_t *ent, pmenu_t *p);
 void BanMe(edict_t *ent, pmenu_t *p);
 void List_Ban(edict_t *ent);
 void BanPlayer(edict_t *ent, pmenu_t *p);
-void KicknBanPlayer(edict_t *ent, pmenu_t *p);
 void KicknBanMe(edict_t *ent, pmenu_t *p);
 void List_UnSilence(edict_t *ent);
 void UnSilencePlayer(edict_t *ent, pmenu_t *p);
@@ -211,22 +252,16 @@ void SilencePlayer(edict_t *ent, pmenu_t *p);
 void SilenceMe(edict_t *ent, pmenu_t *p);
 void SwitchMe(edict_t *ent, pmenu_t *p);
 void SwitchPlayer(edict_t *ent, pmenu_t *p);
-void List_Switch(edict_t *ent);
-void OpLock(edict_t *ent, pmenu_t *p);
-void List_Op(edict_t *ent);
-void OpPlayer(edict_t *ent, pmenu_t *p);
-void OpMe(edict_t *ent, pmenu_t *p);
-void OpRestart(edict_t *ent, pmenu_t *p);
-//JSWvoid MOpPlayer(edict_t *ent, pmenu_t *p);
-//JSWvoid MOpMe(edict_t *ent, pmenu_t *p);
-void PlayerMenu(edict_t *ent, pmenu_t *p);
+//JSW void MOpPlayer(edict_t *ent, pmenu_t *p);
+//JSW void MOpMe(edict_t *ent, pmenu_t *p);
 //JSW
 void UpdateOpMenu(edict_t *ent);
 void UpdatePlayerMenu(edict_t *ent);
 char *GetIp(edict_t *ent);
-void VoteMap(edict_t *ent, pmenu_t *p);
 void SpawnExtra(vec3_t position, char *classname);
 void ChangeNow (edict_t *ent, pmenu_t *menu);
 void ChangeLater (edict_t *ent, pmenu_t *menu);
+void Locked(edict_t *ent, pmenu_t *p);
+int CTFUpdateJoinMenu(edict_t *ent);
 
 #endif	/* G_CTF_H */

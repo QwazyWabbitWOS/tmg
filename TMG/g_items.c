@@ -3,6 +3,7 @@
 //RAV
 #include "runes.h"
 //
+#include "bot.h"
 
 gitem_armor_t jacketarmor_info	= { 25,  50, .30, .00, ARMOR_JACKET};
 gitem_armor_t combatarmor_info	= { 50, 100, .60, .30, ARMOR_COMBAT};
@@ -10,7 +11,6 @@ gitem_armor_t bodyarmor_info	= {100, 200, .80, .60, ARMOR_BODY};
 #define HEALTH_IGNORE_MAX	1
 #define HEALTH_TIMED		2
 
-void Use_Quad (edict_t *ent, gitem_t *item);
 static int	quad_drop_timeout_hack;
 
 int	jacket_armor_index;
@@ -1051,7 +1051,6 @@ void Drop_PowerArmor (edict_t *ent, gitem_t *item)
 }
 
 //======================================================================
-void CheckCampSite(edict_t *ent,edict_t *other);
 /*
 ===============
 Touch_Item
@@ -1221,7 +1220,7 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 
 //======================================================================
 
-static void drop_temp_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
+void drop_temp_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (other == ent->owner)
 		return;
@@ -1569,7 +1568,7 @@ void droptofloor2 (edict_t *ent)
 	v = tv(8,8,15);
 	VectorCopy (v, ent->maxs);
 /////////
-	if(ent->union_ent && Q_stricmp (ent->classname,"R_navi2")) //2は移動なし
+	if(ent->union_ent && Q_stricmp (ent->classname,"R_navi2"))
 	{
 //		dest[0] = (ent->union_ent->s.origin[0] + ent->union_ent->mins[0] + ent->union_ent->s.origin[0] + ent->union_ent->maxs[0])/2;//ent->s.origin[0];
 //		dest[1] = (ent->union_ent->s.origin[1] + ent->union_ent->mins[1] + ent->union_ent->s.origin[1] + ent->union_ent->maxs[1])/2;
@@ -1600,7 +1599,7 @@ void droptofloor2 (edict_t *ent)
 		gi.setmodel (ent, ent->model);
 	else
 		gi.setmodel (ent, ent->item->world_model);*/
-	ent->s.modelindex = 0;				//かくせ！
+	ent->s.modelindex = 0;
 //ent->s.modelindex =gi.modelindex ("models/items/armor/body/tris.md2");
 	if(Q_stricmp (ent->classname,"R_navi3") == 0) ent->solid = SOLID_NOT;
 	else ent->solid = SOLID_TRIGGER;
@@ -1706,15 +1705,11 @@ void droptofloor2 (edict_t *ent)
 	}
 }
 
-/*
-===============
-PrecacheItem
-
-Precaches all data needed for a given item.
-This will be called for each item spawned in a level,
-and for each item in each client's inventory.
-===============
-*/
+/**
+ Precaches all data needed for a given item.
+ This will be called for each item spawned in a level,
+ and for each item in each client's inventory.
+ */
 void PrecacheItem (gitem_t *it)
 {
 	char	*s, *start;
@@ -1783,37 +1778,9 @@ Items can't be immediately dropped to floor, because they might
 be on an entity that hasn't spawned yet.
 ============
 */
-void SetBotFlag1(edict_t *ent);	//チーム1の旗
-void SetBotFlag2(edict_t *ent);  //チーム2の旗
-//RAV
-void SpawnItem2 (edict_t *ent, gitem_t *item)
-{
-	PrecacheItem (item);
-
-	if (ent->spawnflags)
-	{
-		if (strcmp(ent->classname, "key_power_cube") != 0)
-		{
-			ent->spawnflags = 0;
-			gi.dprintf("%s at %s has invalid spawnflags set\n", ent->classname, vtos(ent->s.origin));
-		}
-	}
-
-	ent->item = item;
-	ent->movetarget = NULL;
-	ent->nextthink = level.time + 2 * FRAMETIME;    // items start after other solids.
-	ent->think = droptofloor;
-	ent->s.effects = item->world_model_flags;
-	ent->s.renderfx = RF_GLOW;
-	if (ent->model)
-		gi.modelindex (ent->model);
-}
-//
-
-
 void SpawnItem (edict_t *ent, gitem_t *item)
 {
-	
+
 	//RAV
 	if (voosh->value)
 	{
@@ -1878,7 +1845,7 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 				return;
 			}
 		}
-//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+		//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
 		if ( dmflag & DF_INFINITE_AMMO )
 		{
 			if ( (item->flags == IT_AMMO) || (strcmp(ent->classname, "weapon_bfg") == 0) )
@@ -1901,15 +1868,15 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 		item->drop = NULL;
 	}
 
-//ZOID
-//Don't spawn the flags unless enabled
+	//ZOID
+	//Don't spawn the flags unless enabled
 	if (!ctf->value &&
 		(strcmp(ent->classname, "item_flag_team1") == 0 ||
-		strcmp(ent->classname, "item_flag_team2") == 0)) {
-		G_FreeEdict(ent);
-		return;
-	}
-//ZOID
+		 strcmp(ent->classname, "item_flag_team2") == 0)) {
+			G_FreeEdict(ent);
+			return;
+		}
+	//ZOID
 
 	ent->item = item;
 	ent->nextthink = level.time + 2 * FRAMETIME;    // items start after other solids
@@ -1920,13 +1887,13 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 		gi.modelindex (ent->model);
 
 	VectorCopy(ent->s.origin,ent->monsterinfo.last_sighting);
-//ZOID
-//flags are server animated and have special handling
+	//ZOID
+	//flags are server animated and have special handling
 	if (strcmp(ent->classname, "item_flag_team1") == 0 ||
 		strcmp(ent->classname, "item_flag_team2") == 0) {
 		ent->think = CTFFlagSetup;
 	}
-//ZOID
+	//ZOID
 
 	//RAV
 	// weapon/item banning
@@ -1959,21 +1926,21 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 		G_FreeEdict(ent);
 		return;
 	}
-//Ban ammo
+	//Ban ammo
 	if ((((int)(ammoflags->value) & 1) && (Q_stricmp(ent->classname, "ammo_grenades")==0)) ||
 		(((int)(ammoflags->value) & 2) && (Q_stricmp(ent->classname, "ammo_shells")==0)) ||
 		(((int)(ammoflags->value) & 4) && (Q_stricmp(ent->classname, "ammo_bullets")==0)) ||
 		(((int)(ammoflags->value) & 8) && (Q_stricmp(ent->classname, "ammo_cells")==0)) ||
 		(((int)(ammoflags->value) & 16) && (Q_stricmp(ent->classname, "ammo_rockets")==0)) ||
-		(((int)(ammoflags->value) & 32) && (Q_stricmp(ent->classname, "ammo_slugs")==0)) 
-	    )
+		(((int)(ammoflags->value) & 32) && (Q_stricmp(ent->classname, "ammo_slugs")==0))
+		)
 
-	{			
-	    G_FreeEdict(ent);
+	{
+		G_FreeEdict(ent);
 		return;
 	}
  // End.
-//ban runes
+ //ban runes
 	if ((((int)(runeflags->value) & 1) && (Q_stricmp(ent->classname, "item_rune_strength")==0)) ||
 		(((int)(runeflags->value) & 2) && (Q_stricmp(ent->classname, "item_rune_resist")==0)) ||
 		(((int)(runeflags->value) & 4) && (Q_stricmp(ent->classname, "item_rune_haste")==0)) ||
@@ -1982,59 +1949,79 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 		(((int)(runeflags->value) & 32) && (Q_stricmp(ent->classname, "item_rune_liquid")==0)) ||
 		(((int)(runeflags->value) & 64) && (Q_stricmp(ent->classname, "item_rune_invis")==0)) ||
 		(((int)(runeflags->value) & 128) && (Q_stricmp(ent->classname, "item_rune_vamp")==0)) ||
-		(((int)(runeflags->value) & 256) && (Q_stricmp(ent->classname, "item_rune_speed")==0)) 
-	    )
+		(((int)(runeflags->value) & 256) && (Q_stricmp(ent->classname, "item_rune_speed")==0))
+		)
 
-	{			
-	    G_FreeEdict(ent);
+	{
+		G_FreeEdict(ent);
 		return;
 	}
 
-//FIX for rune colors 
+	//FIX for rune colors
 	if (strcmp(ent->classname, "item_rune_strength") == 0){
-ent->s.renderfx |= RF_SHELL_RED;
-}
+		ent->s.renderfx |= RF_SHELL_RED;
+	}
 
 	if (strcmp(ent->classname, "item_rune_resist")==0){
-ent->s.renderfx |= RF_SHELL_BLUE;
-}
+		ent->s.renderfx |= RF_SHELL_BLUE;
+	}
 
 	if (strcmp(ent->classname, "item_rune_haste")==0){
-ent->s.renderfx |= RF_SHELL_DOUBLE;
-}
+		ent->s.renderfx |= RF_SHELL_DOUBLE;
+	}
 
 	if (strcmp(ent->classname, "item_rune_regen")==0){
-ent->s.renderfx |= RF_SHELL_GREEN;
-} 
+		ent->s.renderfx |= RF_SHELL_GREEN;
+	}
 	//
-if (strcmp(ent->classname, "item_rune_jump") == 0){
-ent->s.renderfx |= RF_SHELL_RED | RF_SHELL_DOUBLE;
-}
+	if (strcmp(ent->classname, "item_rune_jump") == 0){
+		ent->s.renderfx |= RF_SHELL_RED | RF_SHELL_DOUBLE;
+	}
 
 	if (strcmp(ent->classname, "item_rune_liquid")==0){
-ent->s.renderfx |= RF_SHELL_GREEN | RF_SHELL_BLUE;
-}
+		ent->s.renderfx |= RF_SHELL_GREEN | RF_SHELL_BLUE;
+	}
 
 	if (strcmp(ent->classname, "item_rune_invis")==0){
-ent->s.renderfx |= RF_SHELL_RED | RF_SHELL_HALF_DAM;
-}
+		ent->s.renderfx |= RF_SHELL_RED | RF_SHELL_HALF_DAM;
+	}
 
 	if (strcmp(ent->classname, "item_rune_vamp")==0){
-ent->s.renderfx |= RF_SHELL_RED | RF_SHELL_BLUE;
-} 
+		ent->s.renderfx |= RF_SHELL_RED | RF_SHELL_BLUE;
+	}
 	if (strcmp(ent->classname, "item_rune_speed")==0){
-ent->s.renderfx |= RF_SHELL_RED | RF_SHELL_GREEN | RF_SHELL_BLUE | RF_SHELL_HALF_DAM;
-} 
-//END
-
-
+		ent->s.renderfx |= RF_SHELL_RED | RF_SHELL_GREEN | RF_SHELL_BLUE | RF_SHELL_HALF_DAM;
+	} 
+	//END fix for rune colors
 }
-	//
+
+//RAV
+void SpawnItem2 (edict_t *ent, gitem_t *item)
+{
+	PrecacheItem (item);
+
+	if (ent->spawnflags)
+	{
+		if (strcmp(ent->classname, "key_power_cube") != 0)
+		{
+			ent->spawnflags = 0;
+			gi.dprintf("%s at %s has invalid spawnflags set\n", ent->classname, vtos(ent->s.origin));
+		}
+	}
+
+	ent->item = item;
+	ent->movetarget = NULL;
+	ent->nextthink = level.time + 2 * FRAMETIME;    // items start after other solids.
+	ent->think = droptofloor;
+	ent->s.effects = item->world_model_flags;
+	ent->s.renderfx = RF_GLOW;
+	if (ent->model)
+		gi.modelindex (ent->model);
+}
+//
+
 void SpawnItem3 (edict_t *ent, gitem_t *item)
 {
-
-	//	PrecacheItem (item);
-
 	ent->item = item;
 	ent->nextthink = level.time + 2 * FRAMETIME;    // items start after other solids
 	ent->think = droptofloor2;
@@ -3484,21 +3471,14 @@ void SP_item_health_mega (edict_t *self)
 	self->style = HEALTH_IGNORE_MAX|HEALTH_TIMED;
 }
 
-
 void InitItems (void)
 {
 	game.num_items = sizeof(itemlist)/sizeof(itemlist[0]) - 1;
 }
 
-
-
 /*
-===============
-SetItemNames
-
-Called by worldspawn
-===============
-*/
+ Called by SP_worldspawn
+ */
 void SetItemNames (void)
 {
 	int		i;

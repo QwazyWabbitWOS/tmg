@@ -1,11 +1,7 @@
 #include "m_player.h"
 #include "g_local.h"
-//======================================================================
-//aim決定
-//ent	entity
-//aim	aimスキル
-//yaw	dist
-//wep	weapon
+#include "bot.h"
+
 static
 void Get_AimAngle(edict_t *ent,float aim,float dist,int weapon)
 {
@@ -17,7 +13,6 @@ void Get_AimAngle(edict_t *ent,float aim,float dist,int weapon)
 
 	switch(weapon)
 	{
-		//即判定
 		case WEAP_SHOTGUN:
 		case WEAP_SUPERSHOTGUN:
 		case WEAP_RAILGUN:
@@ -200,10 +195,6 @@ void Get_AimAngle(edict_t *ent,float aim,float dist,int weapon)
 	}
 }
 
-
-
-//======================================================================
-//武器使用可能？
 /**
  Decide if player can use weapon, set weaponstate appropriately.
  Returns: true if ready, 2 if not. Why 2?
@@ -213,7 +204,8 @@ int CanUsewep(edict_t *ent,int weapon)
 {
 	gitem_t *item;
 	gclient_t	*client;
-	int mywep, ammoindex;
+	int mywep;
+	int ammoindex;
 
 	client = ent->client;
 
@@ -870,11 +862,7 @@ void Combat_LevelX(edict_t *ent,int foundedenemy,int enewep
 	zc = &client->zc;
 	target = zc->first_target;
 
-	//-----------------------------------------------------------------------
-	//ステータスを反映
-	//-----------------------------------------------------------------------
 	k = false;
-	//予測========================
 	if(zc->battlemode & FIRE_ESTIMATE)
 	{
 		mywep = Get_KindWeapon(client->pers.weapon);
@@ -929,12 +917,8 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 	target = zc->first_target;
 
 
-	//-----------------------------------------------------------------------
-	//ステータスを反映
-	//-----------------------------------------------------------------------
-	//チキンは狙いがキツイ==============
 	if(zc->battlemode == FIRE_CHIKEN) aim *= 0.7;
-	//左右に回避========================
+
 	if(zc->battlemode & FIRE_SHIFT)
 	{
 		mywep = Get_KindWeapon(client->pers.weapon);
@@ -1003,7 +987,7 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 			}
 		}
 	}
-	//無視して走る========================
+
 	if(zc->battlemode & FIRE_IGNORE)
 	{
 		if(--zc->battlecount > 0)
@@ -1017,7 +1001,6 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 		zc->battlemode = 0;
 	}
 
-	//立ち止まって撃つ準備========================
 	if(zc->battlemode & FIRE_PRESTAYFIRE)
 	{
 		if(--zc->battlecount > 0)
@@ -1025,14 +1008,13 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 			mywep = Get_KindWeapon(client->pers.weapon);
 			Get_AimAngle(ent,aim,distance,mywep);
 			if(target->client->weaponstate == WEAPON_FIRING && ent->groundentity) ent->client->ps.pmove.pm_flags |= PMF_DUCKED;
-			trace_priority = TRP_ALLKEEP;	//動かない
+			trace_priority = TRP_ALLKEEP;
 			return;
 		}
 		if(!(zc->battlemode & FIRE_SHIFT)) zc->battlemode = FIRE_STAYFIRE;			//モード遷移
 		zc->battlecount = 5 + (int)(20 * random());
 	}
 
-	//立ち止まって撃つ========================
 	if(zc->battlemode & FIRE_STAYFIRE)
 	{
 		if(--zc->battlecount > 0)
@@ -1058,7 +1040,7 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 		zc->battlemode = 0;
 	}
 
-	//FIRE_RUSH	つっこむ========================
+	//FIRE_RUSH	========================
 	if(zc->battlemode & FIRE_RUSH)
 	{
 		if(--zc->battlecount > 0)
@@ -1075,7 +1057,7 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 				}
 				else client->ps.pmove.pm_flags |= PMF_DUCKED;
 			}
-			trace_priority = TRP_MOVEKEEP;	//後退処理
+			trace_priority = TRP_MOVEKEEP;
 			zc->moveyaw = ent->s.angles[YAW];
 
 			if(Bot_traceS(ent,target)) client->buttons |= BUTTON_ATTACK;
@@ -1084,7 +1066,6 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 		zc->battlemode = 0;
 	}
 
-	//後退ファイア(爆発回避)========================
 	if(zc->battlemode & FIRE_EXPAVOID)
 	{
 		if(--zc->battlecount > 0)
@@ -1101,7 +1082,7 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 				}
 				else client->ps.pmove.pm_flags |= PMF_DUCKED;
 			}
-			trace_priority = TRP_MOVEKEEP;	//後退処理
+			trace_priority = TRP_MOVEKEEP;
 			zc->moveyaw = ent->s.angles[YAW] + 180;
 			if(zc->moveyaw > 180) zc->moveyaw -= 360;
 
@@ -1112,7 +1093,7 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 		}
 		zc->battlemode = 0;
 	}
-	//ＢＦＧファイア(爆発回避)========================
+
 	if(zc->battlemode & FIRE_BFG)
 	{
 		if(--zc->battlecount > 0)
@@ -1129,7 +1110,7 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 				}
 				else client->ps.pmove.pm_flags |= PMF_DUCKED;
 			}
-			trace_priority = TRP_ANGLEKEEP;	//後退処理
+			trace_priority = TRP_ANGLEKEEP;
 
 			if(Bot_traceS(ent,target) 
 				|| mywep == WEAP_BFG 
@@ -1139,7 +1120,6 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 		zc->battlemode = 0;
 	}
 
-	//撃って避難========================
 	if(zc->battlemode & FIRE_REFUGE)
 	{
 		if(--zc->battlecount > 0)
@@ -1156,8 +1136,8 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 				}
 				else client->ps.pmove.pm_flags |= PMF_DUCKED;
 			}
-			trace_priority = TRP_ANGLEKEEP;	//動かない
-//			trace_priority = TRP_ALLKEEP;	//動かない
+			trace_priority = TRP_ANGLEKEEP;
+//			trace_priority = TRP_ALLKEEP;
 			if(Bot_traceS(ent,target) 
 				|| mywep == WEAP_BFG 
 				|| mywep == WEAP_GRENADELAUNCHER) client->buttons |= BUTTON_ATTACK;
@@ -1191,12 +1171,8 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 		}
 	}
 
-	//-----------------------------------------------------------------------
-	//特殊ファイアリング
-	//-----------------------------------------------------------------------
 	mywep = Get_KindWeapon(client->pers.weapon);
 
-	//左右回避セット========================
 	if(!(zc->battlemode & FIRE_SHIFT) && skill > (random() * skill) /*&& distance < 250*/
 		&& (30 * random()) < Bot[zc->botindex].param[BOP_OFFENCE])
 	{
@@ -1245,19 +1221,18 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 		}
 	}
 
-	//敵がペンタをとっている========================
 	if((FFlg[skill] & FIRE_AVOIDINV)
 		&& target->client->invincible_framenum > level.framenum)
 	{
 //		mywep = Get_KindWeapon(client->pers.weapon);
 		Get_AimAngle(ent,aim,distance,mywep);
-		trace_priority = TRP_MOVEKEEP;	//後退処理
+		trace_priority = TRP_MOVEKEEP;
 		zc->moveyaw = ent->s.angles[YAW] + 180;
 		if(zc->moveyaw > 180) zc->moveyaw -= 360;
 		return;
 	}
-	//Quad時の処理=================================
-	if((FFlg[skill] & FIRE_QUADUSE) 
+
+	if((FFlg[skill] & FIRE_QUADUSE)
 		&& (ent->client->quad_framenum > level.framenum)
 		&& distance < 300)
 	{
@@ -1321,7 +1296,7 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 			return;
 		}
 	}
-	//撃って逃げる処理=================================
+
 	if((FFlg[skill] & FIRE_REFUGE)
 		&& zc->battlemode == 0 && zc->route_trace && zc->routeindex > 1 )
 	{
@@ -1338,26 +1313,22 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 			|| mywep == WEAP_ROCKETLAUNCHER
 	)
 			{
-				zc->battlemode |= FIRE_REFUGE;			//モード遷移
+				zc->battlemode |= FIRE_REFUGE;
 				zc->battlecount = 8 + (int)(10 * random());
 				trace_priority = TRP_ALLKEEP;
 				return;
 			}
 		}
 	}
-	//トレース中以外のときにグルグルを防ぐ=================================
+
 	if(!zc->route_trace && distance < 100)
 	{
-		zc->battlemode |= FIRE_EXPAVOID;			//モード遷移
+		zc->battlemode |= FIRE_EXPAVOID;
 		zc->battlecount = 4 + (int)(8 * random());
 		trace_priority = TRP_ALLKEEP;		
 	}
 
 
-	
-	//-----------------------------------------------------------------------
-	//プライオリティ
-	//-----------------------------------------------------------------------	
 	//BFG
 	if(distance > 200)
 	{
@@ -1470,9 +1441,6 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 	}
 
 	
-	//-----------------------------------------------------------------------
-	//通常ファイアリング
-	//-----------------------------------------------------------------------
 	zc->secwep_selected = 0;
 	//BFG
 	if(distance > 200)
@@ -1486,14 +1454,11 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 		if(B_UseHyperBlaster(ent,target,enewep,aim,distance,skill)) goto FIRED;
 	}
 
-
-
 	//Rocket
 	if((distance > 100 && distance < 1200)/*|| mywep == WEAP_ROCKETLAUNCHER*/)
 	{
 		if(B_UseRocket(ent,target,enewep,aim,distance,skill)) goto FIRED;
 	}
-	
 
 	//Railgun
 	if(distance > 1200 || voosh->value)
@@ -1506,16 +1471,19 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 	{
 		if(B_UseGrenadeLauncher(ent,target,enewep,aim,distance,skill)) goto FIRED;
 	}
+
 	//Chain Gun
 	if(distance < 1200)
 	{
 		if(B_UseChainGun(ent,target,enewep,aim,distance,skill)) goto FIRED;
 	}
+
 	//Machine Gun
 	if(distance < 1200)
 	{
 		if(B_UseMachineGun(ent,target,enewep,aim,distance,skill)) goto FIRED;
 	}
+
 	//S-Shotgun
 	if(distance < 1200)
 	{
@@ -1557,7 +1525,6 @@ void Combat_Level0(edict_t *ent,int foundedenemy,int enewep
 FIRED:
 	if(zc->secwep_selected == 2) zc->secwep_selected = 1;
 	
-	//チキンやろう========================
 	if(zc->battlemode == FIRE_CHIKEN)
 	{
 		if(--zc->battlesubcnt > 0  && ent->groundentity && ent->waterlevel < 2)
@@ -1626,24 +1593,17 @@ FIRED:
 	}
 }
 
-
-
 void UsePrimaryWeapon(edict_t *ent)
 {
 	int mywep;
 
 	mywep = Get_KindWeapon(ent->client->pers.weapon);
 
-	//QW// should this be if(CanUsewep(ent, mywep)) //???
 	if(CanUsewep(ent, WEAP_BFG))
 		return;
 
 	CanUsewep(ent, Bot[ent->client->zc.botindex].param[BOP_PRIWEP]);
 }
-
-
-
-/*------------------------------------------------------------------------------*/
 
 void UpdateExplIndex(edict_t* ent)
 {
@@ -1652,8 +1612,16 @@ void UpdateExplIndex(edict_t* ent)
 
 	for(i = 0;i < MAX_EXPLINDEX;i++)
 	{
-		if(ExplIndex[i] != NULL) {if(ExplIndex[i]->inuse == false) ExplIndex[i] = NULL;}
-		if(!mod && ExplIndex[i] == NULL) {ExplIndex[i] = ent;mod = true;}
+		if(ExplIndex[i] != NULL)
+		{
+			if(ExplIndex[i]->inuse == false)
+				ExplIndex[i] = NULL;
+		}
+		if(!mod && ExplIndex[i] == NULL)
+		{
+			ExplIndex[i] = ent;
+			mod = true;
+		}
 	}
 }
 

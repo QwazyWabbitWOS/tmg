@@ -1,6 +1,7 @@
 
 #include "g_local.h"
 #include "s_map.h"
+#include "bot.h"
 
 //RAV
 #include "e_hook.h"
@@ -219,18 +220,19 @@ cvar_t	*autospawn;
 cvar_t	*zigmode;
 float	spawncycle;
 float	ctfjob_update;
-//ponpoko
-cvar_t  *use_bots;
-cvar_t	*bot_num;
-cvar_t	*bot_free_clients;
-cvar_t	*bot_insult;
-cvar_t	*bot_chat;
-cvar_t	*bot_camptime;
-cvar_t	*bot_walkspeed;//20
-cvar_t	*bot_runspeed;//32
-cvar_t	*bot_duckpeed;//10
-cvar_t	*bot_waterspeed;//16
 
+////ponpoko
+//cvar_t  *use_bots;
+//cvar_t	*bot_num;
+//cvar_t	*bot_free_clients;
+//cvar_t	*bot_insult;
+//cvar_t	*bot_chat;
+//cvar_t	*bot_camptime;
+//cvar_t	*bot_walkspeed;//20
+//cvar_t	*bot_runspeed;//32
+//cvar_t	*bot_duckpeed;//10
+//cvar_t	*bot_waterspeed;//16
+//
 
 cvar_t  *spec_check;
 cvar_t	*lan;
@@ -256,7 +258,9 @@ cvar_t	*log_connect;
 cvar_t	*grapple_speed;
 cvar_t	*grapple_pullspeed;
 cvar_t	*grapple_damage;
-/*cvar_t	*allow_lasermines;
+
+/*
+ cvar_t	*allow_lasermines;
 cvar_t	*allow_energy_lasers;
 cvar_t	*energylaser_time;
 cvar_t	*energylaser_damage;
@@ -269,11 +273,15 @@ cvar_t	*nuke_slugs;
 cvar_t	*nuke_radius;
 cvar_t	*nuke_radius2;
 cvar_t	*lasermine_timeout;
-*/cvar_t	*runes4all;
+*/
+
+cvar_t	*runes4all;
 cvar_t	*quad_notify;
 cvar_t	*teamtechs;
 cvar_t	*auto_flag_return;
+
 //cvar_t	*uneven_dif;
+
 cvar_t	*tmgclock;
 cvar_t	*allow_flagdrop;
 cvar_t	*extrasounds;
@@ -289,7 +297,6 @@ cvar_t	*cfgdir;
 //end
 
 //
-void SpawnEntities (char *mapname, char *entities, char *spawnpoint);
 void ClientThink (edict_t *ent, usercmd_t *cmd);
 qboolean ClientConnect (edict_t *ent, char *userinfo);
 void ClientUserinfoChanged (edict_t *ent, char *userinfo);
@@ -301,7 +308,6 @@ void ReadGame (char *filename);
 void WriteLevel (char *filename);
 void ReadLevel (char *filename);
 void InitGame (void);
-void G_RunFrame (void);
 
 //===================================================================
 void ShutdownGame (void)

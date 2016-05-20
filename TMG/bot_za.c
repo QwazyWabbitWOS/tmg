@@ -1,6 +1,7 @@
 
 #include "m_player.h"
 #include "g_local.h"
+#include "bot.h"
 
 qboolean	pickup_pri;
 void RandomChat(edict_t *ent);
@@ -87,7 +88,7 @@ int			FFlg[MAX_BOTSKILL]
 	FIRE_EXPAVOID | FIRE_IGNORE | FIRE_QUADUSE | FIRE_AVOIDINV| FIRE_IGNORE | FIRE_JUMPROC
 };
 
-qboolean BotApplyStrength(edict_t *ent)
+static qboolean BotApplyStrength(edict_t *ent)
 {
 	static gitem_t *tech = NULL;
 
@@ -99,7 +100,8 @@ qboolean BotApplyStrength(edict_t *ent)
 
 	return false;
 }
-qboolean BotApplyResistance(edict_t *ent)
+
+static qboolean BotApplyResistance(edict_t *ent)
 {
 	static gitem_t *tech = NULL;
 
@@ -113,7 +115,7 @@ qboolean BotApplyResistance(edict_t *ent)
 }
 
 //return foundedenemy
-int Bot_SearchEnemy (edict_t *ent)
+static int Bot_SearchEnemy (edict_t *ent)
 {
 	zgcl_t		*zc;		//zc's address
 	qboolean	tmpflg;		//temporary
@@ -311,7 +313,7 @@ int Bot_SearchEnemy (edict_t *ent)
 	return (foundedenemy);
 }
 
-void Bot_SearchItems (edict_t *ent)
+static void Bot_SearchItems (edict_t *ent)
 {
 	zgcl_t		*zc;		//zc's address
 	qboolean	wstayf,q;		//weaponflag
@@ -808,7 +810,10 @@ void Bot_SearchItems (edict_t *ent)
 //-----------------------------------------------------------------------------------------
 // Avoid explosion
 //
+
 #define EXPLO_BOXSIZE	64
+
+static
 qboolean Bot_ExploAvoid(edict_t *ent,vec3_t	v)
 {
 	int	i;
@@ -847,6 +852,7 @@ qboolean Bot_ExploAvoid(edict_t *ent,vec3_t	v)
 	return true;
 }
 
+static
 qboolean CheckLaser(vec3_t pos,vec3_t maxs,vec3_t mins)
 {
 	int	i;
@@ -1115,6 +1121,7 @@ int Bot_moveT ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom)
 	}
 }
 
+static
 int Bot_Watermove ( edict_t *ent,vec3_t pos,float dist,float upd)
 {
 	trace_t		rs_trace;
@@ -1134,8 +1141,8 @@ int Bot_Watermove ( edict_t *ent,vec3_t pos,float dist,float upd)
 		if(rs_trace.fraction > 0)
 		{
 			VectorCopy(rs_trace.endpos,pos);
-			return true;
-			if(upd < 0) ent->velocity[2] = 0;
+				return true;
+			//if(upd < 0) ent->velocity[2] = 0;
 		}
 	}
 //gi.bprintf(PRINT_HIGH,"Water MOVE NG %f %f!\n",dist,upd);
@@ -1190,7 +1197,7 @@ int Bot_Watermove ( edict_t *ent,vec3_t pos,float dist,float upd)
 //gi.bprintf(PRINT_HIGH,"Water MOVE OK %f %f!\n",dist,upd);
 	VectorCopy(trmax,pos);
 	if(upd < 0) ent->velocity[2] = 0;
-	return true;
+		return true;
 	
 	touchmin[0] = cos(vec) * 16;//dist ;
 	touchmin[1] = sin(vec) * 16;//dist ;
@@ -1228,6 +1235,7 @@ int Bot_Watermove ( edict_t *ent,vec3_t pos,float dist,float upd)
 	return false;
 }
 
+static
 int Bot_moveW ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom)
 {
 	float		yaw;
@@ -1271,6 +1279,7 @@ int Bot_moveW ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom)
 // Bank check
 //	true	safe
 //	false	danger
+static
 qboolean BankCheck(edict_t *ent,vec3_t pos)
 {
 	trace_t	rs_trace;
@@ -1295,6 +1304,7 @@ qboolean BankCheck(edict_t *ent,vec3_t pos)
 // hazard check
 //	true	safe
 //	false	danger
+static
 qboolean HazardCheck(edict_t *ent,vec3_t pos)
 {
 	trace_t	rs_trace;
@@ -1356,6 +1366,7 @@ qboolean HazardCheck(edict_t *ent,vec3_t pos)
 //-----------------------------------------------------------------------------------------
 // set the bot's combatstate
 
+static
 void Set_Combatstate(edict_t *ent,int foundedenemy)
 {
 	vec3_t	v;
@@ -1438,6 +1449,7 @@ void Set_Combatstate(edict_t *ent,int foundedenemy)
 // Bot Jump
 // return true		sequaense done
 // return false		failed
+static
 qboolean Get_FlyingSpeed(float bottom,float block,float dist,float *speed)
 {
 	float tdist;
@@ -1507,6 +1519,7 @@ qboolean Get_FlyingSpeed(float bottom,float block,float dist,float *speed)
 	return true;
 }
 
+static
 qboolean Bot_Jump(edict_t *ent,vec3_t pos,float dist)
 {
 	float	x,yaw,tdist,bottom,speed;
@@ -1843,6 +1856,7 @@ qboolean TargetJump(edict_t *ent,vec3_t tpos)
 	return false;
 }
 
+static
 qboolean TargetJump_Turbo(edict_t *ent,vec3_t tpos)
 {
 	zgcl_t	*zc;
@@ -1919,6 +1933,8 @@ qboolean TargetJump_Turbo(edict_t *ent,vec3_t tpos)
 	}
 	return false;
 }
+
+static
 qboolean TargetJump_Chk(edict_t *ent,vec3_t tpos,float defvel)
 {
 	zgcl_t	*zc;
@@ -2127,6 +2143,7 @@ void Get_RouteOrigin(int index,vec3_t pos)
 
 //-----------------------------------------------------------------------------------------
 // search nearly pod
+static
 void Search_NearlyPod(edict_t *ent)
 {
 	vec3_t	v,v1,v2;
@@ -2180,6 +2197,7 @@ int Get_KindWeapon(gitem_t	*it)
 	else return WEAP_BLASTER;
 }
 
+static
 float Get_pitch1 (vec3_t vec)
 {
 		vec3_t		out;
@@ -2209,7 +2227,6 @@ float Get_pitch1 (vec3_t vec)
 //
 //
 //-----------------------------------------------------------------------------------------
-void CheckCampSite(edict_t *other) ;
 void Bots_Move_NORM (edict_t *ent)
 {
 	float		dist;		//moving distance
@@ -5493,7 +5510,7 @@ GOMOVE:
 										trent->svflags &= ~SVF_NOCLIENT;
 										//gi.bprintf(PRINT_HIGH,"SPAWNed\n"); //ppx
 									}
-									//									SpawnItem2 (trent, it);
+									//SpawnItem2 (trent, it);
 
 									zc->second_target = trent;
 									trent->target_ent = ent;

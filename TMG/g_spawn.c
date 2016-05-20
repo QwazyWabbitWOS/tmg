@@ -5,7 +5,7 @@
 #include "gslog.h"	//	StdLog - Mark Davies
 #include "eavy.h"
 #include "runes.h"
-//#include "bot.h"
+#include "bot.h"
 //
 
 /**
@@ -17,11 +17,6 @@ typedef struct
 	void	(*spawn)(edict_t *ent);
 } spawn_t;
 
-
-void SP_item_health (edict_t *self);
-void SP_item_health_small (edict_t *self);
-void SP_item_health_large (edict_t *self);
-void SP_item_health_mega (edict_t *self);
 
 void SP_info_player_start (edict_t *ent);
 void SP_info_player_deathmatch (edict_t *ent);
@@ -555,7 +550,7 @@ Chain together all entities with a matching team field.
 All but the last will have the teamchain field set to the next one
 ================
 */
-void G_FindTrainTeam()
+void G_FindTrainTeam(void)
 {
 	edict_t	*teamlist[MAX_EDICTS + 1];	
 	edict_t	*e,*t,*p;
@@ -659,8 +654,8 @@ G_FindItemLink
 */
 
 
-void G_FindItemLink()
-{ 
+void G_FindItemLink(void)
+{
 	int i,j,k;
 
 	if(CurrentIndex <= 0) return;
@@ -697,7 +692,7 @@ RTJump_Chk
 ================
 */
 
-qboolean RTJump_Chk(vec3_t apos,vec3_t tpos)
+static qboolean RTJump_Chk(vec3_t apos,vec3_t tpos)
 {
 	float	x,l,grav,vel,ypos,yori;
 	vec3_t	v,vv;
@@ -876,7 +871,7 @@ gi.dprintf("Total %i linking done.\n",total);
 G_SpawnRouteLink
 ================
 */
-void G_SpawnRouteLink()
+static void G_SpawnRouteLink(void)
 {
 	edict_t *e;
 
@@ -1736,7 +1731,8 @@ void SP_monster_jorg (edict_t *self){        G_FreeEdict (self);}
 void SP_monster_boss3_stand (edict_t *self){        G_FreeEdict (self);}
 void SP_monster_commander_body (edict_t *self){        G_FreeEdict (self);}
 void SP_misc_actor (edict_t *self){        G_FreeEdict (self);}
-void SP_target_actor (edict_t *self){        G_FreeEdict (self);}
+//QW// undefined? Originally in m_actor.c
+//void SP_target_actor (edict_t *self){        G_FreeEdict (self);}
 void SP_misc_insane (edict_t *self){        G_FreeEdict (self);}
 void SP_turret_driver (edict_t *self){        G_FreeEdict (self);}
 void SP_turret_base (edict_t *self){        G_FreeEdict (self);}

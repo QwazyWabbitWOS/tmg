@@ -4,6 +4,7 @@
 //RAV
 #include "runes.h"
 //
+#include "bot.h"
 
 /*
 ============

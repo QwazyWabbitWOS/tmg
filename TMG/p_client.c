@@ -1,22 +1,22 @@
 #include "g_local.h"
+#include "p_client.h"
 #include "m_player.h"
-#include "e_hook.h"//RAV
-#include "runes.h"//RAV
-#include "hud.h" //JSW
+#include "e_hook.h"	//RAV
+#include "runes.h"	//RAV
+#include "hud.h"	//JSW
 #include "stdlog.h"	//	StdLog - Mark Davies
 #include "gslog.h"	//	StdLog - Mark Davies
-#include "filehand.h"
-#include "filtering.h"
+#include "filehand.h"	//QW
+#include "filtering.h"	//QW
+#include "bot.h"		//QW
+
 //
-#include <sys/timeb.h>
+//#include <sys/timeb.h>
 #include <time.h>
 
 #define	OPTIMIZE_INTERVAL	0.1
-void TauntVictim(edict_t *ent, edict_t *victim);
-void InsultVictim(edict_t *ent, edict_t *victim);
-int	num_clients	= 0;
+//QW// not used int	num_clients	= 0;
 void SP_item_health_mega (edict_t *self);//RAV
-void SpawnItem2 (edict_t *ent, gitem_t *item);//RAV
 void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 
 //
@@ -166,7 +166,7 @@ void SP_info_player_coop(edict_t *self)
 The deathmatch intermission point will be at one of these
 Use 'angles' instead of 'angle', so you can set pitch or roll as well as yaw.  'pitch yaw roll'
 */
-void SP_info_player_intermission(void)
+void SP_info_player_intermission(edict_t *ent)
 {
 }
 
@@ -3469,9 +3469,6 @@ void ChainPodThink (edict_t *ent)
 	}
 	ent->nextthink = level.time + FRAMETIME * 10;
 }
-qboolean Bot_traceX (edict_t *ent,edict_t *other);
-qboolean ChkTFlg(void);
-
 
 qboolean TraceX (edict_t *ent,vec3_t p2)
 {
@@ -3541,7 +3538,6 @@ This will be called once for each client frame, which will
 usually be a couple times for each server frame.
 ==============
 */
-void CTFChaseCam(edict_t *ent, pmenu_t *p);
 void ClientThink (edict_t *ent, usercmd_t *ucmd)
 {
 	gclient_t	*client;

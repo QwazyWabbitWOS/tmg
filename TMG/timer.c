@@ -1,5 +1,6 @@
 #include "g_local.h"
 #include "timer.h"
+#include "bot.h"
 
 // global
 int match_state;

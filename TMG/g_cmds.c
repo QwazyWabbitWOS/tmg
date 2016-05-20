@@ -6,11 +6,9 @@
 #include "filehand.h"
 #include "filtering.h"
 #include "hud.h"
+#include "bot.h"
 
 //
-void RaV_hook (edict_t *ent);
-void RaV_unhook (edict_t *ent);
-void CTFChaseCam(edict_t *ent, pmenu_t *p);//RAV
 int LIGHTS = 0;
 void no (edict_t *ent);
 void yes (edict_t *ent);//RAV

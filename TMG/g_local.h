@@ -25,6 +25,7 @@
 #include "game.h"
 #include "g_cmds.h"
 #include "p_hud.h"
+#include "botstr.h"
 
 //RAV
 #include "g_chase.h"
@@ -506,10 +507,6 @@ extern	spawn_temp_t	st;
 extern	int	sm_meat_index;
 extern	int	snd_fry;
 
-//extern	int	jacket_armor_index;
-//extern	int	combat_armor_index;
-//extern	int	body_armor_index;
-
 // means of death
 #define MOD_UNKNOWN			0
 #define MOD_BLASTER			1
@@ -754,17 +751,6 @@ extern	cvar_t	*botlist;
 extern	cvar_t	*autospawn;
 extern	cvar_t	*zigmode;
 extern	float	spawncycle;
-//
-extern	cvar_t  *use_bots;
-extern	cvar_t	*bot_num;
-extern	cvar_t	*bot_free_clients;
-extern	cvar_t	*bot_insult;
-extern	cvar_t	*bot_chat;
-extern	cvar_t	*bot_camptime;
-extern	cvar_t	*bot_walkspeed;//20
-extern	cvar_t	*bot_runspeed;//32
-extern	cvar_t	*bot_duckpeed;//10
-extern	cvar_t	*bot_waterspeed;//16
 
 extern	cvar_t	*lan;
 extern  cvar_t  *spec_check;
@@ -901,12 +887,22 @@ extern	gitem_t	itemlist[];
 
 #include "g_items.h"
 
-//QW// defined in g_spawn.c
+//
+// g_spawn.c
+//
 // put it here until I can find a better place
 /**
  Finds the spawn function for the entity and calls it
  */
-void ED_CallSpawn (edict_t *ent);
+extern void ED_CallSpawn (edict_t *ent);
+char *ED_NewString (char *string);void ED_ParseField (char *key, char *value, edict_t *ent);
+char *ED_ParseEdict (char *data, edict_t *ent);
+void G_FindTeams (void);
+void G_FindTrainTeam(void);
+void G_FindItemLink(void);
+void G_FindRouteLink(edict_t *ent);
+void SpawnEntities (char *mapname, char *entities, char *spawnpoint);
+
 
 
 //
@@ -1073,6 +1069,13 @@ void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int 
 void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage);
 void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick);
 void fire_bfg (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius);
+void blaster_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
+void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf);
+void bfg_explode (edict_t *self);
+void bfg_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
+void bfg_think (edict_t *self);
+void Grenade_Explode (edict_t *ent);
+
 
 //
 // g_ptrail.c
@@ -1086,21 +1089,9 @@ edict_t	*PlayerTrail_LastSpot (void);
 
 
 //
-// g_client.c
-//
-void respawn (edict_t *ent,qboolean spawn);
-void BeginIntermission (edict_t *targ);
-void PutClientInServer (edict_t *ent);
-void InitClientPersistant (gclient_t *client);
-void InitClientResp (gclient_t *client);
-void InitBodyQue (void);
-void ClientBeginServerFrame (edict_t *ent);
-
-//
 // p_client.c
 //
-void player_pain (edict_t *self, edict_t *other, float kick, int damage);
-void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
+#include "p_client.h"
 
 //
 // g_svcmds.c
@@ -1115,16 +1106,21 @@ void ClientEndServerFrame (edict_t *ent);
 //
 // p_hud.c
 //
-void MoveClientToIntermission (edict_t *client);
-void G_SetStats (edict_t *ent);
-void DeathmatchScoreboardMessage (edict_t *client, edict_t *killer);
+#include "p_hud.h"
+
 
 //
-// g_pweapon.c
+// g_weapon.c
 //
 void PlayerNoise(edict_t *who, vec3_t where, int type);
 void P_ProjectSource (gclient_t *client, vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result);
 void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int *pause_frames, int *fire_frames, void (*fire)(edict_t *ent));
+
+
+//
+// p_weapon.c
+//
+extern void ShowGun(edict_t *ent);
 
 //
 // m_move.c
@@ -1138,14 +1134,30 @@ void M_ChangeYaw (edict_t *ent);
 // g_phys.c
 //
 void G_RunEntity (edict_t *ent);
+void SV_AddGravity (edict_t *ent);
 
 //
 // g_main.c
 //
-void SaveClientData (void);
-void FetchClientEntData (edict_t *ent);
+void ShutdownGame (void);
+game_export_t *GetGameAPI (game_import_t *import);
+void ClientEndServerFrames (void);
+void EndDMLevel (void);
 void OPEndDMLevel (int mapindex, edict_t *cl);
+void CheckDMRules (void);
+void ExitLevel (void);
+void G_RunFrame (void);
+
 void timeleft(void);
+
+//
+// g_save.c
+//
+void InitGame (void);
+void WriteGame (char *filename, qboolean autosave);
+void ReadGame (char *filename);
+void WriteLevel (char *filename);
+void ReadLevel (char *filename);
 
 
 //============================================================================
@@ -1160,100 +1172,6 @@ void timeleft(void);
 // ### Hentai ### BEGIN
 #define ANIM_REVERSE	6
 // ### Hentai ### END
-//3ZB
-//Zigock client info
-#define ALEAT_MAX	10
-
-typedef struct zgcl_s
-{
-	int			zclass;			//class no.
-
-	int			botindex;		//botlist's index NO.
-
-// true client用 zoom フラグ	
-	int			aiming;			//0-not 1-aiming  2-firing zoomingflag
-	float		distance;		//zoom中のFOV値
-	float		olddistance;	//旧zooming FOV値
-	qboolean	autozoom;		//autozoom
-	qboolean	lockon;			//lockon flag false-not true-locking
-
-// bot用	
-	int			zcstate;		//status
-	int			zccmbstt;		//combat status
-
-	//duck
-	float		n_duckedtime;	//non ducked time
-
-	//targets
-	edict_t		*first_target;	//enemy		uses LockOntarget(for client)
-	float		targetlock;		//target locking time
-	short		firstinterval;	//enemy search count
-	edict_t		*second_target;	//kindof items
-	short		secondinterval;	//item pickup call count
-
-	//waiting
-	vec3_t		movtarget_pt;	//moving target waiting point
-	edict_t		*waitin_obj;	//for waiting sequence complete
-
-	//basical moving
-	float		moveyaw;		//true moving yaw
-
-	//combat
-	int			total_bomb;		//total put bomb
-	float		gren_time;		//grenade time
-
-	//contents
-//	int			front_contents;
-	int			ground_contents;
-	float		ground_slope;
-
-	//count (inc only)
-	int			tmpcount;
-
-	//moving hist
-	float		nextcheck;		//checking time
-	vec3_t		pold_origin;	//old origin
-	vec3_t		pold_angles;	//old angles
-
-	//target object shot
-	qboolean	objshot;		
-
-
-	edict_t		*sighten;		//sighting enemy to me info from entity sight
-	edict_t		*locked;		//locking enemy to me info from lockon missile
-
-	//waterstate
-	int			waterstate;
-
-	//route
-	qboolean	route_trace;
-	int			routeindex;		//routing index
-	float		rt_locktime;
-	float		rt_releasetime;
-	qboolean	havetarget;		//target on/off
-	int			targetindex;
-
-	//battle
-	edict_t		*last_target;	//old enemy
-	vec3_t		last_pos;		//old origin
-	int			battlemode;		//mode
-	int			battlecount;	//temporary count
-	int			battlesubcnt;	//subcount
-	int			battleduckcnt;	//duck
-	float		fbattlecount;	//float temoporary count
-	vec3_t		vtemp;			//temporary vec
-	int			foundedenemy;	//foundedenemy
-	char		secwep_selected;//secondweapon selected
-
-	vec3_t		aimedpos;		//shottenpoint
-	qboolean	trapped;		//trapflag
-
-	//team
-	short		tmplstate;		//teamplay state
-	short		ctfstate;		//ctf state
-	edict_t		*followmate;	//follow
-	float		matelock;		//team mate locking time
-} zgcl_t;
 
 enum {
 	PMENU_ALIGN_LEFT,
@@ -1830,51 +1748,35 @@ void		RemoveBot(void);
 void		SpawnBotReserving(void);
 
 //weapon
-void Weapon_Blaster (edict_t *ent);
-void Weapon_Shotgun (edict_t *ent);
-void Weapon_SuperShotgun (edict_t *ent);
-void Weapon_Machinegun (edict_t *ent);
-void Weapon_Chaingun (edict_t *ent);
-void Weapon_HyperBlaster (edict_t *ent);
-void Weapon_RocketLauncher (edict_t *ent);
-void Weapon_Grenade (edict_t *ent);
-void Weapon_GrenadeLauncher (edict_t *ent);
-void Weapon_Railgun (edict_t *ent);
-void Weapon_BFG (edict_t *ent);
-void CTFWeapon_Grapple (edict_t *ent);
+extern void Weapon_Blaster (edict_t *ent);
+extern void Weapon_Shotgun (edict_t *ent);
+extern void Weapon_SuperShotgun (edict_t *ent);
+extern void Weapon_Machinegun (edict_t *ent);
+extern void Weapon_Chaingun (edict_t *ent);
+extern void Weapon_HyperBlaster (edict_t *ent);
+extern void Weapon_RocketLauncher (edict_t *ent);
+extern void Weapon_Grenade (edict_t *ent);
+extern void Weapon_GrenadeLauncher (edict_t *ent);
+extern void Weapon_Railgun (edict_t *ent);
+extern void Weapon_BFG (edict_t *ent);
+extern void CTFWeapon_Grapple (edict_t *ent);
 int hstime;
 
-// wideuse
-qboolean Bot_trace (edict_t *ent,edict_t *other);
-qboolean Bot_trace2 (edict_t *ent,vec3_t ttz);
-float Get_yaw (vec3_t vec);		//
-float Get_pitch (vec3_t vec);	//
-float Get_vec_yaw (vec3_t vec,float yaw);
-void ShowGun(edict_t *ent);
-void SpawnItem3 (edict_t *ent, gitem_t *item);
-int Bot_moveT ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom);
-void Set_BotAnim(edict_t *ent,int anim,int frame,int end);
+//
+// g_func.c
+//
 void plat_go_up (edict_t *ent);
-int Get_KindWeapon(gitem_t	*it);
-qboolean TargetJump(edict_t *ent,vec3_t tpos);
-qboolean Bot_traceS (edict_t *ent,edict_t *other);
-qboolean Bot_Fall(edict_t *ent,vec3_t pos,float dist);
 
-void SelectSpawnPoint (edict_t *ent, vec3_t origin, vec3_t angles);
 void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 void CopyToBodyQue (edict_t *ent);
 
 //route util
 qboolean TraceX (edict_t *ent,vec3_t p2);
 void Move_LastRouteIndex(void);
-void Get_RouteOrigin(int index,vec3_t pos);
 
 //Bot Func
-void ZigockJoinMenu(edict_t *ent);
-qboolean ZigockStartClient(edict_t *ent);
 void Cmd_AirStrike(edict_t *ent);
 void BotEndServerFrame (edict_t *ent);
-void SpawnItem2 (edict_t *ent, gitem_t *item);
 void Get_WaterState(edict_t *ent);
 void Bot_Think (edict_t *self);
 void PutBotInServer (edict_t *ent);
@@ -1893,13 +1795,6 @@ qboolean ZIGDrop_Flag(edict_t *ent, gitem_t *item);
 
 //p_view.c
 void BotEndServerFrame (edict_t *ent);
-
-//Bot AI routine
-void Bots_Move_NORM (edict_t *ent);		//normal AI
-
-//spawn
-void SetBotFlag1(edict_t *ent);	//チーム1の旗
-void SetBotFlag2(edict_t *ent);  //チーム2の旗
 
 
 //----------------------------------------------------------------
@@ -2005,227 +1900,8 @@ void SetBotFlag2(edict_t *ent);  //チーム2の旗
 #define FOR_FLAG1		1
 #define FOR_FLAG2		2
 
-//fire----------------------------------------------------------
-#define FIRE_SLIDEMODE		0x00000001	//slide with route
-#define	FIRE_PRESTAYFIRE	0x00000002	//X	pre don't move fire
-#define FIRE_STAYFIRE		0x00000004	//X	don't move
-#define FIRE_CHIKEN			0x00000008	//X chiken fire
-#define FIRE_RUSH			0x00000010	//X	rush
-#define FIRE_JUMPNRUSH		0x00000020	//
-#define	FIRE_ESTIMATE		0x00000040	//X estimate 予測
-#define FIRE_SCATTER		0x00000080	//scatter バラ撒き
-#define	FIRE_RUNNIN			0x00000100	//run & shot(normal)
-#define FIRE_JUMPROC		0x00000200	//X ジャンプふぁいあ
-
-#define FIRE_REFUGE			0x00001000	//X	避難
-#define FIRE_EXPAVOID		0x00002000	//X	爆発よけ
-
-#define FIRE_QUADUSE		0x00004000	//X	Quad時の連射武器選択
-#define FIRE_AVOIDINV		0x00008000	//X 相手がペンタの時逃げる
-
-#define FIRE_BFG			0x00010000	//X 普通にBFGを撃つ
-
-#define FIRE_SHIFT_R		0x00020000	//X 右スライド
-#define FIRE_SHIFT_L		0x00040000	//X 左スライド
-
-#define FIRE_SHIFT			(FIRE_SHIFT_R | FIRE_SHIFT_L)//X 右スライド
-
-#define FIRE_REFLECT		0x00080000	// 壁に反射させる
-
-#define FIRE_IGNORE			0x10000000	//無視して逃げる
-
-// means of death
-
-#define MOD_SNIPERAIL			50		//SNIPE RAIL
-#define MOD_LOCMISSILE			51		//LOCKON MISSILE
-
-#define MOD_BFG100K				52		//
-
-#define MOD_AIRSTRIKE			70		//AIRSTRIKE
 //----------------------------------------------------------------
-//general status list
-#define STS_IDLE		0x00000000	//normal running
-#define STS_THINK		0x00000001	//stand and analise
-#define STS_LADDERUP	0x00000002	//crimb the ladder
-#define STS_ROCJ		0x00000004	//rocket jumping
-#define STS_TURBOJ		0x00000008	//turbo jump
-#define STS_WATERJ		0x00000010	//turbo jump
 
-#define STS_SJMASK		(STS_ROCJ | STS_TURBOJ | STS_WATERJ)	//special jump mask
-#define STS_SJMASKEXW	(STS_ROCJ | STS_TURBOJ )				//special jump mask ex. water
-
-
-#define STS_TALKING		0x00000200	//talking
-#define STS_ESC_WXPL	0x00000400	//escape from explode
-
-#define STS_MOVE_WPOINT	0x00000800	//moving waiting point
-//#define STS_W_EXPL		0x00001000	//wait for end of explode
-
-//wait
-#define STS_W_DONT		0x00001000	//don't wait door or plat
-#define STS_W_DOOROPEN	0x00002000	//wait for door open or down to bottom
-#define STS_W_ONPLAT	0x00004000	//wait for plat or door reach to da top
-#define STS_W_ONDOORUP	0x00008000	//wait for door reach to da top
-#define STS_W_ONDOORDWN	0x00010000	//wait for door reach to da bottom
-#define STS_W_ONTRAIN	0x00020000	//wait for plat or door reach to da top
-#define STS_W_COMETRAIN	0x00040000  //wait for train come
-#define STS_W_COMEPLAT	0x00080000  //wait for plat come
-
-#define STS_WAITS		(STS_W_DONT | STS_W_DOOROPEN | STS_W_COMEPLAT | STS_W_ONPLAT | STS_W_ONDOORUP | STS_W_ONDOORDWN | STS_W_ONTRAIN)
-#define STS_WAITSMASK	(STS_W_DOOROPEN | STS_W_ONPLAT | STS_W_ONDOORUP | STS_W_COMEPLAT | STS_W_ONDOORDWN | STS_W_ONTRAIN)
-#define STS_WAITSMASK2	(STS_W_ONDOORDWN |STS_W_ONDOORUP | STS_W_ONPLAT | STS_W_ONTRAIN)
-#define STS_WAITSMASKCOM (STS_W_DOOROPEN | STS_W_ONPLAT | STS_W_ONDOORUP | STS_W_ONDOORDWN | STS_W_ONTRAIN)
-//----------------------------------------------------------------
-//general status list
-#define CTS_ENEM_NSEE	0x00000001	//have enemy but can't see
-#define CTS_AGRBATTLE	0x00000002	//aglessive battle
-#define	CTS_ESCBATTLE	0x00000004	//escaping battle(item want)
-#define CTS_HIPBATTLE	0x00000008	//high position battle(camp)
-
-
-//shoot
-#define CTS_PREAIMING	0x00000010	//prepare for snipe or lockon
-#define CTS_AIMING		0x00000020	//aimning for snipe or lockon
-#define CTS_GRENADE		0x00000040  //hand grenade mode
-#define CTS_JUMPSHOT	0x00000080	//jump shot
-
-#define CTS_COMBS (CTS_AGRBATTLE | CTS_ESCBATTLE | CTS_HIPBATTLE | CTS_ENEM_NSEE)
-
-//----------------------------------------------------------------
-//route struct
-#define MAXNODES			10000	//5000 added 5000 pods
-#define MAXLINKPOD			6		//don't modify this
-#define CTF_FLAG1_FLAG		0x0000
-#define CTF_FLAG2_FLAG		0x8000
-
-typedef struct
-{
-	vec3_t	Pt;		//target point
-	union
-	{
-		vec3_t			Tcourner;				//target courner(train and grap-shot only)
-		unsigned short	linkpod[MAXLINKPOD];	//(GRS_NORMAL,GRS_ITEMS only 0 = do not select pod)
-	};
-
-	edict_t	*ent;	//target ent
-	short	index;	//index num
-	short	state;	//targetstate
-} route_t;
-
-//----------------------------------------------------------------
-//bot info struct
-#define MAXBOTS		64
-#define MAXBOP		16
-
-// bot params
-#define BOP_WALK		0	//flags
-#define BOP_AIM			1	//aiming
-#define BOP_PICKUP		2	//frq PICKUP
-#define BOP_OFFENCE		3	//chiken fire etc.
-#define BOP_COMBATSKILL	4	//combat skill
-#define BOP_ROCJ		5	//rocket jump
-#define BOP_REACTION	6	//reaction skill exp. frq SEARCH ENEMY
-#define BOP_VRANGE		7	//V-View of RANGE	縦
-#define BOP_HRANGE		8	//H-View of Range	横
-#define BOP_PRIWEP		9	//primary weapon
-#define BOP_SECWEP		10	//secondary weapon
-#define BOP_DODGE		11	//dodge
-#define BOP_ESTIMATE	12	//estimate
-#define BOP_NOISECHK	13	//noisecheck
-#define BOP_NOSTHRWATER	14	//can't see through water
-#define BOP_TEAMWORK	15	//teamwork
-
-typedef	struct
-{
-	char	netname[21];		//netname
-	char	model[21];			//model
-	char	skin[21];			//skin
-	int		spflg;				//spawned flag 0-not 1-waiting 2-spawned
-	int		team;				//team NO. 0-noteam 1-RED 2-BLUE
-	int		arena;				//if arena is on
-	unsigned char	param[MAXBOP];		//Params
-}	botinfo_t;
-
-//----------------------------------------------------------------
-//message section name
-#define MESS_DEATHMATCH		"[MessDeathMatch]"
-#define MESS_CHAIN_DM		"[MessChainDM]"
-#define	MESS_CTF			"[MessCTF]"
-#define MESS_CHAIN_CTF		"[MessChainCTF]"
-
-//----------------------------------------------------------------
-//bot list section name
-#define BOTLIST_SECTION_DM	"[BotList]"
-#define BOTLIST_SECTION_TM	"[BotListTM]"
-
-//----------------------------------------------------------------
-#define MAX_BOTSKILL		10
-
-#define FALLCHK_LOOPMAX	30
-
-//laser Index
-#define MAX_LASERINDEX		30
-extern edict_t*		LaserIndex[MAX_LASERINDEX];
-
-//Explotion Index
-#define MAX_EXPLINDEX		12
-extern edict_t*		ExplIndex[MAX_EXPLINDEX];
-//
-
-
-extern	int			cumsindex;
-extern	int			targetindex;		//debugtarget
-
-extern	int			ListedBotCount;		//bot count of list
-float bot_time;
-float wait_time;
-float kill_time;
-extern	int			SpawnWaitingBots;
-extern	char		ClientMessage[MAX_STRING_CHARS];
-extern	botinfo_t	Bot[MAXBOTS];
-extern	route_t		Route[MAXNODES];
-extern	int			CurrentIndex;
-extern	float		JumpMax;
-extern	int			botskill;
-extern	int			trace_priority;
-extern	int			FFlg[MAX_BOTSKILL];
-extern int NumBotsInGame; //Raven
-extern	int			ListedBots;
-
-//for avoid abnormal frame error
-extern	int			skullindex;
-extern	int			headindex;
-
-
-//item index
-extern	int			mpindex[MPI_INDEX];
-
-//PON-CTF
-extern	edict_t		*bot_team_flag1;
-extern	edict_t		*bot_team_flag2;
-//PON-CTF
-
-//pre searched items
-extern	gitem_t	*Fdi_GRAPPLE;
-extern	gitem_t	*Fdi_BLASTER;
-extern	gitem_t *Fdi_SHOTGUN;
-extern	gitem_t *Fdi_SUPERSHOTGUN;
-extern	gitem_t *Fdi_MACHINEGUN;
-extern	gitem_t *Fdi_CHAINGUN;
-extern	gitem_t *Fdi_GRENADES;
-extern	gitem_t *Fdi_GRENADELAUNCHER;
-extern	gitem_t *Fdi_ROCKETLAUNCHER;
-extern	gitem_t *Fdi_HYPERBLASTER;
-extern	gitem_t *Fdi_RAILGUN;
-extern	gitem_t *Fdi_BFG;
-
-extern	gitem_t *Fdi_SHELLS;
-extern	gitem_t *Fdi_BULLETS;
-extern	gitem_t *Fdi_CELLS;
-extern	gitem_t *Fdi_ROCKETS;
-extern	gitem_t *Fdi_SLUGS;
-extern	float	ctfjob_update;
-//
 qboolean mapvotefilled;
 
 

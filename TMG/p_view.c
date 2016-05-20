@@ -4,6 +4,7 @@
 //RAV
 #include "runes.h"
 //
+#include "bot.h"
 
 edict_t		*current_player;
 gclient_t	*current_client;

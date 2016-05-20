@@ -1,113 +1,115 @@
 #ifndef BOTHEAD
 #define BOTHEAD
 
-#include "g_local.h"
+/*
+ Note: Order dependency
+ Include this header _after_ including g_local.h
+ */
+
+//QW// Wrapper not implemented yet
+//
+//#ifndef G_LOCAL_H
+//#include "g_local.h"
+//#endif
+
+// Bot cvar declarations
+extern	cvar_t  *use_bots;
+extern	cvar_t	*bot_num;
+extern	cvar_t	*bot_free_clients;
+extern	cvar_t	*bot_insult;
+extern	cvar_t	*bot_chat;
+extern	cvar_t	*bot_camptime;
+extern	cvar_t	*bot_walkspeed;//20
+extern	cvar_t	*bot_runspeed;//32
+extern	cvar_t	*bot_duckpeed;//10
+extern	cvar_t	*bot_waterspeed;//16
+
+/**
+ Initialize all bot-related cvars in this function
+ Call this from GameInit()
+ */
+void Bot_InitCvars(void);
 
 //general func
-void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
-
-void SetBotFlag1(edict_t *ent);
-void SetBotFlag2(edict_t *ent);
-edict_t *GetBotFlag1(void);
-edict_t *GetBotFlag2(void);
-qboolean ChkTFlg( void );
-void SpawnItem4 (edict_t *ent, gitem_t *item);
+extern void SetBotFlag1(edict_t *ent);
+extern void SetBotFlag2(edict_t *ent);
+extern edict_t *GetBotFlag1(void);
+extern edict_t *GetBotFlag2(void);
+extern qboolean ChkTFlg( void );
+extern void SpawnItem4 (edict_t *ent, gitem_t *item);
+extern void TauntVictim(edict_t *ent, edict_t *victim);
+extern void InsultVictim(edict_t *ent, edict_t *victim);
 
 //bot spawn & remove
-qboolean	SpawnBot(int i);
-void		Bot_LevelChange(void);
-void		Load_BotInfo(void);
-void		Bot_SpawnCall(void);
-void		RemoveBot(void);
-void		SpawnBotReserving(void);
-
-//weapon
-void Weapon_Blaster (edict_t *ent);
-void Weapon_Shotgun (edict_t *ent);
-void Weapon_SuperShotgun (edict_t *ent);
-void Weapon_Machinegun (edict_t *ent);
-void Weapon_Chaingun (edict_t *ent);
-void Weapon_HyperBlaster (edict_t *ent);
-void Weapon_RocketLauncher (edict_t *ent);
-void Weapon_Grenade (edict_t *ent);
-void Weapon_GrenadeLauncher (edict_t *ent);
-void Weapon_Railgun (edict_t *ent);
-void Weapon_BFG (edict_t *ent);
-void CTFWeapon_Grapple (edict_t *ent);
+extern qboolean	SpawnBot(int i);
+extern void		Bot_LevelChange(void);
+extern void		Load_BotInfo(void);
+extern void		Bot_SpawnCall(void);
+extern void		RemoveBot(void);
+extern void		SpawnBotReserving(void);
 
 // RAFAEL
-void Weapon_Ionripper (edict_t *ent);
-void Weapon_Phalanx (edict_t *ent);
-void Weapon_Trap (edict_t *ent);
+extern void Weapon_Ionripper (edict_t *ent);
+extern void Weapon_Phalanx (edict_t *ent);
+extern void Weapon_Trap (edict_t *ent);
 
 // wideuse
-qboolean Bot_trace (edict_t *ent,edict_t *other);
-qboolean Bot_trace2 (edict_t *ent,vec3_t ttz);
-float Get_yaw (vec3_t vec);		//
-float Get_pitch (vec3_t vec);	//
-float Get_vec_yaw (vec3_t vec,float yaw);
-float Get_vec_yaw2 (vec3_t vec,float yaw);
-void ShowGun(edict_t *ent);
-void SpawnItem3 (edict_t *ent, gitem_t *item);
-int Bot_moveT ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom);
-void Set_BotAnim(edict_t *ent,int anim,int frame,int end);
-void plat_go_up (edict_t *ent);
-int Get_KindWeapon(gitem_t	*it);
-qboolean TargetJump(edict_t *ent,vec3_t tpos);
-qboolean Bot_traceS (edict_t *ent,edict_t *other);
-qboolean Bot_traceX (edict_t *ent,edict_t *other);
-qboolean Bot_traceY (edict_t *ent,edict_t *other);
-qboolean Bot_Fall(edict_t *ent,vec3_t pos,float dist);
+extern qboolean Bot_trace (edict_t *ent,edict_t *other);
+extern qboolean Bot_trace2 (edict_t *ent,vec3_t ttz);
+extern float Get_yaw (vec3_t vec);		//
+extern float Get_pitch (vec3_t vec);	//
+extern float Get_vec_yaw (vec3_t vec,float yaw);
+extern float Get_vec_yaw2 (vec3_t vec,float yaw);
+extern int Bot_moveT ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom);
+extern void Set_BotAnim(edict_t *ent,int anim,int frame,int end);
+extern int Get_KindWeapon(gitem_t	*it);
+extern qboolean TargetJump(edict_t *ent,vec3_t tpos);
+extern qboolean Bot_traceS (edict_t *ent,edict_t *other);
+extern qboolean Bot_traceX (edict_t *ent,edict_t *other);
+extern qboolean Bot_traceY (edict_t *ent,edict_t *other);
+extern qboolean Bot_Fall(edict_t *ent,vec3_t pos,float dist);
 
-void SelectSpawnPoint (edict_t *ent, vec3_t origin, vec3_t angles);
-void ClientUserinfoChanged (edict_t *ent, char *userinfo);
-void CopyToBodyQue (edict_t *ent);
+extern void ClientUserinfoChanged (edict_t *ent, char *userinfo);
+extern void CopyToBodyQue (edict_t *ent);
 
 //route util
-qboolean TraceX (edict_t *ent,vec3_t p2);
-void Move_LastRouteIndex(void);
-void Get_RouteOrigin(int index,vec3_t pos);
+extern qboolean TraceX (edict_t *ent,vec3_t p2);
+extern void Move_LastRouteIndex(void);
+extern void Get_RouteOrigin(int index,vec3_t pos);
 
 //Bot Func
-void ZigockJoinMenu(edict_t *ent);
-qboolean ZigockStartClient(edict_t *ent);
-void Cmd_AirStrike(edict_t *ent);
-void BotEndServerFrame (edict_t *ent);
-void SpawnItem2 (edict_t *ent, gitem_t *item);
-void Get_WaterState(edict_t *ent);
-void Bot_Think (edict_t *self);
-void PutBotInServer (edict_t *ent);
-void SpawnBotReserving2(int *red,int *blue);
+extern void Cmd_AirStrike(edict_t *ent);
+extern void BotEndServerFrame (edict_t *ent);
+extern void Get_WaterState(edict_t *ent);
+extern void Bot_Think (edict_t *self);
+extern void PutBotInServer (edict_t *ent);
+extern void SpawnBotReserving2(int *red,int *blue);
 
 //Combat AI
-void Combat_Level0(edict_t *ent,int foundedenemy,int enewep,float aim,float distance,int skill);
-void Combat_LevelX(edict_t *ent,int foundedenemy,int enewep,float aim,float distance,int skill);
-void UsePrimaryWeapon(edict_t *ent);
+extern void Combat_Level0(edict_t *ent,int foundedenemy,int enewep,float aim,float distance,int skill);
+extern void Combat_LevelX(edict_t *ent,int foundedenemy,int enewep,float aim,float distance,int skill);
+extern void UsePrimaryWeapon(edict_t *ent);
 
 //Explotion Index
-void UpdateExplIndex(edict_t* ent);
+extern void UpdateExplIndex(edict_t* ent);
 
 //flag
-qboolean ZIGDrop_Flag(edict_t *ent, gitem_t *item);
+extern qboolean ZIGDrop_Flag(edict_t *ent, gitem_t *item);
 
 //p_view.c
-void BotEndServerFrame (edict_t *ent);
+extern void BotEndServerFrame (edict_t *ent);
 
 //Bot AI routine
-void Bots_Move_NORM (edict_t *ent);		//normal AI
+extern void Bots_Move_NORM (edict_t *ent);		//normal AI
 
 //spawn
-void SetBotFlag1(edict_t *ent);
-void SetBotFlag2(edict_t *ent);
-void CTFSetupNavSpawn(void);
+extern void CTFSetupNavSpawn(void);
 
 //ctf
-void CTFJobAssign (void);		//job assign
+extern void CTFJobAssign (void);		//job assign
 
-//VWep
-// ### Hentai ### BEGIN
-//void ShowGun(edict_t *ent);
-// ###	Hentai ### END
+extern void CheckCampSite(edict_t *other);
+
 
 //----------------------------------------------------------------
 
@@ -123,6 +125,8 @@ void CTFJobAssign (void);		//job assign
 #define VEL_BOT_LADRUP	200			//ladderup vel
 #define VEL_BOT_WLADRUP	200	//0			//water ladderup gain
 
+#define GROUND_TEST_EPSILON		0.25
+#define MASK_BOTGROUND			MASK_BOTSOLIDX
 
 //classes
 #define CLS_NONE	0	//normal
@@ -305,18 +309,18 @@ void CTFJobAssign (void);		//job assign
 #define CTF_FLAG1_FLAG		0x0000
 #define CTF_FLAG2_FLAG		0x8000
 
-//typedef struct
-//{
-//	vec3_t	Pt;		//target point
-//	union
-//	{
-//		vec3_t			Tcourner;				//target courner(train and grap-shot only)
-//		unsigned short	linkpod[MAXLINKPOD];	//(GRS_NORMAL,GRS_ITEMS only 0 = do not select pod)
-//	};
-//	edict_t	*ent;	//target ent
-//	short	index;	//index num
-//	short	state;	//targetstate
-//} route_t;
+typedef struct
+{
+	vec3_t	Pt;		//target point
+	union
+	{
+		vec3_t			Tcourner;				//target courner(train and grap-shot only)
+		unsigned short	linkpod[MAXLINKPOD];	//(GRS_NORMAL,GRS_ITEMS only 0 = do not select pod)
+	};
+	edict_t	*ent;	//target ent
+	short	index;	//index num
+	short	state;	//targetstate
+} route_t;
 
 //----------------------------------------------------------------
 //bot info struct
@@ -341,16 +345,16 @@ void CTFJobAssign (void);		//job assign
 #define BOP_NOSTHRWATER	14	//can't see through water
 #define BOP_TEAMWORK	15	//teamwork
 
-//typedef	struct
-//{
-//	char	netname[21];		//netname
-//	char	model[21];			//model
-//	char	skin[21];			//skin
-//	int		spflg;				//spawned flag 0-not 1-waiting 2-spawned
-//	int		team;				//team NO. 0-noteam 1-RED 2-BLUE
-//	int		arena;				//if arena is on
-//	unsigned char	param[MAXBOP];		//Params
-//}	botinfo_t;
+typedef	struct
+{
+	char	netname[21];		//netname
+	char	model[21];			//model
+	char	skin[21];			//skin
+	int		spflg;				//spawned flag 0-not 1-waiting 2-spawned
+	int		team;				//team NO. 0-noteam 1-RED 2-BLUE
+	int		arena;				//if arena is on
+	unsigned char	param[MAXBOP];		//Params
+}	botinfo_t;
 
 //----------------------------------------------------------------
 //message section name
@@ -385,7 +389,9 @@ extern	int			cumsindex;
 extern	int			targetindex;		//debugtarget
 
 extern	int			ListedBotCount;		//bot count of list
-
+float bot_time;
+float wait_time;
+float kill_time;
 extern	int			SpawnWaitingBots;
 extern	char		ClientMessage[MAX_STRING_CHARS];
 extern	botinfo_t	Bot[MAXBOTS];
@@ -395,20 +401,16 @@ extern	float		JumpMax;
 extern	int			botskill;
 extern	int			trace_priority;
 extern	int			FFlg[MAX_BOTSKILL];
-
+extern int NumBotsInGame; //Raven
 extern	int			ListedBots;
 
 //for avoid abnormal frame error
 extern	int			skullindex;
 extern	int			headindex;
 
-extern	gitem_t		*zflag_item;
-extern	edict_t		*zflag_ent;
-extern	int			zigflag_spawn;
 
 //item index
-//QW// already defined in g_local.h
-//extern	int			mpindex[MPI_INDEX];
+extern	int			mpindex[MPI_INDEX];
 
 //PON-CTF
 extern	edict_t		*bot_team_flag1;

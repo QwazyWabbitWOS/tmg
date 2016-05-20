@@ -78,21 +78,22 @@ void BeginIntermission (edict_t *targ)
 	{
 		char *nextwav;
 		char sound[64];
-		
+
 		if ((nextwav = wav_mod_next_map()))
-		{	
+		{
 			gi.cvar_set("wav", nextwav);
-		//set up the songtoplay cvar
+			//set up the songtoplay cvar
 			sprintf(sound, "misc/%s.wav", nextwav);
 			gi.cvar_set("song", sound);
 		}
 	}
-//ZOID
+
+	//ZOID
 	if (deathmatch->value && ctf->value)
 	{
 		CTFCalcScores();
 	}
-//ZOID
+	//ZOID
 
 	game.autosaved = false;
 
@@ -339,7 +340,6 @@ void BeginIntermission (edict_t *targ)
 //}
 
 
-int rav_getFPH(gclient_t* cl);
 void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 {
 	char	entry[1400];

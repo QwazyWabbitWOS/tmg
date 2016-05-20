@@ -4,6 +4,7 @@
 #include "s_map.h"
 #include "filehand.h"
 #include "filtering.h"
+#include "bot.h"
 
 //RAV
 #include "gslog.h"	//	StdLog - Mark Davies
@@ -166,10 +167,7 @@ This will be called when the dll is first loaded, which
 only happens when a new game is begun
 ============
 */
-qboolean default_exec = false;
-
-void SetBotFlag1(edict_t *ent);	//チーム1の旗
-void SetBotFlag2(edict_t *ent);  //チーム2の旗
+//QW// UNUSED qboolean default_exec = false;
 
 void InitGame (void)
 {
@@ -247,18 +245,9 @@ void InitGame (void)
 	bob_pitch = gi.cvar ("bob_pitch", "0.002", 0);
 	bob_roll = gi.cvar ("bob_roll", "0.002", 0);
 
-	// bot commands
-	use_bots = gi.cvar ("use_bots", "1", CVAR_LATCH);
-	bot_num = gi.cvar ("bot_num", "0", 0);
-	bot_free_clients = gi.cvar ("bot_free_clients", "2", CVAR_ARCHIVE);
-	bot_insult = gi.cvar ("bot_insult", "1", 0);
-	bot_chat = gi.cvar ("bot_chat", "1", 0);
-	bot_camptime = gi.cvar ("bot_camptime", "30", 0);
-	bot_walkspeed = gi.cvar ("bot_walkspeed", "25", 0);//20
-	bot_runspeed = gi.cvar ("bot_runspeed", "40", 0);//32
-	bot_duckpeed = gi.cvar ("bot_duckpeed", "20", 0);//10
-	bot_waterspeed = gi.cvar ("bot_waterspeed", "20", 0);//16
-	
+	//QW// game bots
+	Bot_InitCvars(); // initialize the bot cvars
+
 	//chain edit flag
 	chedit = gi.cvar ("chain", "0", CVAR_LATCH);
 
@@ -549,6 +538,7 @@ void InitGame (void)
 	if (log_chat->value)
 		LogChat(NULL);
 	// items
+
 	InitItems ();
 
 	Com_sprintf (game.helpmessage1, sizeof(game.helpmessage1), "");
@@ -611,7 +601,7 @@ void InitGame (void)
 
 //=========================================================
 
-void WriteField1 (FILE *f, field_t *field, byte *base)
+static void WriteField1 (FILE *f, field_t *field, byte *base)
 {
 	void		*p;
 	size_t		len;
@@ -662,7 +652,7 @@ void WriteField1 (FILE *f, field_t *field, byte *base)
 	}
 }
 
-void WriteField2 (FILE *f, field_t *field, byte *base)
+static void WriteField2 (FILE *f, field_t *field, byte *base)
 {
 	size_t		len;
 	void		*p;
@@ -683,7 +673,7 @@ void WriteField2 (FILE *f, field_t *field, byte *base)
 	}
 }
 
-void ReadField (FILE *f, field_t *field, byte *base)
+static void ReadField (FILE *f, field_t *field, byte *base)
 {
 	void	*p;
 	int		len;
@@ -756,7 +746,7 @@ WriteClient
 All pointer variables (except function pointers) must be handled specially.
 ==============
 */
-void WriteClient (FILE *f, gclient_t *client)
+static void WriteClient (FILE *f, gclient_t *client)
 {
 	field_t		*field;
 	gclient_t	temp;
@@ -787,7 +777,7 @@ ReadClient
 All pointer variables (except function pointers) must be handled specially.
 ==============
 */
-void ReadClient (FILE *f, gclient_t *client)
+static void ReadClient (FILE *f, gclient_t *client)
 {
 	field_t		*field;
 	size_t		count;
@@ -882,7 +872,7 @@ WriteEdict
 All pointer variables (except function pointers) must be handled specially.
 ==============
 */
-void WriteEdict (FILE *f, edict_t *ent)
+static void WriteEdict (FILE *f, edict_t *ent)
 {
 	field_t		*field;
 	edict_t		temp;
@@ -914,7 +904,7 @@ WriteLevelLocals
 All pointer variables (except function pointers) must be handled specially.
 ==============
 */
-void WriteLevelLocals (FILE *f)
+static void WriteLevelLocals (FILE *f)
 {
 	field_t		*field;
 	level_locals_t		temp;
@@ -946,7 +936,7 @@ ReadEdict
 All pointer variables (except function pointers) must be handled specially.
 ==============
 */
-void ReadEdict (FILE *f, edict_t *ent)
+static void ReadEdict (FILE *f, edict_t *ent)
 {
 	field_t		*field;
 	size_t		count;
@@ -966,7 +956,7 @@ ReadLevelLocals
 All pointer variables (except function pointers) must be handled specially.
 ==============
 */
-void ReadLevelLocals (FILE *f)
+static void ReadLevelLocals (FILE *f)
 {
 	field_t		*field;
 	size_t		count;

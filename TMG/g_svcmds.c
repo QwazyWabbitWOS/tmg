@@ -1,6 +1,7 @@
 
 #include "g_local.h"
 #include "filehand.h"
+#include "bot.h"
 
 void sv_addop (edict_t *ent);
 //void sv_addmop (edict_t *ent);
