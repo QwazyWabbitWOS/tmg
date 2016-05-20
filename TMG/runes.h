@@ -26,6 +26,6 @@ void rune_use (edict_t *ent, gitem_t *item);
 void rune_drop (edict_t *ent, gitem_t *item);
 void runes_drop (edict_t *ent);
 void rune_select_spawn_point(vec3_t origin);
-void rune_spawn(edict_t *rune, gitem_t *item);
+void Rune_Spawn(edict_t *rune, gitem_t *item);
 void runes_spawn(edict_t *self);
 void runes_spawn_start(void);

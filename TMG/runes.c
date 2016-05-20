@@ -215,7 +215,7 @@ static edict_t *FindRuneSpawn(void)
 void SpawnTech(gitem_t *item, edict_t *spot);
 
 // spawns a rune
-void rune_spawn(edict_t *rune, gitem_t *item)
+void Rune_Spawn(edict_t *rune, gitem_t *item)
 {
 	edict_t *spot;
 	
@@ -224,6 +224,7 @@ void rune_spawn(edict_t *rune, gitem_t *item)
 	if ((spot = FindRuneSpawn()) != NULL)
 	{
 		SpawnTech(rune->item, spot);
+		DbgPrintf("Tech 0x%x type %s spawned, time %.1f\n", rune, rune->classname, level.time);
 		rune->noblock = true;
 		return;
 	}
@@ -250,7 +251,7 @@ void runes_spawn(edict_t *self)
 			}
 			else
 			{
-				rune_spawn(rune, FindItem(rune_namefornum[j]));
+				Rune_Spawn(rune, FindItem(rune_namefornum[j]));
 			}
 		}
 	}
