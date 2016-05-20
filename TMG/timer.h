@@ -29,8 +29,6 @@ int CountDownInFinalMinute (void);
 void CountDown (void);
 void CheckState(void);
 
-// defined in bot_func.c
-extern void Check_Bot_Number (void);
 
 /**
  start the server in a 'waiting for players' state

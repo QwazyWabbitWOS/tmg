@@ -136,6 +136,7 @@ void CTFSay_Team_Location(edict_t *who, char *buf);
 void CTFSay_Team(edict_t *who, char *msg);
 void CTFJoinTeam(edict_t *ent, int desired_team);
 
+void CTFFlagThink(edict_t *ent);
 void CTFFlagSetup (edict_t *ent);
 void CTFResetFlag(int ctf_team);
 

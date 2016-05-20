@@ -91,7 +91,6 @@ void Move_Begin (edict_t *ent)
 	ent->think = Move_Final;
 }
 
-void Think_AccelMove (edict_t *ent);
 
 void Move_Calc (edict_t *ent, vec3_t dest, void(*func)(edict_t*))
 {
@@ -335,7 +334,6 @@ void Think_AccelMove (edict_t *ent)
 }
 
 
-void plat_go_down (edict_t *ent);
 
 void plat_hit_top (edict_t *ent)
 {
@@ -361,6 +359,7 @@ void plat_hit_bottom (edict_t *ent)
   }
   ent->moveinfo.state = STATE_BOTTOM;
 }
+
 void plat_go_down (edict_t *ent)
 {
 
@@ -593,7 +592,7 @@ check either the X_AXIS or Y_AXIS box to change that.
 "dmg"	damage to inflict when blocked (2 default)
 
 REVERSE will cause the it to rotate in the opposite direction.
-STOP mean it will stop moving instead of pushing entities
+STOP means it will stop moving instead of pushing entities
 */
 
 void rotating_blocked (edict_t *self, edict_t *other)

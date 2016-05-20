@@ -1456,9 +1456,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 }
 
 
-
 //RAV Spectator MODE
-static
 void player_set_observer(edict_t *ent, int value)
 {
 	if (value)
@@ -1504,6 +1502,7 @@ void player_set_observer(edict_t *ent, int value)
 
 	}
 }
+
 
 //3ZB
 void Cmd_ZoomIn(edict_t *ent)

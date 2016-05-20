@@ -37,8 +37,6 @@ extern edict_t *GetBotFlag1(void);
 extern edict_t *GetBotFlag2(void);
 extern qboolean ChkTFlg( void );
 extern void SpawnItem4 (edict_t *ent, gitem_t *item);
-extern void TauntVictim(edict_t *ent, edict_t *victim);
-extern void InsultVictim(edict_t *ent, edict_t *victim);
 
 //bot spawn & remove
 extern qboolean	SpawnBot(int i);
@@ -70,17 +68,12 @@ extern qboolean Bot_traceX (edict_t *ent,edict_t *other);
 extern qboolean Bot_traceY (edict_t *ent,edict_t *other);
 extern qboolean Bot_Fall(edict_t *ent,vec3_t pos,float dist);
 
-extern void ClientUserinfoChanged (edict_t *ent, char *userinfo);
-extern void CopyToBodyQue (edict_t *ent);
 
 //route util
-extern qboolean TraceX (edict_t *ent,vec3_t p2);
-extern void Move_LastRouteIndex(void);
 extern void Get_RouteOrigin(int index,vec3_t pos);
 
 //Bot Func
 extern void Cmd_AirStrike(edict_t *ent);
-extern void BotEndServerFrame (edict_t *ent);
 extern void Get_WaterState(edict_t *ent);
 extern void Bot_Think (edict_t *self);
 extern void PutBotInServer (edict_t *ent);
@@ -97,9 +90,6 @@ extern void UpdateExplIndex(edict_t* ent);
 //flag
 extern qboolean ZIGDrop_Flag(edict_t *ent, gitem_t *item);
 
-//p_view.c
-extern void BotEndServerFrame (edict_t *ent);
-
 //Bot AI routine
 extern void Bots_Move_NORM (edict_t *ent);		//normal AI
 
@@ -110,6 +100,25 @@ extern void CTFSetupNavSpawn(void);
 extern void CTFJobAssign (void);		//job assign
 
 extern void CheckCampSite(edict_t *other);
+
+//
+// bot_func.c
+//
+extern qboolean Get_YenPos(char *Buff,int *curr);
+extern int rav_getnumbots(void);
+extern void BotAssignTeamCtf(gclient_t *who);
+extern void Check_Bot_Number (void);
+extern edict_t *BestScorePlayer(void);
+extern void InsultVictim(edict_t *ent, edict_t *victim);
+extern void TauntVictim(edict_t *ent, edict_t *victim);
+extern void RandomChat(edict_t *ent);
+extern qboolean InsideWall(edict_t *ent);
+extern void AdjustAngle(edict_t *ent, vec3_t targaim, float aim);
+extern int Get_NumOfPlayer (void);
+extern edict_t *Get_NewClient (void);
+extern void InitializeBot (edict_t *ent, int botindex);
+extern void AirSight_Think(edict_t *ent);
+extern void AirStrike_Think(edict_t *ent);
 
 
 //----------------------------------------------------------------

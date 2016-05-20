@@ -1759,26 +1759,46 @@ extern void Weapon_Grenade (edict_t *ent);
 extern void Weapon_GrenadeLauncher (edict_t *ent);
 extern void Weapon_Railgun (edict_t *ent);
 extern void Weapon_BFG (edict_t *ent);
-extern void CTFWeapon_Grapple (edict_t *ent);
 int hstime;
 
 //
 // g_func.c
 //
-void plat_go_up (edict_t *ent);
+void Move_Done (edict_t *ent);
+void Move_Final (edict_t *ent);
+void Move_Begin (edict_t *ent);
+void Move_Calc (edict_t *ent, vec3_t dest, void(*func)(edict_t*));
+void AngleMove_Done (edict_t *ent);
+void AngleMove_Final (edict_t *ent);
+void AngleMove_Begin (edict_t *ent);
+void AngleMove_Calc (edict_t *ent, void(*func)(edict_t*));
+void plat_CalcAcceleratedMove(moveinfo_t *moveinfo);
+void plat_Accelerate (moveinfo_t *moveinfo);
+void Think_AccelMove (edict_t *ent);
 
-void ClientUserinfoChanged (edict_t *ent, char *userinfo);
-void CopyToBodyQue (edict_t *ent);
+void plat_hit_top (edict_t *ent);
+void plat_hit_bottom (edict_t *ent);
+void plat_go_down (edict_t *ent);
+void plat_go_up (edict_t *ent);
+void plat_blocked (edict_t *self, edict_t *other);
+
+void Use_Plat (edict_t *ent, edict_t *other, edict_t *activator);
+void Touch_Plat_Center (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf);
+
+void plat_spawn_inside_trigger (edict_t *ent);
+
+void SP_func_plat (edict_t *ent);
+
+void rotating_blocked (edict_t *self, edict_t *other);
+
+void trigger_elevator_use (edict_t *self, edict_t *other, edict_t *activator);
 
 //route util
-qboolean TraceX (edict_t *ent,vec3_t p2);
 void Move_LastRouteIndex(void);
 
 //Bot Func
 void Cmd_AirStrike(edict_t *ent);
-void BotEndServerFrame (edict_t *ent);
 void Get_WaterState(edict_t *ent);
-void Bot_Think (edict_t *self);
 void PutBotInServer (edict_t *ent);
 void SpawnBotReserving2(int *red,int *blue);
 

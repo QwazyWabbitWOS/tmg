@@ -17,7 +17,6 @@
 #define	OPTIMIZE_INTERVAL	0.1
 //QW// not used int	num_clients	= 0;
 void SP_item_health_mega (edict_t *self);//RAV
-void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 
 //
 // Gross, ugly, disgusting hack section
@@ -819,7 +818,6 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 	}
 }
 
-void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf);
 
 void QuadTimeout (edict_t *ent)
 {
@@ -2958,9 +2956,11 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	// save off the userinfo in case we want to check something later
 	strncpy (ent->client->pers.userinfo, userinfo, sizeof(ent->client->pers.userinfo)-1);
 }
+
 /*
 RaVeNs remove edict/on forced reconnection 
-*/void RavenDisconnect (edict_t *ent)
+*/
+void RavenDisconnect (edict_t *ent)
 {
 	int		playernum;
 
@@ -2981,8 +2981,6 @@ RaVeNs remove edict/on forced reconnection
 	gi.configstring (CS_PLAYERSKINS+playernum, "");
 }
 
-
-qboolean CheckForConnection(edict_t *player);
 
 char *GetPort(edict_t *ent,char *ip)
 {
@@ -3313,8 +3311,6 @@ Called when a player drops from the server.
 Will not be called between levels.
 ============
 */
-void botRemovePlayer(edict_t *self);
-
 void ClientDisconnect (edict_t *ent)
 {
 	int		playernum;
@@ -3391,6 +3387,7 @@ void ClientDisconnect (edict_t *ent)
 edict_t	*pm_passent;
 
 // pmove doesn't need to know about passent and contentmask
+static
 trace_t	PM_trace (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end)
 {
 	if (pm_passent->health > 0)
@@ -3407,6 +3404,7 @@ unsigned CheckBlock (void *b, int c)
 		v+= ((byte *)b)[i];
 	return v;
 }
+
 void PrintPmove (pmove_t *pm)
 {
 	unsigned	c1, c2;
@@ -3415,18 +3413,19 @@ void PrintPmove (pmove_t *pm)
 	c2 = CheckBlock (&pm->cmd, sizeof(pm->cmd));
 	Com_Printf ("sv %3i:%i %i\n", pm->cmd.impulse, c1, c2);
 }
+
 //RAV
 void MV (edict_t * ent)
 {
-AngleVectors (ent->client->v_angle, v_forward, v_right, v_up);
-return;
+	AngleVectors (ent->client->v_angle, v_forward, v_right, v_up);
+	return;
 }
 
 static qboolean is_jump;
 static qboolean is_invis;
 static qboolean is_speed;
 
-float framerate (usercmd_t *cmd)
+static float framerate (usercmd_t *cmd)
 {
 	return ((float)cmd->msec / 1000);
 }
@@ -4361,10 +4360,6 @@ This will be called once for each server frame, before running
 any other entities in the world.
 ==============
 */
-
-void trigger_elevator_use (edict_t *self, edict_t *other, edict_t *activator);
-void Use_Plat (edict_t *ent, edict_t *other, edict_t *activator);
-void CTFFlagThink(edict_t *ent);
 
 extern char *dm_statusbar;
 extern char *raildm_statusbar;

@@ -56,6 +56,10 @@ void ClientCommand (edict_t *ent);
 
 void ValidateSelectedItem (edict_t *ent);
 
+//QW// UNUSED at this time
+//RAV Spectator MODE
+void player_set_observer(edict_t *ent, int value);
+
 
 
 #endif /* g_cmds_h */

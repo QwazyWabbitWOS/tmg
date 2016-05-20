@@ -800,7 +800,6 @@ void COM_StripExtension (char *in, char *out)
 COM_FileExtension
 ============
 */
-static
 char *COM_FileExtension (char *in)
 {
 	static char exten[8];

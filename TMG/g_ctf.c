@@ -14,10 +14,6 @@
 
 char menustring[24][64];
 
-// in p_client.c
-void TossClientWeapon (edict_t *self);
-
-
 // private
 static void old_teleporter_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
 
@@ -461,11 +457,6 @@ int CTFOtherTeam(int team)
 	}
 	return -1; // invalid value
 }
-
-/*--------------------------------------------------------------------------*/
-edict_t *SelectRandomDeathmatchSpawnPoint (void);
-edict_t *SelectFarthestDeathmatchSpawnPoint (void);
-float	PlayersRangeFromSpot (edict_t *spot);
 
 
 void CTFAssignSkin(edict_t *ent, char *s)
@@ -1137,16 +1128,12 @@ void CTFDrop_Flag(edict_t *ent, gitem_t *item)
 float	team1_rushbase_time, team2_rushbase_time;	// used by RUSHBASE command
 float	team1_defendbase_time, team2_defendbase_time;
 
-static void CTFFlagThink(edict_t *ent)
+void CTFFlagThink(edict_t *ent)
 {
 	if (ent->solid != SOLID_NOT)
 		ent->s.frame = 173 + (((ent->s.frame - 173) + 1) % 16);
 	ent->nextthink = level.time + FRAMETIME;
 }
-
-//3ZB
-void droptofloor (edict_t *ent);
-void ChainPodThink (edict_t *ent);
 
 //
 void CTFFlagSetup (edict_t *ent)

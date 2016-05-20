@@ -3,6 +3,7 @@
 #include "g_local.h"
 #include "e_hook.h"
 #include "bot.h"
+#include "hud.h"
 
 extern float myrand; // Note: Continuous random generation is CPU expensive
 extern float myrandom;
@@ -41,9 +42,9 @@ qboolean Get_YenPos(char *Buff,int *curr)
 //based on bot_free client spaces avaliable
 //========================================
 ///////////////get # of clients////////////////
-int rav_getnumclients();
+//QW//int rav_getnumclients();
 
-int rav_getnumbots()
+int rav_getnumbots(void)
 {
 	int rCount = 0;
 	int i;
@@ -62,7 +63,6 @@ int rav_getnumbots()
 	return rCount;
 }
 
-void ClientDisconnect (edict_t *ent);
 
 void Check_Bot_Number (void)
 {
@@ -110,6 +110,7 @@ void Check_Bot_Number (void)
 	//set up for next check
 	bot_time = level.time + 3;
 }
+
 //ctf
 void BotAssignTeamCtf(gclient_t *who)
 {
@@ -330,7 +331,8 @@ qboolean InsideWall(edict_t *ent)
 	return false;
 }
 //======================================================
-void AdjustAngle(edict_t *ent, vec3_t targaim, float aim) {
+void AdjustAngle(edict_t *ent, vec3_t targaim, float aim)
+{
 
   VectorSet(ent->s.angles,(Get_pitch(targaim)),(Get_yaw(targaim)),0.0F);
 
@@ -598,7 +600,6 @@ edict_t *Get_NewClient (void)
 	return NULL;
 }
 
-qboolean InsideWall(edict_t *ent);
 //----------------------------------------------------------------
 //Bot Think
 //
@@ -699,7 +700,7 @@ if (self->linkcount != self->monsterinfo.linkcount)
 //
 //----------------------------------------------------------------
 
-void InitializeBot (edict_t *ent,int botindex )
+void InitializeBot (edict_t *ent, int botindex)
 {
 	gclient_t	*client;
 	char		pinfo[200];
@@ -1675,6 +1676,7 @@ void AirStrike_Think(edict_t *ent)
 	}
 
 }
+
 void Cmd_AirStrike(edict_t *ent)
 {
 	edict_t	*viper;
