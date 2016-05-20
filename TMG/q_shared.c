@@ -800,6 +800,7 @@ void COM_StripExtension (char *in, char *out)
 COM_FileExtension
 ============
 */
+static
 char *COM_FileExtension (char *in)
 {
 	static char exten[8];
@@ -914,6 +915,7 @@ int		LittleLong (int l) {return _LittleLong(l);}
 float	BigFloat (float l) {return _BigFloat(l);}
 float	LittleFloat (float l) {return _LittleFloat(l);}
 
+static
 short   ShortSwap (short l)
 {
 	byte    b1,b2;
@@ -924,11 +926,13 @@ short   ShortSwap (short l)
 	return (b1<<8) + b2;
 }
 
+static
 short	ShortNoSwap (short l)
 {
 	return l;
 }
 
+static
 int    LongSwap (int l)
 {
 	byte    b1,b2,b3,b4;
@@ -941,11 +945,13 @@ int    LongSwap (int l)
 	return ((int)b1<<24) + ((int)b2<<16) + ((int)b3<<8) + b4;
 }
 
+static
 int	LongNoSwap (int l)
 {
 	return l;
 }
 
+static
 float FloatSwap (float f)
 {
 	union
@@ -963,6 +969,7 @@ float FloatSwap (float f)
 	return dat2.f;
 }
 
+static
 float FloatNoSwap (float f)
 {
 	return f;

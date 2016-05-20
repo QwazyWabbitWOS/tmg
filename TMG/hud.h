@@ -18,6 +18,9 @@ extern edict_t *votestarter, *votetarget;
 extern int CountConnectedClients (void);
 extern int rav_getFPM(gclient_t* cl);
 extern int rav_getFPH(gclient_t* cl);
+extern int rav_time(void);
+
+extern char *rav_gettech(edict_t *ent);
 
 extern int	wav_mod_;				// 1 if maps.txt was found and loaded 0 if not
 extern void wav_mod_set_up(void);		// Attempts to find and load maps.txt

@@ -272,9 +272,9 @@ int rav_getFPH(gclient_t* cl)
 		return (int)(fFPH + 0.5);
 	else
 		return (int)(fFPH - 0.5);
-} 
+}
 
-static int rav_time()
+int rav_time(void)
 {
 	long sec;
 
@@ -348,7 +348,7 @@ static int rav_getdied(gclient_t* cl)
 	return (int)(dead);
 }
 
-static char *rav_gettech(edict_t *ent)
+char *rav_gettech(edict_t *ent)
 {
 	gitem_t *rune;
 	int i;

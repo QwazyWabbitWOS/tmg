@@ -63,6 +63,7 @@ extern float Get_vec_yaw2 (vec3_t vec,float yaw);
 extern int Bot_moveT ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom);
 extern void Set_BotAnim(edict_t *ent,int anim,int frame,int end);
 extern int Get_KindWeapon(gitem_t	*it);
+extern float Get_pitch1 (vec3_t vec);
 extern qboolean TargetJump(edict_t *ent,vec3_t tpos);
 extern qboolean Bot_traceS (edict_t *ent,edict_t *other);
 extern qboolean Bot_traceX (edict_t *ent,edict_t *other);

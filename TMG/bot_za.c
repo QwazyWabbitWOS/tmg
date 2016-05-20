@@ -2197,7 +2197,7 @@ int Get_KindWeapon(gitem_t	*it)
 	else return WEAP_BLASTER;
 }
 
-static
+
 float Get_pitch1 (vec3_t vec)
 {
 		vec3_t		out;
