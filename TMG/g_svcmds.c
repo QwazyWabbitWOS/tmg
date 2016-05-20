@@ -185,9 +185,8 @@ static void Svcmd_Stuff (void)
 	char	*stuff;
 	char	*s;
 	edict_t	*ent;
-	int id;
+	int id = -1;
 
-	id = -1;
 	if (gi.argc() < 4)
 	{
 		gi.dprintf ("SV Stuff: Stuff any command to a client.\nUsage: sv stuff <userid> <command to stuff>\n");

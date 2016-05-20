@@ -676,12 +676,10 @@ Note that it isn't that hard to overflow the 1400 byte message limit!
 void DeathmatchScoreboard (edict_t *ent)
 {
  // Make sure ent exists!
-  if (!G_EntExists(ent))
-	  return;
-
+	if (!G_EntExists(ent))
+		return;
 
 	DeathmatchScoreboardMessage (ent, ent->enemy);
-
 	gi.unicast (ent, true);
 }
 

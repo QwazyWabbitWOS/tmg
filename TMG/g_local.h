@@ -1790,6 +1790,8 @@ void plat_spawn_inside_trigger (edict_t *ent);
 void SP_func_plat (edict_t *ent);
 
 void rotating_blocked (edict_t *self, edict_t *other);
+void rotating_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
+void rotating_use (edict_t *self, edict_t *other, edict_t *activator);
 
 void trigger_elevator_use (edict_t *self, edict_t *other, edict_t *activator);
 

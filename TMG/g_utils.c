@@ -575,7 +575,7 @@ void stuffcmd(edict_t *ent, char *text)
 	}
 	gi.WriteByte(11);				// 11 = svc_stufftext
 	gi.WriteString(text);
-	gi.unicast(ent, 1);
+	gi.unicast(ent, true);
 }
 
 float	entdist(edict_t *ent1, edict_t *ent2)

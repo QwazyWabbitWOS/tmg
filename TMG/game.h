@@ -128,7 +128,9 @@ typedef struct
 	void	(*Pmove) (pmove_t *pmove);		// player movement code common with client prediction
 
 	// network messaging
+	/** transmit to all clients */
 	void	(*multicast) (vec3_t origin, multicast_t to);
+	/** transmit message to client parameters ent, reliable */
 	void	(*unicast) (edict_t *ent, qboolean reliable);
 	void	(*WriteChar) (int c);
 	void	(*WriteByte) (int c);

@@ -72,14 +72,8 @@ void PMenu_Update(edict_t *ent)
 	char *t;
 	qboolean alt = false;
 
-//QW//crashes server if used
-//	if (ent->health<1)
-//	{
-//		PMenu_Close(ent);
-//		return;
-//	}
-
-	if (!ent->client->menu) {
+	if (!ent->client->menu)
+	{
 		gi.dprintf("warning:  ent has no menu\n");
 		return;
 	}

@@ -1155,14 +1155,14 @@ void ClientEndServerFrame (edict_t *ent)
 	// If the origin or velocity have changed since ClientThink(),
 	// update the pmove values.  This will happen when the client
 	// is pushed by a bmodel or kicked by an explosion.
-	// 
+	//
 	// If it wasn't updated here, the view position would lag a frame
 	// behind the body position when pushed -- "sinking into plats"
 	//
 	for (i=0 ; i<3 ; i++)
 	{
-		current_client->ps.pmove.origin[i] = ent->s.origin[i]*8.0;
-		current_client->ps.pmove.velocity[i] = ent->velocity[i]*8.0;
+		current_client->ps.pmove.origin[i] = ent->s.origin[i] * 8.0;
+		current_client->ps.pmove.velocity[i] = ent->velocity[i] * 8.0;
 	}
 
 	//
@@ -1192,6 +1192,7 @@ void ClientEndServerFrame (edict_t *ent)
 		ent->s.angles[PITCH] = (-360 + ent->client->v_angle[PITCH])/3;
 	else
 		ent->s.angles[PITCH] = ent->client->v_angle[PITCH]/3;
+
 	ent->s.angles[YAW] = ent->client->v_angle[YAW];
 	ent->s.angles[ROLL] = 0;
 	ent->s.angles[ROLL] = SV_CalcRoll (ent->s.angles, ent->velocity)*4;
@@ -1201,6 +1202,7 @@ void ClientEndServerFrame (edict_t *ent)
 	// all cyclic walking effects
 	//
 	xyspeed = sqrt(ent->velocity[0]*ent->velocity[0] + ent->velocity[1]*ent->velocity[1]);
+
 	if (xyspeed < 5)
 	{
 		bobmove = 0;
@@ -1215,10 +1217,12 @@ void ClientEndServerFrame (edict_t *ent)
 		else
 			bobmove = 0.0625;
 	}
+
 	bobtime = (current_client->bobtime += bobmove);
 
 	if (current_client->ps.pmove.pm_flags & PMF_DUCKED)
 		bobtime *= 4;
+
 	//RAV
 	if (rune_has_rune(ent, RUNE_SPEED))
 		bobtime *= 2;
@@ -1229,33 +1233,43 @@ void ClientEndServerFrame (edict_t *ent)
 
 	// detect hitting the floor
 	P_FallingDamage (ent);
+
 	// apply all the damage taken this frame
 	P_DamageFeedback (ent);
+
 	// determine the view offsets
 	SV_CalcViewOffset (ent);
+
 	// determine the gun offsets
 	SV_CalcGunOffset (ent);
+
 	// determine the full screen color blend
 	// must be after viewoffset, so eye contents can be
 	// accurately determined
 	// FIXME: with client prediction, the contents
 	// should be determined by the client
 	SV_CalcBlend (ent);
+
 	//ZOID
 	//	if (!ent->client->chase_target)
 	//ZOID
+
 	G_SetStats (ent);
+
 	//ZOID
 	//update chasecam follower stats
-	//	for (i = 1; i <= maxclients->value; i++) {
-	//		edict_t *e = g_edicts + i;
+//	for (i = 1; i <= maxclients->value; i++)
+//	{
+//		edict_t *e = g_edicts + i;
+//
+//		// ERASER, use player list
+//		for (i = 0; i < num_players; i++)
+//		{
+//			e = players[i];
+//		}
+//		//ERASER
+//	}
 
-	// ERASER, use player list
-	//	for (i=0; i<num_players; i++)
-	//	{
-	//		e = players[i];
-	// ERASER
-	//RAV
 	for_each_player(e, i)
 	{
 		if (!ent->inuse || e->client->chase_target != ent)
@@ -1264,23 +1278,27 @@ void ClientEndServerFrame (edict_t *ent)
 		e->client->ps.stats[STAT_LAYOUTS] = 1;
 		break;
 	}
-	//ZOID
+
 	G_SetClientEvent (ent);
 	G_SetClientEffects (ent);
 	G_SetClientSound (ent);
 	G_SetClientFrame (ent);
+
 	VectorCopy (ent->velocity, ent->client->oldvelocity);
 	VectorCopy (ent->client->ps.viewangles, ent->client->oldviewangles);
+
 	// clear weapon kicks
 	VectorClear (ent->client->kick_origin);
 	VectorClear (ent->client->kick_angles);
+
 	// if the scoreboard is up, update it
 	if(ent && ent->inuse && !ent->bot_client)
-		if ((ent->client->showscores && !(level.framenum & 31)) ||
-			((ent->client->pers.db_hud || ent->client->pers.motd == true)
+	{
+		if ((ent->client->showscores && !(level.framenum & 31))
+			|| ((ent->client->pers.db_hud || ent->client->pers.motd == true)
 			&& (level.framenum >= ent->client->hudtime)))
 		{
-			if(ent->client->resp.enterframe+30 > level.framenum)
+			if (ent->client->resp.enterframe+30 > level.framenum)
 				return;
 			//ZOID
 			if (ent->client->menu)
@@ -1294,16 +1312,16 @@ void ClientEndServerFrame (edict_t *ent)
 				}
 			}
 			else
-				//ZOID
 				DeathmatchScoreboardMessage (ent, ent->enemy);
-			//RAV
+
 			if(ent->client->chase_target)
 				ent->client->hudtime = level.framenum + 10;
 			else
 				ent->client->hudtime = level.framenum + 10;
-			//
+
 			gi.unicast (ent, false);
 		}
+	}
 }
 
 //						BOT AREA
