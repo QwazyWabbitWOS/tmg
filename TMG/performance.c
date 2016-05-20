@@ -8,6 +8,7 @@
 // instead of to the console log. 
 
 #include "q_shared.h"
+#include "performance.h"
 
 #ifdef _WIN32
 #ifdef _DEBUG
@@ -16,7 +17,6 @@
 
 #include <windows.h>
 #include <stdio.h>
-#include "performance.h"
 
 LARGE_INTEGER start;
 double totalTime = 0;
