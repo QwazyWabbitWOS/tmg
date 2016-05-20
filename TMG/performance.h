@@ -15,3 +15,4 @@ void DbgPrintf (char *msg, ...);
 #define STOP_PERFORMANCE_TIMER
 #endif
 #endif
+void DbgPrintf (char *msg, ...);

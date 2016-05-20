@@ -16,6 +16,7 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include "performance.h"
 
 LARGE_INTEGER start;
 double totalTime = 0;
@@ -49,6 +50,7 @@ void _STOP_PERFORMANCE_TIMER (char* str)
 #define DEBUG
 #endif
 
+#ifdef _WIN32
 //QW// Use this function to trace execution or whatever.
 // This improves upon OutputDebugString a bit
 // to allow var_args instead of static text.
@@ -67,3 +69,6 @@ void DbgPrintf (char *msg, ...)
 	OutputDebugString(text);
 #endif
 }
+#else
+void DbgPrintf(char *msg, ...){}
+#endif
