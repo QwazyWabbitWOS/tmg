@@ -61,7 +61,7 @@ GAME_OBJS = \
 	g_monster.o g_phys.o g_save.o g_spawn.o g_svcmds.o g_target.o g_trigger.o g_utils.o \
 	g_weapon.o gslog.o highscore.o hud.o intro.o locdamage.o m_move.o s_map.o models.o \
 	p_client.o p_hud.o p_light.o p_menu.o p_trail.o p_view.o p_weapon.o q_shared.o \
-	runes.o stdlog.o timer.o vote.o
+	runes.o stdlog.o timer.o vote.o performance.o
 
 game$(ARCH).$(SHLIBEXT) : $(GAME_OBJS)
 	$(CC) $(CFLAGS) -shared -o $@ $(GAME_OBJS) -ldl -lm

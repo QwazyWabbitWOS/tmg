@@ -1,5 +1,6 @@
 #include "g_local.h"
 #include "runes.h"
+#include "performance.h"
 
 void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf);
 char *rune_namefornum[] =
