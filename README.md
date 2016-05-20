@@ -1,7 +1,7 @@
 ### What is this repository for? ###
 
 * This is TMG for Quake II
-* Version 2.09
+* Version 2.10
 * [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
 ### How do I get set up? ###
