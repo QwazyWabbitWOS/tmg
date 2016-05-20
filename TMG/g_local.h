@@ -10,7 +10,7 @@
     #define __func__ __FUNCTION__
   #endif
   _CrtMemState startup1;	// memory diagnostics
-//  #include "performance.h"
+  #include "performance.h"
 #else
   #define OutputDebugString	//not doing Windows
 #endif
