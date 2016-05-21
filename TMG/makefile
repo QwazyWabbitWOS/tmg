@@ -20,8 +20,9 @@ ARCH=i386
 
 #use these cflags to optimize this build
 CFLAGS=-O3 -m32 -march=$(ARCH) -DARCH="$(ARCH)"
-#use these when debugging 
-#CFLAGS=-g -m32 -DARCH="$(ARCH)" -Wall
+
+#use these when debugging
+#CFLAGS=-g -m32 -DEBUG -DARCH="$(ARCH)" -Wall -pedantic
 
 # flavors of Linux
 ifeq ($(shell uname),Linux)
