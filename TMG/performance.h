@@ -1,3 +1,5 @@
+#ifndef PERFORMANCE_H
+#define PERFORMANCE_H
 
 // **********************************************
 //        Windows high performance counter
@@ -15,8 +17,6 @@ void _START_PERFORMANCE_TIMER (void);
 #endif
 #endif
 
-#ifdef _WIN32
 void DbgPrintf (char *msg, ...);
-#else
-#define DbgPrintf gi.dprintf
-#endif
+
+#endif /* PERFORMANCE_H */

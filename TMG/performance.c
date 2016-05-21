@@ -5,9 +5,10 @@
 //lifted from r1q2 :)
 
 // this version outputs to the debugger window
-// instead of to the console log. 
+// instead of to the console log.
 
 #include "q_shared.h"
+#include "g_local.h"
 #include "performance.h"
 
 #ifdef _WIN32
@@ -40,7 +41,7 @@ void _STOP_PERFORMANCE_TIMER (char* str)
 	res = ((double)((double)diff / (double)freq.QuadPart));
 	sprintf(string, "%s executed in %.6f secs.\n", str ,res);
 	OutputDebugString(string);
-//	Com_Printf (string);
+	//	Com_Printf (string);
 	totalTime += res;
 }
 #endif
@@ -50,15 +51,14 @@ void _STOP_PERFORMANCE_TIMER (char* str)
 #define DEBUG
 #endif
 
-#ifdef _WIN32
-//QW// 
+//QW//
 /* Use this function to trace execution or whatever.
-   This improves upon OutputDebugString a bit
-   to allow var_args instead of static text.
-   Outputs to the debugger and allows
-   us to write: DbgPrintf("%s was called.\n", __func__);
-   Use Quake 2's gi.dprintf to output to the Quake 2 console.
-*/
+ This improves upon OutputDebugString a bit
+ to allow var_args instead of static text.
+ Outputs to the debugger and allows
+ us to write: DbgPrintf("%s was called.\n", __func__);
+ Use Quake 2's gi.dprintf to output to the Quake 2 console.
+ */
 void DbgPrintf (char *msg, ...)
 {
 	va_list	argptr;
@@ -67,8 +67,11 @@ void DbgPrintf (char *msg, ...)
 	va_start (argptr, msg);
 	vsnprintf (text, sizeof(text), msg, argptr);
 	va_end (argptr);
+#ifdef _WIN32
 #ifdef DEBUG
 	OutputDebugString(text);
 #endif
-}
+#else
+	gi.dprintf(text);
 #endif
+}

@@ -10,13 +10,13 @@
     #define __func__ __FUNCTION__ // else use the ANSI C (C9x)
   #endif
   _CrtMemState startup1;	// memory diagnostics
-  #include "performance.h"
 #else
   #define OutputDebugString	//not doing Windows
 #endif
 
 #include "q_shared.h"
-#include <sys/timeb.h>
+//#include <sys/timeb.h>
+#include "performance.h"
 
 // define GAME_INCLUDE so that game.h does not define the
 // short, server-visible gclient_t and edict_t structures,
