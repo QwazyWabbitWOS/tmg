@@ -51,12 +51,14 @@ void _STOP_PERFORMANCE_TIMER (char* str)
 #endif
 
 #ifdef _WIN32
-//QW// Use this function to trace execution or whatever.
-// This improves upon OutputDebugString a bit
-// to allow var_args instead of static text.
-// Outputs to the debugger and allows
-// us to write: DbgPrintf("%s was called.\n", __func__);
-// Use Quake 2's gi.dprintf to output to the Quake 2 console.
+//QW// 
+/* Use this function to trace execution or whatever.
+   This improves upon OutputDebugString a bit
+   to allow var_args instead of static text.
+   Outputs to the debugger and allows
+   us to write: DbgPrintf("%s was called.\n", __func__);
+   Use Quake 2's gi.dprintf to output to the Quake 2 console.
+*/
 void DbgPrintf (char *msg, ...)
 {
 	va_list	argptr;
@@ -69,6 +71,4 @@ void DbgPrintf (char *msg, ...)
 	OutputDebugString(text);
 #endif
 }
-#else
-void DbgPrintf(char *msg, ...){}
 #endif

@@ -1887,6 +1887,7 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 		gi.modelindex (ent->model);
 
 	VectorCopy(ent->s.origin,ent->monsterinfo.last_sighting);
+	
 	//ZOID
 	//flags are server animated and have special handling
 	if (strcmp(ent->classname, "item_flag_team1") == 0 ||

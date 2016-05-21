@@ -752,7 +752,7 @@ void InitializeBot (edict_t *ent, int botindex)
 	else 	safe_bprintf (PRINT_HIGH, "%s entered the game\n",
 			client->pers.netname);
 }
-void SP_item_health_mega (edict_t *self);
+
 void PutBotInServer (edict_t *ent)
 {
 	edict_t		*touch[MAX_EDICTS];

@@ -922,62 +922,71 @@ void LookAtKiller (edict_t *self, edict_t *inflictor, edict_t *attacker)
 
 /*
 ==================
-player_die
+player_die1
 ==================
 */
 //RAV
-//QW// fast die, no gibs, no death frames.
+//QW// fast die, no gibs, no death frames. UNUSED
 static void player_die1 (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
-// if no-one died, then exit..
-  if (!G_EntExists(self)) return;
+	// if no-one died, then exit..
+	if (!G_EntExists(self))
+		return;
 
 
-//ZOID
-	if(ctf->value){
+	//ZOID
+	if(ctf->value)
+	{
 		CTFPlayerResetGrapple(self);
 		CTFDeadDropFlag(self);
-		CTFDeadDropTech(self);}
-//ZOID
-//RAV
+		CTFDeadDropTech(self);
+	}
+	//ZOID
+	//RAV
 
-// drop the rune if we have one
+	// drop the rune if we have one
 	runes_drop(self);
 
 	if ( self->flashlight )
 	{	
 		G_FreeEdict(self->flashlight);
 		self->flashlight = NULL;
-    }
-  VectorClear (self->avelocity);
+	}
 
-  self->takedamage = DAMAGE_YES;
-  self->movetype = MOVETYPE_TOSS;
+	VectorClear (self->avelocity);
 
-  self->s.modelindex2 = 0;  // remove linked weapon model
-//ZOID
+	self->takedamage = DAMAGE_YES;
+	self->movetype = MOVETYPE_TOSS;
+
+	self->s.modelindex2 = 0;  // remove linked weapon model
+	//ZOID
 	self->s.modelindex3 = 0;	// remove linked ctf flag
-//ZOID
+	//ZOID
 
-  self->s.angles[0] = 0;
-  self->s.angles[2] = 0;
-  self->s.sound = 0;
-  self->client->weapon_sound = 0;
-  self->maxs[2] = -8;
-  self->svflags |= SVF_DEADMONSTER;
- 
-  self->deadflag = DEAD_DEAD;
-  gi.linkentity (self);
+	self->s.angles[0] = 0;
+	self->s.angles[2] = 0;
+	self->s.sound = 0;
+	self->client->weapon_sound = 0;
+	self->maxs[2] = -8;
+	self->svflags |= SVF_DEADMONSTER;
 
-  self->client->pers.pl_state = PL_PLAYING;
+	self->deadflag = DEAD_DEAD;
+	gi.linkentity (self);
 
+	self->client->pers.pl_state = PL_PLAYING;
 }
 
+/*
+==================
+    player_die
+==================
+*/
 void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	int		n;
-// if no-one died, then exit..
-  if (!G_EntExists(self)) return;
+	// if no-one died, then exit..
+	if (!G_EntExists(self)) 
+		return;
 
 	VectorClear (self->avelocity);
 
@@ -989,15 +998,16 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 	{	
 		G_FreeEdict(self->flashlight);
 		self->flashlight = NULL;
-    }
+	}
 	//
+
 	self->takedamage = DAMAGE_YES;
 	self->movetype = MOVETYPE_TOSS;
 
 	self->s.modelindex2 = 0;	// remove linked weapon model
-//ZOID
+	//ZOID
 	self->s.modelindex3 = 0;	// remove linked ctf flag
-//ZOID
+	//ZOID
 
 	self->s.angles[0] = 0;
 	self->s.angles[2] = 0;
@@ -1007,7 +1017,7 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 
 	self->maxs[2] = -8;
 
-//	self->solid = SOLID_NOT;
+	//	self->solid = SOLID_NOT;
 	self->svflags |= SVF_DEADMONSTER;
 
 	if (!self->deadflag)
@@ -1016,26 +1026,29 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 		LookAtKiller (self, inflictor, attacker);
 		self->client->ps.pmove.pm_type = PM_DEAD;
 		ClientObituary (self, inflictor, attacker);
-//ZOID
+		//ZOID
 		if (!OnSameTeam(self, attacker)) //JSW
 			CTFFragBonuses(self, inflictor, attacker);
 
-//ZOID
-//RAV
-	sl_WriteStdLogDeath( &gi, level, self, inflictor, attacker);	// StdLog - Mark Davies
+		//ZOID
+		//RAV
+		sl_WriteStdLogDeath( &gi, level, self, inflictor, attacker);	// StdLog - Mark Davies
 
-	if(voosh->value == 0)
-	TossClientWeapon (self);
-			
-	if(match_state == STATE_PLAYING)
-	self->client->resp.deaths++;
-	self->client->resp.spree = 0;
-//		
-//ZOID
+		if(voosh->value == 0)
+			TossClientWeapon (self);
+
+		if(match_state == STATE_PLAYING)
+			self->client->resp.deaths++;
+		
+		self->client->resp.spree = 0;
+		//		
+	
+		//ZOID
 		CTFPlayerResetGrapple(self);
 		CTFDeadDropFlag(self);
 		CTFDeadDropTech(self);
-//ZOID
+		//ZOID
+		
 		if (deathmatch->value && !self->bot_client)
 			Cmd_Help_f (self);		// show scores
 	}
@@ -1051,26 +1064,27 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 
 	if (self->health < -40 || voosh->value)//RAV for no gibs if railserver
 	{	// gib
-		for (n= 0; n < 3; n++)
+		for (n = 0; n < 3; n++)
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
-	//	ThrowClientHead (self, damage);
-	
-//ZOID
+		//	ThrowClientHead (self, damage);
 
-//		self->client->anim_priority = ANIM_DEATH;
-//		self->client->anim_end = 0;
-//ZOID
+		//ZOID
+
+		//		self->client->anim_priority = ANIM_DEATH;
+		//		self->client->anim_end = 0;
+		//ZOID
 		self->takedamage = DAMAGE_NO;
-//clear out the model indexing 
+		//clear out the model indexing 
 		gi.setmodel(self, "");
 
-// send effect
+		// send effect
 
-/*	gi.WriteByte (svc_muzzleflash);
-	gi.WriteShort (self-g_edicts);
-	gi.WriteByte (MZ_LOGOUT);
-	gi.multicast (self->s.origin, MULTICAST_PVS);
-*/	gi.sound (self, CHAN_BODY, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
+		/*	gi.WriteByte (svc_muzzleflash);
+		gi.WriteShort (self-g_edicts);
+		gi.WriteByte (MZ_LOGOUT);
+		gi.multicast (self->s.origin, MULTICAST_PVS);
+		*/	
+		gi.sound (self, CHAN_BODY, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
 	}
 	else
 	{	// normal death
@@ -1078,7 +1092,7 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 		{
 			static int i;
 
-			i = (i+1)%3;
+			i = (i + 1) % 3;
 			// start a death animation
 			self->client->anim_priority = ANIM_DEATH;
 			if (self->client->ps.pmove.pm_flags & PMF_DUCKED)
@@ -1104,11 +1118,10 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 			gi.sound (self, CHAN_VOICE, gi.soundindex(va("*death%i.wav", (rand()%4)+1)), 1, ATTN_NORM, 0);
 		}
 	}
-
 	self->deadflag = DEAD_DEAD;
-
 	//routing last index move
-	if(chedit->value && self == &g_edicts[1]) Move_LastRouteIndex();
+	if(chedit->value && self == &g_edicts[1]) 
+		Move_LastRouteIndex();
 
 	gi.linkentity (self);
 }

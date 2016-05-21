@@ -178,12 +178,10 @@ void UpdateChaseCam(edict_t *ent)
 
 	if ((!ent->client->showscores && !ent->client->menu &&
 		!ent->client->showinventory && !ent->client->showhelp &&
-		!(level.framenum & 31)) || ent->client->update_chase) {
-	
+		!(level.framenum & 31)) || ent->client->update_chase) 
+	{
 		ent->client->update_chase = false;
-		
 	}
-
 }
 
 void ChaseNext(edict_t *ent)

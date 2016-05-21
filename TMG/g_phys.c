@@ -86,27 +86,39 @@ qboolean SV_RunThink (edict_t *ent)
 	thinktime = ent->nextthink;
 	if (thinktime <= 0)
 		return true;
-	if (thinktime > level.time+0.001)
+	if (thinktime > level.time + 0.001)
 		return true;
 	
 	ent->nextthink = 0;
+
+	//QW// report if we're asked to think about bad ents
+	if (!ent->think || !strcmp(ent->classname, "freed"))
+	{
+		if (ent->classname && ent->model)
+			DbgPrintf ("%s NULL ent->think (classname %s, model %s mapname %s)\n",
+			__FUNCTION__, ent->classname, ent->model, level.mapname);
+		else if (ent->classname)
+			DbgPrintf ("%s NULL ent->think (classname %s mapname %s)\n",
+			__FUNCTION__, ent->classname, level.mapname);
+		else
+			DbgPrintf ("NULL ent->think (mapname %s)\n",
+			__FUNCTION__, level.mapname);
+		return false;
+	}
+
 	//RAVEN
 	if (!ent->think || strcmp(ent->classname, "freed") == 0)
 	{
-		//debugging line
-		gi.dprintf ("%s was the bad guy \n", ent->classname);
-		//raven
-		if(strstr ("target_changelevel",ent->classname))
-			//restart server instead of crashing it !
+		//restart server instead of crashing it !
+		if(strstr ("target_changelevel", ent->classname))
 		{
 			gi.dprintf ("server would have crashed due to bad map\n");
 			restartServer();
 			return false;
 		}
-		return false;
-		//QW// WTF?		gi.error ("NULL ent->think");
+		return false;	
 	}
-	//gi.dprintf ("%s was the bad guy \n", ent->classname);
+	
 	ent->think (ent);
 	return false;
 }
@@ -393,7 +405,22 @@ retry:
 	trace = gi.trace (start, ent->mins, ent->maxs, end, ent, mask);
 	
 	VectorCopy (trace.endpos, ent->s.origin);
-	gi.linkentity (ent);
+	
+	//QW// noisy server
+	/* Railserver mode makes r1q2 server complain about
+	   linking an entity that's not in use when ent is of
+	   movetype MOVETYPE_TOSS. I think it's the bot gibs when
+	   their motion is suppressed in 'voosh' mode...
+	   OK, don't link them.
+	   Fix it here for now until I find a better fix.
+	   Leaving diagnostics in place for now.
+	*/
+	if (voosh->value && ent->inuse)
+		gi.linkentity (ent);
+
+	if (!ent->inuse) 
+		DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
+		__FUNCTION__, ent->movetype, ent->inuse, ent->classname, level.time);
 
 	if (trace.fraction != 1.0)
 	{
@@ -822,7 +849,11 @@ void SV_Physics_Toss (edict_t *ent)
 	qboolean	isinwater;
 	vec3_t		old_origin;
 
-// regular thinking
+	// regular thinking
+	if (!ent->inuse)
+		DbgPrintf ("%s entity %d inuse: %d classname %s time: %.1f\n", 
+		__FUNCTION__, ent->movetype, ent->inuse, ent->classname, level.time);
+
 	SV_RunThink (ent);
 
 	// if not a team captain, so movement will be handled elsewhere
@@ -832,12 +863,12 @@ void SV_Physics_Toss (edict_t *ent)
 	if (ent->velocity[2] > 0)
 		ent->groundentity = NULL;
 
-// check for the groundentity going away
+	// check for the groundentity going away
 	if (ent->groundentity)
 		if (!ent->groundentity->inuse)
 			ent->groundentity = NULL;
 
-// if onground, return without moving
+	// if onground, return without moving
 	if ( ent->groundentity )
 		return;
 
@@ -845,15 +876,15 @@ void SV_Physics_Toss (edict_t *ent)
 
 	SV_CheckVelocity (ent);
 
-// add gravity
+	// add gravity
 	if (ent->movetype != MOVETYPE_FLY
-	&& ent->movetype != MOVETYPE_FLYMISSILE)
+		&& ent->movetype != MOVETYPE_FLYMISSILE)
 		SV_AddGravity (ent);
 
-// move angles
+	// move angles
 	VectorMA (ent->s.angles, FRAMETIME, ent->avelocity, ent->s.angles);
 
-// move origin
+	// move origin
 	VectorScale (ent->velocity, FRAMETIME, move);
 	trace = SV_PushEntity (ent, move);
 	if (!ent->inuse)
@@ -868,7 +899,7 @@ void SV_Physics_Toss (edict_t *ent)
 
 		ClipVelocity (ent->velocity, trace.plane.normal, ent->velocity, backoff);
 
-	// stop if on ground
+		// stop if on ground
 		if (trace.plane.normal[2] > 0.7)
 		{		
 			if (ent->velocity[2] < 60 || ent->movetype != MOVETYPE_BOUNCE )
@@ -880,11 +911,11 @@ void SV_Physics_Toss (edict_t *ent)
 			}
 		}
 
-//		if (ent->touch)
-//			ent->touch (ent, trace.ent, &trace.plane, trace.surface);
+		//		if (ent->touch)
+		//			ent->touch (ent, trace.ent, &trace.plane, trace.surface);
 	}
-	
-// check for water transition
+
+	// check for water transition
 	wasinwater = (ent->watertype & MASK_WATER);
 	ent->watertype = gi.pointcontents (ent->s.origin);
 	isinwater = ent->watertype & MASK_WATER;
@@ -906,7 +937,7 @@ void SV_Physics_Toss (edict_t *ent)
 	else if (wasinwater && !isinwater)
 		gi.positioned_sound (ent->s.origin, g_edicts, CHAN_AUTO, gi.soundindex("misc/h2ohit1.wav"), 1, 1, 0);
 
-// move teamslaves
+	// move teamslaves
 	for (slave = ent->teamchain; slave; slave = slave->teamchain)
 	{
 		VectorCopy (ent->s.origin, slave->s.origin);
