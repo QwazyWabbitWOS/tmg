@@ -18,6 +18,7 @@ cvar_t	*bot_waterspeed;//16
 edict_t *bot_team_flag1;
 edict_t *bot_team_flag2;
 
+
 void Bot_InitCvars(void)
 {
 	// bot commands
