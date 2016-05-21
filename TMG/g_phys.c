@@ -418,9 +418,11 @@ retry:
 	if (voosh->value && ent->inuse)
 		gi.linkentity (ent);
 
+	/*
 	if (!ent->inuse) 
 		DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
 		__FUNCTION__, ent->movetype, ent->inuse, ent->classname, level.time);
+	*/
 
 	if (trace.fraction != 1.0)
 	{
@@ -849,11 +851,13 @@ void SV_Physics_Toss (edict_t *ent)
 	qboolean	isinwater;
 	vec3_t		old_origin;
 
-	// regular thinking
+	/*
 	if (!ent->inuse)
 		DbgPrintf ("%s entity %d inuse: %d classname %s time: %.1f\n", 
 		__FUNCTION__, ent->movetype, ent->inuse, ent->classname, level.time);
-
+	*/
+	
+	// regular thinking
 	SV_RunThink (ent);
 
 	// if not a team captain, so movement will be handled elsewhere

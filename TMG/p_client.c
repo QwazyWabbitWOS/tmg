@@ -1062,28 +1062,15 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 	// clear inventory
 	memset(self->client->pers.inventory, 0, sizeof(self->client->pers.inventory));
 
-	if (self->health < -40 || voosh->value)//RAV for no gibs if railserver
+	// no gibs if railserver
+	if (self->health < -40 || voosh->value)
 	{	// gib
 		for (n = 0; n < 3; n++)
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
-		//	ThrowClientHead (self, damage);
-
-		//ZOID
-
-		//		self->client->anim_priority = ANIM_DEATH;
-		//		self->client->anim_end = 0;
-		//ZOID
+		//ThrowClientHead (self, damage);
+		// must be non-blank so set to meat rather than head
+		gi.setmodel(self, "models/objects/gibs/sm_meat/tris.md2");
 		self->takedamage = DAMAGE_NO;
-		//clear out the model indexing 
-		gi.setmodel(self, "");
-
-		// send effect
-
-		/*	gi.WriteByte (svc_muzzleflash);
-		gi.WriteShort (self-g_edicts);
-		gi.WriteByte (MZ_LOGOUT);
-		gi.multicast (self->s.origin, MULTICAST_PVS);
-		*/	
 		gi.sound (self, CHAN_BODY, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
 	}
 	else
@@ -1119,6 +1106,7 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 		}
 	}
 	self->deadflag = DEAD_DEAD;
+
 	//routing last index move
 	if(chedit->value && self == &g_edicts[1]) 
 		Move_LastRouteIndex();

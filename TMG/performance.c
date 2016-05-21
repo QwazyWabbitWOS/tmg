@@ -53,12 +53,12 @@ void _STOP_PERFORMANCE_TIMER (char* str)
 
 //QW//
 /* Use this function to trace execution or whatever.
- This improves upon OutputDebugString a bit
- to allow var_args instead of static text.
- Outputs to the debugger and allows
- us to write: DbgPrintf("%s was called.\n", __func__);
- Use Quake 2's gi.dprintf to output to the Quake 2 console.
- */
+This improves upon OutputDebugString a bit
+to allow var_args instead of static text.
+Outputs to the debugger and allows
+us to write: DbgPrintf("%s was called.\n", __func__);
+Use Quake 2's gi.dprintf to output to the Quake 2 console.
+*/
 void DbgPrintf (char *msg, ...)
 {
 	va_list	argptr;
