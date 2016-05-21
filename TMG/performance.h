@@ -14,4 +14,9 @@ void _START_PERFORMANCE_TIMER (void);
 #define STOP_PERFORMANCE_TIMER
 #endif
 #endif
+
+#ifdef _WIN32
 void DbgPrintf (char *msg, ...);
+#else
+#define DbgPrintf gi.dprintf
+#endif

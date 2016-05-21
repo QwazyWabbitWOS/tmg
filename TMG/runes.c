@@ -224,7 +224,7 @@ void Rune_Spawn(edict_t *rune, gitem_t *item)
 	if ((spot = FindRuneSpawn()) != NULL)
 	{
 		SpawnTech(rune->item, spot);
-		DbgPrintf("Tech 0x%x type %s spawned, time %.1f\n", rune, rune->classname, level.time);
+		DbgPrintf("Tech 0x%x type %s spawned time: %.1f\n", rune, rune->classname, level.time);
 		rune->noblock = true;
 		return;
 	}

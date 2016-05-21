@@ -387,6 +387,13 @@ void G_InitEdict (edict_t *e)
 	e->classname = "noclass";
 	e->gravity = 1.0;
 	e->s.number = (int) (e - g_edicts);
+
+	// Clear what the free-edict list may have set.
+	e->chain = NULL;
+
+	// This is another headache.
+	e->think = NULL;
+	e->nextthink = 0;
 }
 
 //=================
@@ -422,7 +429,11 @@ edict_t *G_Spawn (void)
 		gi.error ("ED_Alloc: no free edicts");
 		
 	globals.num_edicts++;
+	
 	G_InitEdict (e);
+	DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
+	__FUNCTION__, e->movetype, e->inuse, e->classname, level.time);
+	
 	return e;
 }
 
@@ -442,12 +453,15 @@ void G_FreeEdict (edict_t *ed)
 //		gi.dprintf("tried to free special edict\n");
 		return;
 	}
-
+	
+	DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
+		__FUNCTION__, ed->movetype, ed->inuse, ed->classname, level.time);
+	
 	memset (ed, 0, sizeof(*ed));
 	ed->classname = "freed";
 	ed->freetime = level.time;
 	ed->inuse = false;
-	//ed->chain = NULL;
+	ed->chain = NULL;
 }
 
 

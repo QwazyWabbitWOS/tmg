@@ -6,8 +6,8 @@
   #define CRTDBG_MAP_ALLOC
   #include <stdlib.h>
   #include <crtdbg.h>
-  #ifndef __func__
-    #define __func__ __FUNCTION__
+  #ifndef __func__	// C++11 mandated identifier
+    #define __func__ __FUNCTION__ // else use the ANSI C (C9x)
   #endif
   _CrtMemState startup1;	// memory diagnostics
   #include "performance.h"
