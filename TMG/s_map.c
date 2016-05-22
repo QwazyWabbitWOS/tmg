@@ -1,16 +1,7 @@
 #include "g_local.h"
 #include "s_map.h"
 
-typedef struct
-{
-    char   aFile[MAX_QPATH];
-    char   aName[MAX_QPATH];
-    int    min;
-    int    max;
-    int    fVisited;
-} MAP_ENTRY;
-
-static MAP_ENTRY   *mdsoft_map       = NULL;
+MAP_ENTRY   *mdsoft_map       = NULL;
 static unsigned int mdsoft_map_size  = 0;
 static unsigned int mdsoft_map_last  = 0;
 
