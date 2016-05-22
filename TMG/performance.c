@@ -51,6 +51,7 @@ void _STOP_PERFORMANCE_TIMER (char* str)
 #define DEBUG
 #endif
 
+
 //QW//
 /* Use this function to trace execution or whatever.
 This improves upon OutputDebugString a bit
@@ -69,9 +70,10 @@ void DbgPrintf (char *msg, ...)
 	va_end (argptr);
 #ifdef _WIN32
 #ifdef DEBUG
-	OutputDebugString(text);
+		OutputDebugString(text);
 #endif
 #else
-	gi.dprintf(text);
+	if(developer->value)
+		gi.dprintf(text);
 #endif
 }
