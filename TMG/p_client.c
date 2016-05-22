@@ -926,7 +926,7 @@ player_die1
 ==================
 */
 //RAV
-//QW// fast die, no gibs, no death frames. UNUSED
+//QW// fast die, no gibs, no death frames.
 static void player_die1 (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	// if no-one died, then exit..
