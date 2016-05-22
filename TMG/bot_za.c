@@ -1141,13 +1141,13 @@ int Bot_Watermove ( edict_t *ent,vec3_t pos,float dist,float upd)
 		if(rs_trace.fraction > 0)
 		{
 			VectorCopy(rs_trace.endpos,pos);
-				return true;
+			return true;
 			//if(upd < 0) ent->velocity[2] = 0;
 		}
 	}
-//gi.bprintf(PRINT_HIGH,"Water MOVE NG %f %f!\n",dist,upd);
-//	return false;
-//	if(upd > -7 && upd < 7)	return false;
+	//gi.bprintf(PRINT_HIGH,"Water MOVE NG %f %f!\n",dist,upd);
+	//	return false;
+	//	if(upd > -7 && upd < 7)	return false;
 
 	VectorCopy(ent->s.origin,trmin);
 	trmin[2] += upd;
@@ -1172,17 +1172,17 @@ int Bot_Watermove ( edict_t *ent,vec3_t pos,float dist,float upd)
 		VectorAdd(trmin,touchmin,trmax);
 		rs_trace = gi.trace (trmax/*ent->s.origin*/, ent->mins, ent->maxs, trmin,ent, MASK_BOTSOLIDX);
 
-//		yaw = VectorLength(trmax);
+		//		yaw = VectorLength(trmax);
 		if(!rs_trace.allsolid && !rs_trace.startsolid )
 		{
 			VectorAdd(rs_trace.endpos,touchmin,trmax);
 			rs_trace = gi.trace (trmax, ent->mins, ent->maxs, trmax,ent, MASK_BOTSOLIDX);
-//gi.bprintf(PRINT_HIGH,"NGAAAAAAAAAAAAAAAAAAAAAAAAAAA!\n");
+			//gi.bprintf(PRINT_HIGH,"NGAAAAAAAAAAAAAAAAAAAAAAAAAAA!\n");
 
-//			VectorSubtract(rs_trace.endpos,ent->s.origin,trmax);
+			//			VectorSubtract(rs_trace.endpos,ent->s.origin,trmax);
 			if(!rs_trace.allsolid && !rs_trace.startsolid )
 			{
-//gi.bprintf(PRINT_HIGH,"go go go!\n");
+				//gi.bprintf(PRINT_HIGH,"go go go!\n");
 				vec = i;break;
 			}
 		}
@@ -1190,15 +1190,29 @@ int Bot_Watermove ( edict_t *ent,vec3_t pos,float dist,float upd)
 
 	if(vec == -1)
 	{
-//gi.bprintf(PRINT_HIGH,"Water MOVE NG %f %f!\n",dist,upd);
+		//gi.bprintf(PRINT_HIGH,"Water MOVE NG %f %f!\n",dist,upd);
 		return false;
 	}
 
-//gi.bprintf(PRINT_HIGH,"Water MOVE OK %f %f!\n",dist,upd);
+	//gi.bprintf(PRINT_HIGH,"Water MOVE OK %f %f!\n",dist,upd);
 	VectorCopy(trmax,pos);
-	if(upd < 0) ent->velocity[2] = 0;
+
+	//	if(upd < 0) ent->velocity[2] = 0;
+	//		return true;
+
+	//QW//
+	/* It looks like upd < 0 test above was a bracing error
+	 causing dead code in everything that follows.
+	 I'm re-writing it below the way I think it was intended.
+	 Let's see what the bots do with it.
+	 */
+	if(upd < 0)
+	{
+		ent->velocity[2] = 0;
 		return true;
-	
+	}
+	//QW//
+
 	touchmin[0] = cos(vec) * 16;//dist ;
 	touchmin[1] = sin(vec) * 16;//dist ;
 	touchmin[2] = 0;
@@ -1231,7 +1245,7 @@ int Bot_Watermove ( edict_t *ent,vec3_t pos,float dist,float upd)
 		}
 		VectorAdd(trmax,trmin,trmax);
 	}
-//	gi.bprintf(PRINT_HIGH,"failed2\n");
+	//	gi.bprintf(PRINT_HIGH,"failed2\n");
 	return false;
 }
 
