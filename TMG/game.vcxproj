@@ -316,6 +316,7 @@
   <ItemGroup>
     <ClInclude Include="anticheat.h" />
     <ClInclude Include="bot.h" />
+    <ClInclude Include="botstr.h" />
     <ClInclude Include="e_hook.h" />
     <ClInclude Include="eavy.h" />
     <ClInclude Include="filehand.h" />

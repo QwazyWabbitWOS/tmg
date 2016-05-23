@@ -100,10 +100,10 @@ edict_t *mdsoft_NextMap( void )
 				{
 				for (i = 0; i < maplist->nummaps; i++)
 				{
-					gi.dprintf("Map loaded: %s \"%s\"\n",
+					DbgPrintf("Map loaded: %s \"%s\"\n",
 							   maplist->mapname[i], maplist->mapnick[i]);
 				}
-				gi.dprintf("%d maps loaded.\n", maplist->nummaps);
+				DbgPrintf("%d maps loaded.\n", maplist->nummaps);
 				}
 
                 fclose( fpFile );
@@ -388,7 +388,7 @@ void DumpMapVotes(void)
 {
 	int i;
 	for (i = 0; i < maplist->nummaps; ++i)
-		gi.dprintf("%d. %s (%d votes)\n",
+		DbgPrintf("%d. %s (%d votes)\n",
 		   i, maplist->mapname[i], maplist->votes[i]);
 }
 

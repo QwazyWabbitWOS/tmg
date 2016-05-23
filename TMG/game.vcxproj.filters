@@ -238,6 +238,9 @@
     <ClInclude Include="performance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="botstr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

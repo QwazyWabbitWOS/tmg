@@ -431,10 +431,10 @@ edict_t *G_Spawn (void)
 	globals.num_edicts++;
 	
 	G_InitEdict (e);
-	/*
-	DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
-	__FUNCTION__, e->movetype, e->inuse, e->classname, level.time);
-	*/
+
+	//DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
+	//__FUNCTION__, e->movetype, e->inuse, e->classname, level.time);
+
 	return e;
 }
 
@@ -451,14 +451,13 @@ void G_FreeEdict (edict_t *ed)
 
 	if ((ed - g_edicts) <= (maxclients->value + BODY_QUEUE_SIZE))
 	{
-//		gi.dprintf("tried to free special edict\n");
+		//gi.drintf("tried to free special edict\n");
 		return;
 	}
 	
-	/*
-	DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
-		__FUNCTION__, ed->movetype, ed->inuse, ed->classname, level.time);
-	*/
+	//DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
+	//	__FUNCTION__, ed->movetype, ed->inuse, ed->classname, level.time);
+
 	memset (ed, 0, sizeof(*ed));
 	ed->classname = "freed";
 	ed->freetime = level.time;

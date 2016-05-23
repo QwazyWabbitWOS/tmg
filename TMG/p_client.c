@@ -1068,8 +1068,7 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 		for (n = 0; n < 3; n++)
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
 		//ThrowClientHead (self, damage);
-		// must be non-blank so set to meat rather than head
-		gi.setmodel(self, "models/objects/gibs/sm_meat/tris.md2");
+		gi.setmodel(self, "");
 		self->takedamage = DAMAGE_NO;
 		gi.sound (self, CHAN_BODY, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
 	}
