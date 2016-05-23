@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4cd45a30-2c6c-45ff-abbf-86ecb7bceb57}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{d1329931-75ee-4987-a4bd-38bdc6bae66f}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;fi;fd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{c749a518-bb1e-4c28-993e-1addd19ec80c}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="anticheat.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bot.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bot_fire.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bot_func.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bot_za.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="camper.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="e_hook.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="eavy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filehand.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filtering.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="g_chase.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="g_cmds.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="g_combat.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="g_ctf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="g_func.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="g_items.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="g_main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="g_misc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="g_monster.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="g_phys.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="g_save.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="g_spawn.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="g_svcmds.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="g_target.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="g_trigger.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="g_utils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="g_weapon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gslog.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="highscore.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hud.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="intro.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="locdamage.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="m_move.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="models.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p_client.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p_hud.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p_light.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p_menu.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p_trail.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p_view.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p_weapon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="q_shared.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="runes.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="s_map.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdlog.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="timer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vote.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="performance.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="changelog.txt" />
+    <None Include="Makefile" />
+    <None Include="server.cfg" />
+    <None Include="game.def">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="anticheat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="e_hook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="eavy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="g_chase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="g_ctf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="g_items.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="g_local.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gslog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hud.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="m_player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="q_shared.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="runes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="s_map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdlog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="g_cmds.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="p_hud.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="filtering.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="filehand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="performance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="game.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
