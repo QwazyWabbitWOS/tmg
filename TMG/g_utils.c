@@ -555,12 +555,21 @@ qboolean KillBox (edict_t *ent)
 
   while (1)
   {
-    tr = gi.trace (ent->s.origin, ent->mins, ent->maxs, ent->s.origin, NULL, MASK_PLAYERSOLID);
+    tr = gi.trace (ent->s.origin,
+				   ent->mins,
+				   ent->maxs,
+				   ent->s.origin, NULL, MASK_PLAYERSOLID);
     if (!tr.ent)
       break;
 
     // nail it
-    T_Damage (tr.ent, ent, ent, vec3_origin, ent->s.origin, vec3_origin, 100000, 0, DAMAGE_NO_PROTECTION, MOD_TELEFRAG);
+    T_Damage (tr.ent,
+			  ent,
+			  ent,
+			  vec3_origin,
+			  ent->s.origin,
+			  vec3_origin,
+			  100000, 0, DAMAGE_NO_PROTECTION, MOD_TELEFRAG);
 
     // if we didn't kill it, fail
     if (tr.ent->solid)
@@ -586,7 +595,7 @@ void stuffcmd(edict_t *ent, char *text)
 
 	if(ent->bot_client)
 	{
-	gi.dprintf ("%s\n", text);
+		gi.dprintf ("%s\n", text);
 		return;
 	}
 	gi.WriteByte(11);				// 11 = svc_stufftext
@@ -622,6 +631,7 @@ void AddModelSkin (char *modelfile, char *skinname)
 	i = sprintf(infilename , "%s", modelfile);
 
 	f = fopen (infilename, "rb");
+
 	if (!f)
 	{
 		gi.dprintf("Cannot open file %s\n", infilename);
@@ -635,6 +645,7 @@ void AddModelSkin (char *modelfile, char *skinname)
 	i += sprintf(filename + i, "new");
 
 	out = fopen (filename, "wb");
+
 	if (!out)
 		return;
 
@@ -727,11 +738,14 @@ void my_bprintf (int printlevel, char *fmt, ...)
 	for (i = 0; i < maxclients->value; i++)
 	{
 		cl_ent = g_edicts + 1 + i;
-		if (!cl_ent->inuse || cl_ent->bot_client || !cl_ent->client->pers.in_game)
+		if (!cl_ent->inuse ||
+			cl_ent->bot_client ||
+			!cl_ent->client->pers.in_game)
 			continue;
-	// Safety check...
-	 if (G_EntExists(cl_ent))
-		safe_cprintf(cl_ent, printlevel, bigbuffer);
+
+		// Safety check...
+		if (G_EntExists(cl_ent))
+			safe_cprintf(cl_ent, printlevel, bigbuffer);
 	}
 /*
 	for (i=0; i<num_players; i++)
@@ -748,76 +762,73 @@ void my_bprintf (int printlevel, char *fmt, ...)
 // botsafe cprintf
 void safe_cprintf (edict_t *ent, int printlevel, char *fmt, ...)
 {
-char bigbuffer[0x10000];
-va_list  argptr;
-int len;
+	char	bigbuffer[0x10000];
+	va_list	argptr;
+	int		len;
 
-if (!ent || !ent->inuse  || ent->bot_client || !ent->client->pers.in_game)
-  return;
-
-va_start (argptr,fmt);
-len = vsprintf (bigbuffer,fmt,argptr);
-va_end (argptr);
-// Safety check...
- if (G_EntExists(ent))
-gi.cprintf(ent, printlevel, bigbuffer);
-
-}
-
-// botsafe centerprintf
-void safe_centerprintf (edict_t *ent, char *fmt, ...)
-{
-char bigbuffer[0x10000];
-va_list  argptr;
-int len;
-
-if (!ent->inuse  || ent->bot_client || !ent->client->pers.in_game)
-  return;
-
-va_start (argptr,fmt);
-len = vsprintf (bigbuffer,fmt,argptr);
-va_end (argptr);
-
-// Safety check...
- if (G_EntExists(ent))
-gi.centerprintf(ent, bigbuffer);
-
-}
-
-// botsafe bprintf
-void safe_bprintf (int printlevel, char *fmt, ...)
-{
-	int i;
-	char bigbuffer[0x10000];
-	char bigbuffer2[0x10000];
-	int  len;
-	va_list  argptr;
-	edict_t *cl_ent;
+	if (!ent || !ent->inuse || ent->bot_client || !ent->client->pers.in_game)
+		return;
 
 	va_start (argptr,fmt);
 	len = vsprintf (bigbuffer,fmt,argptr);
 	va_end (argptr);
 
+	// Safety check...
+	if (G_EntExists(ent))
+		gi.cprintf(ent, printlevel, bigbuffer);
+	
+}
+
+// botsafe centerprintf
+void safe_centerprintf (edict_t *ent, char *fmt, ...)
+{
+	char	bigbuffer[0x10000];
+	va_list	argptr;
+	int		len;
+
+	if (!ent->inuse || ent->bot_client || !ent->client->pers.in_game)
+		return;
+
+	va_start (argptr,fmt);
+	len = vsprintf (bigbuffer,fmt,argptr);
+	va_end (argptr);
+
+	// Safety check...
+	if (G_EntExists(ent))
+		gi.centerprintf(ent, bigbuffer);
+	
+}
+
+// botsafe bprintf
+void safe_bprintf (int printlevel, char *fmt, ...)
+{
+	int		i;
+	char	bigbuffer[0x10000];
+	char	bigbuffer2[0x10000];
+	int		len;
+	va_list	argptr;
+	edict_t	*cl_ent;
+
+	va_start (argptr,fmt);
+	len = vsprintf (bigbuffer,fmt,argptr);
+	va_end (argptr);
 
 	if (dedicated->value)
 	{
-		convert_string(bigbuffer, 128, 255, -128, bigbuffer2); // green -> white
+		white_text(bigbuffer, bigbuffer2); // green -> white
 		gi.cprintf(NULL, printlevel, bigbuffer2);
 	}
 
 	// This is to be compatible with Eraser (ACE)
-	//for (i=0; i<num_players; i++)
-	//{
 	// Ridah, changed this so CAM works
 	for (i = 0; i < maxclients->value; i++)
 	{
 		cl_ent = g_edicts + 1 + i;
 
-  if (cl_ent->inuse && !cl_ent->bot_client && cl_ent->client->pers.in_game)
-	  if (G_EntExists(cl_ent))
-		  gi.cprintf(cl_ent, printlevel, bigbuffer);
+	if (cl_ent->inuse && !cl_ent->bot_client && cl_ent->client->pers.in_game)
+		if (G_EntExists(cl_ent))
+			gi.cprintf(cl_ent, printlevel, bigbuffer);
 	}
-	
 }
 
 //======================================================
@@ -825,7 +836,8 @@ void safe_bprintf (int printlevel, char *fmt, ...)
 //======================================================
 qboolean G_EntExists(edict_t *ent)
 {
-	return ((ent) && (ent->client) && (ent->inuse) && (ent->client->ping < 800));
+	return ((ent)
+			&& (ent->client) && (ent->inuse) && (ent->client->ping < 800));
 }
 
 //======================================================
@@ -878,14 +890,16 @@ qboolean G_ClientInGame(edict_t *ent)
 //QW//
 /**
  Replace characters in destination string.
- Parameter 'add' is added to each character found in source and result is placed in dest.
+ Parameter 'add' is added to each character 
+ found in source and result is placed in dest.
  Parameters 'start' and 'end' specify character range to replace.
  Source text must be a valid C string.
  */
 //QwazyWabbit// A pointer version to eliminate undefined behavior.
 void convert_string(char *src, char start, char end, char add, char *dest)
 {
-	while ((*dest = *src)) {
+	while ((*dest = *src))
+	{
 		if ((*dest >= start) && (*dest <= end) && (*dest != '\n'))
 			*dest += add;
 		src++, dest++;
@@ -951,6 +965,7 @@ qboolean CheckFlood (edict_t *who)
 	gclient_t *cl;
 
 	cl = who->client;
+
 	//DB
 	if (level.time < cl->flood_locktill)
 	{
@@ -958,16 +973,25 @@ qboolean CheckFlood (edict_t *who)
 					 (int)(cl->flood_locktill - level.time));
 		return false;
 	}
+
 	i = cl->flood_whenhead - flood_msgs->value + 1;
+
 	if (i < 0)
 		i = (sizeof(cl->flood_when)/sizeof(cl->flood_when[0])) + i;
-	if (cl->flood_when[i] && level.time - cl->flood_when[i] < flood_persecond->value)
+
+	if (cl->flood_when[i] &&
+		level.time - cl->flood_when[i] < flood_persecond->value)
 	{
 		cl->flood_locktill = level.time + flood_waitdelay->value;
-		safe_cprintf(who, PRINT_CHAT, "Flood protection:  You can't talk for %d seconds.\n",(int)flood_waitdelay->value);
+		safe_cprintf(who, PRINT_CHAT,
+					 "Flood protection: You can't talk for %d seconds.\n",
+					 (int)flood_waitdelay->value);
 		return false;
 	}
-	cl->flood_whenhead = (cl->flood_whenhead + 1) % (sizeof(cl->flood_when)/sizeof(cl->flood_when[0]));
+
+	cl->flood_whenhead = (cl->flood_whenhead + 1)
+		% (sizeof(cl->flood_when)/sizeof(cl->flood_when[0]));
+
 	cl->flood_when[cl->flood_whenhead] = level.time;
 	return true;
 }

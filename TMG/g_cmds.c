@@ -29,10 +29,11 @@ char *ClientTeam1 (edict_t *ent)
 
 	strcpy(value, Info_ValueForKey (ent->client->pers.userinfo, "skin"));
 	p = strchr(value, '/');
+
 	if (!p)
 		return value;
 
-//jsw	if ((int)(dmflags->value) & DF_MODELTEAMS)
+	//jsw	if ((int)(dmflags->value) & DF_MODELTEAMS)
 	if (dmflag & DF_MODELTEAMS)
 	{
 		*p = 0;
@@ -51,7 +52,7 @@ int ClientTeam (edict_t *ent)
 		return 0;
 
 	if  (ent->client->resp.ctf_team < 3
-		 && ent->client->resp.ctf_team > 0)
+	  && ent->client->resp.ctf_team > 0)
 		return	ent->client->resp.ctf_team;
 
 	return 0;
@@ -186,7 +187,19 @@ void ValidateSelectedItem (edict_t *ent)
 }
 
 
-//=================================================================================
+//=============================================================================
+
+static void MustSetCheats(edict_t *ent)
+{
+	safe_cprintf (ent, PRINT_HIGH,
+	"You must run the server with '+set cheats 1' to enable this command.\n");
+}
+
+static void NoAccess(edict_t *ent)
+{
+	safe_cprintf(ent, PRINT_HIGH,
+				 "You do not have access to this command.\n");
+}
 
 /*
 ==================
@@ -206,7 +219,7 @@ void Cmd_Give_f (edict_t *ent)
 
 	if (deathmatch->value && !sv_cheats->value)
 	{
-		safe_cprintf (ent, PRINT_HIGH, "You must run the server with '+set cheats 1' to enable this command.\n");
+		MustSetCheats(ent);
 		return;
 	}
 
@@ -357,7 +370,7 @@ void Cmd_God_f (edict_t *ent)
 
 	if (deathmatch->value && !sv_cheats->value)
 	{
-		safe_cprintf (ent, PRINT_HIGH, "You must run the server with '+set cheats 1' to enable this command.\n");
+		MustSetCheats(ent);
 		return;
 	}
 
@@ -386,7 +399,7 @@ void Cmd_Notarget_f (edict_t *ent)
 
 	if (deathmatch->value && !sv_cheats->value)
 	{
-		safe_cprintf (ent, PRINT_HIGH, "You must run the server with '+set cheats 1' to enable this command.\n");
+		MustSetCheats(ent);
 		return;
 	}
 
@@ -413,7 +426,7 @@ void Cmd_Noclip_f (edict_t *ent)
 
 	if (deathmatch->value && !sv_cheats->value)
 	{
-		safe_cprintf (ent, PRINT_HIGH, "You must run the server with '+set cheats 1' to enable this command.\n");
+		MustSetCheats(ent);
 		return;
 	}
 
@@ -514,12 +527,17 @@ void Cmd_Drop_f (edict_t *ent)
 			return;
 		}
 	}
-	if (Q_stricmp(gi.args(), "ammo") == 0 && ent->client->pers.weapon && ent->client->pers.weapon->ammo && (!voosh->value))
+
+	if (Q_stricmp(gi.args(), "ammo") == 0
+		&& ent->client->pers.weapon
+		&& ent->client->pers.weapon->ammo
+		&& (!voosh->value))
 	{
 		it = FindItem (ent->client->pers.weapon->ammo);
 		it->drop (ent, it);
 		return;
 	}
+
 	s = gi.args();
 	if ((Q_stricmp(s, "rune")==0)|| (Q_stricmp(s, "tech")==0))
 	{
@@ -533,7 +551,9 @@ void Cmd_Drop_f (edict_t *ent)
 
 
 //ZOID--special case for tech powerups
-	if (Q_stricmp(gi.args(), "tech") == 0 && (it = CTFWhat_Tech(ent)) != NULL) {
+	if (Q_stricmp(gi.args(), "tech") == 0
+		&& (it = CTFWhat_Tech(ent)) != NULL)
+	{
 		it->drop (ent, it);
 		return;
 	}
@@ -771,7 +791,9 @@ void Cmd_InvDrop_f (edict_t *ent)
 	it = &itemlist[ent->client->pers.selected_item];
 	if (!it->drop)
 	{
-		safe_cprintf (ent, PRINT_HIGH, "Item %s is not droppable.\n", it->pickup_name);
+		safe_cprintf (ent,
+					  PRINT_HIGH,
+					  "Item %s is not droppable.\n", it->pickup_name);
 		return;
 	}
 	it->drop (ent, it);
@@ -926,7 +948,10 @@ void Cmd_Operators_f (edict_t *ent)
 	{
 		if (player->client->pers.isop)
 		{
-			safe_cprintf(ent, PRINT_HIGH, "%d. %s  %d\n", j, player->client->pers.netname, player->client->pers.oplevel);
+			safe_cprintf(ent, PRINT_HIGH,
+						 "%d. %s  %d\n",
+						 j, player->client->pers.netname,
+						 player->client->pers.oplevel);
 			j++;
 		}
 	}
@@ -943,7 +968,10 @@ void MapVoteThink(qboolean passed, qboolean now)
 	{
 		if (now)
 		{
-			my_bprintf (PRINT_CHAT, "Immediate map change to %s \"%s\" has passed.\n", maplist->mapname[maplist->currentmapvote], maplist->mapnick[maplist->currentmapvote]);
+			my_bprintf (PRINT_CHAT,
+						"Immediate map change to %s \"%s\" has passed.\n",
+						maplist->mapname[maplist->currentmapvote],
+						maplist->mapnick[maplist->currentmapvote]);
 			ent = G_Spawn ();
 			ent->classname = "target_changelevel";
 			ent->map = maplist->mapname[maplist->currentmapvote];
@@ -952,7 +980,10 @@ void MapVoteThink(qboolean passed, qboolean now)
 		}
 		else
 		{
-			my_bprintf (PRINT_CHAT, "End of level map change to %s \"%s\" has passed.\n", maplist->mapname[maplist->currentmapvote], maplist->mapnick[maplist->currentmapvote]);
+			my_bprintf (PRINT_CHAT,
+						"End of level map change to %s \"%s\" has passed.\n",
+						maplist->mapname[maplist->currentmapvote],
+						maplist->mapnick[maplist->currentmapvote]);
 			maplist->nextmap = maplist->currentmapvote;
 			mapvoteactive = false;
 		}
@@ -964,22 +995,35 @@ void MapVoteThink(qboolean passed, qboolean now)
 			if (now)
 			{
 				votemapnow = true;
-				sprintf(string, "An immediate mapvote has been started for %s \"%s\". Type 'YES' to vote yes.\n", maplist->mapname[maplist->currentmapvote], maplist->mapnick[maplist->currentmapvote]);
+				sprintf(string,
+						"An immediate mapvote has been started for %s \"%s\". Type 'YES' to vote yes.\n",
+						maplist->mapname[maplist->currentmapvote],
+						maplist->mapnick[maplist->currentmapvote]);
 			}
 			else
 			{
 				votemapnow = false;
-				sprintf(string, "An end of level mapvote has been started for %s \"%s\". Type 'YES' to vote yes.\n", maplist->mapname[maplist->currentmapvote], maplist->mapnick[maplist->currentmapvote]);
+				sprintf(string,
+						"An end of level mapvote has been started for %s \"%s\". Type 'YES' to vote yes.\n",
+						maplist->mapname[maplist->currentmapvote],
+						maplist->mapnick[maplist->currentmapvote]);
 			}
 			convert_string(string, 0, 127, 128, string); // white -> green
 			my_bprintf(PRINT_HIGH, string);
 			mapvoteactive = true;
 			mapvotetime = level.time + vote_timeout->value;
-//			gi.dprintf ("D. map to be voted on is %s %s\n", maplist->mapname[maplist->currentmapvote], maplist->mapnick[maplist->currentmapvote]);
+
+//			gi.dprintf ("D. map to be voted on is %s %s\n",
+//						maplist->mapname[maplist->currentmapvote],
+//						maplist->mapnick[maplist->currentmapvote]);
 		}
 		else
 		{
-			sprintf(string, "Mapvote for %s \"%s\" has failed.\n", maplist->mapname[maplist->currentmapvote], maplist->mapnick[maplist->currentmapvote]);
+			sprintf(string,
+					"Mapvote for %s \"%s\" has failed.\n",
+					maplist->mapname[maplist->currentmapvote],
+					maplist->mapnick[maplist->currentmapvote]);
+
 			for_each_player(player, i)
 			{
 				player->client->resp.vote = false;
@@ -987,7 +1031,8 @@ void MapVoteThink(qboolean passed, qboolean now)
 			convert_string(string, 0, 127, 128, string); // white -> green
 			my_bprintf(PRINT_HIGH, string);
 			mapvoteactive = false;
-//			gi.dprintf ("E. map to be voted on is %s\n", maplist->mapname[maplist->currentmapvote]);
+//			gi.dprintf ("E. map to be voted on is %s\n",
+//						maplist->mapname[maplist->currentmapvote]);
 		}
 	}
 }
@@ -998,15 +1043,22 @@ void Cmd_MapVote (edict_t *ent)
 	qboolean valid = false;
 	if (mapvoteactive)
 	{
-		safe_cprintf(ent, PRINT_HIGH, "A mapvote for %s \"%s\" is already in progress.\n", maplist->mapname[maplist->currentmapvote], maplist->mapnick[maplist->currentmapvote]);
+		safe_cprintf(ent, PRINT_HIGH,
+					 "A mapvote for %s \"%s\" is already in progress.\n",
+					 maplist->mapname[maplist->currentmapvote],
+					 maplist->mapnick[maplist->currentmapvote]);
 		return;
 	}
 	if (gi.argc() < 2)
 	{
-		safe_cprintf(ent, PRINT_HIGH, "Enter a map name such as 'mapvote q2ctf1' to start a mapvote.\n");
+		safe_cprintf(ent, PRINT_HIGH,
+			"Enter a map name such as 'mapvote q2ctf1' to start a mapvote.\n");
+
 		for (i = 0; i < maplist->nummaps; i++)
 		{
-			safe_cprintf(ent, PRINT_HIGH, "%s - '%s'   \n", maplist->mapname[i], maplist->mapnick[i]);
+			safe_cprintf(ent, PRINT_HIGH,
+						 "%s - '%s'   ",
+						 maplist->mapname[i], maplist->mapnick[i]);
 		}
 		return;
 	}
@@ -1015,23 +1067,29 @@ void Cmd_MapVote (edict_t *ent)
 
 	for (i = 0; i < maplist->nummaps; i++)
 	{
-//		gi.dprintf ("strcmp returned %d\n", strcmp(maplist->mapname[i], gi.argv(1)));
+//		gi.dprintf ("strcmp returned %d\n",
+//					strcmp(maplist->mapname[i], gi.argv(1)));
 		if (strcmp(maplist->mapname[i], gi.argv(1)) == 0)
 		{
-//			gi.dprintf ("G. map to be voted on is %s %s\n", maplist->mapname[i], maplist->mapnick[i]);
+//			gi.dprintf ("G. map to be voted on is %s %s\n",
+//						maplist->mapname[i], maplist->mapnick[i]);
 			valid = true;
 			maplist->currentmapvote = i;
-			//gi.dprintf ("maplist->currentmapvote index is %d, i is %d\n", maplist->currentmapvote, i);
+//			gi.dprintf ("maplist->currentmapvote index is %d, i is %d\n",
+//						maplist->currentmapvote, i);
 		}
 	}
 	if (!valid)
 	{
-		safe_cprintf(ent, PRINT_HIGH, "That map is not available to vote on.\n");
+		safe_cprintf(ent, PRINT_HIGH,
+					 "That map is not available to vote on.\n");
 		return;
 	}
 	ent->client->resp.vote = true;
 	MapVoteThink(false, true);
-//	gi.dprintf ("A. map to be voted on is %s %s\n", maplist->mapname[maplist->currentmapvote], maplist->mapnick[maplist->currentmapvote]);
+//	gi.dprintf ("A. map to be voted on is %s %s\n",
+//				maplist->mapname[maplist->currentmapvote],
+//				maplist->mapnick[maplist->currentmapvote]);
 }
 //end
 
@@ -1047,8 +1105,12 @@ void Cmd_SkinList_f(edict_t *ent)
 	if (!level.intermissiontime) 
 	{
 		// make it all look nice
-		gi.cprintf (ent, PRINT_HIGH, "\nnum name             skin");
-		gi.cprintf (ent, PRINT_HIGH, "\n--- ---------------- ---------------------\n");
+		gi.cprintf (ent,
+					PRINT_HIGH,
+					"\nnum name             skin");
+		gi.cprintf (ent,
+					PRINT_HIGH,
+					"\n--- ---------------- ---------------------\n");
 		for (i=0, edict=g_edicts + 1 + i; i < maxclients->value; i++, edict++)
 		{
 			if (!edict->inuse) 
@@ -1169,6 +1231,7 @@ void Cmd_ShowVotes_f(edict_t *ent)
 		safe_cprintf (ent, PRINT_HIGH, "%d. %s (%d votes)\n",
 		   i, maplist->mapname[i], maplist->votes[i]);
 }
+
 /*
 ==================
 Cmd_Say_f
@@ -1193,9 +1256,12 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 	char banned[64] = "sv ban ";
 	char *name;
 	//end
+
 	name = ent->client->pers.netname;
-//	gi.dprintf("DEBUG: netname is .%s. name is .%s.\n", ent->client->pers.netname, name);
-	
+
+//	gi.dprintf("DEBUG: netname is .%s. name is .%s.\n",
+//			   ent->client->pers.netname, name);
+
 	//RAV
 	//turn off camping if chatting
 	ent->client->check_camping = false;
@@ -1212,9 +1278,11 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 	else
 	{
 		//JSW
-		if (Q_stricmp (gi.argv(1), "/me") == 0 || (arg0 && (Q_stricmp (gi.argv(0), "/me") == 0)))
+		if (Q_stricmp (gi.argv(1), "/me") == 0
+			|| (arg0 && (Q_stricmp (gi.argv(0), "/me") == 0)))
 		{
-			Com_sprintf (text, sizeof(text), "%s ", ent->client->pers.netname);
+			Com_sprintf (text, sizeof(text),
+						 "%s ", ent->client->pers.netname);
 			action = true;
 		}
 		if (!action && (strstr(gi.argv(1), "/me")))
@@ -1223,26 +1291,35 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 			result = pdest - gi.argv(1) + 1;
 			if( pdest != NULL && result < 2)
 			{
-				Com_sprintf (text, sizeof(text), "%s ", ent->client->pers.netname);
+				Com_sprintf (text, sizeof(text),
+							 "%s ", ent->client->pers.netname);
 				action = true;
 			}
 		}
 		if (!action && ent->client->pers.saytype == 0)
 		{
 			if (!team)
-				Com_sprintf (text, sizeof(text), "%s: ", ent->client->pers.netname);
+				Com_sprintf (text, sizeof(text),
+							 "%s: ", ent->client->pers.netname);
 			else
-				Com_sprintf (text, sizeof(text), "(%s): ", ent->client->pers.netname);
+				Com_sprintf (text, sizeof(text),
+							 "(%s): ", ent->client->pers.netname);
 		}
 		else if (ent->client->pers.saytype == 1)
-			Com_sprintf (text, sizeof(text), "<OPCHAT> %s: ", ent->client->pers.netname);
+			Com_sprintf (text, sizeof(text),
+						 "<OPCHAT> %s: ", ent->client->pers.netname);
 		else if (ent->client->pers.saytype == 2)
-			Com_sprintf (text, sizeof(text), "Message from server op %s:\n\n", ent->client->pers.netname);
+			Com_sprintf (text, sizeof(text),
+						 "Message from server op %s:\n\n",
+						 ent->client->pers.netname);
 		else if (ent->client->pers.saytype == 3)
 		{
-			Com_sprintf(buffer, sizeof buffer, "rcon_password \"\";rcon %s %s\n", rcon->string, gi.args());
+			Com_sprintf(buffer, sizeof buffer,
+						"rcon_password \"\";rcon %s %s\n",
+						rcon->string, gi.args());
 			stuffcmd (ent, va(buffer));
-			//Com_sprintf (text, sizeof(text), "rcon %s %s", rcon_password->value, gi.args());
+//			Com_sprintf (text, sizeof(text), "rcon %s %s",
+//						 rcon_password->value, gi.args());
 			ent->client->pers.saytype = 0;
 			return;
 		}
@@ -1302,7 +1379,8 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 	//q2 crashbug fix on the exe not liking the % cmd)
 	if ( strstr(text, "%" )&& !team)
 	{
-		safe_cprintf(ent, PRINT_HIGH, "Use messagemode2 for messages with 'info' chars\n");
+		safe_cprintf(ent, PRINT_HIGH,
+					 "Use messagemode2 for messages with 'info' chars\n");
 		return;
 	}
 
@@ -1446,7 +1524,8 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 			continue;
 		if (team)
 		{
-			if (other->client->pers.pl_state != PL_SPECTATOR)// || !OnSameTeam(ent, other))
+			if (other->client->pers.pl_state != PL_SPECTATOR)
+				// || !OnSameTeam(ent, other))
 				continue;
 		}
 		
@@ -1455,7 +1534,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 	}
 }
 
-
+//QW// UNUSED, replaced by Spec()
 //RAV Spectator MODE
 void player_set_observer(edict_t *ent, int value)
 {
@@ -1498,8 +1577,6 @@ void player_set_observer(edict_t *ent, int value)
 		else
 			if (CTFStartClient(ent))
 				return;
-		
-
 	}
 }
 
@@ -1515,9 +1592,11 @@ void Cmd_ZoomIn(edict_t *ent)
 
 //	if(	ent->client->pers.weapon != FindItem("Railgun")) return;
 
-	if( ent->client->zc.aiming != 1 && ent->client->zc.aiming != 3) return;
+	if(ent->client->zc.aiming != 1 &&
+	   ent->client->zc.aiming != 3) return;
 
-	if(ent->client->zc.distance < 15 || ent->client->zc.distance > 90)
+	if(ent->client->zc.distance < 15 ||
+	   ent->client->zc.distance > 90)
 	{
 		ent->client->zc.distance = 90;
 		ent->client->ps.fov = 90;
@@ -1525,10 +1604,15 @@ void Cmd_ZoomIn(edict_t *ent)
 	
 	if(ent->client->zc.distance > 15)
 	{
-		gi.sound (ent, CHAN_AUTO, gi.soundindex("3zb/zoom.wav"), 1, ATTN_NORM, 0);
-		if(ent->client->zc.distance == 90 ) ent->client->zc.distance = 65;
-		else if(ent->client->zc.distance == 65 ) ent->client->zc.distance = 40;
-		else ent->client->zc.distance = 15;
+		gi.sound (ent, CHAN_AUTO,
+				  gi.soundindex("3zb/zoom.wav"), 1, ATTN_NORM, 0);
+		if(ent->client->zc.distance == 90 )
+			ent->client->zc.distance = 65;
+		else if(ent->client->zc.distance == 65 )
+			ent->client->zc.distance = 40;
+		else
+			ent->client->zc.distance = 15;
+
 		ent->client->ps.fov = ent->client->zc.distance;
 	}
 }
@@ -1543,9 +1627,11 @@ void Cmd_ZoomOut(edict_t *ent)
 
 //	if(	ent->client->pers.weapon != FindItem("Railgun")) return;
 
-	if(ent->client->zc.aiming != 1 && ent->client->zc.aiming != 3) return;	
+	if(ent->client->zc.aiming != 1 &&
+	   ent->client->zc.aiming != 3) return;
 
-	if(ent->client->zc.distance < 15 || ent->client->zc.distance > 90)
+	if(ent->client->zc.distance < 15 ||
+	   ent->client->zc.distance > 90)
 	{
 		ent->client->zc.distance = 90;
 		ent->client->ps.fov = 90;
@@ -1553,10 +1639,15 @@ void Cmd_ZoomOut(edict_t *ent)
 	
 	if(ent->client->zc.distance < 90)
 	{
-		gi.sound (ent, CHAN_AUTO, gi.soundindex("3zb/zoom.wav"), 1, ATTN_NORM, 0);
-		if(ent->client->zc.distance == 15 ) ent->client->zc.distance = 40;
-		else if(ent->client->zc.distance == 40 ) ent->client->zc.distance = 65;
-		else ent->client->zc.distance = 90;		
+		gi.sound (ent, CHAN_AUTO,
+				  gi.soundindex("3zb/zoom.wav"), 1, ATTN_NORM, 0);
+		if(ent->client->zc.distance == 15 )
+			ent->client->zc.distance = 40;
+		else if(ent->client->zc.distance == 40 )
+			ent->client->zc.distance = 65;
+		else
+			ent->client->zc.distance = 90;
+
 		ent->client->ps.fov = ent->client->zc.distance;
 	}
 }
@@ -1589,19 +1680,30 @@ void UndoChain(edict_t *ent ,int step)
 		{
 			if(Route[i].state == GRS_NORMAL)
 			{
-				rs_trace = gi.trace(Route[i].Pt,ent->mins,ent->maxs,Route[i].Pt,ent,MASK_BOTSOLID);
+				rs_trace = gi.trace(Route[i].Pt, ent->mins,
+									ent->maxs,
+									Route[i].Pt,
+									ent,
+									MASK_BOTSOLID);
 
-				if(--count <= 0 && !rs_trace.allsolid && !rs_trace.startsolid) break;
+				if(--count <= 0
+				   && !rs_trace.allsolid
+				   && !rs_trace.startsolid)
+					break;
 			}
 		}
 
-		gi.cprintf(ent,PRINT_HIGH,"backed %i %i steps.\n",CurrentIndex - i,step);
+		gi.cprintf(ent,
+				   PRINT_HIGH,
+				   "backed %i %i steps.\n",
+				   CurrentIndex - i,step);
 		CurrentIndex = i;
 		VectorCopy(Route[CurrentIndex].Pt,ent->s.origin);
 		VectorCopy(Route[CurrentIndex].Pt,ent->s.old_origin);
 
 		memset(&Route[CurrentIndex],0,sizeof(route_t));
-		if(CurrentIndex > 0) Route[CurrentIndex].index = Route[CurrentIndex - 1].index + 1;
+		if(CurrentIndex > 0)
+			Route[CurrentIndex].index = Route[CurrentIndex - 1].index + 1;
 	}
 }
 
@@ -1653,6 +1755,7 @@ void ClientCommand (edict_t *ent)
 		Cmd_Say_f (ent, false, false);
 		return;
 	}
+
 	if (Q_stricmp (cmd, "say_team") == 0 || Q_stricmp (cmd, "steam") == 0)
 	{
 		if (ctf->value)
@@ -1663,6 +1766,7 @@ void ClientCommand (edict_t *ent)
 			Cmd_Say_f (ent, false, false);
 		return;
 	}
+
 	//JSW
 	if (Q_stricmp (cmd, "sayop") == 0 || Q_stricmp (cmd, "opsay") == 0)
 	{
@@ -1670,9 +1774,10 @@ void ClientCommand (edict_t *ent)
 		if (ent->client->pers.oplevel & OP_SAY)
 			Say_Op (ent, gi.args());
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
+			NoAccess(ent);
 		return;
 	}
+
 	if (Q_stricmp (cmd, "op_chat") == 0 || Q_stricmp (cmd, "opchat") == 0)
 	{
 		//if (ent->client->pers.isop ==1 || ent->client->pers.ismop ==1)
@@ -1690,9 +1795,10 @@ void ClientCommand (edict_t *ent)
 			}
 		}
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
+			NoAccess(ent);
 		return;
 	}
+
 /* FIXMEJSW: need to rewrite the command
 	if (Q_stricmp (cmd, "opbroadcast") == 0)
 	{
@@ -1702,10 +1808,11 @@ void ClientCommand (edict_t *ent)
 			stuffcmd (ent, "echo \"Op Broadcast enabled\";messagemode");
 		}
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
+			NoAccess(ent);
 		return;
 	}
 */
+
 	if (Q_stricmp (cmd, "rconmode") == 0)
 	{
 		//if (ent->client->pers.isop ==1 || ent->client->pers.ismop ==1)
@@ -1723,32 +1830,37 @@ void ClientCommand (edict_t *ent)
 			}
 		}
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
+			NoAccess(ent);
 		return;
 	}
+
 	if (Q_stricmp (cmd, "grcon") == 0)
 	{
 		if (ent->client->pers.oplevel & OP_RCON)
 		{
-			sprintf(buffer, "rcon_password \"\";rcon %s %s\n", rcon->string, gi.args());
+			sprintf(buffer,
+					"rcon_password \"\";rcon %s %s\n", rcon->string, gi.args());
 			stuffcmd (ent, va(buffer));
 		}
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
+			NoAccess(ent);
 		return;
 	}
+
 	if (Q_stricmp (cmd, "lockserver") == 0)
 	{
 		//if (ent->client->pers.isop ==1 || ent->client->pers.ismop == 1)
 		if (ent->client->pers.oplevel & OP_LOCKSERVER)
 		{
-			my_bprintf(PRINT_CHAT, "Server was locked by %s\n", ent->client->pers.netname);
+			my_bprintf(PRINT_CHAT,
+					   "Server was locked by %s\n", ent->client->pers.netname);
 			serverlocked = true;
 		}
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
+			NoAccess(ent);
 		return;
 	}
+
 	if (Q_stricmp (cmd, "unlockserver") == 0)
 	{
 		//if (ent->client->pers.isop ==1 || ent->client->pers.ismop == 1)
@@ -1758,10 +1870,11 @@ void ClientCommand (edict_t *ent)
 			serverlocked = false;
 		}
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
+			NoAccess(ent);
 		return;
 	}
 	//end
+
 	if (Q_stricmp (cmd, "score") == 0)
 	{
 		Cmd_Score_f (ent);
@@ -1861,26 +1974,33 @@ void ClientCommand (edict_t *ent)
 	{
 		if (ent->client->resp.spectator == 1)
 		{
-			safe_cprintf (ent, PRINT_HIGH, "You are already a spectator!\n");
+			safe_cprintf (ent, PRINT_HIGH,
+						  "You are already a spectator!\n");
 			return;
 		}
+
 		if(CountConnectedClients()+2 >= (maxclients->value - (int)reserved_slots->value))
 		{
 			if(op_specs->value || max_specs->value)
 			{
-				if((max_specs->value ) && (CountSpecClients() >= (max_specs->value)))
+				if((max_specs->value )
+				   && (CountSpecClients() >= (max_specs->value)))
 				{
-					safe_cprintf (ent, PRINT_HIGH, "Too many spectators already\n");
+					safe_cprintf (ent, PRINT_HIGH,
+								  "Too many spectators already\n");
 					return;
 				}
-				if((op_specs->value) && (CountSpecClients() >= (max_specs->value)))
-					safe_cprintf (ent, PRINT_HIGH, "Too many spectators already\n");
+				if((op_specs->value)
+				   && (CountSpecClients() >= (max_specs->value)))
+					safe_cprintf (ent, PRINT_HIGH,
+								  "Too many spectators already\n");
 				return;
 			}
 		}
 		if(ent->deadflag & DEAD_DEAD)
 		{
-			safe_cprintf (ent, PRINT_HIGH, "You must be ALIVE to go Spectator\n");
+			safe_cprintf (ent, PRINT_HIGH,
+						  "You must be ALIVE to go Spectator\n");
 			return;
 		}
 		ent->client->pers.pl_state = PL_SPECTATOR;
@@ -1895,9 +2015,15 @@ void ClientCommand (edict_t *ent)
 
 		CheckPlayers();
 		if (ctf->value)
-			my_bprintf(PRINT_HIGH, "%s has become a spectator. (%d red, %d blue, %d spectators)\n", ent->client->pers.netname, ctfgame.players1, ctfgame.players2, ctfgame.specs);
+			my_bprintf(PRINT_HIGH,
+				"%s has become a spectator. (%d red, %d blue, %d spectators)\n",
+				ent->client->pers.netname,
+				ctfgame.players1,
+				ctfgame.players2, ctfgame.specs);
 		else
-			my_bprintf(PRINT_HIGH, "%s has become a spectator. (%d players, %d spectators)\n", ent->client->pers.netname, ctfgame.players3, ctfgame.specs);
+			my_bprintf(PRINT_HIGH,
+				"%s has become a spectator. (%d players, %d spectators)\n",
+				ent->client->pers.netname, ctfgame.players3, ctfgame.specs);
 
 	}
 	
@@ -1923,22 +2049,27 @@ void ClientCommand (edict_t *ent)
 		if(atoi(gi.argv(1)) > maxfps->value)
 		{
 			stuffcmd (ent, va("set cl_maxfps %i\n", (int)maxfps->value));
-			safe_cprintf (ent, PRINT_HIGH, "Server Restricting FPS To %i\n",(int)maxfps->value);
+			safe_cprintf (ent, PRINT_HIGH,
+						  "Server Restricting FPS To %i\n",
+						  (int)maxfps->value);
 			return;
 		}
 		else if(atoi(gi.argv(1)) < minfps->value)
 		{
 			stuffcmd (ent, va("set cl_maxfps %i\n", (int)minfps->value));
-			safe_cprintf (ent, PRINT_HIGH, "Server Increasing FPS To %i\n",(int)minfps->value);
+			safe_cprintf (ent, PRINT_HIGH,
+						  "Server Increasing FPS To %i\n",(int)minfps->value);
 			return;
 		}
 	}
+
 	else if(Q_stricmp  (cmd, "mm_delta") == 0)
 	{
 		if(atoi(gi.argv(1)) > 0)
 		{
 			stuffcmd (ent, va("cl_nodelta 0\n"));
-			safe_cprintf (ent, PRINT_HIGH, "You cannot use cl_nodelta here.\n");
+			safe_cprintf (ent, PRINT_HIGH,
+						  "You cannot use cl_nodelta here.\n");
 			return;
 		}
 	}
@@ -1954,19 +2085,25 @@ void ClientCommand (edict_t *ent)
 			return;
 		}
 	}
+
 	else if (Q_stricmp (cmd, "flashlight") == 0)
 	{
-		if(ent->solid == SOLID_NOT || ent->deadflag != DEAD_NO || flashlight->value != 1)
+		if(ent->solid == SOLID_NOT
+		   || ent->deadflag != DEAD_NO
+		   || flashlight->value != 1)
 			return;
+
 		if (ent->flashlight)
 		{
 			FL_make (ent);
-			gi.sound (ent, CHAN_AUTO, gi.soundindex ("misc/keyuse.wav"), 1, ATTN_NORM, 0);
+			gi.sound (ent, CHAN_AUTO,
+					  gi.soundindex ("misc/keyuse.wav"), 1, ATTN_NORM, 0);
 		}
 		else
 		{
 			FL_make (ent);
-			gi.sound (ent, CHAN_AUTO, gi.soundindex ("misc/keytry.wav"), 1, ATTN_NORM, 0);
+			gi.sound (ent, CHAN_AUTO,
+					  gi.soundindex ("misc/keytry.wav"), 1, ATTN_NORM, 0);
 		}
 	}
 	
@@ -1975,12 +2112,14 @@ void ClientCommand (edict_t *ent)
 	{
 		if(mapvotefilled != true)
 		{
-			safe_cprintf (ent, PRINT_HIGH, "You have to wait until end of level\n");
+			safe_cprintf (ent, PRINT_HIGH,
+						  "You have to wait until end of level\n");
 			return;
 		}
 		if(ent->client->pers.vote_times > 0)
 		{
-			safe_cprintf (ent, PRINT_HIGH, "You have already voted for a map.\n");
+			safe_cprintf (ent, PRINT_HIGH,
+						  "You have already voted for a map.\n");
 			return;
 		}
 		if (ent->client->pers.HasVoted == false)
@@ -1988,7 +2127,8 @@ void ClientCommand (edict_t *ent)
 			MapVote(ent);
 		}
 		else
-			safe_cprintf (ent, PRINT_HIGH, "You have already voted for a map.\n");
+			safe_cprintf (ent, PRINT_HIGH,
+						  "You have already voted for a map.\n");
 	}
 	else if (Q_stricmp (cmd, "showvotes") == 0)
 	{
@@ -2009,18 +2149,19 @@ void ClientCommand (edict_t *ent)
 			gi.AddCommandString(buffer);
 		}
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
-	}		
+			NoAccess(ent);
+	}
 	else if (Q_stricmp (cmd, "m_status") == 0)
 	{
 		//if (ent->client->pers.isop == 1 || ent->client->pers.ismop == 1)
 		if (ent->client->pers.oplevel & OP_STATUS)
 		{
-			sprintf(buffer, "rcon_password \"\";rcon %s status\n", rcon->string);
+			sprintf(buffer,
+					"rcon_password \"\";rcon %s status\n", rcon->string);
 			stuffcmd (ent, va(buffer));
 		}
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
+			NoAccess(ent);
 	}
 	else if (Q_stricmp (cmd, "m_kick") == 0)
 	{
@@ -2032,7 +2173,7 @@ void ClientCommand (edict_t *ent)
 			gi.AddCommandString(buffer);
 		}
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
+			NoAccess(ent);
 	}
 	//JSW
 	else if (Q_stricmp (cmd, "lockteams") == 0)
@@ -2044,7 +2185,7 @@ void ClientCommand (edict_t *ent)
 			my_bprintf(PRINT_HIGH, "Teams are LOCKED\n");
 		}
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
+			NoAccess(ent);
 	}
 	else if (Q_stricmp (cmd, "unlockteams") == 0)
 	{
@@ -2055,7 +2196,7 @@ void ClientCommand (edict_t *ent)
 			my_bprintf(PRINT_HIGH, "Teams are UN-LOCKED\n");
 		}
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
+			NoAccess(ent);
 	}
 	else if (Q_stricmp (cmd, "showopfile") == 0)
 	{
@@ -2063,7 +2204,7 @@ void ClientCommand (edict_t *ent)
 		if (ent->client->pers.oplevel & OP_ADDOP)
 			ShowFile(ent, "user_o.txt");
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
+			NoAccess(ent);
 	}
 	else if (Q_stricmp (cmd, "showbannedfile") == 0)
 	{
@@ -2071,7 +2212,7 @@ void ClientCommand (edict_t *ent)
 		if (ent->client->pers.oplevel & OP_BAN)
 			ShowFile (NULL, "ip_banned.txt");
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
+			NoAccess(ent);
 	}
 	else if (Q_stricmp (cmd, "ban") == 0)
 	{
@@ -2079,7 +2220,7 @@ void ClientCommand (edict_t *ent)
 		if (ent->client->pers.oplevel & OP_BAN)
 			sv_ban_ip(ent);
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
+			NoAccess(ent);
 	}
 	else if (Q_stricmp (cmd, "restart") == 0)
 	{
@@ -2087,7 +2228,7 @@ void ClientCommand (edict_t *ent)
 		if (ent->client->pers.oplevel & OP_RESTART)
 			OpRestart(ent, NULL);
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
+			NoAccess(ent);
 	}
 	else if (Q_stricmp (cmd, "modop") == 0)
 	{
@@ -2102,15 +2243,19 @@ void ClientCommand (edict_t *ent)
 					level = atoi(gi.argv(2));
 
 				if (ModifyOpLevel(CheckOpFile (NULL, gi.argv(1), true), level))
-					safe_cprintf (ent, PRINT_HIGH, "%s level changed to %d\n", gi.argv(1), level);
+					safe_cprintf (ent, PRINT_HIGH,
+								  "%s level changed to %d\n",
+								  gi.argv(1), level);
 				else
-					safe_cprintf (ent, PRINT_HIGH, "No matching entry found.\n");
+					safe_cprintf (ent, PRINT_HIGH,
+								  "No matching entry found.\n");
 			}
 			else
-				safe_cprintf(ent, PRINT_HIGH, "Usage: modop user@ip newlevel\n");
+				safe_cprintf(ent, PRINT_HIGH,
+							 "Usage: modop user@ip newlevel\n");
 		}
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
+			NoAccess(ent);
 	}
 	else if (Q_stricmp(cmd, "addop") == 0)
 	{
@@ -2130,14 +2275,16 @@ void ClientCommand (edict_t *ent)
 				else
 					Com_sprintf(pass, sizeof(pass), gi.argv(3));
 
-				safe_cprintf (ent, PRINT_HIGH, "%s added to user_o.txt with level %d and password %s.\n", gi.argv(1), level, pass);
+				safe_cprintf (ent, PRINT_HIGH,
+					"%s added to user_o.txt with level %d and password %s.\n",
+							  gi.argv(1), level, pass);
 				AddOperator (gi.argv(1), level, pass);
 			}
 			else
 				safe_cprintf(ent, PRINT_HIGH, "Usage: addop user@ip level pass\n");
 		}
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
+			NoAccess(ent);
 	}
 	//end
 	else if(Q_stricmp (cmd, "lightsoff") == 0  && lights_out->value == 1)
@@ -2148,7 +2295,9 @@ void ClientCommand (edict_t *ent)
 			int i;
 			for_each_player(ent, i)
 			{
-				gi.sound (ent, CHAN_AUTO, gi.soundindex ("world/lite_out.wav"), 1, ATTN_NORM, 0);
+				gi.sound (ent, CHAN_AUTO,
+						  gi.soundindex ("world/lite_out.wav"),
+						  1, ATTN_NORM, 0);
 			}
 			if (LIGHTS)
 			{
@@ -2207,7 +2356,7 @@ void ClientCommand (edict_t *ent)
 			}
 		}
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
+			NoAccess(ent);
 	}
 	// lights on
 	else if(Q_stricmp (cmd, "lightson") == 0 && lights_out->value == 1)
@@ -2218,7 +2367,9 @@ void ClientCommand (edict_t *ent)
 			int i;
 			for_each_player(ent, i)
 			{
-				gi.sound (ent, CHAN_AUTO, gi.soundindex ("world/lite_on3.wav"), 1, ATTN_NORM, 0);
+				gi.sound (ent, CHAN_AUTO,
+						  gi.soundindex ("world/lite_on3.wav"),
+						  1, ATTN_NORM, 0);
 			}
 			if (LIGHTS)
 			{
@@ -2277,7 +2428,7 @@ void ClientCommand (edict_t *ent)
 			}
 		}
 		else
-			safe_cprintf(ent, PRINT_HIGH, "You do not have access to this command.\n");
+			NoAccess(ent);
 	}
 	//3ZB
 	else if (Q_stricmp (cmd, "zoomin") == 0)		//zoom
@@ -2318,28 +2469,41 @@ void ClientCommand (edict_t *ent)
 //JSW
 	else if (Q_stricmp (cmd, "download") == 0)
 	{
-		gi.dprintf ("download called by %s\n", ent->client->pers.netname);
-		if (strstr (gi.argv(1), ".txt") || strstr (gi.argv(1), ".log") || strstr (gi.argv(1), ".cfg")) 
-			my_bprintf(PRINT_HIGH, "%s tried to download an unauthorized file\nand was disconnected from the server.\n",
-			ent->client->pers.netname);
-		stuffcmd(ent ,"disconnect;error \"You have been disconnected for trying to download an unautorized file. Multiple attempts at this will result in a ban from this server.\"");
+		gi.dprintf ("download called by %s\n",
+					ent->client->pers.netname);
+
+		if (strstr (gi.argv(1), ".txt") ||
+			strstr (gi.argv(1), ".log") ||
+			strstr (gi.argv(1), ".cfg"))
+				my_bprintf(PRINT_HIGH,
+					"%s tried to download an unauthorized file \nand was disconnected from the server.\n",
+					ent->client->pers.netname);
+		stuffcmd(ent,
+				 "disconnect;error \"You have been disconnected for trying to download an unauthorized file. Multiple attempts at this will result in a ban from this server.\"");
 		return;
 	}
-	else if (Q_stricmp (cmd, "listops") == 0 || Q_stricmp (cmd, "oplist") == 0)
+	else if (Q_stricmp (cmd, "listops") == 0
+		  || Q_stricmp (cmd, "oplist") == 0)
 	{
 		Cmd_Operators_f(ent);
 	}
 	else if (Q_stricmp (cmd, "iddist") == 0)
 	{
 		if (gi.argc() < 2)
-			safe_cprintf (ent, PRINT_HIGH, "Your iddist is %d\n", ent->client->resp.iddist);
+			safe_cprintf (ent, PRINT_HIGH,
+						  "Your iddist is %d\n",
+						  ent->client->resp.iddist);
 		else
 		{
 			if (atoi(gi.argv(1)) > (int)max_hud_dist->value)
 				ent->client->resp.iddist = (int)max_hud_dist->value;
 			else
 				ent->client->resp.iddist = atoi(gi.argv(1));
-			safe_cprintf (ent, PRINT_HIGH, "Your iddist was set to %d", ent->client->resp.iddist);
+
+			safe_cprintf (ent, PRINT_HIGH,
+						  "Your iddist was set to %d",
+						  ent->client->resp.iddist);
+
 			if (ent->client->resp.iddist == (int)max_hud_dist->value)
 				safe_cprintf (ent, PRINT_HIGH, " (server max).\n");
 			else
@@ -2361,7 +2525,8 @@ void ClientCommand (edict_t *ent)
 	}
 	else if (Q_stricmp (cmd, "oplevel") == 0)
 	{
-		safe_cprintf(ent, PRINT_HIGH, "oplevel = %d\n", ent->client->pers.oplevel);
+		safe_cprintf(ent, PRINT_HIGH,
+					 "oplevel = %d\n", ent->client->pers.oplevel);
 	}
 	else if (Q_stricmp (cmd, "checkop") == 0) {
 		if (ent->client->pers.oplevel & OP_LOCKSERVER)
@@ -2371,56 +2536,70 @@ void ClientCommand (edict_t *ent)
 	}
 	else if (Q_stricmp (cmd, "spree") == 0)
 	{
-		safe_cprintf(ent, PRINT_HIGH, "Your current spree is %d. Your longest spree is %d.\n", ent->client->resp.spree, ent->client->resp.bigspree);
+		safe_cprintf(ent, PRINT_HIGH,
+					 "Your current spree is %d. Your longest spree is %d.\n",
+					 ent->client->resp.spree, ent->client->resp.bigspree);
 	}
 	else if (Q_stricmp (cmd, "mapvote") == 0)
 	{
 		if (allow_vote->value)
 			Cmd_MapVote(ent);
 		else
-			safe_cprintf(ent, PRINT_HIGH, "Map voting is disabled on this server.\n");
+			safe_cprintf(ent, PRINT_HIGH,
+						 "Map voting is disabled on this server.\n");
 	}
 	else if (Q_stricmp (cmd, "yes") == 0)
 	{
 		if (mapvoteactive == false)
 		{
-			safe_cprintf(ent, PRINT_HIGH, "There is no vote active.\n");
+			safe_cprintf(ent, PRINT_HIGH,
+						 "There is no vote active.\n");
 			return;
 		}
 		if (ent->client->resp.vote == true)
-			safe_cprintf(ent, PRINT_HIGH, "You have already voted YES.\n");
+			safe_cprintf(ent, PRINT_HIGH,
+						 "You have already voted YES.\n");
 		else
 		{
 			ent->client->resp.vote = true;
-			safe_cprintf(ent, PRINT_HIGH, "Your vote has been changed to YES\n");
+			safe_cprintf(ent, PRINT_HIGH,
+						 "Your vote has been changed to YES\n");
 		}
 	}
 	else if (Q_stricmp (cmd, "no") == 0)
 	{
 		if (mapvoteactive == false)
 		{
-			safe_cprintf(ent, PRINT_HIGH, "There is no vote active.\n");
+			safe_cprintf(ent, PRINT_HIGH,
+						 "There is no vote active.\n");
 			return;
 		}
 		if (ent->client->resp.vote == false)
-			safe_cprintf(ent, PRINT_HIGH, "You have already voted NO.\n");
+			safe_cprintf(ent, PRINT_HIGH,
+						 "You have already voted NO.\n");
 		else
 		{
 			ent->client->resp.vote = false;
-			safe_cprintf(ent, PRINT_HIGH, "Your vote has been changed to NO\n");
+			safe_cprintf(ent, PRINT_HIGH,
+						 "Your vote has been changed to NO\n");
 		}
 	}
 	else if (Q_stricmp (cmd, "menus") == 0)
 	{
-		safe_cprintf(ent, PRINT_HIGH, "pl_state is %d, menu is %d, showscores is %d.\n",
-			ent->client->pers.pl_state, ent->client->menu, ent->client->showscores);
+		safe_cprintf(ent, PRINT_HIGH,
+					 "pl_state is %d, menu is %d, showscores is %d.\n",
+					 ent->client->pers.pl_state,
+					 ent->client->menu,
+					 ent->client->showscores);
 	}
 	else if (Q_stricmp (cmd, "permissions") == 0)
 	{
 		//char *commands;// = "You have the following permissions: ";
 		if (ent->client->pers.isop)
 		{
-			safe_cprintf(ent, PRINT_HIGH, "You have the following permissions:\n");
+			safe_cprintf(ent,
+						 PRINT_HIGH,
+						 "You have the following permissions:\n");
 			if (ent->client->pers.oplevel & OP_SPEC)
 				safe_cprintf(ent, PRINT_HIGH, "OP_SPEC\n");
 			if (ent->client->pers.oplevel & OP_SAY)
@@ -2464,6 +2643,7 @@ void ClientCommand (edict_t *ent)
 //end
 		Cmd_Say_f (ent, false, true);
 	else
-		safe_cprintf(ent, PRINT_HIGH, "Unrecognized command: %s\n", cmd);
+		safe_cprintf(ent, PRINT_HIGH,
+					 "Unrecognized command: %s\n", cmd);
 }
 
