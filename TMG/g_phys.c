@@ -95,13 +95,13 @@ qboolean SV_RunThink (edict_t *ent)
 	if (!ent->think || !strcmp(ent->classname, "freed"))
 	{
 		if (ent->classname && ent->model)
-			DbgPrintf ("%s NULL ent->think (classname %s, model %s mapname %s)\n",
+			gi.dprintf ("%s NULL ent->think (classname %s, model %s mapname %s)\n",
 			__FUNCTION__, ent->classname, ent->model, level.mapname);
 		else if (ent->classname)
-			DbgPrintf ("%s NULL ent->think (classname %s mapname %s)\n",
+			gi.dprintf ("%s NULL ent->think (classname %s mapname %s)\n",
 			__FUNCTION__, ent->classname, level.mapname);
 		else
-			DbgPrintf ("NULL ent->think (mapname %s)\n",
+			gi.dprintf ("NULL ent->think (mapname %s)\n",
 			__FUNCTION__, level.mapname);
 		return false;
 	}
@@ -418,11 +418,9 @@ retry:
 	if (voosh->value && ent->inuse)
 		gi.linkentity (ent);
 
-	/*
-	if (!ent->inuse) 
-		DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
-		__FUNCTION__, ent->movetype, ent->inuse, ent->classname, level.time);
-	*/
+	//if (!ent->inuse && developer->value == 2) 
+	//	DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
+	//	__FUNCTION__, ent->movetype, ent->inuse, ent->classname, level.time);
 
 	if (trace.fraction != 1.0)
 	{
@@ -851,11 +849,9 @@ void SV_Physics_Toss (edict_t *ent)
 	qboolean	isinwater;
 	vec3_t		old_origin;
 
-	/*
-	if (!ent->inuse)
-		DbgPrintf ("%s entity %d inuse: %d classname %s time: %.1f\n", 
-		__FUNCTION__, ent->movetype, ent->inuse, ent->classname, level.time);
-	*/
+	//if (!ent->inuse && developer->value == 2)
+	//	DbgPrintf ("%s entity %d inuse: %d classname %s time: %.1f\n", 
+	//	__FUNCTION__, ent->movetype, ent->inuse, ent->classname, level.time);
 	
 	// regular thinking
 	SV_RunThink (ent);

@@ -969,8 +969,8 @@ qboolean votemapnow;
 typedef struct 
 { 
    int  nummaps;          // number of maps in list 
-   char mapname[128][MAX_QPATH];
-   char mapnick[128][MAX_QPATH];
+   char mapname[256][MAX_QPATH];
+   char mapnick[256][MAX_QPATH];
    int  currentmap;       // index to current map 
    qboolean active;
    int	votes[128];
