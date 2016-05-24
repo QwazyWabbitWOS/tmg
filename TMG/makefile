@@ -1,5 +1,5 @@
 #
-# Quake2 gamei386.so Makefile for Linux 2.0
+# Quake2 gamei386.so Makefile for Linux
 #
 # Jan '98 by Zoid <zoid@idsoftware.com>
 #
@@ -11,7 +11,7 @@
 #
 
 ARCH = i386
-CC = gcc
+CC = gcc -std=gnu99
 
 
 # on x64 machines do this preparation:
