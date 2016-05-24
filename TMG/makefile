@@ -10,7 +10,9 @@
 # Requires GNU make
 #
 
-ARCH=i386
+ARCH = i386
+CC = gcc
+
 
 # on x64 machines do this preparation:
 # sudo apt-get install ia32-libs
@@ -78,7 +80,7 @@ clean:
 	/bin/rm -f $(GAME_OBJS) game$(ARCH).$(SHLIBEXT)
 
 depend:
-	gcc -MM $(GAME_OBJS:.o=.c)
+	$(CC) -MM $(GAME_OBJS:.o=.c)
 
 depends:
 	$(CC) $(CFLAGS) -MM *.c > dependencies
