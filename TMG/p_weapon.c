@@ -1,8 +1,7 @@
 // g_weapon.c
 
 #include "g_local.h"
-#include "m_player.h"
-#include "runes.h"//RAV
+
 static qboolean is_strength;//RAV
 
 qboolean	is_quad;

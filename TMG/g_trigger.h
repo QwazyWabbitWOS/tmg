@@ -1,9 +1,5 @@
 //
 //  g_trigger.h
-//  tmg
-//
-//  Created by Geoff Joy on 5/23/16.
-//  Copyright © 2016 Geoff Joy. All rights reserved.
 //
 
 #ifndef g_trigger_h

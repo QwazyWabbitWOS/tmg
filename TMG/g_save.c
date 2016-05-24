@@ -1,10 +1,6 @@
 
 #include "g_local.h"
-#include "hud.h"
-#include "s_map.h"
-#include "filehand.h"
-#include "filtering.h"
-#include "bot.h"
+
 
 //RAV
 #include "gslog.h"	//	StdLog - Mark Davies

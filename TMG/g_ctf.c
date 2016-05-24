@@ -1,11 +1,6 @@
-#include "g_local.h"
 
-//RAV
-#include "runes.h"
-#include "stdlog.h"
-#include "e_hook.h"
-#include "hud.h"
-#include "bot.h"
+#include "g_local.h"
+#include "g_ctf.h"
 
 
 //3ZB

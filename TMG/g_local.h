@@ -1,4 +1,6 @@
+//
 // g_local.h -- local definitions for game module
+//
 
 #ifdef _WIN32
   #define WIN32_LEAN_AND_MEAN	//non-MFC
@@ -14,8 +16,11 @@
   #define OutputDebugString	//not doing Windows
 #endif
 
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
 #include "q_shared.h"
-//#include <sys/timeb.h>
 #include "performance.h"
 
 // define GAME_INCLUDE so that game.h does not define the
@@ -23,12 +28,23 @@
 // because we define the full size ones in this file
 #define	GAME_INCLUDE
 #include "game.h"
+
+#include "eavy.h"
 #include "g_cmds.h"
-#include "p_hud.h"
-#include "g_trigger.h"
 #include "g_func.h"
+#include "g_trigger.h"
+#include "m_player.h"
+#include "p_client.h"
+#include "p_hud.h"
+#include "timer.h"
+#include "e_hook.h"
+#include "anticheat.h"
+#include "filehand.h"
+#include "filtering.h"
+#include "s_map.h"
 
 #include "botstr.h"
+#include "hud.h"
 
 //RAV
 #include "g_chase.h"
@@ -888,12 +904,20 @@ typedef struct
 extern	field_t fields[];
 extern	gitem_t	itemlist[];
 
+//
+// headers dependent on g_item_t
+//
 #include "g_items.h"
+#include "bot.h"
+#include "runes.h"
+
+
+#include "stdlog.h"	//	StdLog - Mark Davies
+#include "gslog.h"	//	StdLog - Mark Davies. Depends on level_locals_t
 
 //
 // g_spawn.c
 //
-// put it here until I can find a better place
 /**
  Finds the spawn function for the entity and calls it
  */
@@ -1092,11 +1116,6 @@ edict_t	*PlayerTrail_LastSpot (void);
 
 
 //
-// p_client.c
-//
-#include "p_client.h"
-
-//
 // g_svcmds.c
 //
 void	ServerCommand (void);
@@ -1105,12 +1124,6 @@ void	ServerCommand (void);
 // p_view.c
 //
 void ClientEndServerFrame (edict_t *ent);
-
-//
-// p_hud.c
-//
-#include "p_hud.h"
-
 
 //
 // g_weapon.c
@@ -1668,8 +1681,6 @@ float   flastime;//flashlight timer (stops laggers)
 //RAV
 void FL_think (edict_t *self);
 void FL_make(edict_t *self);
-#include "anticheat.h"
-#include "timer.h"
 void LoadHighScores (void);
 void highscore (void);
 char hscores [1400];

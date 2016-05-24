@@ -8,9 +8,9 @@ extern int	map_mod_;		// 1 if maps.txt was found and loaded 0 if not
 
 //void		map_mod_set_up(void);		// Attempts to find and load maps.txt
 
-char		*map_mod_next_map(void);	// Retrieves name of next level in the list
+extern char		*map_mod_next_map(void);	// Retrieves name of next level in the list
 
-char *tn_showHud (edict_t *ent);	//RAV
+extern char *tn_showHud (edict_t *ent);	//RAV
 
 extern void vote_think (edict_t *ent, float timenow);
 extern int vote_state, vote_pro, vote_con, newdmflags;

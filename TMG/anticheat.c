@@ -1,10 +1,7 @@
 #include "g_local.h"
 #include <ctype.h>
 #include <stdlib.h>
-#include "e_hook.h"//RAV
-#include "runes.h"//RAV
 
-//QW//
 #include "anticheat.h"
 
 //qboolean getLogicalValue(char *arg);

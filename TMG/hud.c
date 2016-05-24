@@ -1,13 +1,11 @@
 
- //	HUD
+//	HUD
 //
 ///////////==================////////
 //
 //	HUD
 //
 #include "g_local.h"
-#include "hud.h"
-#include "runes.h"
 
 float timer;
 
@@ -599,7 +597,8 @@ char *tn_showHud (edict_t *ent)
 				j += sprintf (layout+j, "xl 2 yb -80 string \" %s\" ", sys_time);
 			}
 
-			//QW// Area in HUD "xl 0 yb -40 thru -70" are player messages
+			//QW// Reserve area in HUD "xl 0 yb -40 thru -70"
+			//QW// for player messages in r1q2 clients
 
 			if (ent->is_muted)
 				j += sprintf (layout+j, "xl 120 yb -90 string2 \"You are Muted\" ");

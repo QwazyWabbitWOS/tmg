@@ -1,15 +1,7 @@
 
 #include "g_local.h"
-#include "s_map.h"
-#include "bot.h"
 
-//RAV
-#include "e_hook.h"
-#include "runes.h"
-#include "gslog.h"
-#include "hud.h"
 
-//
 game_locals_t	game;
 level_locals_t	level;
 game_import_t	gi;
@@ -23,6 +15,7 @@ int dmflag=0;	//JSW
 
 edict_t		*g_edicts;
 
+/* console variables */
 cvar_t	*deathmatch;
 cvar_t	*coop;
 cvar_t	*dmflags;
@@ -221,19 +214,6 @@ cvar_t	*zigmode;
 float	spawncycle;
 float	ctfjob_update;
 
-////ponpoko
-//cvar_t  *use_bots;
-//cvar_t	*bot_num;
-//cvar_t	*bot_free_clients;
-//cvar_t	*bot_insult;
-//cvar_t	*bot_chat;
-//cvar_t	*bot_camptime;
-//cvar_t	*bot_walkspeed;//20
-//cvar_t	*bot_runspeed;//32
-//cvar_t	*bot_duckpeed;//10
-//cvar_t	*bot_waterspeed;//16
-//
-
 cvar_t  *spec_check;
 cvar_t	*lan;
 cvar_t  *damage_locate;
@@ -260,7 +240,7 @@ cvar_t	*grapple_pullspeed;
 cvar_t	*grapple_damage;
 
 /*
- cvar_t	*allow_lasermines;
+cvar_t	*allow_lasermines;
 cvar_t	*allow_energy_lasers;
 cvar_t	*energylaser_time;
 cvar_t	*energylaser_damage;

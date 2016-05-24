@@ -1,14 +1,10 @@
 
 #include "g_local.h"
-#include "filehand.h"
-#include "bot.h"
 
 void sv_addop (edict_t *ent);
 //void sv_addmop (edict_t *ent);
 
 
-//ルート修正
-//ノーマルポッドは全て切り捨て
 void Move_LastRouteIndex(void)
 {
 	int	i;
@@ -33,7 +29,6 @@ void Move_LastRouteIndex(void)
 	}
 }
 
-//分岐付きに変換処理
 //static void	RouteTreepointSet(void)
 //{
 //	int	i;
@@ -47,7 +42,6 @@ void Move_LastRouteIndex(void)
 //	}
 //}
 
-//chainファイルのセーブ
 static void SaveChain(void)
 {
 	char name[256];

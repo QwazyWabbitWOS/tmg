@@ -7,7 +7,6 @@
 // this version outputs to the debugger window
 // instead of to the console log.
 
-#include "q_shared.h"
 #include "g_local.h"
 #include "performance.h"
 

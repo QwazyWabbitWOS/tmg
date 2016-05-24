@@ -1,9 +1,6 @@
 
-#include "m_player.h"
 #include "g_local.h"
-#include "e_hook.h"
 #include "bot.h"
-#include "hud.h"
 
 extern float myrand; // Note: Continuous random generation is CPU expensive
 extern float myrandom;

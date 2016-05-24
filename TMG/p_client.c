@@ -1,22 +1,8 @@
 #include "g_local.h"
-#include "p_client.h"
-#include "m_player.h"
-#include "e_hook.h"	//RAV
-#include "runes.h"	//RAV
-#include "hud.h"	//JSW
-#include "stdlog.h"	//	StdLog - Mark Davies
-#include "gslog.h"	//	StdLog - Mark Davies
-#include "filehand.h"	//QW
-#include "filtering.h"	//QW
-#include "bot.h"		//QW
 
-//
-//#include <sys/timeb.h>
 #include <time.h>
 
 #define	OPTIMIZE_INTERVAL	0.1
-//QW// not used int	num_clients	= 0;
-void SP_item_health_mega (edict_t *self);//RAV
 
 //
 // Gross, ugly, disgusting hack section

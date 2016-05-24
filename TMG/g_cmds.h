@@ -1,8 +1,6 @@
 //
 //  g_cmds.h
 //
-//  Created by Geoff Joy on 5/11/16.
-//
 
 #ifndef g_cmds_h
 #define g_cmds_h

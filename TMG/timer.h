@@ -20,7 +20,7 @@ extern void ResetItems (void);
 extern void RestartLevel (void);
 extern void TimerThink (void);  //unused
 
-//QW// declared but doesn't exist?
+//QW// these are declared but don't exist
 void MatchInit (int resetall);
 void MatchThink (void);
 //QW//

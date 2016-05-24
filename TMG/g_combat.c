@@ -1,10 +1,6 @@
 // g_combat.c
 
 #include "g_local.h"
-//RAV
-#include "runes.h"
-//
-#include "bot.h"
 
 /*
 ============

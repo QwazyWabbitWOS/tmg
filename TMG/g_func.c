@@ -1,6 +1,6 @@
+
 #include "g_local.h"
 #include "g_func.h"
-#include "bot.h"
 
 /*
 =========================================================

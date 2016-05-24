@@ -24,7 +24,7 @@ CC = gcc -std=gnu99
 CFLAGS=-O3 -m32 -march=$(ARCH) -DARCH="$(ARCH)"
 
 #use these when debugging
-#CFLAGS=-g -m32 -DEBUG -DARCH="$(ARCH)" -Wall -pedantic
+#CFLAGS=-g -Og -m32 -DEBUG -DARCH="$(ARCH)" -Wall -pedantic
 
 # flavors of Linux
 ifeq ($(shell uname),Linux)
@@ -65,7 +65,7 @@ GAME_OBJS = \
 	g_svcmds.o g_target.o g_trigger.o g_utils.o g_weapon.o gslog.o \
 	highscore.o hud.o intro.o locdamage.o m_move.o s_map.o models.o \
 	p_client.o p_hud.o p_light.o p_menu.o p_trail.o p_view.o p_weapon.o \
-	q_shared.o runes.o stdlog.o timer.o vote.o performance.o
+	performance.o q_shared.o runes.o stdlog.o timer.o vote.o
 
 game$(ARCH).$(SHLIBEXT) : $(GAME_OBJS)
 	$(CC) $(CFLAGS) -shared -o $@ $(GAME_OBJS) -ldl -lm

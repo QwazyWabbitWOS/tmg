@@ -1,9 +1,6 @@
+
 #include "g_local.h"
 #include "g_items.h"
-//RAV
-#include "runes.h"
-//
-#include "bot.h"
 
 gitem_armor_t jacketarmor_info	= { 25,  50, .30, .00, ARMOR_JACKET};
 gitem_armor_t combatarmor_info	= { 50, 100, .60, .30, ARMOR_COMBAT};

@@ -1,13 +1,5 @@
 #include "g_local.h"
-#include "m_player.h"
-#include "e_hook.h"
-//RAV
-#include "runes.h"	
-#include "filehand.h"
-#include "filtering.h"
-#include "hud.h"
-#include "bot.h"
-
+#include "g_cmds.h"
 //
 int LIGHTS = 0;
 void no (edict_t *ent);

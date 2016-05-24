@@ -1,6 +1,6 @@
+
 #include "g_local.h"
 #include "runes.h"
-#include "performance.h"
 
 char *rune_namefornum[] =
  {

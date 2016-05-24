@@ -1,6 +1,5 @@
 //
 //  g_func.h
-//  tmg
 //
 
 #ifndef g_func_h

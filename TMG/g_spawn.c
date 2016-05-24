@@ -1,12 +1,5 @@
 
 #include "g_local.h"
-//RAV
-#include "stdlog.h"	//	StdLog - Mark Davies
-#include "gslog.h"	//	StdLog - Mark Davies
-#include "eavy.h"
-#include "runes.h"
-#include "bot.h"
-//
 
 /**
  Entity name and corresponding spawn function

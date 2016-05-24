@@ -1,5 +1,5 @@
+
 #include "g_local.h"
-#include "m_player.h"
 #include "bot.h"
 
 // instantiate cvars here

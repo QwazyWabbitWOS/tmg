@@ -1,7 +1,5 @@
+
 #include "g_local.h"
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
 #include "filtering.h"
 
 #define TEXT_FILTER_FILE		"textfilter.cfg"

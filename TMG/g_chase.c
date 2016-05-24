@@ -1,4 +1,5 @@
 #include "g_local.h"
+#include "g_chase.h"
 
 static char chase_modenames[][30] = {
 	"FreeCam",
