@@ -18,39 +18,39 @@ typedef struct
 } spawn_t;
 
 
-void SP_info_player_start (edict_t *ent);
-void SP_info_player_deathmatch (edict_t *ent);
-void SP_info_player_coop (edict_t *ent);
-void SP_info_player_intermission (edict_t *ent);
+//void SP_info_player_start (edict_t *ent);
+//void SP_info_player_deathmatch (edict_t *ent);
+//void SP_info_player_coop (edict_t *ent);
+//void SP_info_player_intermission (edict_t *ent);
 
-void SP_func_plat (edict_t *ent);
-void SP_func_rotating (edict_t *ent);
-void SP_func_button (edict_t *ent);
-void SP_func_door (edict_t *ent);
-void SP_func_door_secret (edict_t *ent);
-void SP_func_door_rotating (edict_t *ent);
-void SP_func_water (edict_t *ent);
-void SP_func_train (edict_t *ent);
-void SP_func_conveyor (edict_t *self);
+//void SP_func_plat (edict_t *ent);
+//void SP_func_rotating (edict_t *ent);
+//void SP_func_button (edict_t *ent);
+//void SP_func_door (edict_t *ent);
+//void SP_func_door_secret (edict_t *ent);
+//void SP_func_door_rotating (edict_t *ent);
+//void SP_func_water (edict_t *ent);
+//void SP_func_train (edict_t *ent);
+//void SP_func_conveyor (edict_t *self);
 void SP_func_wall (edict_t *self);
 void SP_func_object (edict_t *self);
 void SP_func_explosive (edict_t *self);
-void SP_func_timer (edict_t *self);
+//void SP_func_timer (edict_t *self);
 void SP_func_areaportal (edict_t *ent);
 void SP_func_clock (edict_t *ent);
-void SP_func_killbox (edict_t *ent);
+//void SP_func_killbox (edict_t *ent);
 
-void SP_trigger_always (edict_t *ent);
-void SP_trigger_once (edict_t *ent);
-void SP_trigger_multiple (edict_t *ent);
-void SP_trigger_relay (edict_t *ent);
-void SP_trigger_push (edict_t *ent);
-void SP_trigger_hurt (edict_t *ent);
-void SP_trigger_key (edict_t *ent);
-void SP_trigger_counter (edict_t *ent);
-void SP_trigger_elevator (edict_t *ent);
-void SP_trigger_gravity (edict_t *ent);
-void SP_trigger_monsterjump (edict_t *ent);
+//void SP_trigger_always (edict_t *ent);
+//void SP_trigger_once (edict_t *ent);
+//void SP_trigger_multiple (edict_t *ent);
+//void SP_trigger_relay (edict_t *ent);
+//void SP_trigger_push (edict_t *ent);
+//void SP_trigger_hurt (edict_t *ent);
+//void SP_trigger_key (edict_t *ent);
+//void SP_trigger_counter (edict_t *ent);
+//void SP_trigger_elevator (edict_t *ent);
+//void SP_trigger_gravity (edict_t *ent);
+//void SP_trigger_monsterjump (edict_t *ent);
 
 void SP_target_temp_entity (edict_t *ent);
 void SP_target_speaker (edict_t *ent);

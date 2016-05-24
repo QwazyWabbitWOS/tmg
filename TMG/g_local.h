@@ -25,6 +25,9 @@
 #include "game.h"
 #include "g_cmds.h"
 #include "p_hud.h"
+#include "g_trigger.h"
+#include "g_func.h"
+
 #include "botstr.h"
 
 //RAV

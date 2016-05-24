@@ -1,7 +1,8 @@
 #include "g_local.h"
+#include "g_trigger.h"
 
 
-void InitTrigger (edict_t *self)
+static void InitTrigger (edict_t *self)
 {
 	if (!VectorCompare (self->s.angles, vec3_origin))
 		G_SetMovedir (self->s.angles, self->movedir);
@@ -14,7 +15,7 @@ void InitTrigger (edict_t *self)
 
 
 // the wait time has passed, so set back up for another activation
-void multi_wait (edict_t *ent)
+static void multi_wait (edict_t *ent)
 {
 	ent->nextthink = 0;
 }
@@ -23,7 +24,7 @@ void multi_wait (edict_t *ent)
 // the trigger was just activated
 // ent->activator should be set to the activator so it can be held through a delay
 // so wait for the delay time before firing
-void multi_trigger (edict_t *ent)
+static void multi_trigger (edict_t *ent)
 {
 	if (ent->nextthink)
 		return;		// already been triggered
@@ -44,13 +45,13 @@ void multi_trigger (edict_t *ent)
 	}
 }
 
-void Use_Multi (edict_t *ent, edict_t *other, edict_t *activator)
+static void Use_Multi (edict_t *ent, edict_t *other, edict_t *activator)
 {
 	ent->activator = activator;
 	multi_trigger (ent);
 }
 
-void Touch_Multi (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+static void Touch_Multi (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if(other->client)
 	{
@@ -89,7 +90,7 @@ sounds
 4)
 set "message" to text string
 */
-void trigger_enable (edict_t *self, edict_t *other, edict_t *activator)
+static void trigger_enable (edict_t *self, edict_t *other, edict_t *activator)
 {
 	self->solid = SOLID_TRIGGER;
 	self->use = Use_Multi;
@@ -167,7 +168,7 @@ void SP_trigger_once(edict_t *ent)
 /*QUAKED trigger_relay (.5 .5 .5) (-8 -8 -8) (8 8 8)
 This fixed size trigger cannot be touched, it can only be fired by other events.
 */
-void trigger_relay_use (edict_t *self, edict_t *other, edict_t *activator)
+static void trigger_relay_use (edict_t *self, edict_t *other, edict_t *activator)
 {
 	G_UseTargets (self, activator);
 }
@@ -190,7 +191,7 @@ trigger_key
 A relay trigger that only fires it's targets if player has the proper key.
 Use "item" to specify the required key, for example "key_data_cd"
 */
-void trigger_key_use (edict_t *self, edict_t *other, edict_t *activator)
+static void trigger_key_use (edict_t *self, edict_t *other, edict_t *activator)
 {
 	size_t		index;
 
@@ -306,7 +307,7 @@ If nomessage is not set, t will print "1 more.. " etc when triggered and "sequen
 After the counter has been triggered "count" times (default 2), it will fire all of it's targets and remove itself.
 */
 
-void trigger_counter_use(edict_t *self, edict_t *other, edict_t *activator)
+static void trigger_counter_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (self->count == 0)
 		return;
@@ -376,7 +377,7 @@ trigger_push
 
 static int windsound;
 
-void trigger_push_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+static void trigger_push_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (strcmp(other->classname, "grenade") == 0)
 	{
@@ -438,7 +439,7 @@ NO_PROTECTION	*nothing* stops the damage
 "dmg"			default 5 (whole numbers only)
 
 */
-void hurt_use (edict_t *self, edict_t *other, edict_t *activator)
+static void hurt_use (edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (self->solid == SOLID_NOT)
 		self->solid = SOLID_TRIGGER;
@@ -451,7 +452,7 @@ void hurt_use (edict_t *self, edict_t *other, edict_t *activator)
 }
 
 
-void hurt_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+static void hurt_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	int		dflags;
 
@@ -515,7 +516,7 @@ the value of "gravity".  1.0 is standard
 gravity for the level.
 */
 
-void trigger_gravity_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+static void trigger_gravity_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	other->gravity = self->gravity;
 }
@@ -549,7 +550,7 @@ Walking monsters that touch this will jump in the direction of the trigger's ang
 "height" default to 200, the speed thrown upwards
 */
 
-void trigger_monsterjump_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+static void trigger_monsterjump_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (other->client) return;
 
