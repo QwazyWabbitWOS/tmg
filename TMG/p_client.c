@@ -49,7 +49,8 @@ static void SP_FixCoopSpots (edict_t *self)
 		{
 			if ((!self->targetname) || stricmp(self->targetname, spot->targetname) != 0)
 			{
-//				gi.dprintf("FixCoopSpots changed %s at %s targetname from %s to %s\n", self->classname, vtos(self->s.origin), self->targetname, spot->targetname);
+				gi.dprintf("FixCoopSpots changed %s at %s targetname from %s to %s\n", 
+					self->classname, vtos(self->s.origin), self->targetname, spot->targetname);
 				self->targetname = spot->targetname;
 			}
 			return;
@@ -182,8 +183,8 @@ void player_pain (edict_t *self, edict_t *other, float kick, int damage)
 qboolean IsFemale (edict_t *ent)
 {
 	char		*info;
-// Make sure ent exists!
-  if (!G_EntExists(ent)) return false;
+	// Make sure ent exists!
+	if (!G_EntExists(ent)) return false;
 
 
 	if (!ent->client)
@@ -197,19 +198,20 @@ qboolean IsFemale (edict_t *ent)
 
 qboolean IsNeutral (edict_t *ent)
 {
-  char    *info;
-// Make sure ent exists!
-  if (!G_EntExists(ent)) return false;
+	char    *info;
+	// Make sure ent exists!
+	if (!G_EntExists(ent)) return false;
 
 
-  if (!ent->client)
-    return false;
+	if (!ent->client)
+		return false;
 
-  info = Info_ValueForKey (ent->client->pers.userinfo, "gender");
-  if (info[0] != 'f' && info[0] != 'F' && info[0] != 'm' && info[0] != 'M')
-    return true;
-  return false;
+	info = Info_ValueForKey (ent->client->pers.userinfo, "gender");
+	if (info[0] != 'f' && info[0] != 'F' && info[0] != 'm' && info[0] != 'M')
+		return true;
+	return false;
 }
+
 void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 {
 	int mod, i;
@@ -823,11 +825,11 @@ void QuadTimeout (edict_t *ent)
 {
 	edict_t	*e;
 	int	i;
-	
-//	gi.dprintf("A quad damage has expired!\n");
+
+	//gi.dprintf("A quad damage has expired!\n");
 	for_each_player(e, i)
 	{
-//		safe_centerprintf(e, "A quad damage has expired!\n");
+		//safe_centerprintf(e, "A quad damage has expired!\n");
 		gi.sound (e, CHAN_AUTO, gi.soundindex ("items/quadexp.wav"), 1, ATTN_NONE, 0);
 	}
 	G_FreeEdict(ent);
@@ -1138,7 +1140,7 @@ void InitClientPersistant (gclient_t *client)
 
 	//JSW
 	op = client->pers.isop; 
-//	mop = client->pers.ismop;
+	//mop = client->pers.ismop;
 	oplevel = client->pers.oplevel;
 	strcpy(namepass, client->pers.namepass);
 	//end
@@ -1156,7 +1158,7 @@ void InitClientPersistant (gclient_t *client)
 	client->pers.pl_state = plstate;
 	//JSW
 	client->pers.isop = op;
-//	client->pers.ismop = mop;
+	//client->pers.ismop = mop;
 	client->pers.oplevel = oplevel;
 	strcpy(client->pers.namepass, namepass);
 	//end
@@ -1332,8 +1334,8 @@ void SaveClientData (void)
 
 void FetchClientEntData (edict_t *ent)
 {
-  // Make sure ent exists!
-  if (!G_EntExists(ent)) return;
+	// Make sure ent exists!
+	if (!G_EntExists(ent)) return;
 
 
 	ent->health = ent->client->pers.health;
@@ -1439,52 +1441,52 @@ to other players
 */
 edict_t *SelectRandomDeathmatchSpawnPoint (void)
 {
-  edict_t  *spot, *spot1, *spot2;
-  int    count = 0;
-  int    selection;
-  float  range, range1, range2;
+	edict_t  *spot, *spot1, *spot2;
+	int    count = 0;
+	int    selection;
+	float  range, range1, range2;
 
-  spot = NULL;
-  range1 = range2 = 99999;
-  spot1 = spot2 = NULL;
+	spot = NULL;
+	range1 = range2 = 99999;
+	spot1 = spot2 = NULL;
 
-  while ((spot = G_Find (spot, FOFS(classname), "info_player_deathmatch")) != NULL)
-  {
-    count++;
-    range = PlayersRangeFromSpot(spot);
-    if (range < range1)
-    {
-      range1 = range;
-      spot1 = spot;
-    }
-    else if (range < range2)
-    {
-      range2 = range;
-      spot2 = spot;
-    }
-  }
+	while ((spot = G_Find (spot, FOFS(classname), "info_player_deathmatch")) != NULL)
+	{
+		count++;
+		range = PlayersRangeFromSpot(spot);
+		if (range < range1)
+		{
+			range1 = range;
+			spot1 = spot;
+		}
+		else if (range < range2)
+		{
+			range2 = range;
+			spot2 = spot;
+		}
+	}
 
-  if (!count)
-    return NULL;
+	if (!count)
+		return NULL;
 
-  if (count <= 2)
-  {
-    spot1 = spot2 = NULL;
-  }
-  else
-    count -= 2;
+	if (count <= 2)
+	{
+		spot1 = spot2 = NULL;
+	}
+	else
+		count -= 2;
 
-  selection = rand() % count;
+	selection = rand() % count;
 
-  spot = NULL;
-  do
-  {
-    spot = G_Find (spot, FOFS(classname), "info_player_deathmatch");
-    if (spot == spot1 || spot == spot2)
-      selection++;
-  } while(selection--);
+	spot = NULL;
+	do
+	{
+		spot = G_Find (spot, FOFS(classname), "info_player_deathmatch");
+		if (spot == spot1 || spot == spot2)
+			selection++;
+	} while(selection--);
 
-  return spot;
+	return spot;
 }
 
 /*
@@ -1495,36 +1497,36 @@ SelectFarthestDeathmatchSpawnPoint
 */
 edict_t *SelectFarthestDeathmatchSpawnPoint (void)
 {
-  edict_t  *bestspot;
-  float  bestdistance, bestplayerdistance;
-  edict_t  *spot;
+	edict_t  *bestspot;
+	float  bestdistance, bestplayerdistance;
+	edict_t  *spot;
 
-  
-  spot = NULL;
-  bestspot = NULL;
-  bestdistance = 0;
-  while ((spot = G_Find (spot, FOFS(classname), "info_player_deathmatch")) != NULL)
-  {
-    bestplayerdistance = PlayersRangeFromSpot (spot);
 
-    if (bestplayerdistance > bestdistance)
-    {
-      bestspot = spot;
-      bestdistance = bestplayerdistance;
-    }
-  }
+	spot = NULL;
+	bestspot = NULL;
+	bestdistance = 0;
+	while ((spot = G_Find (spot, FOFS(classname), "info_player_deathmatch")) != NULL)
+	{
+		bestplayerdistance = PlayersRangeFromSpot (spot);
 
-  if (bestspot)
-  {
-    return bestspot;
-  }
+		if (bestplayerdistance > bestdistance)
+		{
+			bestspot = spot;
+			bestdistance = bestplayerdistance;
+		}
+	}
 
-  // if there is a player just spawned on each and every start spot
-  // we have no choice to turn one into a telefrag meltdown
+	if (bestspot)
+	{
+		return bestspot;
+	}
 
-  spot = G_Find (NULL, FOFS(classname), "info_player_deathmatch");
+	// if there is a player just spawned on each and every start spot
+	// we have no choice to turn one into a telefrag meltdown
 
-  return spot;
+	spot = G_Find (NULL, FOFS(classname), "info_player_deathmatch");
+
+	return spot;
 }
 
 /*
@@ -1539,7 +1541,7 @@ edict_t *SpawnNearFlag (edict_t *ent)
 	float  bestdistance, bestplayerdistance;
 	edict_t  *spot;
 	char	*teamspawn;
-	
+
 	spot = NULL;
 	bestspot = NULL;
 	bestdistance = 0;
@@ -1562,7 +1564,7 @@ edict_t *SpawnNearFlag (edict_t *ent)
 	{
 		return bestspot;
 	}
-	
+
 	// if there is a player just spawned on each and every start spot
 	// we have no choice to turn one into a telefrag meltdown
 	spot = G_Find (NULL, FOFS(classname), teamspawn);
@@ -2987,12 +2989,12 @@ char *GetPort(edict_t *ent,char *ip)
 	static char modif[40];
 	char entry[32], ipp1[3],ipp2[3],ipp3[3],ipp4[3],ipp5[5];
 	int ec, j;
-		
- sprintf(entry, "%sX", ip);
+
+	sprintf(entry, "%sX", ip);
 
 	j=0;
 	ec = 0;
-	
+
 	while  (!strchr(".", entry[ec]))
 	{
 		sprintf (&ipp1[j], "%c", entry[ec]);
@@ -4238,52 +4240,51 @@ this function gets an average ping for 30 sec  to reduce overflowing og=f the se
 */
 qboolean GET_AVG_PING(edict_t *ent)
 {
-int ping1,ping2,ping3,ping4 =0;
+	int ping1, ping2, ping3, ping4 = 0;
 
-ping1 = ent->client->ping1;
-ping2 = ent->client->ping2;
-ping3 = ent->client->ping3;
-ping4 = ent->client->ping4;
+	ping1 = ent->client->ping1;
+	ping2 = ent->client->ping2;
+	ping3 = ent->client->ping3;
+	ping4 = ent->client->ping4;
 
-if(ping1 == 0){
-ent->client->ping1 = ent->client->ping;
-ent->client->checkpingtime = level.time + 1;
-return true;
-}
-else
-if(ping2 == 0){
-ent->client->ping2 = ent->client->ping;
-ent->client->checkpingtime = level.time + 1;
-return true;
-}
-else
-if(ping3 == 0){
-ent->client->ping3 = ent->client->ping;
-ent->client->checkpingtime = level.time + 1;
-return true;
-}
-else
-if(ping4 == 0){
-ent->client->ping4 = ent->client->ping;
-ent->client->checkpingtime = level.time + 1;
-return true;
-}
+	if(ping1 == 0)
+	{
+		ent->client->ping1 = ent->client->ping;
+		ent->client->checkpingtime = level.time + 1;
+		return true;
+	}
+	else if(ping2 == 0)
+	{
+		ent->client->ping2 = ent->client->ping;
+		ent->client->checkpingtime = level.time + 1;
+		return true;
+	}
+	else if(ping3 == 0)
+	{
+		ent->client->ping3 = ent->client->ping;
+		ent->client->checkpingtime = level.time + 1;
+		return true;
+	}
+	else if(ping4 == 0)
+	{
+		ent->client->ping4 = ent->client->ping;
+		ent->client->checkpingtime = level.time + 1;
+		return true;
+	}
 
-if(ping1+ping2+ping3+ping4 /4 > (int)lag_ping->value)
-{
-	ent->client->checkpingtime = level.time + 5;
-	return false;
-}
+	if(ping1 + ping2 + ping3 + ping4 /4 > (int)lag_ping->value)
+	{
+		ent->client->checkpingtime = level.time + 5;
+		return false;
+	}
 
-
-//reset all pings 
-ent->client->ping1 = 0;
-ent->client->ping2 = 0;
-ent->client->ping3 = 0;
-ent->client->ping4 = 0;
-ent->client->checkpingtime = level.time + 10;
-return true;
-
+	//reset all pings 
+	ent->client->ping1 = 0;
+	ent->client->ping2 = 0;
+	ent->client->ping3 = 0;
+	ent->client->ping4 = 0;
+	ent->client->checkpingtime = level.time + 10;
+	return true;
 }
 
 void SendStatusBar(edict_t *ent, char *bar)
