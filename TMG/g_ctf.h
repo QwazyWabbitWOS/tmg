@@ -20,6 +20,8 @@
 #define STAT_CTF_RED_FLAG_CARRIER   29
 #define STAT_CTF_BLUE_FLAG_CARRIER  30
 
+#define MAX_MENU_MAPS	14	//number of lines in mapvote menu
+
 typedef enum {
 	CTF_NOTEAM,
 	CTF_TEAM1,

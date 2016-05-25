@@ -3636,9 +3636,6 @@ void CTFReturnToMain(edict_t *ent, pmenu_t *p)
 		OpenJoinMenu(ent);
 }
 
-#define MAX_MENU_MAPS	14
-void DeathmatchScoreboard (edict_t *ent);
-
 void CTFShowScores(edict_t *ent, pmenu_t *p)
 {
 	PMenu_Close(ent);
