@@ -1049,7 +1049,7 @@ void Cmd_MapVote (edict_t *ent)
 		for (i = 0; i < maplist->nummaps; i++)
 		{
 			safe_cprintf(ent, PRINT_HIGH,
-						 "%s - '%s'   ",
+						 "%s - '%s'   \n",
 						 maplist->mapname[i], maplist->mapnick[i]);
 		}
 		return;
