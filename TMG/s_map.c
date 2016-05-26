@@ -274,11 +274,8 @@ static int mdsoft_read_map_entry(  FILE   *fpFile,
 
 		/* Use buffer */
 		if( (i > 0) &&
-		   (
-			(((' ' == c) || ('\t' == c)) && !fInQuotes) ||
-			(EOF == c) || ('\n' == c) || ('\r' == c)
-			)
-		   )
+		   ((((' ' == c) || ('\t' == c)) && !fInQuotes) ||
+			(EOF == c) || ('\n' == c) || ('\r' == c)))
 		{
 			buffer[i] = '\0';
 
