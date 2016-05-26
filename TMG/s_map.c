@@ -276,7 +276,7 @@ static int mdsoft_read_map_entry(  FILE   *fpFile,
 		if( (i > 0) &&
 		   (
 			(((' ' == c) || ('\t' == c)) && !fInQuotes) ||
-			(EOF == c) || ('\n' == c)
+			(EOF == c) || ('\n' == c) || ('\r' == c)
 			)
 		   )
 		{
@@ -343,6 +343,8 @@ static int mdsoft_read_map_entry(  FILE   *fpFile,
 
 	return element;
 } /* end of mdsoft_read_map_entry() */
+
+/* ========================================================================*/
 
 //Clear the map votes
 void ClearMapVotes(void)
