@@ -476,10 +476,8 @@ void InitGame (void)
 	vote_percentage = gi.cvar ("vote_percentage", "67", 0);
 	cfgdir = gi.cvar ("cfgdir", "cfg", CVAR_NOSET);
 //	tmgmod = gi.cvar ("modversion", MODVERSION, CVAR_SERVERINFO);
-	maplistBase = gi.TagMalloc (64 * sizeof(maplist_t), TAG_GAME);
-	maplist = maplistBase + 1;
 
-	maplist->active = false;
+	//QW//FIXME: this belongs in level_local_t
 	votetime = 0;
 
 	//end
@@ -577,6 +575,11 @@ void InitGame (void)
 	//wav_mod_set_up();
 	// MAP MOD
 
+	/* maplist management setup */
+	maplistBase = gi.TagMalloc (64 * sizeof(maplist_t), TAG_GAME);
+	maplist = maplistBase + 1;
+
+	maplist->active = false; // requests fresh load of map file
 	ent = mdsoft_NextMap();
 
 

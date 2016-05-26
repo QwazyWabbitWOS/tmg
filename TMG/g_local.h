@@ -42,7 +42,7 @@
 #include "filehand.h"
 #include "filtering.h"
 #include "s_map.h"
-
+#include "vote.h"
 #include "botstr.h"
 #include "hud.h"
 
@@ -999,11 +999,12 @@ typedef struct
    char mapname[256][MAX_QPATH];
    char mapnick[256][MAX_QPATH];
    int  currentmap;       // index to current map 
-   qboolean active;
+	qboolean active;
    int	votes[128];
    int	currentmapvote;
    int	nextmap;
 } maplist_t; 
+
 extern	maplist_t	*maplist;
 extern	maplist_t	*maplistBase;
 

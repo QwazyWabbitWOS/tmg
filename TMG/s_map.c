@@ -1,16 +1,17 @@
 #include "g_local.h"
 #include "s_map.h"
 
-MAP_ENTRY   *mdsoft_map       = NULL;
+MAP_ENTRY   *mdsoft_map = NULL;
+
+
 static unsigned int mdsoft_map_size  = 0;
 static unsigned int mdsoft_map_last  = 0;
 
-
-static int mdsoft_read_map_entry(  FILE   *fpFile,
-					  char   *pFile,
-					  char   *pName,
-					  int    *pMin,
-					  int    *pMax );
+static int mdsoft_read_map_entry(FILE   *fpFile,
+								 char   *pFile,
+								 char   *pName,
+								 int    *pMin,
+								 int    *pMax );
 
 
 
@@ -29,9 +30,6 @@ edict_t *mdsoft_NextMap( void )
 	if( NULL == mdsoft_map )
 	{
 		FILE    *fpFile     = NULL;
-		//cvar_t  *game       = gi.cvar( "gamedir", "mod-1", CVAR_SERVERINFO );
-		//cvar_t  *base       = gi.cvar( "basedir", ".", 0 );
-		//cvar_t  *map_f      = gi.cvar( "map_file", "maps.lst", CVAR_SERVERINFO );
 
 		/* Load maps.lst file */
 		if( game_dir && basedir )
@@ -42,17 +40,6 @@ edict_t *mdsoft_NextMap( void )
 			strcat( mapfile, basedir->string );
 			strcat( mapfile, "/" );
 			strcat( mapfile, game_dir->string );
-
-			/*          if( NULL != map_f )
-			 {
-			 strcat( mapfile, "/" );
-			 strcat( mapfile, map_f->string );
-			 }
-			 else
-			 {
-			 strcat( mapfile, "/maps.lst" );
-			 }
-			 */
 
 			if(ctf->value)
 				sprintf(mapfile, "%s/%s/%s/maps_ctf.txt",
@@ -73,7 +60,7 @@ edict_t *mdsoft_NextMap( void )
 					temp.max      = 0;
 					temp.fVisited = 0;
 
-                    element = mdsoft_read_map_entry( fpFile,
+					element = mdsoft_read_map_entry( fpFile,
 													&temp.aFile[0],
 													&temp.aName[0],
 													&temp.min,
@@ -112,7 +99,8 @@ edict_t *mdsoft_NextMap( void )
 			}
 			else
 			{
-				gi.bprintf (PRINT_HIGH, "ERROR: Could not open maps list file [");
+				gi.bprintf (PRINT_HIGH,
+							"ERROR: Could not open maps list file [");
 				gi.bprintf (PRINT_HIGH, pFileName );
 				gi.bprintf (PRINT_HIGH, "]\n" );
 			}
@@ -256,7 +244,8 @@ edict_t *mdsoft_NextMap( void )
 
 
 
-static int mdsoft_read_map_entry(  FILE   *fpFile,
+static int
+mdsoft_read_map_entry(FILE   *fpFile,
 					  char   *pFile,
 					  char   *pName,
 					  int    *pMin,
@@ -284,13 +273,15 @@ static int mdsoft_read_map_entry(  FILE   *fpFile,
 				case 0:
 				{
 					strncpy( pFile, buffer, MAX_QPATH );
-					strncpy(maplist->mapname[maplist->nummaps], buffer, MAX_QPATH);
+					strncpy(maplist->mapname[maplist->nummaps],
+							buffer, MAX_QPATH);
 					break;
 				}
 				case 1:
 				{
 					strncpy( pName, buffer, MAX_QPATH );
-					strncpy(maplist->mapnick[maplist->nummaps], buffer, MAX_QPATH);
+					strncpy(maplist->mapnick[maplist->nummaps],
+							buffer, MAX_QPATH);
 					maplist->nummaps++;
 					break;
 				}
@@ -337,151 +328,7 @@ static int mdsoft_read_map_entry(  FILE   *fpFile,
 			}
 		}
 	} while( (c != EOF) && (c != '\n') );
-
+	
 	return element;
 } /* end of mdsoft_read_map_entry() */
 
-/* ========================================================================*/
-
-//Clear the map votes
-void ClearMapVotes(void)
-{
-	int i;
-	for (i=0; i < maplist->nummaps; ++i)
-		maplist->votes[i] = 0;
-}
-
-//Find highest voted map
-/*
- Returns
- -1  No votes
-	0-31 Index to selected map
- */
-int MapMaxVotes(void)
-{
-	int i;
-	int numvotes;
-	int index;
-
-	numvotes = 0;
-	index = -1;
-	i = 0;
-
-	while (i < maplist->nummaps)
-	{
-		if (maplist->votes[i] > numvotes)
-		{
-			numvotes = maplist->votes[i];
-			index = i;
-		}
-		++i;
-	}
-	return(index);
-}
-
-void VoteForMap(int i)
-{
-	if (i >= 0 && i < maplist->nummaps)
-		++maplist->votes[i];
-}
-
-void DumpMapVotes(void)
-{
-	int i;
-	for (i = 0; i < maplist->nummaps; ++i)
-		DbgPrintf("%d. %s (%d votes)\n",
-				  i, maplist->mapname[i], maplist->votes[i]);
-}
-
-
-//
-// ClearMapList
-//
-// Clears/invalidates maplist. Might add more features in the future,
-// but resetting .nummaps to 0 will suffice for now.
-//
-// Args:
-//   ent      - entity (client) to print diagnostic messages to (future development).
-//
-// Return: (none)
-//
-void ClearMapList(void)
-{
-	maplist->nummaps = 0;
-	ClearMapVotes();
-}
-
-
-// MaplistNextMap
-// Choose the next map in the list, or use voting system
-void MaplistNextMap(edict_t *ent)
-{
-	int votemap;
-	int i = 0;
-	//	int j;
-	size_t end = 0;
-
-	if(developer->value)
-		DumpMapVotes();
-
-	//	j = maplist->currentmap;
-
-	/*	switch ((int)map_randomize->value)        // choose next map in list
-	 {
-	 case 0:        // sequential rotation
-		if (maplist->nummaps > 1)
-		{
-	 do
-	 {
-	 i = (j + 1) % maplist->nummaps;
-	 j++;
-	 if(j > maplist->nummaps+1)
-	 {
-	 //let the blank mapname check reset us to start of file
-	 i= maplist->currentmap+1;
-	 break;
-	 }
-	 } while ((int)mapvote->value);
-		}
-		else
-	 i = maplist->currentmap+1;
-		break;
-	 case 1:     // random rotation
-		if (maplist->nummaps > 1)
-		{
-	 do
-	 {
-	 i = (int) (random() * maplist->nummaps);
-	 } while (i == j);
-		}
-		else
-	 i = 0;
-		break;
-	 default:       // should never happen, but set to first map if it does
-		i=0;
-	 } // end switch
-	 */
-	//See if map voting is on
-	if (mapvote->value)
-	{
-		votemap = MapMaxVotes();
-		if (votemap >= 0)	//Yes there was one picked
-		{
-			i = votemap;
-			end = strlen(maplist->mapname[i]);
-		}
-		ClearMapVotes();
-	}
-	strcpy(defaultmap,	maplist->mapname[0]);
-	//check for blank mapname or bad map num
-	if(end < 2 || i >=maplist->nummaps )
-	{
-		mapscrewed = true;
-		maplist->currentmap = 0;
-	}
-	else
-	{
-		maplist->currentmap = i;
-		ent->map = maplist->mapname[i];
-	}
-}
