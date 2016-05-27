@@ -6,6 +6,7 @@
 //	HUD
 //
 #include "g_local.h"
+#include "hud.h"
 #include "g_items.h"
 #include "timer.h"
 #include "g_chase.h"
