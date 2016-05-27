@@ -889,10 +889,6 @@ extern	field_t fields[];
 extern	gitem_t	itemlist[];
 
 //
-// headers dependent on g_item_t
-//
-
-//
 // g_spawn.c
 //
 /**
