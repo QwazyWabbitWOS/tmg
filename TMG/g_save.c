@@ -453,7 +453,6 @@ void InitGame (void)
 	// items
 
 	Bot_InitCvars(); // initialize the bot cvars
-	mdsoft_InitMaps();
 	InitAnticheat();
 	InitItems ();
 
@@ -470,6 +469,8 @@ void InitGame (void)
 	game.maxclients = maxclients->value;
 	game.clients = gi.TagMalloc (game.maxclients * sizeof(game.clients[0]), TAG_GAME);
 	globals.num_edicts = game.maxclients+1;
+
+	mdsoft_InitMaps();
 
 	// text filtering
 	LoadTextFilterInfo();
