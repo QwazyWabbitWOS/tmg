@@ -1,4 +1,5 @@
 #include "g_local.h"
+#include "g_items.h"
 #include "g_trigger.h"
 
 

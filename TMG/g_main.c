@@ -1,5 +1,18 @@
 
 #include "g_local.h"
+#include "g_items.h"
+#include "anticheat.h"
+#include "g_cmds.h"
+#include "s_map.h"
+#include "p_client.h"
+#include "vote.h"
+#include "e_hook.h"
+#include "timer.h"
+#include "p_hud.h"
+#include "bot.h"
+#include "runes.h"
+#include "stdlog.h"	//	StdLog - Mark Davies
+#include "gslog.h"	//	StdLog - Mark Davies. Depends on level_locals_t
 
 
 game_locals_t	game;
@@ -269,7 +282,7 @@ cvar_t	*allow_vote;
 cvar_t	*vote_timeout;
 cvar_t	*vote_percentage;
 cvar_t	*cfgdir;
-
+cvar_t	*modversion;
 //end
 
 //
@@ -288,8 +301,6 @@ void ShutdownGame (void)
 //RAV
 	sl_GameEnd( &gi, level );	// StdLog - Mark Davies
 //
-	if(mdsoft_map)
-		free(mdsoft_map);
 
 	gi.FreeTags (TAG_LEVEL);
 	gi.FreeTags (TAG_GAME);

@@ -3,8 +3,6 @@
 
 #include <limits.h>
 
-// FIXME: this should be defined elsewhere
-#define IP_LENGTH 40
 
 // sv_botdetection flags
 #define BOT_LOG       1

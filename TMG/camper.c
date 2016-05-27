@@ -1,6 +1,7 @@
 //______________-Anti camping  mod -__________________//
 
 #include "g_local.h"
+#include "timer.h"
 
 void CheckForCamping (edict_t *ent)
 {

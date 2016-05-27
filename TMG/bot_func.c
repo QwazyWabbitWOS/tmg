@@ -1,6 +1,15 @@
 
 #include "g_local.h"
+#include "g_items.h"
+#include "m_player.h"
+#include "p_client.h"
+#include "g_chase.h"
 #include "bot.h"
+#include "e_hook.h"
+#include "g_cmds.h"
+#include "timer.h"
+#include "hud.h"
+#include "botstr.h"
 
 extern float myrand; // Note: Continuous random generation is CPU expensive
 extern float myrandom;

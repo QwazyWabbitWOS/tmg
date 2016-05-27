@@ -1,5 +1,14 @@
 
 #include "g_local.h"
+#include "g_items.h"
+#include "anticheat.h"
+#include "filehand.h"
+#include "p_client.h"
+#include "s_map.h"
+#include "timer.h"
+#include "filtering.h"
+#include "hud.h"
+#include "bot.h"
 
 
 //RAV
@@ -439,7 +448,7 @@ void InitGame (void)
 	vote_percentage = gi.cvar ("vote_percentage", "67", 0);
 	cfgdir = gi.cvar ("cfgdir", "cfg", CVAR_NOSET);
 
-	//tmgmod = gi.cvar ("modversion", MODVERSION, CVAR_SERVERINFO);
+	modversion = gi.cvar ("modversion", MOD_VERSION, CVAR_SERVERINFO | CVAR_NOSET);
 
 	//QW//FIXME: this belongs in level_local_t
 	votetime = 0;

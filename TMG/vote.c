@@ -4,6 +4,7 @@ Contains all the vote handling functions
 */
 #include "g_local.h"
 #include "vote.h"
+#include "s_map.h"
 
 //============================================================================
 

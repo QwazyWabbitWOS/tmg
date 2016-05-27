@@ -1,5 +1,6 @@
 
 #include "g_local.h"
+#include "g_items.h"
 #include "bot.h"
 
 // instantiate cvars here

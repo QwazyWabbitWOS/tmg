@@ -1,4 +1,9 @@
 #include "g_local.h"
+#include "g_items.h"
+#include "p_hud.h"
+#include "hud.h"
+#include "p_client.h"
+#include "runes.h"
 
 
 /*

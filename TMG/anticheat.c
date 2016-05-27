@@ -1,8 +1,11 @@
-#include "g_local.h"
 #include <ctype.h>
 #include <stdlib.h>
+#include "g_local.h"
 
+#include "g_items.h"
 #include "anticheat.h"
+#include "e_hook.h"
+#include "runes.h"
 
 //qboolean getLogicalValue(char *arg);
 

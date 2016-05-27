@@ -1,5 +1,14 @@
 
 #include "g_local.h"
+#include "g_items.h"
+#include "g_func.h"
+#include "g_trigger.h"
+#include "p_client.h"
+#include "timer.h"
+#include "eavy.h"
+#include "bot.h"
+#include "stdlog.h"	//	StdLog - Mark Davies
+#include "gslog.h"	//	StdLog - Mark Davies. Depends on level_locals_t
 
 /**
  Entity name and corresponding spawn function

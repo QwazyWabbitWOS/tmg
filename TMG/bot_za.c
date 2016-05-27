@@ -1,6 +1,10 @@
 
 #include "g_local.h"
+#include "g_items.h"
+#include "m_player.h"
+#include "p_client.h"
 #include "bot.h"
+#include "botstr.h"
 
 qboolean	pickup_pri;
 void RandomChat(edict_t *ent);

@@ -1,6 +1,19 @@
 
 #include "g_local.h"
+#include "g_items.h"
+#include "filehand.h"
 #include "g_ctf.h"
+#include "g_cmds.h"
+#include "p_client.h"
+#include "s_map.h"
+#include "e_hook.h"
+#include "timer.h"
+#include "p_hud.h"
+#include "hud.h"
+#include "bot.h"
+#include "runes.h"
+#include "stdlog.h"	//	StdLog - Mark Davies
+#include "gslog.h"	//	StdLog - Mark Davies. Depends on level_locals_t
 
 
 //3ZB

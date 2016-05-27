@@ -1,6 +1,20 @@
 #include "g_local.h"
+#include "g_items.h"
+#include "anticheat.h"
+#include "bot.h"
+#include "filehand.h"
 #include "g_cmds.h"
-//
+#include "m_player.h"
+#include "p_client.h"
+#include "g_chase.h"
+#include "s_map.h"
+#include "e_hook.h"
+#include "timer.h"
+#include "p_hud.h"
+#include "filtering.h"
+#include "hud.h"
+#include "runes.h"
+
 int LIGHTS = 0;
 void no (edict_t *ent);
 void yes (edict_t *ent);//RAV

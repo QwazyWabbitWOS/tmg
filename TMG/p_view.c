@@ -1,5 +1,11 @@
 
 #include "g_local.h"
+#include "g_items.h"
+#include "m_player.h"
+#include "timer.h"
+#include "p_hud.h"
+#include "bot.h"
+#include "runes.h"
 
 edict_t		*current_player;
 gclient_t	*current_client;

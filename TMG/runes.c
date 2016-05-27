@@ -1,6 +1,9 @@
 
 #include "g_local.h"
+#include "g_items.h"
+#include "g_cmds.h"
 #include "runes.h"
+#include "timer.h"
 
 char *rune_namefornum[] =
  {

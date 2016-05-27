@@ -1,5 +1,9 @@
 #include "g_local.h"
+#include "g_items.h"
+#include "g_cmds.h"
 #include "timer.h"
+#include "s_map.h"
+#include "bot.h"
 
 // global
 int match_state;

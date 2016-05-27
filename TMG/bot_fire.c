@@ -1,6 +1,9 @@
 
 #include "g_local.h"
+#include "g_items.h"
+#include "m_player.h"
 #include "bot.h"
+#include "botstr.h"
 
 static
 void Get_AimAngle(edict_t *ent,float aim,float dist,int weapon)

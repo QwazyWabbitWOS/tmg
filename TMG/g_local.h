@@ -29,29 +29,16 @@
 #define	GAME_INCLUDE
 #include "game.h"
 
-#include "eavy.h"
-#include "g_cmds.h"
-#include "g_func.h"
-#include "g_trigger.h"
-#include "m_player.h"
-#include "p_client.h"
-#include "p_hud.h"
-#include "timer.h"
-#include "e_hook.h"
-#include "anticheat.h"
-#include "filehand.h"
-#include "filtering.h"
-#include "s_map.h"
-#include "vote.h"
+// FIXME: this should be defined elsewhere
+#define IP_LENGTH 40
+
 #include "botstr.h"
-#include "hud.h"
 
 //RAV
-#include "g_chase.h"
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.10"
+#define MOD_VERSION "0.2.11"
 #define MOD "TMG_MOD"
 // protocol bytes that can be directly added to messages
 #define	svc_muzzleflash		1
@@ -822,6 +809,7 @@ extern	cvar_t	*allow_vote;
 extern	cvar_t	*vote_percentage;
 extern	cvar_t	*vote_timeout;
 extern	cvar_t	*cfgdir;
+extern	cvar_t	*modversion;
 
 //JSW - Punish Suicide Flags
 #define	PS_RESETSCORE	1
@@ -903,13 +891,6 @@ extern	gitem_t	itemlist[];
 //
 // headers dependent on g_item_t
 //
-#include "g_items.h"
-#include "bot.h"
-#include "runes.h"
-
-
-#include "stdlog.h"	//	StdLog - Mark Davies
-#include "gslog.h"	//	StdLog - Mark Davies. Depends on level_locals_t
 
 //
 // g_spawn.c

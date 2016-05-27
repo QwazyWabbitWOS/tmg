@@ -1,6 +1,11 @@
 // g_combat.c
 
 #include "g_local.h"
+#include "g_items.h"
+#include "g_cmds.h"
+#include "timer.h"
+#include "bot.h"
+#include "runes.h"
 
 /*
 ============

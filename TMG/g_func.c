@@ -1,6 +1,9 @@
 
 #include "g_local.h"
+#include "g_items.h"
+#include "runes.h"
 #include "g_func.h"
+#include "bot.h"
 
 /*
 =========================================================

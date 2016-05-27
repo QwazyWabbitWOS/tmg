@@ -4,16 +4,12 @@
 MAP_ENTRY   *mdsoft_map = NULL;
 
 maplist_t	*maplist;
-maplist_t	*maplistBase;
 
 static unsigned int mdsoft_map_size  = 0;
 static unsigned int mdsoft_map_last  = 0;
 
-static int parse_line(FILE   *fpFile,
-								 char   *pFile,
-								 char   *pName,
-								 int    *pMin,
-								 int    *pMax );
+static int 
+parse_line(FILE	*fpFile, char *pFile, char *pName, int  *pMin, int  *pMax );
 
 // instantiate cvars
 cvar_t	*map_c;	// map_change
@@ -25,20 +21,15 @@ cvar_t	*map_d;	// map_debug
 // basedir, game_dir, maplist
 
 /*
- Call this at game intialization
+ Call this at game initialization
  */
 void mdsoft_InitMaps(void)
 {
-	//QW// FIXME: this doesn't jibe with maplist_t structure
-	//QW// is this needed? Check this in debugger. Why 64?
-	/* maplist management setup */
-	maplistBase = gi.TagMalloc (64 * sizeof(maplist_t), TAG_GAME);
-	maplist = maplistBase + 1;
-
+	maplist = gi.TagMalloc (sizeof(maplist_t), TAG_GAME);
 	map_c = gi.cvar( "map_change", "1", 0 );
-	map_r = gi.cvar( "map_randomize", "0", 0 );
+	map_r = gi.cvar( "map_randomize", "1", 0 );
 	map_o = gi.cvar( "map_once", "0", 0 );
-	map_d = gi.cvar( "map_debug", "0", 0 );
+	map_d = gi.cvar( "map_debug", "1", 0 );
 	maplist->active = false;
 	mdsoft_NextMap();
 }
@@ -123,8 +114,8 @@ edict_t *mdsoft_NextMap( void )
 					{
 						MAP_ENTRY *newone;
 
-						newone = realloc(mdsoft_map,
-										 (mdsoft_map_size + 1) * sizeof(*newone));
+						int size = (mdsoft_map_size + 1) * sizeof(*newone);
+						newone = gi.TagMalloc(size, TAG_GAME);
 
 						if( newone )
 						{
@@ -138,15 +129,13 @@ edict_t *mdsoft_NextMap( void )
 
 				maplist->active = true;
 
-				if (developer->value)
+				for (i = 0; i < maplist->nummaps; i++)
 				{
-					for (i = 0; i < maplist->nummaps; i++)
-					{
-						DbgPrintf("Map loaded: %s \"%s\"\n",
-							   maplist->mapname[i], maplist->mapnick[i]);
-					}
-					DbgPrintf("%d maps loaded.\n", maplist->nummaps);
+					DbgPrintf("Map loaded: %s \"%s\"\n",
+						   maplist->mapname[i], maplist->mapnick[i]);
 				}
+
+				DbgPrintf("%d maps loaded.\n", maplist->nummaps);
 
 				fclose( fpFile );
 			}

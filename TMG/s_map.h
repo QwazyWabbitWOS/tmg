@@ -1,6 +1,8 @@
 #ifndef S_MAP_H
 #define S_MAP_H
 
+#define MAX_MAPS 300
+
 typedef struct
 {
     char   aFile[MAX_QPATH];
@@ -13,19 +15,16 @@ typedef struct
 typedef struct
 {
 	int  nummaps;          // number of maps in list
-	char mapname[256][MAX_QPATH];
-	char mapnick[256][MAX_QPATH];
+	char mapname[MAX_MAPS][MAX_QPATH];
+	char mapnick[MAX_MAPS][MAX_QPATH];
 	int  currentmap;       // index to current map
 	qboolean active;
-	int	votes[256];
+	int	votes[MAX_MAPS];
 	int	currentmapvote;
 	int	nextmap;
 } maplist_t;
 
 extern	maplist_t	*maplist;
-extern	maplist_t	*maplistBase;
-
-
 extern MAP_ENTRY   *mdsoft_map;
 
 extern edict_t *mdsoft_NextMap( void );

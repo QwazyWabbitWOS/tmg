@@ -6,6 +6,10 @@
 //	HUD
 //
 #include "g_local.h"
+#include "g_items.h"
+#include "timer.h"
+#include "g_chase.h"
+#include "runes.h"
 
 float timer;
 
