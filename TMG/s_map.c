@@ -27,9 +27,9 @@ void mdsoft_InitMaps(void)
 {
 	maplist = gi.TagMalloc (sizeof(maplist_t), TAG_GAME);
 	map_c = gi.cvar( "map_change", "1", 0 );
-	map_r = gi.cvar( "map_randomize", "1", 0 );
+	map_r = gi.cvar( "map_randomize", "0", 0 );
 	map_o = gi.cvar( "map_once", "0", 0 );
-	map_d = gi.cvar( "map_debug", "1", 0 );
+	map_d = gi.cvar( "map_debug", "0", 0 );
 	maplist->active = false;
 	mdsoft_NextMap();
 }
@@ -105,10 +105,10 @@ edict_t *mdsoft_NextMap( void )
 					temp.fVisited = 0;
 
 					element = parse_line( fpFile,
-													&temp.aFile[0],
-													&temp.aName[0],
-													&temp.min,
-													&temp.max );
+										&temp.aFile[0],
+										&temp.aName[0],
+										&temp.min,
+										&temp.max );
 
 					if( 2 <= element )
 					{
@@ -285,13 +285,18 @@ edict_t *mdsoft_NextMap( void )
 
 
 
-
+/**
+ Parse a line from the previously opened fpFile.
+ Elements of the line are mapname, mapnick and optional
+ min and max players for each map.
+ Data goes into two different structs.
+ Name and nickname go into the maplist array for use at changelevel.
+ All four elements are passed back to caller for populating the 
+ table of map entries for use in the randomization and voting
+ system. The optional min/max are for player-sensitive map selection.
+ */
 static int
-parse_line(FILE   *fpFile,
-					  char   *pFile,
-					  char   *pName,
-					  int    *pMin,
-					  int    *pMax )
+parse_line(FILE *fpFile, char *pFile, char *pName, int *pMin, int *pMax)
 {
 	char buffer[MAX_QPATH]  = {0};
 	int  c;
