@@ -27,15 +27,17 @@ SV_TestEntityPosition
 
 ============
 */
-edict_t	*SV_TestEntityPosition (edict_t *ent)
+static edict_t
+*SV_TestEntityPosition (edict_t *ent)
 {
 	trace_t	trace;
 
-	trace = gi.trace (ent->s.origin, ent->mins, ent->maxs, ent->s.origin, ent, MASK_SOLID);
-	
+	trace = gi.trace (ent->s.origin, ent->mins, ent->maxs,
+					  ent->s.origin, ent, MASK_SOLID);
+
 	if (trace.startsolid)
 		return g_edicts;
-		
+
 	return NULL;
 }
 
@@ -45,13 +47,14 @@ edict_t	*SV_TestEntityPosition (edict_t *ent)
 SV_CheckVelocity
 ================
 */
-void SV_CheckVelocity (edict_t *ent)
+static void
+SV_CheckVelocity (edict_t *ent)
 {
 	int		i;
 
-//
-// bound velocity
-//
+	//
+	// bound velocity
+	//
 	for (i=0 ; i<3 ; i++)
 	{
 		if (ent->velocity[i] > sv_maxvelocity->value)
@@ -62,7 +65,8 @@ void SV_CheckVelocity (edict_t *ent)
 }
 
 //RAVEN
-void restartServer()
+static void
+restartServer(void)
 {
 	char command[80];
 
@@ -79,7 +83,8 @@ SV_RunThink
 Runs thinking code for this frame if necessary
 =============
 */
-qboolean SV_RunThink (edict_t *ent)
+static qboolean
+SV_RunThink (edict_t *ent)
 {
 	float	thinktime;
 
@@ -88,7 +93,7 @@ qboolean SV_RunThink (edict_t *ent)
 		return true;
 	if (thinktime > level.time + 0.001)
 		return true;
-	
+
 	ent->nextthink = 0;
 
 	//QW// report if we're asked to think about bad ents
@@ -96,13 +101,13 @@ qboolean SV_RunThink (edict_t *ent)
 	{
 		if (ent->classname && ent->model)
 			gi.dprintf ("%s NULL ent->think (classname %s, model %s mapname %s)\n",
-			__FUNCTION__, ent->classname, ent->model, level.mapname);
+					__FUNCTION__, ent->classname, ent->model, level.mapname);
 		else if (ent->classname)
 			gi.dprintf ("%s NULL ent->think (classname %s mapname %s)\n",
-			__FUNCTION__, ent->classname, level.mapname);
+						__FUNCTION__, ent->classname, level.mapname);
 		else
 			gi.dprintf ("NULL ent->think (mapname %s)\n",
-			__FUNCTION__, level.mapname);
+						__FUNCTION__, level.mapname);
 		return false;
 	}
 
@@ -116,9 +121,9 @@ qboolean SV_RunThink (edict_t *ent)
 			restartServer();
 			return false;
 		}
-		return false;	
+		return false;
 	}
-	
+
 	ent->think (ent);
 	return false;
 }
@@ -130,7 +135,8 @@ SV_Impact
 Two entities have touched, so run their touch functions
 ==================
 */
-void SV_Impact (edict_t *e1, trace_t *trace)
+static void
+SV_Impact (edict_t *e1, trace_t *trace)
 {
 	edict_t		*e2;
 //	cplane_t	backplane;
@@ -155,7 +161,8 @@ returns the blocked flags (1 = floor, 2 = step / wall)
 */
 #define	STOP_EPSILON	0.1
 
-int ClipVelocity (vec3_t in, vec3_t normal, vec3_t out, float overbounce)
+static int
+ClipVelocity (vec3_t in, vec3_t normal, vec3_t out, float overbounce)
 {
 	float	backoff;
 	float	change;
@@ -193,7 +200,9 @@ Returns the clipflags if the velocity was modified (hit something solid)
 ============
 */
 #define	MAX_CLIP_PLANES	5
-int SV_FlyMove (edict_t *ent, float time, int mask)
+
+static int
+SV_FlyMove (edict_t *ent, float time, int mask)
 {
 	edict_t		*hit;
 	int			bumpcount, numbumps;
@@ -305,9 +314,15 @@ int SV_FlyMove (edict_t *ent, float time, int mask)
 				&& !i)
 			{
 				numplanes = 0;
-				if(ent->waterlevel || (!ent->groundentity && ent->velocity[2] > 10 )) goto VELCX;
+				if(ent->waterlevel ||
+				   (!ent->groundentity &&
+					ent->velocity[2] > 10 ))
+					goto VELCX;
+
 				i =0;
-				if(/*ent->groundentity ||*/ ent->velocity[2] > 10) goto VELC;
+
+				if(/*ent->groundentity ||*/ ent->velocity[2] > 10)
+					goto VELC;
 			}
 		}
 
@@ -386,7 +401,8 @@ SV_PushEntity
 Does not change the entities velocity at all
 ============
 */
-trace_t SV_PushEntity (edict_t *ent, vec3_t push)
+static trace_t
+SV_PushEntity (edict_t *ent, vec3_t push)
 {
 	trace_t	trace;
 	vec3_t	start;
@@ -462,7 +478,8 @@ Objects need to be moved back on a failed push,
 otherwise riders would continue to slide.
 ============
 */
-qboolean SV_Push (edict_t *pusher, vec3_t move, vec3_t amove)
+static qboolean
+SV_Push (edict_t *pusher, vec3_t move, vec3_t amove)
 {
 	int			i, e;
 	edict_t		*check, *block;
@@ -516,7 +533,11 @@ qboolean SV_Push (edict_t *pusher, vec3_t move, vec3_t amove)
 		if (!check->solid) continue;
 
 //ponko
-		if(check->classname[0] == 'R' && (check->classname[6] == 'X' || check->classname[6] == '3') ) continue;
+		if(check->classname[0] == 'R' &&
+		   (check->classname[6] == 'X' ||
+			check->classname[6] == '3') )
+			continue;
+
 		if (check->movetype == MOVETYPE_PUSH
 		|| check->movetype == MOVETYPE_STOP
 		|| check->movetype == MOVETYPE_NONE
@@ -543,7 +564,8 @@ qboolean SV_Push (edict_t *pusher, vec3_t move, vec3_t amove)
 				continue;
 		}
 
-		if ((pusher->movetype == MOVETYPE_PUSH) || (check->groundentity == pusher))
+		if ((pusher->movetype == MOVETYPE_PUSH) ||
+			(check->groundentity == pusher))
 		{
 			// move this entity
 			pushed_p->ent = check;
@@ -625,7 +647,8 @@ Bmodel objects don't interact with each other, but
 push all box objects
 ================
 */
-void SV_Physics_Pusher (edict_t *ent)
+static void
+SV_Physics_Pusher (edict_t *ent)
 {
 	vec3_t		move, amove;
 	edict_t		*part, *mv;
@@ -637,8 +660,9 @@ void SV_Physics_Pusher (edict_t *ent)
 	// make sure all team slaves can move before commiting
 	// any moves or calling any think functions
 	// if the move is blocked, all moved objects will be backed out
-//retry:
+	//retry:
 	pushed_p = pushed;
+
 	for (part = ent ; part ; part=part->teamchain)
 	{
 		if (part->velocity[0] || part->velocity[1] || part->velocity[2] ||
@@ -653,7 +677,8 @@ void SV_Physics_Pusher (edict_t *ent)
 		}
 	}
 	if (pushed_p > &pushed[MAX_EDICTS])
-		gi.error (ERR_FATAL, "pushed_p > &pushed[MAX_EDICTS], memory corrupted");
+		gi.error (ERR_FATAL,
+				  "pushed_p > &pushed[MAX_EDICTS], memory corrupted");
 
 	if (part)
 	{
@@ -693,9 +718,10 @@ SV_Physics_None
 Non moving objects can only think
 =============
 */
-void SV_Physics_None (edict_t *ent)
+static void
+SV_Physics_None (edict_t *ent)
 {
-// regular thinking
+	// regular thinking
 	SV_RunThink (ent);
 }
 
@@ -706,12 +732,13 @@ SV_Physics_Noclip
 A moving object that doesn't obey physics
 =============
 */
-void SV_Physics_Noclip (edict_t *ent)
+static void
+SV_Physics_Noclip (edict_t *ent)
 {
-// regular thinking
+	// regular thinking
 	if (!SV_RunThink (ent))
 		return;
-	
+
 	VectorMA (ent->s.angles, FRAMETIME, ent->avelocity, ent->s.angles);
 	VectorMA (ent->s.origin, FRAMETIME, ent->velocity, ent->s.origin);
 
@@ -839,7 +866,8 @@ Toss, bounce, and fly movement.  When onground, do nothing.
 	}
 }
 */
-void SV_Physics_Toss (edict_t *ent)
+static void
+SV_Physics_Toss (edict_t *ent)
 {
 	trace_t		trace;
 	vec3_t		move;
@@ -849,10 +877,10 @@ void SV_Physics_Toss (edict_t *ent)
 	qboolean	isinwater;
 	vec3_t		old_origin;
 
-	//if (!ent->inuse && developer->value == 2)
-	//	DbgPrintf ("%s entity %d inuse: %d classname %s time: %.1f\n", 
-	//	__FUNCTION__, ent->movetype, ent->inuse, ent->classname, level.time);
-	
+	if (!ent->inuse && developer->value)
+		DbgPrintf ("%s entity %d inuse: %d classname %s time: %.1f\n", 
+		__FUNCTION__, ent->movetype, ent->inuse, ent->classname, level.time);
+
 	// regular thinking
 	SV_RunThink (ent);
 
@@ -932,10 +960,12 @@ void SV_Physics_Toss (edict_t *ent)
 			gi.dprintf("flare hit water\n");
 			G_FreeEdict (ent);
 		}
-		gi.positioned_sound (old_origin, g_edicts, CHAN_AUTO, gi.soundindex("misc/h2ohit1.wav"), 1, 1, 0);
+		gi.positioned_sound (old_origin, g_edicts, CHAN_AUTO,
+							 gi.soundindex("misc/h2ohit1.wav"), 1, 1, 0);
 	}
 	else if (wasinwater && !isinwater)
-		gi.positioned_sound (ent->s.origin, g_edicts, CHAN_AUTO, gi.soundindex("misc/h2ohit1.wav"), 1, 1, 0);
+		gi.positioned_sound (ent->s.origin, g_edicts, CHAN_AUTO,
+							 gi.soundindex("misc/h2ohit1.wav"), 1, 1, 0);
 
 	// move teamslaves
 	for (slave = ent->teamchain; slave; slave = slave->teamchain)
@@ -971,7 +1001,8 @@ FIXME: is this true?
 #define sv_friction			6
 #define sv_waterfriction	1
 
-void SV_AddRotationalFriction (edict_t *ent)
+static void
+SV_AddRotationalFriction (edict_t *ent)
 {
 	int		n;
 	float	adjustment;
@@ -995,7 +1026,8 @@ void SV_AddRotationalFriction (edict_t *ent)
 	}
 }
 
-void SV_Physics_Step (edict_t *ent)
+static void
+SV_Physics_Step (edict_t *ent)
 {
 	qboolean	wasonground;
 	qboolean	hitsound = false;
@@ -1056,7 +1088,8 @@ void SV_Physics_Step (edict_t *ent)
 //gi.bprintf(PRINT_HIGH,"SWIM!\n");
 		speed = fabs(ent->velocity[2]);
 		control = speed < sv_stopspeed ? sv_stopspeed : speed;
-		newspeed = speed - (FRAMETIME * control * sv_waterfriction * ent->waterlevel);
+		newspeed = speed - (FRAMETIME * control *
+							sv_waterfriction * ent->waterlevel);
 		if (newspeed < 0)
 			newspeed = 0;
 		newspeed /= speed;
@@ -1147,7 +1180,7 @@ void SV_Physics_Step (edict_t *ent)
 		}*/
 	}
 
-// regular thinking
+	// regular thinking
 	SV_RunThink (ent); 
 }
 
@@ -1165,30 +1198,30 @@ void G_RunEntity (edict_t *ent)
 
 	switch ( (int)ent->movetype)
 	{
-	case MOVETYPE_PUSH:
-	case MOVETYPE_STOP:
-		SV_Physics_Pusher (ent);
-		break;
-	case MOVETYPE_NONE:
-		SV_Physics_None (ent);
-		break;
-	case MOVETYPE_NOCLIP:
-		SV_Physics_Noclip (ent);
-		break;
-	case MOVETYPE_STEP:
-		SV_Physics_Step (ent);
-		break;
-	case MOVETYPE_TOSS:
-	case MOVETYPE_BOUNCE:
-	case MOVETYPE_FLY:
-	case MOVETYPE_FLYMISSILE:
-		SV_Physics_Toss (ent);
-		break;
-	case MOVETYPE_WALK:
-		SV_RunThink (ent);
-		break;
-	default:
-		gi.error ("SV_Physics: bad movetype %i", (int)ent->movetype);			
+		case MOVETYPE_PUSH:
+		case MOVETYPE_STOP:
+			SV_Physics_Pusher (ent);
+			break;
+		case MOVETYPE_NONE:
+			SV_Physics_None (ent);
+			break;
+		case MOVETYPE_NOCLIP:
+			SV_Physics_Noclip (ent);
+			break;
+		case MOVETYPE_STEP:
+			SV_Physics_Step (ent);
+			break;
+		case MOVETYPE_TOSS:
+		case MOVETYPE_BOUNCE:
+		case MOVETYPE_FLY:
+		case MOVETYPE_FLYMISSILE:
+			SV_Physics_Toss (ent);
+			break;
+		case MOVETYPE_WALK:
+			SV_RunThink (ent);
+			break;
+		default:
+			gi.error ("SV_Physics: bad movetype %i", (int)ent->movetype);
 	}
 }
 

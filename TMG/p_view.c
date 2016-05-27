@@ -23,7 +23,8 @@ SV_CalcRoll
 
 ===============
 */
-float SV_CalcRoll (vec3_t angles, vec3_t velocity)
+static float
+SV_CalcRoll (vec3_t angles, vec3_t velocity)
 {
 	float	sign;
 	float	side;
@@ -52,7 +53,8 @@ P_DamageFeedback
 Handles color blends and view kicks
 ===============
 */
-void P_DamageFeedback (edict_t *player)
+static void
+P_DamageFeedback (edict_t *player)
 {
 	gclient_t	*client;
 	float	side;
@@ -213,7 +215,8 @@ Auto pitching on slopes?
 
 ===============
 */
-void SV_CalcViewOffset (edict_t *ent)
+static void
+SV_CalcViewOffset (edict_t *ent)
 {
 	float		*angles;
 	float		bob;
@@ -340,15 +343,17 @@ void SV_CalcViewOffset (edict_t *ent)
 SV_CalcGunOffset
 ==============
 */
-void SV_CalcGunOffset (edict_t *ent)
+static void
+SV_CalcGunOffset (edict_t *ent)
 {
 	int		i;
 	float	delta;
 
-  // Make sure ent exists!
-  if (!G_EntExists(ent)) return;
+	// Make sure ent exists!
+	if (!G_EntExists(ent))
+		return;
 
- 
+
 	// gun angles from bobbing
 	ent->client->ps.gunangles[ROLL] = xyspeed * bobfracsin * 0.005;
 	ent->client->ps.gunangles[YAW] = xyspeed * bobfracsin * 0.01;
@@ -379,7 +384,7 @@ void SV_CalcGunOffset (edict_t *ent)
 
 	// gun height
 	VectorClear (ent->client->ps.gunoffset);
-//	ent->ps->gunorigin[2] += bob;
+	//	ent->ps->gunorigin[2] += bob;
 
 	// gun_x / gun_y / gun_z are development tools
 	for (i=0 ; i<3 ; i++)
@@ -396,7 +401,8 @@ void SV_CalcGunOffset (edict_t *ent)
 SV_AddBlend
 =============
 */
-void SV_AddBlend (float r, float g, float b, float a, float *v_blend)
+static void
+SV_AddBlend (float r, float g, float b, float a, float *v_blend)
 {
 	float	a2, a3;
 
@@ -417,26 +423,28 @@ void SV_AddBlend (float r, float g, float b, float a, float *v_blend)
 SV_CalcBlend
 =============
 */
-void SV_CalcBlend (edict_t *ent)
+static void
+SV_CalcBlend (edict_t *ent)
 {
 	int		contents;
 	vec3_t	vieworg;
 	int		remaining;
-//RAV
+	//RAV
 	float	alpha;
 	static qboolean is_liquid;
 	edict_t	*e;
 	int	i;
 
 
-  // Make sure ent exists!
-  if (!G_EntExists(ent)) return;
+	// Make sure ent exists!
+	if (!G_EntExists(ent))
+		return;
 
 
-    is_liquid = rune_has_rune(ent, RUNE_LIQUID);
-//
-	ent->client->ps.blend[0] = ent->client->ps.blend[1] = 
-		ent->client->ps.blend[2] = ent->client->ps.blend[3] = 0;
+	is_liquid = rune_has_rune(ent, RUNE_LIQUID);
+	//
+	ent->client->ps.blend[0] = ent->client->ps.blend[1] =
+	ent->client->ps.blend[2] = ent->client->ps.blend[3] = 0;
 
 	// add for contents
 	VectorAdd (ent->s.origin, ent->client->ps.viewoffset, vieworg);
@@ -446,19 +454,19 @@ void SV_CalcBlend (edict_t *ent)
 	else
 		ent->client->ps.rdflags &= ~RDF_UNDERWATER;
 
-//RAV
-  	if (contents & (CONTENTS_LAVA))  
+	//RAV
+	if (contents & (CONTENTS_LAVA))
 	{
-		if (is_liquid)		
+		if (is_liquid)
 			alpha = 0.1;
 		else
 			alpha = 0.6;
 
-		SV_AddBlend (1.0, 0.3, 0.0, alpha, ent->client->ps.blend);	
+		SV_AddBlend (1.0, 0.3, 0.0, alpha, ent->client->ps.blend);
 	}
 	else if (contents & CONTENTS_SLIME)
 	{
-			if (is_liquid)
+		if (is_liquid)
 			alpha = 0.1;
 		else
 			alpha = 0.6;
@@ -467,7 +475,7 @@ void SV_CalcBlend (edict_t *ent)
 	}
 	else if (contents & CONTENTS_WATER)
 	{
-			if (is_liquid)
+		if (is_liquid)
 			alpha = 0.1;
 		else
 			alpha = 0.5;
@@ -477,30 +485,32 @@ void SV_CalcBlend (edict_t *ent)
 
 	else if (contents & (CONTENTS_SOLID))
 	{
-		SV_AddBlend (0.3, 0.3, 0.3, 0.3, ent->client->ps.blend);	
+		SV_AddBlend (0.3, 0.3, 0.3, 0.3, ent->client->ps.blend);
 	}
-//
-/*
-	if (contents & (CONTENTS_SOLID|CONTENTS_LAVA))
+	//
+	/*
+	 if (contents & (CONTENTS_SOLID|CONTENTS_LAVA))
 		SV_AddBlend (1.0, 0.3, 0.0, 0.6, ent->client->ps.blend);
-	else if (contents & CONTENTS_SLIME)
+	 else if (contents & CONTENTS_SLIME)
 		SV_AddBlend (0.0, 0.1, 0.05, 0.6, ent->client->ps.blend);
-	else if (contents & CONTENTS_WATER)
+	 else if (contents & CONTENTS_WATER)
 		SV_AddBlend (0.5, 0.3, 0.2, 0.4, ent->client->ps.blend);
-*/
+	 */
 	// add for powerups
 	if (ent->client->quad_framenum > level.framenum)
 	{
 		remaining = ent->client->quad_framenum - level.framenum;
 		if (remaining == 30)	// beginning to fade
-			gi.sound(ent, CHAN_ITEM, gi.soundindex("items/damage2.wav"), 1, ATTN_NORM, 0);
+			gi.sound(ent, CHAN_ITEM,
+					 gi.soundindex("items/damage2.wav"), 1, ATTN_NORM, 0);
 		if (remaining == 10 && ((int)quad_notify->value & QUAD_NOTIFY_EXPIRE))
 		{
-//			gi.dprintf("A quad damage has expired!\n");
+			//gi.dprintf("A quad damage has expired!\n");
 			for_each_player(e, i)
 			{
-//				safe_centerprintf(e, "A quad damage has expired!\n");
-				gi.sound (e, CHAN_AUTO, gi.soundindex ("items/quadexp.wav"), 1, ATTN_NONE, 0);
+				//safe_centerprintf(e, "A quad damage has expired!\n");
+				gi.sound (e, CHAN_AUTO,
+						  gi.soundindex("items/quadexp.wav"), 1, ATTN_NONE, 0);
 			}
 		}
 		if (remaining > 30 || (remaining & 4) )
@@ -510,25 +520,28 @@ void SV_CalcBlend (edict_t *ent)
 	{
 		remaining = ent->client->invincible_framenum - level.framenum;
 		if (remaining == 30)	// beginning to fade
-			gi.sound(ent, CHAN_ITEM, gi.soundindex("items/protect2.wav"), 1, ATTN_NORM, 0);
+			gi.sound(ent, CHAN_ITEM,
+					 gi.soundindex("items/protect2.wav"), 1, ATTN_NORM, 0);
 		if (remaining > 30 || (remaining & 4) )
 			SV_AddBlend (1, 1, 0, 0.08, ent->client->ps.blend);
 	}
-//RAV
+	//RAV
 	else if (ent->client->respawn_framenum > level.framenum)
 	{
 		remaining = ent->client->respawn_framenum - level.framenum;
-		//if (remaining <= 30)	// beginning to fade
-		//	gi.sound(ent, CHAN_ITEM, gi.soundindex("items/protect2.wav"), 1, ATTN_NORM, 0);
+//		if (remaining <= 30)	// beginning to fade
+//			gi.sound(ent, CHAN_ITEM,
+//					 gi.soundindex("items/protect2.wav"), 1, ATTN_NORM, 0);
 		if (remaining > 30 || (remaining & 4) )
 			SV_AddBlend (1, 1, 0, 0.08, ent->client->ps.blend);
 	}
-//
+	//
 	else if (ent->client->enviro_framenum > level.framenum)
 	{
 		remaining = ent->client->enviro_framenum - level.framenum;
 		if (remaining == 30)	// beginning to fade
-			gi.sound(ent, CHAN_ITEM, gi.soundindex("items/airout.wav"), 1, ATTN_NORM, 0);
+			gi.sound(ent, CHAN_ITEM,
+					 gi.soundindex("items/airout.wav"), 1, ATTN_NORM, 0);
 		if (remaining > 30 || (remaining & 4) )
 			SV_AddBlend (0, 1, 0, 0.08, ent->client->ps.blend);
 	}
@@ -536,18 +549,24 @@ void SV_CalcBlend (edict_t *ent)
 	{
 		remaining = ent->client->breather_framenum - level.framenum;
 		if (remaining == 30)	// beginning to fade
-			gi.sound(ent, CHAN_ITEM, gi.soundindex("items/airout.wav"), 1, ATTN_NORM, 0);
+			gi.sound(ent, CHAN_ITEM,
+					 gi.soundindex("items/airout.wav"), 1, ATTN_NORM, 0);
 		if (remaining > 30 || (remaining & 4) )
 			SV_AddBlend (0.4, 1, 0.4, 0.04, ent->client->ps.blend);
 	}
 
 	// add for damage
 	if (ent->client->damage_alpha > 0)
-		SV_AddBlend (ent->client->damage_blend[0],ent->client->damage_blend[1]
-		,ent->client->damage_blend[2], ent->client->damage_alpha, ent->client->ps.blend);
+		SV_AddBlend (ent->client->damage_blend[0],
+					 ent->client->damage_blend[1],
+					 ent->client->damage_blend[2],
+					 ent->client->damage_alpha,
+					 ent->client->ps.blend);
 
 	if (ent->client->bonus_alpha > 0)
-		SV_AddBlend (0.85, 0.7, 0.3, ent->client->bonus_alpha, ent->client->ps.blend);
+		SV_AddBlend (0.85, 0.7, 0.3,
+					 ent->client->bonus_alpha,
+					 ent->client->ps.blend);
 
 	// drop the damage value
 	ent->client->damage_alpha -= 0.06;
@@ -566,31 +585,33 @@ void SV_CalcBlend (edict_t *ent)
 P_FallingDamage
 =================
 */
-void P_FallingDamage (edict_t *ent)
+static void
+P_FallingDamage (edict_t *ent)
 {
 	float	delta;
 	int		damage;
 	vec3_t	dir;
-//RAV
 	static qboolean is_jump;
 
-  // Make sure ent exists!
-  if (!G_EntExists(ent)) return;
+	// Make sure ent exists!
+	if (!G_EntExists(ent))
+		return;
 
-  
 
-    is_jump = rune_has_rune(ent, RUNE_JUMP);
+	is_jump = rune_has_rune(ent, RUNE_JUMP);
 
-    if (is_jump)
-    return;
-//
+	if (is_jump)
+		return;
+
 	if (ent->s.modelindex != 255)
 		return;		// not in the player model
 
 	if (ent->movetype == MOVETYPE_NOCLIP)
 		return;
 
-	if ((ent->client->oldvelocity[2] < 0) && (ent->velocity[2] > ent->client->oldvelocity[2]) && (!ent->groundentity))
+	if ((ent->client->oldvelocity[2] < 0) &&
+		(ent->velocity[2] > ent->client->oldvelocity[2]) &&
+		(!ent->groundentity))
 	{
 		delta = ent->client->oldvelocity[2];
 	}
@@ -602,18 +623,18 @@ void P_FallingDamage (edict_t *ent)
 	}
 	delta = delta*delta * 0.0001;
 
-//ZOID
+	//ZOID
 	// never take damage if just release grapple or on grapple
 	if (level.time - ent->client->ctf_grapplereleasetime <= FRAMETIME * 2 ||
-		(ent->client->ctf_grapple && 
-		ent->client->ctf_grapplestate > CTF_GRAPPLE_STATE_FLY))
+		(ent->client->ctf_grapple &&
+		 ent->client->ctf_grapplestate > CTF_GRAPPLE_STATE_FLY))
 		return;
-//ZOID
+	//ZOID
 
-//RAV  hook
-if (ent->client->hook_on && ent->client->hook) 
-	return;
-//
+	//RAV  hook
+	if (ent->client->hook_on && ent->client->hook)
+		return;
+	//
 
 
 	// never take falling damage if completely underwater
@@ -654,7 +675,8 @@ if (ent->client->hook_on && ent->client->hook)
 		VectorSet (dir, 0, 0, 1);
 
 		if (!deathmatch->value || !(dmflag & DF_NO_FALLING) )
-			T_Damage (ent, world, world, dir, ent->s.origin, vec3_origin, damage, 0, 0, MOD_FALLING);
+			T_Damage (ent, world, world, dir, ent->s.origin,
+					  vec3_origin, damage, 0, 0, MOD_FALLING);
 	}
 	else
 	{
@@ -671,35 +693,37 @@ if (ent->client->hook_on && ent->client->hook)
 P_WorldEffects
 =============
 */
-void P_WorldEffects (void)
+static void
+P_WorldEffects (void)
 {
 	qboolean	breather;
 	qboolean	envirosuit;
 	int			waterlevel, old_waterlevel;
-//RAV
-  static gitem_t *flag1;
-  static gitem_t *flag2;
-  static qboolean has_flag;
-  static qboolean is_liquid;
-  is_liquid = rune_has_rune(current_player, RUNE_LIQUID);
+	//RAV
+	static gitem_t *flag1;
+	static gitem_t *flag2;
+	static qboolean has_flag;
+	static qboolean is_liquid;
+	is_liquid = rune_has_rune(current_player, RUNE_LIQUID);
 
-  flag1 = FindItemByClassname("item_flag_team1");
-  flag2 = FindItemByClassname("item_flag_team2");
+	flag1 = FindItemByClassname("item_flag_team1");
+	flag2 = FindItemByClassname("item_flag_team2");
 
 	has_flag = ((current_player->client->pers.inventory[ITEM_INDEX(flag1)])
-||(current_player->client->pers.inventory[ITEM_INDEX(flag2)]));
- 
-//
-	if ((current_player->movetype == MOVETYPE_NOCLIP) || (current_player->health <= 0))
+				||(current_player->client->pers.inventory[ITEM_INDEX(flag2)]));
+
+	//
+	if ((current_player->movetype == MOVETYPE_NOCLIP) ||
+		(current_player->health <= 0))
 	{
 		current_player->air_finished = level.time + 12;	// don't need air
 		return;
 	}
-//RAV
-if((is_liquid)&&(!has_flag))
+	//RAV
+	if((is_liquid)&&(!has_flag))
 
-return;
-//
+		return;
+	//
 	waterlevel = current_player->waterlevel;
 	old_waterlevel = current_client->old_waterlevel;
 	current_client->old_waterlevel = waterlevel;
@@ -714,11 +738,17 @@ return;
 	{
 		PlayerNoise(current_player, current_player->s.origin, PNOISE_SELF);
 		if (current_player->watertype & CONTENTS_LAVA)
-			gi.sound (current_player, CHAN_BODY, gi.soundindex("player/lava_in.wav"), 1, ATTN_NORM, 0);
+			gi.sound (current_player, CHAN_BODY,
+					  gi.soundindex("player/lava_in.wav"), 1, ATTN_NORM, 0);
+
 		else if (current_player->watertype & CONTENTS_SLIME)
-			gi.sound (current_player, CHAN_BODY, gi.soundindex("player/watr_in.wav"), 1, ATTN_NORM, 0);
+			gi.sound (current_player, CHAN_BODY,
+					  gi.soundindex("player/watr_in.wav"), 1, ATTN_NORM, 0);
+
 		else if (current_player->watertype & CONTENTS_WATER)
-			gi.sound (current_player, CHAN_BODY, gi.soundindex("player/watr_in.wav"), 1, ATTN_NORM, 0);
+			gi.sound (current_player, CHAN_BODY,
+					  gi.soundindex("player/watr_in.wav"), 1, ATTN_NORM, 0);
+
 		current_player->flags |= FL_INWATER;
 
 		// clear damage_debounce, so the pain sound will play immediately
@@ -731,7 +761,9 @@ return;
 	if (old_waterlevel && ! waterlevel)
 	{
 		PlayerNoise(current_player, current_player->s.origin, PNOISE_SELF);
-		gi.sound (current_player, CHAN_BODY, gi.soundindex("player/watr_out.wav"), 1, ATTN_NORM, 0);
+		gi.sound (current_player, CHAN_BODY,
+				  gi.soundindex("player/watr_out.wav"), 1, ATTN_NORM, 0);
+
 		current_player->flags &= ~FL_INWATER;
 	}
 
@@ -740,7 +772,8 @@ return;
 	//
 	if (old_waterlevel != 3 && waterlevel == 3)
 	{
-		gi.sound (current_player, CHAN_BODY, gi.soundindex("player/watr_un.wav"), 1, ATTN_NORM, 0);
+		gi.sound (current_player, CHAN_BODY,
+				  gi.soundindex("player/watr_un.wav"), 1, ATTN_NORM, 0);
 	}
 
 	//
@@ -750,12 +783,14 @@ return;
 	{
 		if (current_player->air_finished < level.time)
 		{	// gasp for air
-			gi.sound (current_player, CHAN_VOICE, gi.soundindex("player/gasp1.wav"), 1, ATTN_NORM, 0);
+			gi.sound (current_player, CHAN_VOICE,
+					  gi.soundindex("player/gasp1.wav"), 1, ATTN_NORM, 0);
 			PlayerNoise(current_player, current_player->s.origin, PNOISE_SELF);
 		}
 		else  if (current_player->air_finished < level.time + 11)
 		{	// just break surface
-			gi.sound (current_player, CHAN_VOICE, gi.soundindex("player/gasp2.wav"), 1, ATTN_NORM, 0);
+			gi.sound (current_player, CHAN_VOICE,
+					  gi.soundindex("player/gasp2.wav"), 1, ATTN_NORM, 0);
 		}
 	}
 
@@ -772,11 +807,16 @@ return;
 			if (((int)(current_client->breather_framenum - level.framenum) % 25) == 0)
 			{
 				if (!current_client->breather_sound)
-					gi.sound (current_player, CHAN_AUTO, gi.soundindex("player/u_breath1.wav"), 1, ATTN_NORM, 0);
+					gi.sound (current_player, CHAN_AUTO,
+							  gi.soundindex("player/u_breath1.wav"),
+							  1, ATTN_NORM, 0);
 				else
-					gi.sound (current_player, CHAN_AUTO, gi.soundindex("player/u_breath2.wav"), 1, ATTN_NORM, 0);
+					gi.sound (current_player, CHAN_AUTO,
+							  gi.soundindex("player/u_breath2.wav"),
+							  1, ATTN_NORM, 0);
 				current_client->breather_sound ^= 1;
-				PlayerNoise(current_player, current_player->s.origin, PNOISE_SELF);
+				PlayerNoise(current_player, current_player->s.origin,
+							PNOISE_SELF);
 				//FIXME: release a bubble?
 			}
 		}
@@ -784,7 +824,7 @@ return;
 		// if out of air, start drowning
 		if (current_player->air_finished < level.time)
 		{	// drown!
-			if (current_player->client->next_drown_time < level.time 
+			if (current_player->client->next_drown_time < level.time
 				&& current_player->health > 0)
 			{
 				current_player->client->next_drown_time = level.time + 1;
@@ -796,15 +836,23 @@ return;
 
 				// play a gurp sound instead of a normal pain sound
 				if (current_player->health <= current_player->dmg)
-					gi.sound (current_player, CHAN_VOICE, gi.soundindex("player/drown1.wav"), 1, ATTN_NORM, 0);
-				else if (rand()&1)
-					gi.sound (current_player, CHAN_VOICE, gi.soundindex("*gurp1.wav"), 1, ATTN_NORM, 0);
+					gi.sound (current_player, CHAN_VOICE,
+							  gi.soundindex("player/drown1.wav"),
+							  1, ATTN_NORM, 0);
+				else if (rand() & 1)
+					gi.sound (current_player, CHAN_VOICE,
+							  gi.soundindex("*gurp1.wav"),
+							  1, ATTN_NORM, 0);
 				else
-					gi.sound (current_player, CHAN_VOICE, gi.soundindex("*gurp2.wav"), 1, ATTN_NORM, 0);
+					gi.sound (current_player, CHAN_VOICE,
+							  gi.soundindex("*gurp2.wav"),
+							  1, ATTN_NORM, 0);
 
 				current_player->pain_debounce_time = level.time;
 
-				T_Damage (current_player, world, world, vec3_origin, current_player->s.origin, vec3_origin, current_player->dmg, 0, DAMAGE_NO_ARMOR, MOD_WATER);
+				T_Damage (current_player, world, world, vec3_origin,
+						  current_player->s.origin, vec3_origin,
+						  current_player->dmg, 0, DAMAGE_NO_ARMOR, MOD_WATER);
 			}
 		}
 	}
@@ -817,36 +865,48 @@ return;
 	//
 	// check for sizzle damage
 	//
-	if (waterlevel && (current_player->watertype&(CONTENTS_LAVA|CONTENTS_SLIME)) )
+	if (waterlevel &&
+		(current_player->watertype&(CONTENTS_LAVA|CONTENTS_SLIME)) )
 	{
 		if (current_player->watertype & CONTENTS_LAVA)
 		{
 			if (current_player->health > 0
 				&& current_player->pain_debounce_time <= level.time
 				&& current_client->invincible_framenum < level.framenum
-		//RAV
-		&& current_client->respawn_framenum < level.framenum
-		//
-		)
+				//RAV
+				&& current_client->respawn_framenum < level.framenum
+				//
+				)
 			{
 				if (rand()&1)
-					gi.sound (current_player, CHAN_VOICE, gi.soundindex("player/burn1.wav"), 1, ATTN_NORM, 0);
+					gi.sound (current_player, CHAN_VOICE,
+							  gi.soundindex("player/burn1.wav"),
+							  1, ATTN_NORM, 0);
 				else
-					gi.sound (current_player, CHAN_VOICE, gi.soundindex("player/burn2.wav"), 1, ATTN_NORM, 0);
+					gi.sound (current_player, CHAN_VOICE,
+							  gi.soundindex("player/burn2.wav"),
+							  1, ATTN_NORM, 0);
+
 				current_player->pain_debounce_time = level.time + 1;
 			}
 
 			if (envirosuit)	// take 1/3 damage with envirosuit
-				T_Damage (current_player, world, world, vec3_origin, current_player->s.origin, vec3_origin, 1*waterlevel, 0, 0, MOD_LAVA);
+				T_Damage (current_player, world, world,
+						  vec3_origin, current_player->s.origin,
+						  vec3_origin, 1 * waterlevel, 0, 0, MOD_LAVA);
 			else
-				T_Damage (current_player, world, world, vec3_origin, current_player->s.origin, vec3_origin, 3*waterlevel, 0, 0, MOD_LAVA);
+				T_Damage (current_player, world, world,
+						  vec3_origin, current_player->s.origin,
+						  vec3_origin, 3 * waterlevel, 0, 0, MOD_LAVA);
 		}
 
 		if (current_player->watertype & CONTENTS_SLIME)
 		{
 			if (!envirosuit)
 			{	// no damage from slime with envirosuit
-				T_Damage (current_player, world, world, vec3_origin, current_player->s.origin, vec3_origin, 1*waterlevel, 0, 0, MOD_SLIME);
+				T_Damage (current_player, world, world,
+						  vec3_origin, current_player->s.origin,
+						  vec3_origin, 1 * waterlevel, 0, 0, MOD_SLIME);
 			}
 		}
 	}
@@ -858,7 +918,8 @@ return;
 G_SetClientEffects
 ===============
 */
-void G_SetClientEffects (edict_t *ent)
+static void
+G_SetClientEffects (edict_t *ent)
 {
 	int		pa_type;
 	int		remaining;
@@ -966,17 +1027,18 @@ void G_SetClientEffects (edict_t *ent)
 G_SetClientEvent
 ===============
 */
-void G_SetClientEvent (edict_t *ent)
+static void
+G_SetClientEvent (edict_t *ent)
 {
 	if (ent->s.event)
 		return;
 
 	if ( ent->groundentity && xyspeed > 225)
 	{
-//RAV
-if(rune_has_rune(ent, RUNE_INVIS))
-       return;
-//
+		//RAV
+		if(rune_has_rune(ent, RUNE_INVIS))
+			return;
+		//
 
 		if ( (int)(current_client->bobtime+bobmove) != bobcycle )
 			ent->s.event = EV_FOOTSTEP;
@@ -988,7 +1050,8 @@ if(rune_has_rune(ent, RUNE_INVIS))
 G_SetClientSound
 ===============
 */
-void G_SetClientSound (edict_t *ent)
+static void
+G_SetClientSound (edict_t *ent)
 {
 	char	*weap;
 
@@ -1003,10 +1066,14 @@ void G_SetClientSound (edict_t *ent)
 	}
 
 	// help beep (no more than three times)
-	if (ent->client->resp.helpchanged && ent->client->resp.helpchanged <= 3 && !(level.framenum&63) )
+	if (ent->client->resp.helpchanged &&
+		ent->client->resp.helpchanged <= 3 &&
+		!(level.framenum & 63) )
 	{
 		ent->client->resp.helpchanged++;
-		gi.sound (ent, CHAN_VOICE, gi.soundindex ("misc/pc_up.wav"), 1, ATTN_STATIC, 0);
+		gi.sound (ent, CHAN_VOICE,
+				  gi.soundindex ("misc/pc_up.wav"),
+				  1, ATTN_STATIC, 0);
 	}
 
 
@@ -1017,11 +1084,15 @@ void G_SetClientSound (edict_t *ent)
 
 	if (ent->waterlevel && (ent->watertype&(CONTENTS_LAVA|CONTENTS_SLIME)) )
 		ent->s.sound = snd_fry;
-	else if (strcmp(weap, "weapon_railgun") == 0 && !no_hum->value) //JSW - Allow server to turn off all players railgun hum
-	{// JSW
-		if (!ent->client->resp.no_hum) //JSW - Allow player to turn off their own railgun hum
+
+	//JSW - Allow server to turn off all players railgun hum
+	else if (strcmp(weap, "weapon_railgun") == 0 && !no_hum->value)
+	{
+		//JSW - Allow player to turn off their own railgun hum
+		if (!ent->client->resp.no_hum)
 			ent->s.sound = gi.soundindex("weapons/rg_hum.wav");
-	} //end
+	}
+
 	else if (strcmp(weap, "weapon_bfg") == 0)
 		ent->s.sound = gi.soundindex("weapons/bfg_hum.wav");
 	else if (ent->client->weapon_sound)
@@ -1035,7 +1106,8 @@ void G_SetClientSound (edict_t *ent)
 G_SetClientFrame
 ===============
 */
-void G_SetClientFrame (edict_t *ent)
+static void
+G_SetClientFrame (edict_t *ent)
 {
 	gclient_t	*client;
 	qboolean	duck, run;
@@ -1275,7 +1347,11 @@ void ClientEndServerFrame (edict_t *ent)
 	{
 		if (!ent->inuse || e->client->chase_target != ent)
 			continue;
-		memcpy(e->client->ps.stats, ent->client->ps.stats, sizeof(ent->client->ps.stats));
+
+		memcpy(e->client->ps.stats,
+			   ent->client->ps.stats,
+			   sizeof(ent->client->ps.stats));
+
 		e->client->ps.stats[STAT_LAYOUTS] = 1;
 		break;
 	}
@@ -1332,7 +1408,8 @@ void ClientEndServerFrame (edict_t *ent)
 B_WorldEffects
 =============
 */
-void B_WorldEffects (edict_t *ent)
+static void
+B_WorldEffects (edict_t *ent)
 {
 	qboolean	breather;
 	qboolean	envirosuit;
@@ -1359,13 +1436,23 @@ void B_WorldEffects (edict_t *ent)
 	//
 	if (!old_waterlevel && waterlevel)
 	{
-		PlayerNoise(current_player, current_player->s.origin, PNOISE_SELF);
+		PlayerNoise(current_player,
+					current_player->s.origin, PNOISE_SELF);
 		if (ent->watertype & CONTENTS_LAVA)
-			gi.sound (current_player, CHAN_BODY, gi.soundindex("player/lava_in.wav"), 1, ATTN_NORM, 0);
+			gi.sound (current_player, CHAN_BODY,
+					  gi.soundindex("player/lava_in.wav"),
+					  1, ATTN_NORM, 0);
+
 		else if (ent->watertype & CONTENTS_SLIME)
-			gi.sound (ent, CHAN_BODY, gi.soundindex("player/watr_in.wav"), 1, ATTN_NORM, 0);
+			gi.sound (ent, CHAN_BODY,
+					  gi.soundindex("player/watr_in.wav"),
+					  1, ATTN_NORM, 0);
+
 		else if (ent->watertype & CONTENTS_WATER)
-			gi.sound (current_player, CHAN_BODY, gi.soundindex("player/watr_in.wav"), 1, ATTN_NORM, 0);
+			gi.sound (current_player, CHAN_BODY,
+					  gi.soundindex("player/watr_in.wav"),
+					  1, ATTN_NORM, 0);
+
 		ent->flags |= FL_INWATER;
 
 		// clear damage_debounce, so the pain sound will play immediately
@@ -1377,8 +1464,12 @@ void B_WorldEffects (edict_t *ent)
 	//
 	if (old_waterlevel && ! waterlevel)
 	{
-		PlayerNoise(current_player, current_player->s.origin, PNOISE_SELF);
-		gi.sound (current_player, CHAN_BODY, gi.soundindex("player/watr_out.wav"), 1, ATTN_NORM, 0);
+		PlayerNoise(current_player,
+					current_player->s.origin, PNOISE_SELF);
+		gi.sound (current_player, CHAN_BODY,
+				  gi.soundindex("player/watr_out.wav"),
+				  1, ATTN_NORM, 0);
+
 		current_player->flags &= ~FL_INWATER;
 	}
 
@@ -1387,7 +1478,9 @@ void B_WorldEffects (edict_t *ent)
 	//
 	if (old_waterlevel != 3 && waterlevel == 3)
 	{
-		gi.sound (current_player, CHAN_BODY, gi.soundindex("player/watr_un.wav"), 1, ATTN_NORM, 0);
+		gi.sound (current_player, CHAN_BODY,
+				  gi.soundindex("player/watr_un.wav"),
+				  1, ATTN_NORM, 0);
 	}
 
 	//
@@ -1397,12 +1490,18 @@ void B_WorldEffects (edict_t *ent)
 	{
 		if (current_player->air_finished < level.time)
 		{	// gasp for air
-			gi.sound (current_player, CHAN_VOICE, gi.soundindex("player/gasp1.wav"), 1, ATTN_NORM, 0);
-			PlayerNoise(current_player, current_player->s.origin, PNOISE_SELF);
+			gi.sound (current_player, CHAN_VOICE,
+					  gi.soundindex("player/gasp1.wav"),
+					  1, ATTN_NORM, 0);
+			PlayerNoise(current_player,
+						current_player->s.origin, PNOISE_SELF);
 		}
+
 		else  if (current_player->air_finished < level.time + 11)
 		{	// just break surface
-			gi.sound (current_player, CHAN_VOICE, gi.soundindex("player/gasp2.wav"), 1, ATTN_NORM, 0);
+			gi.sound (current_player, CHAN_VOICE,
+					  gi.soundindex("player/gasp2.wav"),
+					  1, ATTN_NORM, 0);
 		}
 	}
 
@@ -1419,11 +1518,17 @@ void B_WorldEffects (edict_t *ent)
 			if (((int)(current_client->breather_framenum - level.framenum) % 25) == 0)
 			{
 				if (!current_client->breather_sound)
-					gi.sound (current_player, CHAN_AUTO, gi.soundindex("player/u_breath1.wav"), 1, ATTN_NORM, 0);
+					gi.sound (current_player, CHAN_AUTO,
+							  gi.soundindex("player/u_breath1.wav"),
+							  1, ATTN_NORM, 0);
 				else
-					gi.sound (current_player, CHAN_AUTO, gi.soundindex("player/u_breath2.wav"), 1, ATTN_NORM, 0);
+					gi.sound (current_player, CHAN_AUTO,
+							  gi.soundindex("player/u_breath2.wav"),
+							  1, ATTN_NORM, 0);
+
 				current_client->breather_sound ^= 1;
-				PlayerNoise(current_player, current_player->s.origin, PNOISE_SELF);
+				PlayerNoise(current_player,
+							current_player->s.origin, PNOISE_SELF);
 				//FIXME: release a bubble?
 			}
 		}
@@ -1443,15 +1548,24 @@ void B_WorldEffects (edict_t *ent)
 
 				// play a gurp sound instead of a normal pain sound
 				if (current_player->health <= current_player->dmg)
-					gi.sound (current_player, CHAN_VOICE, gi.soundindex("player/drown1.wav"), 1, ATTN_NORM, 0);
+					gi.sound (current_player, CHAN_VOICE,
+							  gi.soundindex("player/drown1.wav"),
+							  1, ATTN_NORM, 0);
 				else if (rand()&1)
-					gi.sound (current_player, CHAN_VOICE, gi.soundindex("*gurp1.wav"), 1, ATTN_NORM, 0);
+					gi.sound (current_player, CHAN_VOICE,
+							  gi.soundindex("*gurp1.wav"),
+							  1, ATTN_NORM, 0);
 				else
-					gi.sound (current_player, CHAN_VOICE, gi.soundindex("*gurp2.wav"), 1, ATTN_NORM, 0);
+					gi.sound (current_player, CHAN_VOICE,
+							  gi.soundindex("*gurp2.wav"),
+							  1, ATTN_NORM, 0);
 
 				current_player->pain_debounce_time = level.time;
 
-				T_Damage (current_player, world, world, vec3_origin, current_player->s.origin, vec3_origin, current_player->dmg, 0, DAMAGE_NO_ARMOR, MOD_WATER);
+				T_Damage (current_player, world, world,
+						  vec3_origin, current_player->s.origin,
+						  vec3_origin, current_player->dmg,
+						  0, DAMAGE_NO_ARMOR, MOD_WATER);
 			}
 		}
 	}
@@ -1464,7 +1578,8 @@ void B_WorldEffects (edict_t *ent)
 	//
 	// check for sizzle damage
 	//
-	if (waterlevel && (current_player->watertype&(CONTENTS_LAVA|CONTENTS_SLIME)) )
+	if (waterlevel &&
+		(current_player->watertype & (CONTENTS_LAVA|CONTENTS_SLIME)) )
 	{
 		if (current_player->watertype & CONTENTS_LAVA)
 		{
@@ -1473,30 +1588,38 @@ void B_WorldEffects (edict_t *ent)
 				&& current_client->invincible_framenum < level.framenum)
 			{
 				if (rand()&1)
-					gi.sound (current_player, CHAN_VOICE, gi.soundindex("player/burn1.wav"), 1, ATTN_NORM, 0);
+					gi.sound (current_player, CHAN_VOICE,
+							  gi.soundindex("player/burn1.wav"),
+							  1, ATTN_NORM, 0);
 				else
-					gi.sound (current_player, CHAN_VOICE, gi.soundindex("player/burn2.wav"), 1, ATTN_NORM, 0);
+					gi.sound (current_player, CHAN_VOICE,
+							  gi.soundindex("player/burn2.wav"),
+							  1, ATTN_NORM, 0);
+
 				current_player->pain_debounce_time = level.time + 1;
 			}
 
 			if (envirosuit)	// take 1/3 damage with envirosuit
-				T_Damage (current_player, world, world, vec3_origin, current_player->s.origin, vec3_origin, 1*waterlevel, 0, 0, MOD_LAVA);
+				T_Damage (current_player, world, world,
+						  vec3_origin, current_player->s.origin,
+						  vec3_origin, 1 * waterlevel, 0, 0, MOD_LAVA);
 			else
-				T_Damage (current_player, world, world, vec3_origin, current_player->s.origin, vec3_origin, 3*waterlevel, 0, 0, MOD_LAVA);
+				T_Damage (current_player, world, world,
+						  vec3_origin, current_player->s.origin,
+						  vec3_origin, 3*waterlevel, 0, 0, MOD_LAVA);
 		}
 
 		if (current_player->watertype & CONTENTS_SLIME)
 		{
 			if (!envirosuit)
 			{	// no damage from slime with envirosuit
-				T_Damage (current_player, world, world, vec3_origin, current_player->s.origin, vec3_origin, 1*waterlevel, 0, 0, MOD_SLIME);
+				T_Damage (current_player, world, world,
+						  vec3_origin, current_player->s.origin,
+						  vec3_origin, 1*waterlevel, 0, 0, MOD_SLIME);
 			}
 		}
 	}
 }
-
-
-
 
 
 /*
@@ -1506,7 +1629,8 @@ B_DamageFeedback
 Handles color blends and view kicks
 ===============
 */
-void B_DamageFeedback (edict_t *player)
+static void
+B_DamageFeedback (edict_t *player)
 {
 	gclient_t	*client;
 	float	realcount, count;
@@ -1517,7 +1641,10 @@ void B_DamageFeedback (edict_t *player)
 	if(player->deadflag) return;
 
 	// total points of damage shot at the player this frame
-	count = (client->damage_blood + client->damage_armor + client->damage_parmor);
+	count = (client->damage_blood +
+			 client->damage_armor +
+			 client->damage_parmor);
+
 	if (count == 0)
 		return;		// didn't take any damage
 
@@ -1557,7 +1684,9 @@ void B_DamageFeedback (edict_t *player)
 		count = 10;	// always make a visible effect
 
 	// play an apropriate pain sound
-	if ((level.time > player->pain_debounce_time) && !(player->flags & FL_GODMODE) && (client->invincible_framenum <= level.framenum))
+	if ((level.time > player->pain_debounce_time) &&
+		!(player->flags & FL_GODMODE) &&
+		(client->invincible_framenum <= level.framenum))
 	{
 		r = 1 + (rand()&1);
 		player->pain_debounce_time = level.time + 0.7;
@@ -1569,7 +1698,9 @@ void B_DamageFeedback (edict_t *player)
 			l = 75;
 		else
 			l = 100;
-		gi.sound (player, CHAN_VOICE, gi.soundindex(va("*pain%i_%i.wav", l, r)), 1, ATTN_NORM, 0);
+		gi.sound (player, CHAN_VOICE,
+				  gi.soundindex(va("*pain%i_%i.wav", l, r)),
+				  1, ATTN_NORM, 0);
 	}
 	//
 	// clear totals
