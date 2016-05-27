@@ -23,7 +23,7 @@ void Bot_InitCvars(void)
 {
 	// bot commands
 	use_bots = gi.cvar ("use_bots", "1", CVAR_LATCH);
-	bot_num = gi.cvar ("bot_num", "0", 0);
+	bot_num = gi.cvar ("bot_num", "2", 0);
 	bot_free_clients = gi.cvar ("bot_free_clients", "2", CVAR_ARCHIVE);
 	bot_insult = gi.cvar ("bot_insult", "1", 0);
 	bot_chat = gi.cvar ("bot_chat", "1", 0);

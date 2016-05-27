@@ -3,17 +3,70 @@
 
 MAP_ENTRY   *mdsoft_map = NULL;
 
+maplist_t	*maplist;
+maplist_t	*maplistBase;
 
 static unsigned int mdsoft_map_size  = 0;
 static unsigned int mdsoft_map_last  = 0;
 
-static int mdsoft_read_map_entry(FILE   *fpFile,
+static int parse_line(FILE   *fpFile,
 								 char   *pFile,
 								 char   *pName,
 								 int    *pMin,
 								 int    *pMax );
 
+// instantiate cvars
+cvar_t	*map_c;	// map_change
+cvar_t	*map_r;	// map_randomize
+cvar_t	*map_o;	// map_once
+cvar_t	*map_d;	// map_debug
 
+// other cvars used:
+// basedir, game_dir, maplist
+
+/*
+ Call this at game intialization
+ */
+void mdsoft_InitMaps(void)
+{
+	//QW// FIXME: this doesn't jibe with maplist_t structure
+	//QW// is this needed? Check this in debugger. Why 64?
+	/* maplist management setup */
+	maplistBase = gi.TagMalloc (64 * sizeof(maplist_t), TAG_GAME);
+	maplist = maplistBase + 1;
+
+	map_c = gi.cvar( "map_change", "1", 0 );
+	map_r = gi.cvar( "map_randomize", "0", 0 );
+	map_o = gi.cvar( "map_once", "0", 0 );
+	map_d = gi.cvar( "map_debug", "0", 0 );
+	maplist->active = false;
+	mdsoft_NextMap();
+}
+
+/*
+ //QW//
+ This function has two modes:
+ 
+ 1. mdsoft_map == NULL, the array doesn't exist.
+	Load the maplist from a file named according
+	to the game mode, DM vs CTF and populate the
+	mdsoft_map array for the voting system.
+
+	maplist->active is latched true by the function
+	once the file is loaded and the mdsoft_map is
+	populated.
+
+ 2. mdsoft_map != NULL, the array exists.
+	Select a map at random from the array of maps
+	and return its entity for use at changelevel.
+
+ Return pointer to selected map, return NULL on error.
+
+ Note: uses realloc, mdsoft_map is global and must
+	be freed in ShutdownGame.
+ FIXME: find a way to use gi.TagMalloc instead.
+
+ */
 
 edict_t *mdsoft_NextMap( void )
 {
@@ -34,7 +87,7 @@ edict_t *mdsoft_NextMap( void )
 		/* Load maps.lst file */
 		if( game_dir && basedir )
 		{
-			char mapfile[256] = {0};
+			char mapfile[MAX_QPATH] = {0};
 			char *pFileName = &mapfile[0];
 
 			strcat( mapfile, basedir->string );
@@ -60,7 +113,7 @@ edict_t *mdsoft_NextMap( void )
 					temp.max      = 0;
 					temp.fVisited = 0;
 
-					element = mdsoft_read_map_entry( fpFile,
+					element = parse_line( fpFile,
 													&temp.aFile[0],
 													&temp.aName[0],
 													&temp.min,
@@ -239,13 +292,13 @@ edict_t *mdsoft_NextMap( void )
 	}
 
 	return ent;
-} /* end of mdsoft_NextMap() */
+}
 
 
 
 
 static int
-mdsoft_read_map_entry(FILE   *fpFile,
+parse_line(FILE   *fpFile,
 					  char   *pFile,
 					  char   *pName,
 					  int    *pMin,
@@ -330,5 +383,4 @@ mdsoft_read_map_entry(FILE   *fpFile,
 	} while( (c != EOF) && (c != '\n') );
 	
 	return element;
-} /* end of mdsoft_read_map_entry() */
-
+}

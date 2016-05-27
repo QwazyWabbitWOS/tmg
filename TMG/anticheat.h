@@ -18,6 +18,12 @@ char serverip[256];
 extern int botdetection;
 
 /**
+ Initialize anticheat module.
+ Call from InitGame.
+ */
+void InitAnticheat(void);
+
+/**
  Strip names of selected forbidden characters
  */
 char *ConvertName(char *name);
@@ -355,14 +361,16 @@ qboolean checkReconnectList(char *username);
 #define q2a_strchr			strchr
 #define q2a_strlen			strlen
 
-#define q2a_atoi				atoi
-#define q2a_atof				atof
+#define q2a_atoi			atoi
+#define q2a_atof			atof
 
 #define q2a_memcmp			memcmp
 #define q2a_memcpy			memcpy
 #define q2a_memmove			memmove
 #define q2a_memset			memset
+
 #define LEVELCHANGE_KEEP			(CCMD_SCSILENCE | CCMD_ZBOTDETECTED | CCMD_NITRO2PROXY | CCMD_ZBOTCLEAR | CCMD_RBOTCLEAR | CCMD_RECONNECT)
+
 extern char moddir[256];
 
 #endif //ANTICHEAT_H

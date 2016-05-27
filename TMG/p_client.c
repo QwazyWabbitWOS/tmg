@@ -1174,6 +1174,7 @@ void InitClientPersistant (gclient_t *client)
 		item = FindItem("Blaster");
 		client->pers.selected_item = ITEM_INDEX(item);
 		client->pers.inventory[client->pers.selected_item] = 2;
+
 		/********************************************
         start  ammo
 		********************************************/
@@ -2571,7 +2572,7 @@ void nodelta_think(edict_t *self)
 
 qboolean Check_tag (edict_t *ent, char *namecheck)
 {
-	if ((!strstr(clan_name->string, " ")) && (!strstr(clan_pass->string, " ") ))
+	if ((!strstr(clan_name->string, " ")) && (!strstr(clan_pass->string, " ")))
 		if ( strstr(namecheck, clan_name->string ))
 			return false;
 	return true;

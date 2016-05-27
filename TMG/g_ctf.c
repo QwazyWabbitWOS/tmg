@@ -403,14 +403,19 @@ void botGetFlag(edict_t *ent);
 
 void CTFInit(void)
 {
+	if (!ctf->value)
+		return;
+
 	if (!flag1_item)
 		flag1_item = FindItemByClassname("item_flag_team1");
 	if (!flag2_item)
 		flag2_item = FindItemByClassname("item_flag_team2");
+
 	memset(&ctfgame, 0, sizeof(ctfgame));
 	techspawn = false;
 	runespawn = 0;
 	hstime = level.time - 10;
+
 	//RAV flag check thinker
 	flagchecktime = level.time + 45;
 	redflaggone = blueflaggone = false;

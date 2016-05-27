@@ -818,10 +818,6 @@ extern	cvar_t	*auto_flag_return;
 extern	cvar_t	*tmgclock;
 extern	cvar_t	*allow_flagdrop;
 extern	cvar_t	*extrasounds;
-extern cvar_t	*map_c;
-extern cvar_t	*map_r;
-extern cvar_t	*map_o;
-extern cvar_t	*map_d;
 extern	cvar_t	*allow_vote;
 extern	cvar_t	*vote_percentage;
 extern	cvar_t	*vote_timeout;
@@ -992,21 +988,6 @@ qboolean mapvoteactive;
 int mapvotetime;
 qboolean votemapnow;
 
-
-typedef struct 
-{ 
-   int  nummaps;          // number of maps in list 
-   char mapname[256][MAX_QPATH];
-   char mapnick[256][MAX_QPATH];
-   int  currentmap;       // index to current map 
-	qboolean active;
-   int	votes[128];
-   int	currentmapvote;
-   int	nextmap;
-} maplist_t; 
-
-extern	maplist_t	*maplist;
-extern	maplist_t	*maplistBase;
 
 //
 // g_combat.c

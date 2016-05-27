@@ -75,6 +75,10 @@ extern cvar_t *ctf;
 #define CTF_GRAPPLE_SPEED					grapple_speed->value // speed of grapple in flight
 #define CTF_GRAPPLE_PULL_SPEED				grapple_pullspeed->value	// speed player is pulled at
 
+/**
+ If ctf is enabled, initialize the ctf structs and vars
+ else return.
+ */
 void CTFInit(void);
 
 //JSW
