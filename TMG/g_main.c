@@ -301,6 +301,8 @@ void ShutdownGame (void)
 //RAV
 	sl_GameEnd( &gi, level );	// StdLog - Mark Davies
 //
+	if (mdsoft_map)
+		free(mdsoft_map);
 
 	gi.FreeTags (TAG_LEVEL);
 	gi.FreeTags (TAG_GAME);

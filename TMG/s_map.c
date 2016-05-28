@@ -115,7 +115,7 @@ edict_t *mdsoft_NextMap( void )
 						MAP_ENTRY *newone;
 
 						int size = (mdsoft_map_size + 1) * sizeof(*newone);
-						newone = gi.TagMalloc(size, TAG_GAME);
+						newone = realloc(mdsoft_map, size);
 
 						if( newone )
 						{
@@ -220,7 +220,7 @@ edict_t *mdsoft_NextMap( void )
 				{
 					if( (NULL != map_d) &&
 					   ((int)map_d->value > 0 ) )
-						gi.bprintf(PRINT_HIGH, "Map could not be found\n" );
+						DbgPrintf("Map could not be found\n" );
 
 					/* Clear visited flags */
 					if( (NULL != map_o) &&
