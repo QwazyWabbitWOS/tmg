@@ -1022,9 +1022,15 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 
 void CTFDropFlagTouch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
+	// first, some limit checks on the delay allowed
+	if (dropflag_delay->value <= 0)
+		gi.cvar_set("dropflag_delay", "0.1"); //prevent instant pickup
+	if (dropflag_delay->value > 3)
+		gi.cvar_set("dropflag_delay", "3.0");
+
 	//owner (who dropped us) can't touch for prescribed time
 	if ((other == ent->owner) &&
-		(ent->timestamp > level.time - (dropflag_delay->value + 0.1)))
+		(ent->timestamp > level.time - dropflag_delay->value))
 		return;
 	ent->timestamp = level.time;
 	Touch_Item (ent, other, plane, surf);

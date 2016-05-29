@@ -441,7 +441,7 @@ void InitGame (void)
 	//	uneven_dif = gi.cvar ("uneven_dif", "2", CVAR_LATCH);
 	tmgclock = gi.cvar ("tmgclock", "24", 0);
 
-	allow_flagdrop = gi.cvar ("allow_flagdrop", "0", 0);
+	allow_flagdrop = gi.cvar ("allow_flagdrop", "1", 0);
 	dropflag_delay = gi.cvar ("dropflag_delay", "1", 0);
 	if (dropflag_delay->value < 0 || dropflag_delay->value > 3)
 		gi.cvar_set("dropflag_delay", "1");
