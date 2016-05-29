@@ -9,7 +9,7 @@
 #include "filtering.h"
 #include "hud.h"
 #include "bot.h"
-
+#include "g_ctf.h"
 
 //RAV
 #include "gslog.h"	//	StdLog - Mark Davies
@@ -226,7 +226,7 @@ void InitGame (void)
 	hook_pullspeed = gi.cvar("hook_pullspeed", "900", CVAR_SERVERINFO);
 	hook_carrierspeed = gi.cvar("hook_carrierspeed", hook_pullspeed->string, 0);
 	if (hook_carrierspeed->value == 0)
-		hook_carrierspeed->value = hook_pullspeed->value;
+		gi.cvar_set("hook_carrierspeed", hook_pullspeed->string);
 
 	hook_sky = gi.cvar("hook_sky", "1", 0);
 	hook_maxtime = gi.cvar("hook_maxtime", "5", 0);
@@ -440,12 +440,18 @@ void InitGame (void)
 	auto_flag_return = gi.cvar ("auto_flag_return", "30", 0);
 	//	uneven_dif = gi.cvar ("uneven_dif", "2", CVAR_LATCH);
 	tmgclock = gi.cvar ("tmgclock", "24", 0);
+
 	allow_flagdrop = gi.cvar ("allow_flagdrop", "0", 0);
+	dropflag_delay = gi.cvar ("dropflag_delay", "1", 0);
+	if (dropflag_delay->value < 0 || dropflag_delay->value > 3)
+		gi.cvar_set("dropflag_delay", "1");
+
 	extrasounds = gi.cvar ("extrasounds", "0", 0);
 	ctf_forcejoin = gi.cvar("ctf_forcejoin", "", 0);
 	allow_vote = gi.cvar ( "allow_vote", "0", 0);
 	vote_timeout = gi.cvar ("vote_timeout", "30", 0);
 	vote_percentage = gi.cvar ("vote_percentage", "67", 0);
+
 	cfgdir = gi.cvar ("cfgdir", "cfg", CVAR_NOSET);
 
 	modversion = gi.cvar ("modversion", MOD_VERSION, CVAR_SERVERINFO | CVAR_NOSET);

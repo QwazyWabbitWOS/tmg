@@ -40,6 +40,7 @@ typedef enum {
 } ctfgrapplestate_t;
 
 extern cvar_t *ctf;
+extern cvar_t *dropflag_delay;
 
 #define CTF_TEAM1_SKIN "ctf_r"
 #define CTF_TEAM2_SKIN "ctf_b"

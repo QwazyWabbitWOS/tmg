@@ -16,6 +16,8 @@
 #include "gslog.h"	//	StdLog - Mark Davies. Depends on level_locals_t
 
 
+cvar_t *dropflag_delay;
+
 //3ZB
 //qboolean bots_moveok ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom);
 //
@@ -1021,7 +1023,8 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 void CTFDropFlagTouch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	//owner (who dropped us) can't touch for two secs
-	if ((other == ent->owner) && (ent->timestamp > level.time - 1.0))
+	if ((other == ent->owner) &&
+		(ent->timestamp > level.time - dropflag_delay->value))
 		return;
 	ent->timestamp = level.time;
 	Touch_Item (ent, other, plane, surf);
