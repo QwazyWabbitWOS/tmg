@@ -1022,9 +1022,9 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 
 void CTFDropFlagTouch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
-	//owner (who dropped us) can't touch for two secs
+	//owner (who dropped us) can't touch for prescribed time
 	if ((other == ent->owner) &&
-		(ent->timestamp > level.time - dropflag_delay->value))
+		(ent->timestamp > level.time - (dropflag_delay->value + 0.1)))
 		return;
 	ent->timestamp = level.time;
 	Touch_Item (ent, other, plane, surf);
