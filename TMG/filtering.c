@@ -5,25 +5,14 @@
 #define TEXT_FILTER_FILE		"textfilter.cfg"
 #define DIM(a) ( sizeof(a) / sizeof(a[0]) )
 
+//RAV
+	char	*apszTextFilterStrings[1000];
+	int		nTextFilterCount;
+
+	char	*apszTextNonFilterStrings[1000];
+	int		nTextNonFilterCount;
 //
-// this structure is left intact through an entire game
-// it should be initialized at dll load time, and read/written to
-// the server.ssv file for savegames
-/*
-typedef struct
-{
-	//
-	//	...
-	//
 
-	char				  *apszTextFilterStrings[1000];
-	int					nTextFilterCount;
-
-	char				  *apszTextNonFilterStrings[1000];
-	int					nTextNonFilterCount;
-
-} game_locals_t;
-*/
 /**************************************************************************/
 
 /**
@@ -184,11 +173,11 @@ qboolean FilterText(char *pszText)
 
 	// Don't automatically increment at the end of the for() loop, otherwise
 	// multiple occurrences of a phrase will not be caught.
-	for ( i = 0; i < game.nTextNonFilterCount; )
+	for ( i = 0; i < nTextNonFilterCount; )
 	{
 		size_t nMatchLen;
 		
-		p = strstri( szBuffer, game.apszTextNonFilterStrings[i] );
+		p = strstri( szBuffer, apszTextNonFilterStrings[i] );
 
 		if ( p == NULL)
 		{
@@ -197,7 +186,7 @@ qboolean FilterText(char *pszText)
 		}
 		
 		// Got a match, so set the high bit on the characters.
-		for ( nMatchLen = strlen( game.apszTextNonFilterStrings[i] );
+		for ( nMatchLen = strlen( apszTextNonFilterStrings[i] );
 				nMatchLen > 0;
 				nMatchLen--)
 		{
@@ -212,18 +201,18 @@ qboolean FilterText(char *pszText)
 
 	// Don't automatically increment at the end of the for() loop, otherwise
 	// multiple occurrences of a phrase will not be caught.
-	for ( i = 0; i < game.nTextFilterCount; )
+	for ( i = 0; i < nTextFilterCount; )
 	{
 		size_t nMatchLen;
 		
-		p = strstri( szBuffer, game.apszTextFilterStrings[i] );
+		p = strstri( szBuffer, apszTextFilterStrings[i] );
 		
 		// Got a match?
 		if ( p != NULL)
 		{
 			// Got a match, so replace all of the matched characters with a
 			// chr(1)
-			for ( nMatchLen = strlen( game.apszTextFilterStrings[i] );
+			for ( nMatchLen = strlen( apszTextFilterStrings[i] );
 					nMatchLen > 0;
 					nMatchLen--)
 			{
@@ -238,11 +227,11 @@ qboolean FilterText(char *pszText)
 
 		// Check for skip character matches, but don't check if the filter
 		// string is only two characters or less.
-		if ( strlen( game.apszTextFilterStrings[i] ) > 2
-			&& NULL != (p = StrStrSpanNoCase( szBuffer, game.apszTextFilterStrings[i])) )
+		if ( strlen( apszTextFilterStrings[i] ) > 2
+			&& NULL != (p = StrStrSpanNoCase( szBuffer, apszTextFilterStrings[i])) )
 		{
 			// Replace matched characters with a chr(1)
-			for ( nMatchLen = strlen( game.apszTextFilterStrings[i] );
+			for ( nMatchLen = strlen( apszTextFilterStrings[i] );
 					nMatchLen > 0;
 					nMatchLen--)
 			{
@@ -319,21 +308,21 @@ static void PurgeTextFilterInfo(void)
 {
 	int i;
 
-	for ( i = 0; i < game.nTextFilterCount; i++)
+	for ( i = 0; i < nTextFilterCount; i++)
 	{
-		gi.TagFree( game.apszTextFilterStrings[i] );
-		game.apszTextFilterStrings[i] = NULL;
+		gi.TagFree( apszTextFilterStrings[i] );
+		apszTextFilterStrings[i] = NULL;
 	}
 
-	game.nTextFilterCount = 0;
+	nTextFilterCount = 0;
 
-	for ( i = 0; i < game.nTextNonFilterCount; i++)
+	for ( i = 0; i < nTextNonFilterCount; i++)
 	{
-		gi.TagFree( game.apszTextNonFilterStrings[i] );
-		game.apszTextNonFilterStrings[i] = NULL;
+		gi.TagFree( apszTextNonFilterStrings[i] );
+		apszTextNonFilterStrings[i] = NULL;
 	}
 
-	game.nTextNonFilterCount = 0;
+	nTextNonFilterCount = 0;
 }
 
 /**************************************************************************/
@@ -357,7 +346,7 @@ static int CompareStringLength(void const *a, void const *b)
 void LoadTextFilterInfo(void)
 {
 	FILE	  *f;
-	char		szFile[256];
+	char		szFile[PATH_MAX];
 	char		szLineBuffer[200];
 
 	PurgeTextFilterInfo();
@@ -400,30 +389,30 @@ void LoadTextFilterInfo(void)
 		// Is this a non-filter string?
 		if ( szLineBuffer[1] == '!')
 		{
-			game.apszTextNonFilterStrings[ game.nTextNonFilterCount ] = psz;
+			apszTextNonFilterStrings[ nTextNonFilterCount ] = psz;
 
-			Strcpyn( game.apszTextNonFilterStrings[game.nTextNonFilterCount],
+			Strcpyn( apszTextNonFilterStrings[nTextNonFilterCount],
 				szLineBuffer + 2, (int) nLength);
 
-			if (++game.nTextNonFilterCount >= DIM(game.apszTextNonFilterStrings))
+			if (++nTextNonFilterCount >= DIM(apszTextNonFilterStrings))
 			{
 				safe_cprintf( NULL, PRINT_HIGH,
 					"Could not store more than %d text non-filter strings.\n", 
-					DIM(game.apszTextNonFilterStrings) );
+					DIM(apszTextNonFilterStrings) );
 				break;
 			}
 		}
 		else
 		{
-			game.apszTextFilterStrings[ game.nTextFilterCount ] = psz;
+			apszTextFilterStrings[ nTextFilterCount ] = psz;
 
-			Strcpyn( game.apszTextFilterStrings[game.nTextFilterCount], szLineBuffer + 1, (int) nLength);
+			Strcpyn( apszTextFilterStrings[nTextFilterCount], szLineBuffer + 1, (int) nLength);
 
-			if ( ++game.nTextFilterCount >= DIM(game.apszTextFilterStrings) )
+			if ( ++nTextFilterCount >= DIM(apszTextFilterStrings) )
 			{
 				safe_cprintf( NULL, PRINT_HIGH,
 					"Could not store more than %d text filter strings.\n", 
-					DIM(game.apszTextFilterStrings) );
+					DIM(apszTextFilterStrings) );
 				break;
 			}
 		}
@@ -432,11 +421,9 @@ void LoadTextFilterInfo(void)
 	fclose( f);
 
 	// Sort the strings by length so maximal matches will happen first.
-	qsort( game.apszTextFilterStrings, game.nTextFilterCount,
-		sizeof(game.apszTextFilterStrings[0]), CompareStringLength);
+	qsort( apszTextFilterStrings, nTextFilterCount,
+		sizeof(apszTextFilterStrings[0]), CompareStringLength);
 
-	qsort( game.apszTextNonFilterStrings, game.nTextNonFilterCount,
-		sizeof(game.apszTextNonFilterStrings[0]), CompareStringLength);
+	qsort( apszTextNonFilterStrings, nTextNonFilterCount,
+		sizeof(apszTextNonFilterStrings[0]), CompareStringLength);
 }
-
-

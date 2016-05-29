@@ -332,14 +332,7 @@ typedef struct
 	int			num_items;
 
 	qboolean	autosaved;
-//RAV
-	char				  *apszTextFilterStrings[1000];
-	int					nTextFilterCount;
 
-	char				  *apszTextNonFilterStrings[1000];
-	int					nTextNonFilterCount;
-//
-//
 } game_locals_t;
 
 

@@ -1039,7 +1039,9 @@ void CTFDropFlagTouch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t 
 
 static void CTFDropFlagThink(edict_t *ent)
 {
-	if ((ent->timestamp + CTF_AUTO_FLAG_RETURN_TIMEOUT < level.time) || level.intermissiontime || ((mapvote->value) && (level.time+(int)menutime->value-1 < votetime)))//raven
+	if ((ent->timestamp + CTF_AUTO_FLAG_RETURN_TIMEOUT < level.time) || 
+		level.intermissiontime || 
+		((mapvote->value) && (level.time+(int)menutime->value-1 < votetime)))//raven
 	{
 		// auto return the flag
 		// reset flag will remove ourselves
