@@ -405,18 +405,19 @@ void ClientEndServerFrames (void)
 
 	// calc the player views now that all pushing
 	// and damage has been added
-	for (i=0 ; i<maxclients->value ; i++)
+	for (i = 0 ; i < maxclients->value ; i++)
 	{
 		ent = g_edicts + 1 + i;
 		if (!ent->inuse || !ent->client)
 			continue;
-// Safety check...
-  if (!G_EntExists(ent))
-	  continue;
-	if(!(ent->svflags & SVF_MONSTER))
-		ClientEndServerFrame (ent);
-	}
 
+		// Safety check...
+		if (!G_EntExists(ent))
+			continue;
+
+		if(!(ent->svflags & SVF_MONSTER))
+			ClientEndServerFrame (ent);
+	}
 }
 
 /*
@@ -448,24 +449,25 @@ void EndDMLevel (void)
 		BeginIntermission (ent);
 	}
 
-//RAV new map
-	if (mapvote->value && !ent) 
+	if (mapvote->value && !ent)
 	{
-		//gi.dprintf ("Z. map to be voted on is %s\n", maplist.mapnames[maplist.currentmapvote]);
+		DbgPrintf ("Z. map to be voted on is %s\n",
+				   maplist->mapname[maplist->currentmapvote]);
+
 		ent = G_Spawn ();
 		ent->classname = "target_changelevel";
 		MaplistNextMap(ent);
 		if(mapscrewed)
 			ent = NULL;
-//		if (developer->value)
-//			gi.dprintf("6 match_state_end = %f, level.time = %f, votetime = %f\n", match_state_end, level.time, votetime);
+
+		DbgPrintf("6 match_state_end = %f, level.time = %f, votetime = %f\n",
+				  match_state_end, level.time, votetime);
+
 		votetime = 0;
 		if (ent != NULL)
 			BeginIntermission (ent);
 	}
 
-
-//
     /* New code - START - mdavies */
     if( !ent )
     {
@@ -501,9 +503,11 @@ void EndDMLevel (void)
 
 //PONKO
 	if(use_bots->value)
-	Load_BotInfo();
+		Load_BotInfo();
 //PONKO
 }
+
+
 //RAV
 /*
 =================
@@ -516,10 +520,11 @@ void OPEndDMLevel (int mapindex, edict_t *cl)
 {
 	edict_t		*ent;
 
-	my_bprintf (PRINT_CHAT, "OP %s is switching to map '%s' - '%s'\n", 
-		cl->client->pers.netname, 
-		maplist->mapname[mapindex], 
-		maplist->mapnick[mapindex]);
+	my_bprintf (PRINT_CHAT,
+				"OP %s is switching to map '%s' - '%s'\n",
+				cl->client->pers.netname,
+				maplist->mapname[mapindex],
+				maplist->mapnick[mapindex]);
 
 	ent = G_Spawn ();
 	ent->classname = "target_changelevel";
@@ -726,6 +731,7 @@ void G_RunFrame (void)
 	//RAV
 	//raven run level timer
 	timeleft();
+
 	//
 	// treat each object in turn
 	// even the world gets a chance to think
@@ -780,6 +786,7 @@ void G_RunFrame (void)
 	
 	//RAV
 	TimerThink ();
+
 	if (level.intermissiontime)
 	{ //set up highscores display
 		//fix for highscores
@@ -811,10 +818,12 @@ void G_RunFrame (void)
 			hs_show = false;
 		}
 	}
+
 	if((mapvote->value) && (level.time+(int)menutime->value-1 < votetime) && !locked_teams && (maplist->nextmap == -1))
 	{
-//		if (developer->value)
-//			gi.dprintf("3 match_state_end = %f, level.time = %f, votetime = %f\n", match_state_end, level.time, votetime);
+		DbgPrintf("3 match_state_end = %f, level.time = %f, votetime = %f\n",
+				  match_state_end, level.time, votetime);
+
 		//match_state = STATE_VOTING;
 		level.warmup = true;
 		//locked_teams  = true;
@@ -822,15 +831,16 @@ void G_RunFrame (void)
 		for (i=0 ; i<maxclients->value ; i++)
 		{
 			ent = g_edicts + 1 + i;
-			if (ent->bot_client)
+			if (ent && ent->bot_client)
 			{
 				//remove from bot count !
 				NumBotsInGame --;
 				//disconnect bot
 				ClientDisconnect(ent);
 			}
-			if (!ent->inuse)
+			if (ent && !ent->inuse)
 				continue;
+
 			ent->client->pers.vote_times = 0;// set all voting to 0
 			ent->client->newweapon = NULL;
 			ChangeWeapon (ent);

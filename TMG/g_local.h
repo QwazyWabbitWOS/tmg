@@ -1015,6 +1015,40 @@ void M_CheckGround (edict_t *ent);
 //
 // g_misc.c
 //
+void SP_func_areaportal (edict_t *ent);
+void SP_path_corner (edict_t *self);
+void SP_point_combat (edict_t *self);
+void SP_viewthing(edict_t *ent);
+void SP_info_null (edict_t *self);
+void SP_info_notnull (edict_t *self);
+void SP_light (edict_t *self);
+void SP_func_wall (edict_t *self);void SP_func_object (edict_t *self);
+void SP_func_explosive (edict_t *self);
+void SP_misc_explobox (edict_t *self);
+void SP_misc_blackhole (edict_t *ent);
+void SP_misc_eastertank (edict_t *ent);
+void SP_misc_easterchick (edict_t *ent);
+void SP_misc_easterchick2 (edict_t *ent);
+void commander_body_use (edict_t *self, edict_t *other, edict_t *activator);
+void commander_body_drop (edict_t *self);
+void SP_misc_banner (edict_t *ent);
+void SP_misc_deadsoldier (edict_t *ent);
+void SP_misc_viper (edict_t *ent);
+void SP_misc_bigviper (edict_t *ent);
+void SP_misc_viper_bomb (edict_t *self);
+void SP_misc_strogg_ship (edict_t *ent);
+void SP_misc_satellite_dish (edict_t *ent);
+void SP_light_mine1 (edict_t *ent);
+void SP_light_mine2 (edict_t *ent);
+void SP_misc_gib_arm (edict_t *ent);
+void SP_misc_gib_leg (edict_t *ent);
+void SP_misc_gib_head (edict_t *ent);
+void SP_target_character (edict_t *self);
+void SP_target_string (edict_t *self);
+void SP_func_clock (edict_t *self);
+void SP_misc_spawn_point_phase_out (edict_t *ent);
+void SP_misc_phase_in_spawn_point (edict_t *ent);
+void SP_misc_teleporter (edict_t *ent);
 void ThrowHead (edict_t *self, char *gibname, int damage, int type);
 void ThrowClientHead (edict_t *self, int damage);
 void ThrowGib (edict_t *self, char *gibname, int damage, int type);
@@ -1110,6 +1144,7 @@ void M_ChangeYaw (edict_t *ent);
 //
 void G_RunEntity (edict_t *ent);
 void SV_AddGravity (edict_t *ent);
+void SV_AddRotationalFriction (edict_t *ent);
 
 //
 // g_main.c

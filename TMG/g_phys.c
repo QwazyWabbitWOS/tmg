@@ -1001,8 +1001,7 @@ FIXME: is this true?
 #define sv_friction			6
 #define sv_waterfriction	1
 
-static void
-SV_AddRotationalFriction (edict_t *ent)
+void SV_AddRotationalFriction (edict_t *ent)
 {
 	int		n;
 	float	adjustment;

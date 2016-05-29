@@ -38,7 +38,7 @@ void SP_func_wall (edict_t *self);
 void SP_func_object (edict_t *self);
 void SP_func_explosive (edict_t *self);
 //void SP_func_timer (edict_t *self);
-void SP_func_areaportal (edict_t *ent);
+extern void SP_func_areaportal (edict_t *ent);
 void SP_func_clock (edict_t *ent);
 //void SP_func_killbox (edict_t *ent);
 

@@ -18,7 +18,8 @@ qboolean visible (edict_t *self, edict_t *other)
 	spot1[2] += self->viewheight;
 	VectorCopy (other->s.origin, spot2);
 	spot2[2] += other->viewheight;
-	trace = gi.trace (spot1, vec3_origin, vec3_origin, spot2, self, MASK_OPAQUE);
+	trace = gi.trace (spot1, vec3_origin,
+					  vec3_origin, spot2, self, MASK_OPAQUE);
 	
 	if (trace.fraction == 1.0)
 		return true;
@@ -48,7 +49,8 @@ static void check_dodge (edict_t *self, vec3_t start, vec3_t dir, int speed)
 
 	VectorMA (start, 8192, dir, end);
 	tr = gi.trace (start, vn, vx, end, self, MASK_SHOT);
-	if ((tr.ent) && tr.ent->client && Q_stricmp (tr.ent->classname, "player") == 0 && (tr.ent->health > 0))
+	if ((tr.ent) && tr.ent->client &&
+		Q_stricmp (tr.ent->classname, "player") == 0 && (tr.ent->health > 0))
 	{
 //		VectorCopy(tr.endpos,tr.ent->client->zc.aimedpos);
 //		VectorSubtract (tr.endpos, start, v);
@@ -114,7 +116,8 @@ qboolean fire_hit (edict_t *self, vec3_t aim, int damage, int kick)
 	VectorSubtract (point, self->enemy->s.origin, dir);
 
 	// do the damage
-	T_Damage (tr.ent, self, self, dir, point, vec3_origin, damage, kick/2, DAMAGE_NO_KNOCKBACK, MOD_HIT);
+	T_Damage (tr.ent, self, self, dir, point,
+			  vec3_origin, damage, kick/2, DAMAGE_NO_KNOCKBACK, MOD_HIT);
 
 	if (!(tr.ent->svflags & SVF_MONSTER) && (!tr.ent->client))
 		return false;
@@ -137,7 +140,15 @@ fire_lead
 This is an internal support routine used for bullet/pellet based weapons.
 =================
 */
-static void fire_lead (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int te_impact, int hspread, int vspread, int mod)
+static void fire_lead (edict_t *self,
+					   vec3_t start,
+					   vec3_t aimdir,
+					   int damage,
+					   int kick,
+					   int te_impact,
+					   int hspread,
+					   int vspread,
+					   int mod)
 {
 	trace_t		tr;
 	vec3_t		dir;
@@ -230,7 +241,9 @@ static void fire_lead (edict_t *self, vec3_t start, vec3_t aimdir, int damage, i
 		{
 			if (tr.ent->takedamage)
 			{
-				T_Damage (tr.ent, self, self, aimdir, tr.endpos, tr.plane.normal, damage, kick, DAMAGE_BULLET, mod);
+				T_Damage (tr.ent, self, self, aimdir,
+						  tr.endpos, tr.plane.normal,
+						  damage, kick, DAMAGE_BULLET, mod);
 			}
 			else
 			{
@@ -282,9 +295,17 @@ Fires a single round.  Used for machinegun and chaingun.  Would be fine for
 pistols, rifles, etc....
 =================
 */
-void fire_bullet (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int mod)
+void fire_bullet (edict_t *self,
+				  vec3_t start,
+				  vec3_t aimdir,
+				  int damage,
+				  int kick,
+				  int hspread,
+				  int vspread,
+				  int mod)
 {
-	fire_lead (self, start, aimdir, damage, kick, TE_GUNSHOT, hspread, vspread, mod);
+	fire_lead (self, start, aimdir, damage,
+			   kick, TE_GUNSHOT, hspread, vspread, mod);
 }
 
 
@@ -295,12 +316,21 @@ fire_shotgun
 Shoots shotgun pellets.  Used by shotgun and super shotgun.
 =================
 */
-void fire_shotgun (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int count, int mod)
+void fire_shotgun (edict_t *self,
+				   vec3_t start,
+				   vec3_t aimdir,
+				   int damage,
+				   int kick,
+				   int hspread,
+				   int vspread,
+				   int count,
+				   int mod)
 {
 	int		i;
 
 	for (i = 0; i < count; i++)
-		fire_lead (self, start, aimdir, damage, kick, TE_SHOTGUN, hspread, vspread, mod);
+		fire_lead (self, start, aimdir, damage,
+				   kick, TE_SHOTGUN, hspread, vspread, mod);
 }
 
 
@@ -557,16 +587,18 @@ void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int 
 	grenade->s.modelindex = gi.modelindex ("models/objects/grenade2/tris.md2");
 	grenade->owner = self;
 	grenade->touch = Grenade_Touch;
-/*	if (allow_lasermines->value)
+
+	/*	if (allow_lasermines->value)
 	{
-		if (lasermine_timeout->value > 0 && lasermine_timeout->value < 4)
-			lasermine_timeout->value = 4;
-		if (lasermine_timeout->value > 0)
+	if (lasermine_timeout->value > 0 && lasermine_timeout->value < 4)
+			gi.cvar_set(")lasermine_timeout", "4");
+	if (lasermine_timeout->value > 0)
 			grenade->nextthink = level.time + lasermine_timeout->value;
 	}
 	else
 	{
-*/		grenade->nextthink = level.time + timer;
+	 */
+	grenade->nextthink = level.time + timer;
 //	}
 	grenade->think = Grenade_Explode;
 	grenade->dmg = damage;
@@ -593,7 +625,9 @@ void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int 
 			Grenade_Explode (grenade);
 		else
 		{
-			gi.sound (self, CHAN_WEAPON, gi.soundindex ("weapons/hgrent1a.wav"), 1, ATTN_NORM, 0);
+			gi.sound (self, CHAN_WEAPON,
+					  gi.soundindex ("weapons/hgrent1a.wav"),
+					  1, ATTN_NORM, 0);
 			gi.linkentity (grenade);
 		}
 //	}
