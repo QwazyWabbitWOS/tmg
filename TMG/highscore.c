@@ -1,6 +1,7 @@
 ///<highscore.c>>
 
 #include "g_local.h"
+#include "highscore.h"
 
 #define SCORESTOKEEP 10
 
