@@ -10,6 +10,7 @@
 #include "hud.h"
 #include "bot.h"
 #include "g_ctf.h"
+#include "highscore.h"
 
 //RAV
 #include "gslog.h"	//	StdLog - Mark Davies
@@ -274,7 +275,8 @@ void InitGame (void)
 	flashlight = gi.cvar ("flashlight", "1", CVAR_LATCH);
 	lights = gi.cvar ("lights", "1", CVAR_LATCH);
 	lights_out = gi.cvar ("lights_out", "1", CVAR_LATCH);
-	highscores = gi.cvar ("highscores", "1" ,CVAR_LATCH);
+
+	InitHighScores();
 
 	mapvote = gi.cvar("mapvote", "1", 0);
 
@@ -493,7 +495,6 @@ void InitGame (void)
 	//RAV
 	ServerInit (true);
 
-	hsran = false;
 	show_hs = false;
 	hs_show = true; //JSW - makes highscores display on first map
 	locked_teams = false;

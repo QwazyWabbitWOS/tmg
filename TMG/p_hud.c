@@ -4,7 +4,7 @@
 #include "hud.h"
 #include "p_client.h"
 #include "runes.h"
-
+#include "highscore.h"
 
 /*
 ======================================================================
@@ -361,7 +361,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 	
 	//Highscores
 	FILE    *motd_file;
-	char    filename[256];
+	char    filename[MAX_QPATH];
 	char    line[80];
 	
 	p =  sprintf(filename, "./");
@@ -687,29 +687,36 @@ void DeathmatchScoreboard (edict_t *ent)
 }
 
 
-/*
-==================
-Cmd_Score_f
-
-Display the scoreboard
-==================
-*/
+/* 
+ Interlocked with Cmd_HighScores_f.
+ Toggle scoreboard on/off on command.
+ If highscores is up, change to scoreboard
+ but toggle off if commanded again.
+ */
 void Cmd_Score_f (edict_t *ent)
 {
 	ent->client->showinventory = false;
 	ent->client->showhelp = false;
 
-//RAV
-if (ent->client->resp.menu_time == level.framenum)
-return; // do not update twice prevent netchan bug, overflows
+	// if high scores are up, flip to scoreboard
+	if (ent->client->showhighscores)
+	{
+		ent->client->showscores = false;
+		ent->client->showhighscores = false;
+	}
 
-ent->client->resp.menu_time = level.framenum+1;
-//
+	//RAV //QW// this block may be obsolete on r1q2 server
+	// do not update twice prevent netchan bug, overflows
+	if (ent->client->resp.menu_time == level.framenum)
+		return; 
 
-//ZOID
+	ent->client->resp.menu_time = level.framenum + 1;
+	//
+
+	//ZOID
 	if (ent->client->menu)
 		PMenu_Close(ent);
-//ZOID
+	//ZOID
 
 	if (!deathmatch->value && !coop->value)
 		return;
@@ -719,11 +726,53 @@ ent->client->resp.menu_time = level.framenum+1;
 		ent->client->showscores = false;
 		return;
 	}
-	
+
 	ent->client->showscores = true;
 	DeathmatchScoreboard (ent);
 }
 
+/* 
+ Interlocked with Cmd_Score_f.
+ Toggle highscores on/off on command.
+ If scoreboard is up, change to highscores
+ but toggle off if commanded again.
+ */
+void Cmd_HighScore_f (edict_t *ent)
+{
+	ent->client->showinventory = false;
+	ent->client->showhelp = false;
+	
+	if (ent->client->showhighscores)
+	{
+		ent->client->showscores = false;
+		ent->client->showhighscores = true;
+	}
+
+	//RAV //QW// this block may be obsolete on r1q2 server
+	// do not update twice prevent netchan bug, overflows
+	if (ent->client->resp.menu_time == level.framenum)
+		return; 
+	
+	ent->client->resp.menu_time = level.framenum + 1;
+	//
+	
+	if (ent->client->menu)
+		PMenu_Close(ent);
+
+	if (!deathmatch->value && !coop->value)
+		return;
+
+	if (ent->client->showhighscores)
+	{
+		ent->client->showscores = false;
+		ent->client->showhighscores = false;
+		return;
+	}
+
+	ent->client->showscores = true;
+	ent->client->showhighscores = true;
+	DeathmatchScoreboard (ent);
+}
 
 /*
 ==================
@@ -788,7 +837,8 @@ void Cmd_Help_f (edict_t *ent)
 	ent->client->showinventory = false;
 	ent->client->showscores = false;
 
-	if (ent->client->showhelp && (ent->client->resp.game_helpchanged == game.helpchanged))
+	if (ent->client->showhelp && 
+		(ent->client->resp.game_helpchanged == game.helpchanged))
 	{
 		ent->client->showhelp = false;
 		return;

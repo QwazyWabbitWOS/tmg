@@ -14,7 +14,7 @@
 #include "runes.h"
 #include "stdlog.h"	//	StdLog - Mark Davies
 #include "gslog.h"	//	StdLog - Mark Davies. Depends on level_locals_t
-
+#include "highscore.h"
 
 cvar_t *dropflag_delay;
 
@@ -2381,49 +2381,15 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 	gclient_t	*cl;
 	edict_t		*cl_ent;
 	int team;
-	int maxsize = 1000;
+	int maxsize = 1400;
 
-	//RAV Highscores
-	FILE    *motd_file;
-	char    filename[32];
-	char    line[80];
-	int		stringlength;
-
-	i =  sprintf(filename, "./");
-	i += sprintf(filename + i, "%s", game_dir->string);
-	i += sprintf(filename + i, "/hs/%s_hs.txt", level.mapname);
-	if ((highscores->value)	&& (show_hs == true) &&	(motd_file = fopen(filename, "r")))
+	if (highscores->value && ent->client->showhighscores)
 	{
-		string[0] = 0;
-		stringlength = strlen(string);
-		i = 0;
-		while ( fgets(line, 80, motd_file) )
-		{
-			//JSW - if the highscore contains today's date, make it green
-			if (strstr (line, sys_date))
-				convert_string(line, 0, 127, 128, line); // white -> green
-			//end
-			Com_sprintf (entry, sizeof(entry), "xv 2 yv %i string \"%s\" ",	i*8 + 24, line);
-			j = strlen(entry);
-			if (stringlength + j > 1024)
-				break;
-			strcpy (string + stringlength, entry);
-			stringlength += j;
-			i++;
-		}
-
-		// be good now ! ... close the file
-		fclose(motd_file);
-		j = strlen(entry);
-		if (stringlength + j < 1024)
-		{
-			strcpy (string + stringlength, entry);
-			stringlength += j;
-		}
+		LoadHighScores(); // the message is fully formed
+		strcpy(string, hscores);
 	}
 	else
 	{
-		//end highscores
 		// sort the clients by team and score
 		total[0] = total[1] = 0;
 		last[0] = last[1] = 0;
@@ -2599,7 +2565,13 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 		if (total[1] - last[1] > 1) // couldn't fit everyone
 			sprintf(string + strlen(string), "xv 168 yv %d string \"..and %d more\" ",
 			42 + (last[1]+1)*8, total[1] - last[1] - 1);
-	}//highscores
+	}
+
+	if (strlen(string) > maxsize - 30) // this should never happen
+	{
+		gi.dprintf("Warning: scoreboard string neared or exceeded max length\nDump:\n%s\n---\n", string);
+		DbgPrintf("Scoreboard size: %d %f\n", strlen(string), level.time);
+	}
 	gi.WriteByte (svc_layout);
 	gi.WriteString (string);
 }

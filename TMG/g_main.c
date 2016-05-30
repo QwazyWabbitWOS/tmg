@@ -13,7 +13,7 @@
 #include "runes.h"
 #include "stdlog.h"	//	StdLog - Mark Davies
 #include "gslog.h"	//	StdLog - Mark Davies. Depends on level_locals_t
-
+#include "highscore.h"
 
 game_locals_t	game;
 level_locals_t	level;
@@ -117,7 +117,6 @@ cvar_t  *railkick;
 cvar_t  *flashlight;
 cvar_t  *lights;//do not document this one
 cvar_t  *lights_out;
-cvar_t  *highscores;
 
 cvar_t	*mapvote;
 cvar_t	*map_randomize;
@@ -655,7 +654,6 @@ void ExitLevel (void)
 	}
 
 //RAV
-		hsran = false;
 		show_hs = false;
 		hs_show = true;
 //
@@ -792,7 +790,7 @@ void G_RunFrame (void)
 		//fix for highscores
 		if(level.time == level.intermissiontime + 7.0)
 		{
-			highscore(); // first add players to the highscores list
+			SaveHighScores(); // first add players to the highscores list
 			LoadHighScores(); // then load the new list.
 		}
 		if ((level.time >= level.intermissiontime + 7.1) && (hs_show == true))

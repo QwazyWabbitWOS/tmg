@@ -9,6 +9,7 @@
 #include "bot.h"
 #include "stdlog.h"	//	StdLog - Mark Davies
 #include "gslog.h"	//	StdLog - Mark Davies. Depends on level_locals_t
+#include "highscore.h"
 
 /**
  Entity name and corresponding spawn function
@@ -1087,7 +1088,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	mapvotefilled = false;
 
 	if(highscores->value)
-	 LoadHighScores();
+		LoadHighScores();
 //ponko
 
  if(use_bots->value){

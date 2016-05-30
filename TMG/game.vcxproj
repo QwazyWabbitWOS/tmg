@@ -330,6 +330,7 @@
     <ClInclude Include="g_local.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gslog.h" />
+    <ClInclude Include="highscore.h" />
     <ClInclude Include="hud.h" />
     <ClInclude Include="m_player.h" />
     <ClInclude Include="performance.h" />

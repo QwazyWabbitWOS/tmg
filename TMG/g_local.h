@@ -38,7 +38,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.11"
+#define MOD_VERSION "0.2.12"
 #define MOD "TMG_MOD"
 // protocol bytes that can be directly added to messages
 #define	svc_muzzleflash		1
@@ -640,8 +640,6 @@ extern	cvar_t  *railkick;
 extern	cvar_t  *flashlight;
 extern	cvar_t  *lights;//do not document this one
 extern	cvar_t  *lights_out;
-
-extern	cvar_t  *highscores;
 
 extern	cvar_t	*mapvote;
 extern	cvar_t	*map_randomize;
@@ -1353,6 +1351,7 @@ struct gclient_s
 	qboolean	showinventory;		// set layout stat
 	qboolean	showhelp;
 	qboolean	showhelpicon;
+	qboolean	showhighscores;
 
 	int			ammo_index;
 
@@ -1668,12 +1667,6 @@ float   flastime;//flashlight timer (stops laggers)
 //RAV
 void FL_think (edict_t *self);
 void FL_make(edict_t *self);
-void LoadHighScores (void);
-void highscore (void);
-char hscores [1400];
-qboolean hsran;//RAV highscores
-qboolean show_hs;
-qboolean  hs_show;
 //RUNES
 vec3_t v_forward;
 vec3_t v_right;

@@ -3,7 +3,17 @@
 #include "g_local.h"
 
 #define SCORESTOKEEP 10
-    
+
+cvar_t  *highscores;
+
+// global 
+char hscores [1000];
+
+qboolean show_hs;
+qboolean hs_show;
+
+static int MP_Sort(const void *a, const void *b);
+
 typedef struct {
 	char	netname[16];
 	int		score;
@@ -13,32 +23,34 @@ typedef struct {
 // room to hold max # of players
 HS_STRUCT g_TopScores[SCORESTOKEEP];
 
-// used for the qsort algorithm
-static int MP_Sort(const void *a, const void *b)
+void InitHighScores (void)
 {
-	return (((HS_STRUCT *)b)->score - ((HS_STRUCT *)a)->score);
+	highscores = gi.cvar ("highscores", "1" , CVAR_LATCH);
 }
 
-void highscore (void)
+void SaveHighScores (void)
 {
-	int	i;
-	int	count = 0;
-	edict_t  *cl_ent;
-	FILE     *HS_file;
-	char     filename[256], filename2[256];
+	int		i;
+	edict_t	*cl_ent;
+	FILE	*HS_file;
+	char	binfile[MAX_QPATH];
+	char	txtfile[MAX_QPATH];
 	char	string[128];
+	int		count = 0;
 	size_t	cnt = 0;
 
-	i =  sprintf(filename, "./");
-	i += sprintf(filename + i, "%s/%s", game_dir->string, cfgdir->string);
-	i += sprintf(filename + i, "/hs/%s_hs.bin", level.mapname);
-	i =  sprintf(filename2, "./");
-	i += sprintf(filename2 + i, "%s/%s", game_dir->string, cfgdir->string);
-	i += sprintf(filename2 + i, "/hs/%s_hs.txt", level.mapname);
+	i =  sprintf(binfile, "./");
+	i += sprintf(binfile + i, "%s/%s", game_dir->string, cfgdir->string);
+	i += sprintf(binfile + i, "/hs/%s_hs.bin", level.mapname);
 	
-	// is the high score file for this map already loaded?
-	// no - load it
-	if((HS_file = fopen(filename, "rb")))
+	i =  sprintf(txtfile, "./");
+	i += sprintf(txtfile + i, "%s/%s", game_dir->string, cfgdir->string);
+	i += sprintf(txtfile + i, "/hs/%s_hs.txt", level.mapname);
+	
+	DbgPrintf("Opening %s for reading\n", binfile);
+	HS_file = fopen(binfile, "rb");
+	
+	if(HS_file)
 	{
 		cnt = fread(g_TopScores, sizeof(g_TopScores[0]) * SCORESTOKEEP, 1, HS_file);
 		fclose(HS_file);
@@ -66,7 +78,7 @@ void highscore (void)
 	{
 		// if it doesnt exist, create it with the top current players in it
 		memset(g_TopScores, 0, sizeof(g_TopScores));
-		count=0;
+		count = 0;
 		for (i = 0 ; i < maxclients->value; i++)
 		{
 			cl_ent = g_edicts + 1 + i;
@@ -86,26 +98,36 @@ void highscore (void)
 	}
 
 	// write the high score HS_file
-	HS_file = fopen(filename, "wb");
-	if (HS_file != NULL)
+	HS_file = fopen(binfile, "wb");
+	if (HS_file)
 	{
 		fwrite(g_TopScores, sizeof(g_TopScores[0]), SCORESTOKEEP, HS_file);
 		fclose(HS_file);
 	}
-
-	// print top scores to a readable file
-	HS_file = fopen(filename2, "wt");
-	if (HS_file != NULL)
+	else
+	{
+		DbgPrintf("Unable to write %s\n", binfile);
+	}
+	
+	// print top scores to a man-readable file
+	DbgPrintf("Opening %s for writing\n", txtfile);
+	HS_file = fopen(txtfile, "wt");
+	if (HS_file)
 	{
 		sprintf(string, "    Top %d Scores for %s\n\n", SCORESTOKEEP, level.mapname);
-		convert_string(string, 0, 127, 128, string);
+		highlight_text(string, string);
 		//fprintf(HS_file,"    Top %d Scores for %s\n\n", SCORESTOKEEP, level.mapname);
 		fprintf(HS_file, "%s", string);
 		for (i = 0; i < SCORESTOKEEP; i++)
-			fprintf(HS_file, "  %2d - %8s - %i - %-12.12s\n", i+1, g_TopScores[i].date , g_TopScores[i].score, g_TopScores[i].netname);
+			fprintf(HS_file, "  %2d - %8s - %i - %-12.12s\n", i + 1, 
+					g_TopScores[i].date , g_TopScores[i].score, g_TopScores[i].netname);
 		fprintf(HS_file,"\n     %s  %s\n", MOD, MOD_VERSION);
 		fprintf(HS_file,"              www.railwarz.com");
 		fclose(HS_file);
+	}
+	else
+	{
+		DbgPrintf("Unable to write %s\n", txtfile);
 	}
 }
 
@@ -117,19 +139,25 @@ void LoadHighScores (void)
 	int		i;
 	size_t	j;
 	FILE    *motd_file;
-	char    filename[256];
+	char    filename[MAX_QPATH];
 	char    line[80];
-	
+
 	i =  sprintf(filename, "./");
 	i += sprintf(filename + i, "%s/%s", game_dir->string, cfgdir->string);
 	i += sprintf(filename + i, "/hs/%s_hs.txt", level.mapname);
+	
 	if (!(motd_file = fopen(filename, "r")))
+	{
+		DbgPrintf("Unable to open motd_file using %s\n", filename);
 		return;
+	}
 	string[0] = 0;
 	stringlength = strlen(string);
 	i = 0;
 	while ( fgets(line, 80, motd_file) )
 	{
+		if (strstr (line, sys_date))
+			highlight_text(line, NULL); // white -> green
 		Com_sprintf (entry, sizeof(entry), "xv 2 yv %i string \"%s\" ", i*8 + 24, line);
 		j = strlen(entry);
 		if (stringlength + j > 1400)
@@ -138,7 +166,7 @@ void LoadHighScores (void)
 		stringlength += j;
 		i++;
 	}
-	// be good now ! ... close the file
+
 	fclose(motd_file);
 	j = strlen(entry);
 	if (stringlength + j < 1400)
@@ -149,3 +177,8 @@ void LoadHighScores (void)
 	Com_sprintf (hscores, sizeof(hscores), string);
 }
 
+// used for the qsort algorithm
+static int MP_Sort(const void *a, const void *b)
+{
+	return (((HS_STRUCT *)b)->score - ((HS_STRUCT *)a)->score);
+}
