@@ -4214,6 +4214,10 @@ if (!client->buttons &&
  	if (ent->client->chase_target != NULL)
     UpdateChaseCam(ent);
 //ZOID
+	if(ent->client->resp.shots != 0)
+	{
+			ent->client->resp.eff = 100 * ent->client->resp.frags / ent->client->resp.shots;
+	}
 
 	// =========================================================
 	// =========================================================

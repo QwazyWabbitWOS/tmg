@@ -1658,7 +1658,11 @@ if( ent->client->pers.pl_state < PL_PLAYING || ent->client->resp.spectator
 		damage *= 2;
 		kick *= 2;
 	}
-//DB
+
+	//QW// Count shots
+	ent->client->resp.shots++;
+
+	//DB
 	//RAV
 	if(voosh->value)
 	{

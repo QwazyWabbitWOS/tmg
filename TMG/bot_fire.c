@@ -455,13 +455,13 @@ qboolean B_UseBfg(edict_t *ent,edict_t *target,int enewep,float aim,float distan
 			if(k /*&& random() < 0.8*/)
 			{
 				client->buttons |= BUTTON_ATTACK;
-				zc->battlemode |= FIRE_STAYFIRE;			//ƒ‚[ƒh‘JˆÚ
+				zc->battlemode |= FIRE_STAYFIRE;
 				zc->battlecount = 8 + (int)(10 * random());
 				trace_priority = TRP_ALLKEEP;
 				return true;
 			}
 		}
-		//”š”­‰ñ”ð
+		
 		else if((FFlg[skill] & FIRE_EXPAVOID)
 				&& distance < 300 /*&& random() < 0.5 */
 				&& Bot_traceS(ent,target))
@@ -632,6 +632,7 @@ qboolean B_UseRailgun(edict_t *ent,edict_t *target,int enewep,float aim,float di
 		Get_AimAngle(ent,aim,distance,mywep);
 		client->buttons |= BUTTON_ATTACK;
 		if(trace_priority < TRP_ANGLEKEEP) trace_priority = TRP_ANGLEKEEP;
+		ent->client->resp.shots++; //QW// Count shots
 		return true;
 	}
 	return false;

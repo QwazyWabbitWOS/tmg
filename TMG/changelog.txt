@@ -42,8 +42,9 @@ is present and debug builds or prints to server console and log file on
 non-Windows systems if developer cvar is set.
 Bumped game version to 2.12.
 
-
-
+Added efficiency stats to HUD in player and chase modes.
+Eff. is displayed as percentage and also as ratio of frags/shots fired.
+Fixed match countdown timer format so it's always double digits.
 
 
 Completed

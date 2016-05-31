@@ -1304,7 +1304,9 @@ typedef struct
 	int			game_helpchanged;
 	int			helpchanged;
 //RAV
-	int			frags;
+	int			frags;	// kills by weapons fire
+	int			shots;	// shots fired
+	int			eff;	// frags/shots * 100
 	int			suicide;
 	int			deaths;
 	int			speed_cheat;

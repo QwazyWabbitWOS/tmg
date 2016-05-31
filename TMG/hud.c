@@ -119,7 +119,7 @@ void timeleft(void)
 	}
 	else
 	{
-		Com_sprintf (time_left2, sizeof(time_left2), "%0i:%0i", min, sec);
+		Com_sprintf (time_left2, sizeof(time_left2), "%02i:%02i", min, sec);
 	}
 
 	if (strcmp(time_left, time_left2) != 0)
@@ -387,7 +387,7 @@ char *tn_showHud (edict_t *ent)
 	static char layout[1024];
 	int j = 0;
 	gclient_t	*cl;
-	int	score, ping, fph, fpm, frags, died, num_ppl, rank ;
+	int	score, ping, fph, fpm, frags, died, num_ppl, rank, shots, eff;
 	int bigspree;
 
 	//	int	team1score = 0;
@@ -495,6 +495,8 @@ char *tn_showHud (edict_t *ent)
 			//parse out the info
 			score = cl->chase_target->client->resp.score;
 			frags = cl->chase_target->client->resp.frags;
+			shots = cl->chase_target->client->resp.shots;
+			eff = cl->chase_target->client->resp.eff;
 			ping = cl->chase_target->client->ping;
 			died = rav_getdied(cl->chase_target->client);
 			fph = rav_getFPH(cl->chase_target->client);
@@ -511,25 +513,28 @@ char *tn_showHud (edict_t *ent)
 			//fph
 			j += sprintf (layout+j, "xr -70 yt 34 string2 \"FPH\" ");
 			j += sprintf (layout+j, "xr -70 yt 42 string \"%i\" ", fph);
+			//Efficiency
+			j += sprintf (layout+j, "xr -70 yt 50 string2 \"Eff\" ");
+			j += sprintf (layout+j, "xr -70 yt 58 string \"%i%%%% %i/%i\" ", eff, frags, shots);
 			//rank
-			j += sprintf (layout+j, "xr -70 yt 50 string2 \"Rank\" ");
-			j += sprintf (layout+j, "xr -70 yt 58 string \"%i/%i \" ", rank, num_ppl);
+			j += sprintf (layout+j, "xr -70 yt 66 string2 \"Rank\" ");
+			j += sprintf (layout+j, "xr -70 yt 74 string \"%i/%i \" ", rank, num_ppl);
 			//if(!voosh->value){
 			//time
-			j += sprintf (layout+j, "xr -70 yt 66 string2 \"Time\" ");
-			j += sprintf (layout+j, "xr -70 yt 74 string \"%s \" ", time_left);
+			j += sprintf (layout+j, "xr -70 yt 82 string2 \"Time\" ");
+			j += sprintf (layout+j, "xr -70 yt 90 string \"%s \" ", time_left);
 			//		}
 			//	if(!ctf->value){
 			//Deaths
-			j += sprintf (layout+j, "xr -70 yt 82 string2 \"Deaths\" ");
-			j += sprintf (layout+j, "xr -70 yt 90 string \"%i \" ", died);
+			j += sprintf (layout+j, "xr -70 yt 98 string2 \"Deaths\" ");
+			j += sprintf (layout+j, "xr -70 yt 106 string \"%i \" ", died);
 
-			j += sprintf (layout+j, "xr -70 yt 98 string2 \"Frags\" ");
-			j += sprintf (layout+j, "xr -70 yt 106 string \"%i \" ", frags);
+			j += sprintf (layout+j, "xr -70 yt 114 string2 \"Frags\" ");
+			j += sprintf (layout+j, "xr -70 yt 122 string \"%i \" ", frags);
 			//	}
 
-			j += sprintf (layout+j, "xr -70 yt 114 string2 \"Spree\" ");
-			j += sprintf (layout+j, "xr -70 yt 122 string \"%i \" ", bigspree);
+			j += sprintf (layout+j, "xr -70 yt 130 string2 \"Spree\" ");
+			j += sprintf (layout+j, "xr -70 yt 138 string \"%i \" ", bigspree);
 
 		}
 	}
@@ -548,6 +553,8 @@ char *tn_showHud (edict_t *ent)
 		//parse out the info
 		score = cl->resp.score;
 		frags = cl->resp.frags;
+		shots = cl->resp.shots;
+		eff = cl->resp.eff;
 		ping = cl->ping;
 		died = rav_getdied(cl);
 		fph = rav_getFPH(cl);
@@ -564,26 +571,29 @@ char *tn_showHud (edict_t *ent)
 		//fph
 		j += sprintf (layout+j, "xr -70 yt 34 string2 \"FPH\" ");
 		j += sprintf (layout+j, "xr -70 yt 42 string \"%i\" ", fph);
+		//Efficiency
+		j += sprintf (layout+j, "xr -70 yt 50 string2 \"Eff\" ");
+		j += sprintf (layout+j, "xr -70 yt 58 string \"%i%%%% %i/%i\" ", eff, frags, shots);
 		//rank
-		j += sprintf (layout+j, "xr -70 yt 50 string2 \"Rank\" ");
-		j += sprintf (layout+j, "xr -70 yt 58 string \"%i/%i\" ",rank, num_ppl);
+		j += sprintf (layout+j, "xr -70 yt 66 string2 \"Rank\" ");
+		j += sprintf (layout+j, "xr -70 yt 74 string \"%i/%i\" ",rank, num_ppl);
 
 		//if(!voosh->value){
 		//time
-		j += sprintf (layout+j, "xr -70 yt 66 string2 \"Time\" ");
-		j += sprintf (layout+j, "xr -70 yt 74 string \"%s \" ", time_left);
+		j += sprintf (layout+j, "xr -70 yt 82 string2 \"Time\" ");
+		j += sprintf (layout+j, "xr -70 yt 90 string \"%s \" ", time_left);
 		//}
 		//if(!ctf->value)
 		//Deaths
-		j += sprintf (layout+j, "xr -70 yt 82 string2 \"Deaths\" ");
-		j += sprintf (layout+j, "xr -70 yt 90 string \"%i \" ", died);
+		j += sprintf (layout+j, "xr -70 yt 98 string2 \"Deaths\" ");
+		j += sprintf (layout+j, "xr -70 yt 106 string \"%i \" ", died);
 
-		j += sprintf (layout+j, "xr -70 yt 98 string2 \"Frags\" ");
-		j += sprintf (layout+j, "xr -70 yt 106 string \"%i \" ", frags);
+		j += sprintf (layout+j, "xr -70 yt 114 string2 \"Frags\" ");
+		j += sprintf (layout+j, "xr -70 yt 122 string \"%i \" ", frags);
 
 
-		j += sprintf (layout+j, "xr -70 yt 114 string2 \"Spree\" ");
-		j += sprintf (layout+j, "xr -70 yt 122 string \"%i \" ", bigspree);
+		j += sprintf (layout+j, "xr -70 yt 130 string2 \"Spree\" ");
+		j += sprintf (layout+j, "xr -70 yt 138 string \"%i \" ", bigspree);
 
 		//only show if hud is active
 		//stuff on lower left hand area

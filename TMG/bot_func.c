@@ -693,6 +693,11 @@ if (self->linkcount != self->monsterinfo.linkcount)
 			UpdateChaseCam(other);
 	}
 
+	if(self->client->resp.shots != 0)
+	{
+		self->client->resp.eff = 100 * self->client->resp.frags / self->client->resp.shots;
+	}
+
 	M_CatagorizePosition (self);
 	BotEndServerFrame (self);
 	self->nextthink = level.time + FRAMETIME;
