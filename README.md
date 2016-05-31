@@ -1,7 +1,7 @@
 ### What is this repository for? ###
 
 * This is TMG for Quake II
-* Version 2.10
+* Version 2.12
 * [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
 ### How do I get set up? ###
@@ -11,14 +11,12 @@
 * Configuration: The usual Quake2 setup for your platform.
 * Dependencies: None.
 * Database configuration: none
-* How to run tests
-* Deployment instructions
 
 ### Contribution guidelines ###
 
-* Writing tests: If you write tests for this, please contribute. 
+* Writing tests: If you write tests for this, please contribute them. 
 * Code review: currently a work in progress. There were several portability issues.
-* If you spot bugs or some feature doesn't work, please describe the problem and the platform(s) you're testing on and how to reproduce it.
+* If you spot a bug or some feature doesn't work, please describe the problem and the platform(s) you're testing on and how to reproduce the bug.
 
 ### Who do I talk to? ###
 
