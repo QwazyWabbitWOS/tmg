@@ -22,7 +22,7 @@ static int MP_Sort(const void *a, const void *b);
 typedef struct {
 	char	netname[16];
 	int		score;
-	char  	date[10];
+	char  	date[12];
 } HS_STRUCT;
 
 // room to hold max # of players
