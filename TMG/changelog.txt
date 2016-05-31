@@ -30,7 +30,17 @@ Fixed map nicks being too long screwing up op and vote maplist menus.
 r40-42:
 Code/SVN Repo Maintenance
 
-
+r??
+QwazyWabbit
+Added "hscores" command so user can see highscores of current map at will.
+Added cvars highscores and show_highscores.
+Cvar highscores enables highscore command and display. Default: true
+Cvar show_highscores enables display at intermission. Default: false
+Improved highscore management and added some diagnostics.
+Added DbgPrintf function that outputs to debugger in Windows if a debugger 
+is present and debug builds or prints to server console and log file on 
+non-Windows systems if developer cvar is set.
+Bumped game version to 2.12.
 
 
 
