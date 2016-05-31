@@ -98,6 +98,9 @@ void BeginIntermission (edict_t *targ)
 	}
 	//ZOID
 
+	if(highscores->value)
+		SaveHighScores();
+
 	game.autosaved = false;
 
 	// respawn any dead clients
@@ -488,7 +491,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 			42 + (last+1)*16, total - last - 1);
 		
 		//DB Highscores
-		if ((highscores->value) && (show_hs == true) && (motd_file = fopen(filename, "r")))
+		if ((highscores->value) && (show_highscores->value) && (motd_file = fopen(filename, "r")))
 		{
 			i = 0;
 			while ( fgets(line, 80, motd_file) )
@@ -688,7 +691,7 @@ void DeathmatchScoreboard (edict_t *ent)
 
 
 /* 
- Interlocked with Cmd_HighScores_f.
+ Interlocked with Cmd_HighScore_f.
  Toggle scoreboard on/off on command.
  If highscores is up, change to scoreboard
  but toggle off if commanded again.

@@ -450,8 +450,8 @@ void EndDMLevel (void)
 
 	if (mapvote->value && !ent)
 	{
-		DbgPrintf ("Z. map to be voted on is %s\n",
-				   maplist->mapname[maplist->currentmapvote]);
+		//gi.dprintf ("Z. map to be voted on is %s\n",
+		//		   maplist->mapname[maplist->currentmapvote]);
 
 		ent = G_Spawn ();
 		ent->classname = "target_changelevel";
@@ -459,8 +459,8 @@ void EndDMLevel (void)
 		if(mapscrewed)
 			ent = NULL;
 
-		DbgPrintf("6 match_state_end = %f, level.time = %f, votetime = %f\n",
-				  match_state_end, level.time, votetime);
+		//gi.dprintf("6 match_state_end = %f, level.time = %f, votetime = %f\n",
+		//		  match_state_end, level.time, votetime);
 
 		votetime = 0;
 		if (ent != NULL)
@@ -487,14 +487,14 @@ void EndDMLevel (void)
 
         }
         else
-        {   // search for a changeleve
+        {   // search for a changelevel
             ent = G_Find (NULL, FOFS(classname), "target_changelevel");
             if (!ent)
             {   // the map designer didn't include a changelevel,
                 // so create a fake ent that goes back to the same level
                 ent = G_Spawn ();
                 ent->classname = "target_changelevel";
-                ent-> map = level.mapname;   // remove the space after the > to compile correctly
+                ent->map = level.mapname;
 				BeginIntermission (ent);
             }
         }
@@ -653,12 +653,11 @@ void ExitLevel (void)
 	
 	}
 
-//RAV
-		show_hs = false;
 		hs_show = true;
-//
+
 		SetBotFlag1(NULL);
 		SetBotFlag2(NULL);
+
 //ZOID
 		if (ctf->value)
 			CTFInit();
@@ -790,10 +789,9 @@ void G_RunFrame (void)
 		//fix for highscores
 		if(level.time == level.intermissiontime + 7.0)
 		{
-			SaveHighScores(); // first add players to the highscores list
-			LoadHighScores(); // then load the new list.
+			LoadHighScores();
 		}
-		if ((level.time >= level.intermissiontime + 7.1) && (hs_show == true))
+		if ((level.time >= level.intermissiontime + 7.1) && (show_highscores->value))
 		{
 			for (i=0; i<=maxclients->value; i++)
 			{
@@ -805,10 +803,10 @@ void G_RunFrame (void)
 				}
 				NumBotsInGame = 0;
 			}
-			show_hs = true;
+			
 			for_each_player(ent, i)
 			{
-				stuffcmd(ent, "cmd score\n");//display it for all to view!!
+				stuffcmd(ent, "cmd hscore\n");//display it for all to view!!
 			}
 		}
 		if ((level.time >= level.intermissiontime + 11.0) && (hs_show == true))
@@ -817,17 +815,20 @@ void G_RunFrame (void)
 		}
 	}
 
-	if((mapvote->value) && (level.time+(int)menutime->value-1 < votetime) && !locked_teams && (maplist->nextmap == -1))
+	if((mapvote->value) && 
+		(level.time+(int)menutime->value-1 < votetime) && 
+		!locked_teams && (maplist->nextmap == -1))
 	{
-		DbgPrintf("3 match_state_end = %f, level.time = %f, votetime = %f\n",
-				  match_state_end, level.time, votetime);
+		//gi.drintf("3 match_state_end = %f, level.time = %f, votetime = %f\n",
+		//		  match_state_end, level.time, votetime);
 
 		//match_state = STATE_VOTING;
 		level.warmup = true;
 		//locked_teams  = true;
 //		my_bprintf (PRINT_HIGH, "teams locked\n");//JSWdebug
-		for (i=0 ; i<maxclients->value ; i++)
+		for (i = 0; i < maxclients->value; i++)
 		{
+			// disconnect all bots if any
 			ent = g_edicts + 1 + i;
 			if (ent && ent->bot_client)
 			{
@@ -836,6 +837,7 @@ void G_RunFrame (void)
 				//disconnect bot
 				ClientDisconnect(ent);
 			}
+
 			if (ent && !ent->inuse)
 				continue;
 

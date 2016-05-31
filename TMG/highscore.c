@@ -1,15 +1,19 @@
 ///<highscore.c>>
 
 #include "g_local.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
 
 #define SCORESTOKEEP 10
 
 cvar_t  *highscores;
+cvar_t	*show_highscores;
 
 // global 
 char hscores [1000];
 
-qboolean show_hs;
+
 qboolean hs_show;
 
 static int MP_Sort(const void *a, const void *b);
@@ -26,6 +30,7 @@ HS_STRUCT g_TopScores[SCORESTOKEEP];
 void InitHighScores (void)
 {
 	highscores = gi.cvar ("highscores", "1" , CVAR_LATCH);
+	show_highscores = gi.cvar ("show_highscores", "0" , CVAR_LATCH);
 }
 
 void SaveHighScores (void)
@@ -47,7 +52,7 @@ void SaveHighScores (void)
 	i += sprintf(txtfile + i, "%s/%s", game_dir->string, cfgdir->string);
 	i += sprintf(txtfile + i, "/hs/%s_hs.txt", level.mapname);
 	
-	DbgPrintf("Opening %s for reading\n", binfile);
+	DbgPrintf("Opened for reading %s\n", binfile);
 	HS_file = fopen(binfile, "rb");
 	
 	if(HS_file)
@@ -103,14 +108,15 @@ void SaveHighScores (void)
 	{
 		fwrite(g_TopScores, sizeof(g_TopScores[0]), SCORESTOKEEP, HS_file);
 		fclose(HS_file);
+		DbgPrintf("File written %s\n", binfile);
 	}
 	else
 	{
-		DbgPrintf("Unable to write %s\n", binfile);
+		DbgPrintf("Can't write %s\n", binfile);
 	}
 	
 	// print top scores to a man-readable file
-	DbgPrintf("Opening %s for writing\n", txtfile);
+	DbgPrintf("Opened for writing %s\n", txtfile);
 	HS_file = fopen(txtfile, "wt");
 	if (HS_file)
 	{
@@ -124,10 +130,12 @@ void SaveHighScores (void)
 		fprintf(HS_file,"\n     %s  %s\n", MOD, MOD_VERSION);
 		fprintf(HS_file,"              www.railwarz.com");
 		fclose(HS_file);
+		DbgPrintf("File written %s\n", txtfile);
 	}
 	else
 	{
-		DbgPrintf("Unable to write %s\n", txtfile);
+		gi.dprintf("Can't write %s check directory exists\n", txtfile);
+		return;
 	}
 }
 
@@ -148,7 +156,7 @@ void LoadHighScores (void)
 	
 	if (!(motd_file = fopen(filename, "r")))
 	{
-		DbgPrintf("Unable to open motd_file using %s\n", filename);
+		DbgPrintf("Can't open highscores using %s\n", filename);
 		return;
 	}
 	string[0] = 0;

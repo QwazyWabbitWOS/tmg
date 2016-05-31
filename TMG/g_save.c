@@ -495,7 +495,6 @@ void InitGame (void)
 	//RAV
 	ServerInit (true);
 
-	show_hs = false;
 	hs_show = true; //JSW - makes highscores display on first map
 	locked_teams = false;
 

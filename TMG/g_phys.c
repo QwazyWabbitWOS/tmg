@@ -434,7 +434,7 @@ retry:
 	if (voosh->value && ent->inuse)
 		gi.linkentity (ent);
 
-	//if (!ent->inuse && developer->value == 2) 
+	//if (!ent->inuse) 
 	//	DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
 	//	__FUNCTION__, ent->movetype, ent->inuse, ent->classname, level.time);
 
