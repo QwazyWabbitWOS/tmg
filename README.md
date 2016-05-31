@@ -2,7 +2,6 @@
 
 * This is TMG for Quake II
 * Version 2.12
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
 ### How do I get set up? ###
 
@@ -22,3 +21,5 @@
 
 * Josh Waggoner is repo owner. 
 * Contact QwazyWabbit for current status or bugs. Post issues and I'll see what I can do. (QW)
+
+* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
