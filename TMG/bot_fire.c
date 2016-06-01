@@ -632,7 +632,6 @@ qboolean B_UseRailgun(edict_t *ent,edict_t *target,int enewep,float aim,float di
 		Get_AimAngle(ent,aim,distance,mywep);
 		client->buttons |= BUTTON_ATTACK;
 		if(trace_priority < TRP_ANGLEKEEP) trace_priority = TRP_ANGLEKEEP;
-		ent->client->resp.shots++; //QW// Count shots
 		return true;
 	}
 	return false;

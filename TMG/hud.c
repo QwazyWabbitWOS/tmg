@@ -389,6 +389,7 @@ char *tn_showHud (edict_t *ent)
 	gclient_t	*cl;
 	int	score, ping, fph, fpm, frags, died, num_ppl, rank, shots, eff;
 	int bigspree;
+	int s;  //status bar string length
 
 	//	int	team1score = 0;
 	//	int team2score = 0;
@@ -515,26 +516,27 @@ char *tn_showHud (edict_t *ent)
 			j += sprintf (layout+j, "xr -70 yt 42 string \"%i\" ", fph);
 			//Efficiency
 			j += sprintf (layout+j, "xr -70 yt 50 string2 \"Eff\" ");
-			j += sprintf (layout+j, "xr -70 yt 58 string \"%i%%%% %i/%i\" ", eff, frags, shots);
+			j += sprintf (layout+j, "xr -70 yt 58 string \"%i%%%%\" ", eff);
+			j += sprintf (layout+j, "xr -70 yt 66 string \"%i/%i\" ", frags, shots);
 			//rank
-			j += sprintf (layout+j, "xr -70 yt 66 string2 \"Rank\" ");
-			j += sprintf (layout+j, "xr -70 yt 74 string \"%i/%i \" ", rank, num_ppl);
+			j += sprintf (layout+j, "xr -70 yt 74 string2 \"Rank\" ");
+			j += sprintf (layout+j, "xr -70 yt 82 string \"%i/%i \" ", rank, num_ppl);
 			//if(!voosh->value){
 			//time
-			j += sprintf (layout+j, "xr -70 yt 82 string2 \"Time\" ");
-			j += sprintf (layout+j, "xr -70 yt 90 string \"%s \" ", time_left);
+			j += sprintf (layout+j, "xr -70 yt 90 string2 \"Time\" ");
+			j += sprintf (layout+j, "xr -70 yt 98 string \"%s \" ", time_left);
 			//		}
 			//	if(!ctf->value){
 			//Deaths
-			j += sprintf (layout+j, "xr -70 yt 98 string2 \"Deaths\" ");
-			j += sprintf (layout+j, "xr -70 yt 106 string \"%i \" ", died);
+			j += sprintf (layout+j, "xr -70 yt 106 string2 \"Deaths\" ");
+			j += sprintf (layout+j, "xr -70 yt 114 string \"%i \" ", died);
 
-			j += sprintf (layout+j, "xr -70 yt 114 string2 \"Frags\" ");
-			j += sprintf (layout+j, "xr -70 yt 122 string \"%i \" ", frags);
+			j += sprintf (layout+j, "xr -70 yt 122 string2 \"Frags\" ");
+			j += sprintf (layout+j, "xr -70 yt 130 string \"%i \" ", frags);
 			//	}
 
-			j += sprintf (layout+j, "xr -70 yt 130 string2 \"Spree\" ");
-			j += sprintf (layout+j, "xr -70 yt 138 string \"%i \" ", bigspree);
+			j += sprintf (layout+j, "xr -70 yt 138 string2 \"Spree\" ");
+			j += sprintf (layout+j, "xr -70 yt 146 string \"%i \" ", bigspree);
 
 		}
 	}
@@ -573,27 +575,28 @@ char *tn_showHud (edict_t *ent)
 		j += sprintf (layout+j, "xr -70 yt 42 string \"%i\" ", fph);
 		//Efficiency
 		j += sprintf (layout+j, "xr -70 yt 50 string2 \"Eff\" ");
-		j += sprintf (layout+j, "xr -70 yt 58 string \"%i%%%% %i/%i\" ", eff, frags, shots);
+		j += sprintf (layout+j, "xr -70 yt 58 string \"%i%%%%\" ", eff);
+		j += sprintf (layout+j, "xr -70 yt 66 string \"%i/%i\" ", frags, shots);
 		//rank
-		j += sprintf (layout+j, "xr -70 yt 66 string2 \"Rank\" ");
-		j += sprintf (layout+j, "xr -70 yt 74 string \"%i/%i\" ",rank, num_ppl);
+		j += sprintf (layout+j, "xr -70 yt 74 string2 \"Rank\" ");
+		j += sprintf (layout+j, "xr -70 yt 82 string \"%i/%i\" ",rank, num_ppl);
 
 		//if(!voosh->value){
 		//time
-		j += sprintf (layout+j, "xr -70 yt 82 string2 \"Time\" ");
-		j += sprintf (layout+j, "xr -70 yt 90 string \"%s \" ", time_left);
+		j += sprintf (layout+j, "xr -70 yt 90 string2 \"Time\" ");
+		j += sprintf (layout+j, "xr -70 yt 98 string \"%s \" ", time_left);
 		//}
 		//if(!ctf->value)
 		//Deaths
-		j += sprintf (layout+j, "xr -70 yt 98 string2 \"Deaths\" ");
-		j += sprintf (layout+j, "xr -70 yt 106 string \"%i \" ", died);
+		j += sprintf (layout+j, "xr -70 yt 106 string2 \"Deaths\" ");
+		j += sprintf (layout+j, "xr -70 yt 114 string \"%i \" ", died);
 
-		j += sprintf (layout+j, "xr -70 yt 114 string2 \"Frags\" ");
-		j += sprintf (layout+j, "xr -70 yt 122 string \"%i \" ", frags);
+		j += sprintf (layout+j, "xr -70 yt 122 string2 \"Frags\" ");
+		j += sprintf (layout+j, "xr -70 yt 130 string \"%i \" ", frags);
 
 
-		j += sprintf (layout+j, "xr -70 yt 130 string2 \"Spree\" ");
-		j += sprintf (layout+j, "xr -70 yt 138 string \"%i \" ", bigspree);
+		j += sprintf (layout+j, "xr -70 yt 138 string2 \"Spree\" ");
+		j += sprintf (layout+j, "xr -70 yt 146 string \"%i \" ", bigspree);
 
 		//only show if hud is active
 		//stuff on lower left hand area
@@ -627,6 +630,12 @@ char *tn_showHud (edict_t *ent)
 				j += sprintf (layout+j, "xl 340 yb -220 string \"Even Teams Please!\" ");
 			// j += sprintf (layout+j, "xl 2 yb -80 string2 \"%s\" ",hostname->string);
 		}
+	}
+	s = strlen(layout);
+	if ( s > sizeof (layout))
+	{
+		gi.dprintf("%s: Statusbar too big %d\n", __func__, strlen(layout)); //to the log
+		layout[1023] = 0;
 	}
 	//id disabling added 12-14-99 raven
 
