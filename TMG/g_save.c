@@ -501,7 +501,6 @@ void InitGame (void)
 	CTFInit();
 
 	// MAP MOD
-	//	map_mod_set_up();
 	//wav_mod_set_up();
 	// MAP MOD
 

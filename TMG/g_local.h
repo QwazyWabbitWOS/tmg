@@ -1716,7 +1716,6 @@ qboolean CheckModel(edict_t *ent ,char *s);
 qboolean	voted;
 float	votetime;
 //MENUS
-//void map_mod_set_up(void);
 //void SpecialMenu(edict_t *ent);
 
 qboolean G_EntExists(edict_t *ent);

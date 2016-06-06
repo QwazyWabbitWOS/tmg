@@ -1,20 +1,30 @@
 #ifndef HUD_H
 #define HUD_H
 
-//QW// Perhaps a countdown for a mapvote timer? Unused.
-extern float vote_end;
+// globals
+extern int vote_state;
+extern int vote_pro;
+extern int vote_con;
+extern int newdmflags;
+edict_t *votestarter;
+edict_t *votetarget;
 
-extern int	map_mod_;		// 1 if maps.txt was found and loaded 0 if not
+/**
+ Retrieves name of next level in the list
+ */
+extern char		*map_mod_next_map(void);
 
-//void		map_mod_set_up(void);		// Attempts to find and load maps.txt
-
-extern char		*map_mod_next_map(void);	// Retrieves name of next level in the list
+extern qboolean Team1Players(void);
+extern qboolean Team2Players(void);
+extern char *rav_redflag(edict_t *ent);
+extern char *rav_blueflag(edict_t *ent);
 
 extern char *tn_showHud (edict_t *ent);	//RAV
 
 extern void vote_think (edict_t *ent, float timenow);
-extern int vote_state, vote_pro, vote_con, newdmflags;
-extern edict_t *votestarter, *votetarget;
+
+extern edict_t *votestarter;
+extern edict_t *votetarget;
 extern int CountConnectedClients (void);
 extern int rav_getFPM(gclient_t* cl);
 extern int rav_getFPH(gclient_t* cl);

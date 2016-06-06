@@ -12,14 +12,14 @@
 #include "g_chase.h"
 #include "runes.h"
 
+// globals
 float timer;
-
-int vote_state, vote_pro, vote_con, newdmflags;
-edict_t *votestarter, *votetarget;
-//QW// Perhaps a countdown for a mapvote timer? Unused.
-float vote_end;
-qboolean nextmap;
-qboolean nextcycle;
+int vote_state;
+int vote_pro;
+int vote_con;
+int newdmflags;
+edict_t *votestarter;
+edict_t *votetarget;
 
 //
 //TIME STUFF
@@ -375,12 +375,6 @@ char *rav_gettech(edict_t *ent)
 
 	return ("No Rune");
 }
-
-
-qboolean Team1Players();
-qboolean Team2Players();
-char *rav_redflag(edict_t *ent);
-char *rav_blueflag(edict_t *ent);
 
 char *tn_showHud (edict_t *ent)
 {
