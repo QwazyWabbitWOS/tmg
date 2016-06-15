@@ -54,7 +54,8 @@ void DumpMapVotes(void)
 {
 	int i;
 	for (i = 0; i < maplist->nummaps; ++i)
-		DbgPrintf("%d. %s (%d votes)\n",
+		if (maplist->votes[i] != 0)
+			DbgPrintf("%d. %s (%d votes)\n",
 				  i, maplist->mapname[i], maplist->votes[i]);
 }
 
@@ -86,8 +87,7 @@ void MaplistNextMap(edict_t *ent)
 	//	int j;
 	size_t end = 0;
 
-	if(developer->value)
-		DumpMapVotes();
+	DumpMapVotes();
 
 	//	j = maplist->currentmap;
 

@@ -594,6 +594,7 @@ Cmd_Inven_f
 */
 void Cmd_Inven_f (edict_t *ent)
 {
+	int i;
 
 	if (ent->client->menu)
 	{
@@ -621,6 +622,24 @@ void Cmd_Inven_f (edict_t *ent)
 		CTFOpenJoinMenu(ent);
 		return;
 	}
+	else
+	{
+		OpenJoinMenu(ent);
+		return;
+	}
+//ZOID
+
+	ent->client->showinventory = true;
+	ent->client->showscores = false;
+
+	gi.WriteByte (svc_inventory);
+	
+	for (i = 0; i < MAX_ITEMS; i++)
+	{
+		gi.WriteShort (ent->client->pers.inventory[i]);
+	}
+	
+	gi.unicast (ent, true);
 }
 
 /*
@@ -845,7 +864,7 @@ void Cmd_Kill_f (edict_t *ent)
 		ent->client->resp.spectator = 1;
 		if (ent->client->menu)
 			PMenu_Close(ent);
-		Spec (ent, NULL);
+		Spectate (ent, NULL);
 		return;
 	}
 
@@ -1540,7 +1559,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 	}
 }
 
-//QW// UNUSED, replaced by Spec()
+//QW// UNUSED, replaced by Spectate()
 //RAV Spectator MODE
 void player_set_observer(edict_t *ent, int value)
 {
@@ -1972,7 +1991,7 @@ void ClientCommand (edict_t *ent)
 	//QW// This is interesting. Case insensitive string comparisons
 	//     using mixed case strings? Set all to lower case, changed
 	//     Q_stricmp to Q_strcasecmp and changed parentheses to match
-	//     what I think it's supposed to be doing and silence clang.
+	//     what I think it's supposed to be doing and to silence clang.
 	//RAVEN
 	else if (Q_strcasecmp (cmd, "spec") == 0
 			  || Q_strcasecmp (cmd, "spectator") == 0
@@ -2020,7 +2039,7 @@ void ClientCommand (edict_t *ent)
 		if (ent->client->menu)
 			PMenu_Close(ent);
 
-		Spec (ent, NULL);
+		Spectate (ent, NULL);
 		//CTFChaseCam(ent, NULL);
 		//player_set_observer (ent, true);
 

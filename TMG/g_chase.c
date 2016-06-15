@@ -8,7 +8,7 @@ static char chase_modenames[][30] = {
 	"FloatCam",
 	"EyeCam"
 };
-void ToggleChaseCam(edict_t *ent, pmenu_t *p);
+
 void SwitchModeChaseCam(edict_t *ent)
 {
 	// if chase cam is off, turn it on !
@@ -26,9 +26,9 @@ void SwitchModeChaseCam(edict_t *ent)
 	}
 
 	// switch modes
-	safe_cprintf(ent, PRINT_HIGH, "Now using %s.\n", chase_modenames[++ent->client->chase_mode] );
+	safe_cprintf(ent, PRINT_HIGH, "Now using %s.\n", 
+		chase_modenames[++ent->client->chase_mode] );
 }
-
 
 // Turn the chasecam on/off
 void ToggleChaseCam(edict_t *ent, pmenu_t *p)
@@ -38,7 +38,8 @@ void ToggleChaseCam(edict_t *ent, pmenu_t *p)
 
 	// if it's on, turn if off...
 	if (ent->client->chase_target) {
-		safe_cprintf(ent, PRINT_HIGH, "ChaseCam deactivated.\n");
+		safe_cprintf(ent, PRINT_HIGH, 
+			"ChaseCam deactivated.\n");
 		ent->client->chase_target = NULL;
 	//	ent->client->resp.spectator = 1;
 	//	ent->movetype = MOVETYPE_NOCLIP;
@@ -58,19 +59,19 @@ void ToggleChaseCam(edict_t *ent, pmenu_t *p)
 			ent->client->chase_target = e;
 			PMenu_Close(ent);
 			ent->client->update_chase = true;
-			safe_cprintf(ent, PRINT_HIGH, "ChaseCam activated (using %s mode).\n",
+			safe_cprintf(ent, PRINT_HIGH, 
+				"ChaseCam activated (using %s mode).\n",
 				chase_modenames[ent->client->chase_mode]);
 			return;
 		}
 	}
 
 	// no target to chase...
-	safe_cprintf(ent, PRINT_HIGH, "ChaseCam - no target to chase!\n");
+	safe_cprintf(ent, PRINT_HIGH, 
+		"ChaseCam - no target to chase!\n");
 }
 
-
 // this places the client's viewpoint depending on the chase mode !
-
 void UpdateChaseCam(edict_t *ent)
 {
 	vec3_t o, ownerv, goal;
@@ -105,7 +106,8 @@ void UpdateChaseCam(edict_t *ent)
 	if (ent->client->chase_mode == CHASE_FREECAM)
 //		VectorCopy(ent->client->v_angle, angles);
 		for (i=0; i<3; i++)
-			angles[i] = ent->client->resp.cmd_angles[i] + SHORT2ANGLE(ent->client->ps.pmove.delta_angles[i]);
+			angles[i] = ent->client->resp.cmd_angles[i] + 
+			SHORT2ANGLE(ent->client->ps.pmove.delta_angles[i]);
 	else
 		VectorCopy(targ->client->ps.viewangles, angles);
 
@@ -168,7 +170,9 @@ void UpdateChaseCam(edict_t *ent)
 	if (ent->client->chase_mode != CHASE_FREECAM)
 	{
 		for (i=0 ; i<3 ; i++)
-			ent->client->ps.pmove.delta_angles[i] = ANGLE2SHORT(targ->client->v_angle[i] - ent->client->resp.cmd_angles[i]);
+			ent->client->ps.pmove.delta_angles[i] = 
+			ANGLE2SHORT(targ->client->v_angle[i] - 
+			ent->client->resp.cmd_angles[i]);
 
 		VectorCopy(targ->client->v_angle, ent->client->ps.viewangles);
 		VectorCopy(targ->client->v_angle, ent->client->v_angle);
@@ -247,12 +251,13 @@ void ChaseRemoveTarget(edict_t *target)
 		if (ent->client->chase_target == target)
 		{
 			// turn it off...
-			safe_cprintf(ent, PRINT_HIGH, "ChaseCam deactivated - target lost!\n");
+			safe_cprintf(ent, PRINT_HIGH, 
+				"ChaseCam deactivated - target lost!\n");
 			ent->client->chase_target = NULL;
 		}
 	}
-
 }
+
 void GetChaseTarget(edict_t *ent)
 {
 	int i;
@@ -272,12 +277,11 @@ void GetChaseTarget(edict_t *ent)
 	safe_centerprintf(ent, "No other players to chase.");
 }
 
-
-
 // give a little help !
 void ChaseHelp(edict_t *ent)
 {
-safe_centerprintf (ent, "(use fire to change ChaseCam mode)\n(and [ or ] to change ChaseCam target)\n");
-	//safe_cprintf(ent, PRINT_HIGH, "(use fire to change ChaseCam mode, and [ or ] to change ChaseCam target).\n");
+	safe_centerprintf (ent, 
+		"(use fire to change ChaseCam mode)\n"
+		"(and [ or ] to change ChaseCam target)\n");
 }
 

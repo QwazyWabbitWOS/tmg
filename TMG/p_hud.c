@@ -91,16 +91,6 @@ void BeginIntermission (edict_t *targ)
 		}
 	}
 
-	//ZOID
-	if (deathmatch->value && ctf->value)
-	{
-		CTFCalcScores();
-	}
-	//ZOID
-
-	if(highscores->value)
-		SaveHighScores();
-
 	game.autosaved = false;
 
 	// respawn any dead clients
@@ -363,7 +353,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 	size_t	stringlength;
 	
 	//Highscores
-	FILE    *motd_file;
+	FILE    *hs_file;	// the highscore file for this map
 	char    filename[MAX_QPATH];
 	char    line[80];
 	
@@ -491,37 +481,38 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 			42 + (last+1)*16, total - last - 1);
 		
 		//DB Highscores
-		if ((highscores->value) && (show_highscores->value) && (motd_file = fopen(filename, "r")))
+		else if (ent->client->showhighscores)
 		{
-			i = 0;
-			while ( fgets(line, 80, motd_file) )
+			if (hs_file = fopen(filename, "r"))
 			{
-				Com_sprintf (entry, sizeof(entry),
-					"xv 2 yv %i string \"%s\" ",
-					i*8 + 24, line);
+				i = 0;
+				while ( fgets(line, 80, hs_file) )
+				{
+					Com_sprintf (entry, sizeof(entry),
+						"xv 2 yv %i string \"%s\" ",
+						i*8 + 24, line);
+					j = strlen(entry);
+					if (stringlength + j > 1400)
+						break;
+					strcpy (string + stringlength, entry);
+					stringlength += j;
+					i++;
+				}
+
+				fclose(hs_file);
 				j = strlen(entry);
-				if (stringlength + j > 1400)
-					break;
-				strcpy (string + stringlength, entry);
-				stringlength += j;
-				i++;
-			}
-			
-			// be good now ! ... close the file
-			fclose(motd_file);
-			j = strlen(entry);
-			if (stringlength + j < 1400)
-			{
-				strcpy (string + stringlength, entry);
-				stringlength += j;
+				if (stringlength + j < 1400)
+				{
+					strcpy (string + stringlength, entry);
+					stringlength += j;
+				}
 			}
 		}
-		
 		//end highscores
 		gi.WriteByte (svc_layout);
 		gi.WriteString (string);
 	}
-	else if (ent->client->pers.db_hud ||  ent->client->pers.motd == true)
+	else if (ent->client->pers.db_hud || ent->client->pers.motd == true)
 	{
 		string[0] = 0;
 		stringlength = strlen(string);
@@ -721,8 +712,8 @@ void Cmd_Score_f (edict_t *ent)
 		PMenu_Close(ent);
 	//ZOID
 
-	if (!deathmatch->value && !coop->value)
-		return;
+	//if (!deathmatch->value && !coop->value)
+	//	return;
 
 	if (ent->client->showscores)
 	{
@@ -744,7 +735,7 @@ void Cmd_HighScore_f (edict_t *ent)
 {
 	ent->client->showinventory = false;
 	ent->client->showhelp = false;
-	
+
 	if (ent->client->showhighscores)
 	{
 		ent->client->showscores = false;
@@ -762,8 +753,8 @@ void Cmd_HighScore_f (edict_t *ent)
 	if (ent->client->menu)
 		PMenu_Close(ent);
 
-	if (!deathmatch->value && !coop->value)
-		return;
+	//if (!deathmatch->value && !coop->value)
+	//	return;
 
 	if (ent->client->showhighscores)
 	{

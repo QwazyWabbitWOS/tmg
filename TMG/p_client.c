@@ -1153,9 +1153,12 @@ void InitClientPersistant (gclient_t *client)
 	strcpy (skinn,client->pers.skin_change);
 	mapvoted = client->pers.vote_times;
 	//
+	DbgPrintf("%s entered, motd is %d\n", __func__, motd);
 
 	memset (&client->pers, 0, sizeof(client->pers));
-//RAV
+	DbgPrintf("%s after memset, motd is %d\n", __func__, motd);
+
+	//RAV
 	client->pers.pl_state = plstate;
 	//JSW
 	client->pers.isop = op;
@@ -1171,6 +1174,7 @@ void InitClientPersistant (gclient_t *client)
 	client->pers.vote_times = mapvoted;
 
 //	
+	DbgPrintf("%s after restore, motd is %d\n", __func__, motd);
 
 	//RAV
 
@@ -1906,11 +1910,13 @@ void PutClientInServer (edict_t *ent)
 	vec3_t	spawn_origin, spawn_angles;
 	gclient_t	*client;
 	int		i;
-	client_persistant_t	saved;
+	client_persistent_t	saved;
 	client_respawn_t	resp;
 	zgcl_t			zgcl;
 	gitem_t		*item, *ammo;
 	
+	DbgPrintf("%s entry\n", __func__);
+
 	// find a spawn point
 	// do it before setting health back up, so farthest
 	// ranging doesn't count this client
@@ -2081,12 +2087,13 @@ void PutClientInServer (edict_t *ent)
 	{
 		client->respawn_framenum = level.framenum + resp_protect->value*10;
 	}
+
 	if ((int)(start_weapons->value) & 1)
 	{
 		item = FindItem("Shotgun");
 		client->pers.inventory[ITEM_INDEX(item)] = 1;
 		ammo = FindItem (item->ammo);
-//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+
 		if ( dmflag & DF_INFINITE_AMMO )
 			Add_Ammo (ent, ammo, 1000);
 		else
@@ -2098,7 +2105,7 @@ void PutClientInServer (edict_t *ent)
 		item = FindItem("Super Shotgun");
 		client->pers.inventory[ITEM_INDEX(item)] = 1;
 		ammo = FindItem (item->ammo);
-//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+
 		if ( dmflag & DF_INFINITE_AMMO )
 			Add_Ammo (ent, ammo, 1000);
 		else
@@ -2110,7 +2117,7 @@ void PutClientInServer (edict_t *ent)
 		item = FindItem("Machinegun");
 		client->pers.inventory[ITEM_INDEX(item)] = 1;
 		ammo = FindItem (item->ammo);
-//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+
 		if ( dmflag & DF_INFINITE_AMMO )
 			Add_Ammo (ent, ammo, 1000);
 		else
@@ -2122,7 +2129,7 @@ void PutClientInServer (edict_t *ent)
 		item = FindItem("Chaingun");
 		client->pers.inventory[ITEM_INDEX(item)] = 1;
 		ammo = FindItem (item->ammo);
-//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+
 		if ( dmflag & DF_INFINITE_AMMO )
 			Add_Ammo (ent, ammo, 1000);
 		else
@@ -2134,7 +2141,7 @@ void PutClientInServer (edict_t *ent)
 		item = FindItem("Grenade Launcher");
 		client->pers.inventory[ITEM_INDEX(item)] = 1;
 		ammo = FindItem (item->ammo);
-//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+
 		if ( dmflag & DF_INFINITE_AMMO )
 			Add_Ammo (ent, ammo, 1000);
 		else
@@ -2146,7 +2153,7 @@ void PutClientInServer (edict_t *ent)
 		item = FindItem("Rocket Launcher");
 		client->pers.inventory[ITEM_INDEX(item)] = 1;
 		ammo = FindItem (item->ammo);
-//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+
 		if ( dmflag & DF_INFINITE_AMMO )
 			Add_Ammo (ent, ammo, 1000);
 		else
@@ -2158,7 +2165,7 @@ void PutClientInServer (edict_t *ent)
 		item = FindItem("Hyperblaster");
 		client->pers.inventory[ITEM_INDEX(item)] = 1;
 		ammo = FindItem (item->ammo);
-//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+
 		if ( dmflag & DF_INFINITE_AMMO )
 			Add_Ammo (ent, ammo, 1000);
 		else
@@ -2170,7 +2177,7 @@ void PutClientInServer (edict_t *ent)
 		item = FindItem("Railgun");
 		client->pers.inventory[ITEM_INDEX(item)] = 1;
 		ammo = FindItem (item->ammo);
-//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+
 		if ( dmflag & DF_INFINITE_AMMO )
 			Add_Ammo (ent, ammo, 1000);
 		else
@@ -2182,7 +2189,7 @@ void PutClientInServer (edict_t *ent)
 		item = FindItem("BFG10K");
 		client->pers.inventory[ITEM_INDEX(item)] = 1;
 		ammo = FindItem (item->ammo);
-//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+
 		if ( dmflag & DF_INFINITE_AMMO )
 			Add_Ammo (ent, ammo, 1000);
 		else
@@ -2312,32 +2319,7 @@ void PutClientInServer (edict_t *ent)
 		if (it_ent->inuse)
 			G_FreeEdict(it_ent);
 	}
-/*		Why are these here twice??  JSW
-	if ((int)(start_items->value) & 256)
-	{
-		edict_t *it_ent;
-
-		item = FindItem("Rebreather");
-		it_ent = G_Spawn();
-		it_ent->classname = item->classname;
-		SpawnItem2 (it_ent, item);
-		Touch_Item (it_ent, ent, NULL, NULL);
-		if (it_ent->inuse)
-			G_FreeEdict(it_ent);
-	}
-	if ((int)(start_items->value) & 512)
-	{
-		edict_t *it_ent;
-
-		item = FindItem("Environment Suit");
-		it_ent = G_Spawn();
-		it_ent->classname = item->classname;
-		SpawnItem2 (it_ent, item);
-		Touch_Item (it_ent, ent, NULL, NULL);
-		if (it_ent->inuse)
-			G_FreeEdict(it_ent);
-	}
-*/	if ((int)(start_items->value) & 1024)
+	if ((int)(start_items->value) & 1024)
 	{
 		edict_t *it_ent;
 
@@ -2405,19 +2387,20 @@ void PutClientInServer (edict_t *ent)
 void Connect (edict_t *ent)
 {
 
-  if (ent->bot_client)
-  return;
-  ent->client->newweapon = NULL;
-  ChangeWeapon (ent);
-  ent->client->ps.pmove.pm_type = PM_FREEZE;
-  ent->movetype = MOVETYPE_NOCLIP;
-  ent->solid = SOLID_NOT;
-  ent->svflags |= SVF_NOCLIENT;
-  ent->client->ps.gunindex = 0;
-  gi.linkentity (ent);
-  ent->client->pers.db_hud = true;
-  ent->client->pers.motd = true;
-  ent->client->pers.in_game = false;
+	if (ent->bot_client)
+		return;
+	ent->client->newweapon = NULL;
+	ChangeWeapon (ent);
+	ent->client->ps.pmove.pm_type = PM_FREEZE;
+	ent->movetype = MOVETYPE_NOCLIP;
+	ent->solid = SOLID_NOT;
+	ent->svflags |= SVF_NOCLIENT;
+	ent->client->ps.gunindex = 0;
+	gi.linkentity (ent);
+	ent->client->pers.db_hud = true;
+	ent->client->pers.motd = true;
+	ent->client->pers.in_game = false;
+	DbgPrintf("%s motd %d in_game %d\n", __func__, ent->client->pers.motd, ent->client->pers.in_game);
 }
 //end
 
@@ -2435,7 +2418,9 @@ void ClientBeginDeathmatch (edict_t *ent)
 	char *name;
 	
 	G_InitEdict (ent);
-	
+
+	DbgPrintf("%s entry\n", __func__);
+
 	//jsw
 	CheckPlayers();
 	name = ent->client->pers.netname;
@@ -3292,8 +3277,9 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	ent->client->pers.oplevel = 0;
 	//end
 	ent->client->pers.motd = true;
+	DbgPrintf("%s motd %d\n", __func__, ent->client->pers.motd);
 	ent->client->pers.in_game = false;
-	Spec(ent, NULL);
+	Spectate(ent, NULL);
 	ClientUserinfoChanged (ent, userinfo);
 	if (game.maxclients > 1)
 		gi.dprintf ("%s connected from %s\n", ent->client->pers.netname, Info_ValueForKey (userinfo, "ip"));
@@ -3302,8 +3288,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	ent->client->pers.connected = true;
 	if (log_connect->value)
 		LogConnect(ent, true);
-	if (developer->value)
-		gi.dprintf ("[%s] completed ClientConnect\n", Info_ValueForKey (userinfo, "name"));
+	DbgPrintf ("[%s] completed ClientConnect\n", Info_ValueForKey (userinfo, "name"));
 	return true;
 }
 

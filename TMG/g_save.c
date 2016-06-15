@@ -139,8 +139,6 @@ This will be called when the dll is first loaded, which
 only happens when a new game is begun
 ============
 */
-//QW// UNUSED qboolean default_exec = false;
-
 void InitGame (void)
 {
 
@@ -232,7 +230,7 @@ void InitGame (void)
 	hook_sky = gi.cvar("hook_sky", "1", 0);
 	hook_maxtime = gi.cvar("hook_maxtime", "5", 0);
 	hook_damage = gi.cvar("hook_damage", "5", 0);
-	reset_hook = gi.cvar("hook_reset", "0", 0);
+	hook_reset = gi.cvar("hook_reset", "0", 0);
 	hook_color = gi.cvar("hook_color", "7", 0);
 	hook_offhand = gi.cvar("hook_offhand", "1", 0);
 
@@ -258,7 +256,10 @@ void InitGame (void)
 	hud_freq = gi.cvar ("hud_freq", "2", 0);
 	max_hud_dist = gi.cvar ("id_dist", "150", 0);
 	light_comp = gi.cvar ("light_comp", "100", 0);
-	motd_last = gi.cvar ("motd_time", "5", 0);
+
+	motd_line = gi.cvar ("motd_line", "", 0);	// MOTD
+	motd_time = gi.cvar ("motd_time", "5", 0);
+
 	id_x = gi.cvar ("id_x", "64", 0);
 	id_y = gi.cvar ("id_y", "-58", 0);
 
@@ -308,8 +309,6 @@ void InitGame (void)
 	camp_distance = gi.cvar ("camp_distance", "256", CVAR_LATCH);
 
 	resp_protect = gi.cvar ("resp_protect", "3", 0);
-
-	motd_line = gi.cvar ("motd_line", " ", 0);	// MOTD
 
 	check_models = gi.cvar ("check_models", "1", 0);
 
@@ -458,7 +457,7 @@ void InitGame (void)
 
 	modversion = gi.cvar ("modversion", MOD_VERSION, CVAR_SERVERINFO | CVAR_NOSET);
 
-	//QW//FIXME: this belongs in level_local_t
+	//QW//FIXME: this probably belongs in level_local_t
 	votetime = 0;
 
 	dmflag=(int)dmflags->value;	//JSW

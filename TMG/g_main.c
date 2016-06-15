@@ -14,6 +14,7 @@
 #include "stdlog.h"	//	StdLog - Mark Davies
 #include "gslog.h"	//	StdLog - Mark Davies. Depends on level_locals_t
 #include "highscore.h"
+#include "hud.h"
 
 game_locals_t	game;
 level_locals_t	level;
@@ -71,7 +72,7 @@ cvar_t	*hook_pullspeed;     // sets how fast the hook pulls a player
 cvar_t	*hook_sky;           // enables hooking to the sky
 cvar_t	*hook_maxtime;       // sets max time you can stay hooked
 cvar_t	*hook_damage;        // sets damage hook does to other players
-cvar_t	*reset_hook;
+cvar_t	*hook_reset;
 cvar_t  *hook_color;
 cvar_t  *hook_offhand;
 
@@ -100,7 +101,7 @@ cvar_t  *id_x;
 cvar_t  *id_y;
 cvar_t  *mod;
 cvar_t  *hud_freq;
-cvar_t  *motd_last;
+cvar_t  *motd_time;
 
 cvar_t  *hostname;
 
@@ -431,6 +432,12 @@ void EndDMLevel (void)
 {
 	edict_t		*ent = NULL;
  	
+	if (deathmatch->value && ctf->value)
+		CTFCalcScores();
+
+	if(highscores->value)
+		SaveHighScores();
+
 	// stay on same level flag
 	if (dmflag & DF_SAME_LEVEL)
 	{
@@ -484,7 +491,6 @@ void EndDMLevel (void)
             ent->classname = "target_changelevel";
             ent->map = level.nextmap;
 			BeginIntermission (ent);
-
         }
         else
         {   // search for a changelevel
@@ -498,12 +504,10 @@ void EndDMLevel (void)
 				BeginIntermission (ent);
             }
         }
-    }                                   /* Added line - mdavies */
+    } /* (!ent) */
 
-//PONKO
 	if(use_bots->value)
 		Load_BotInfo();
-//PONKO
 }
 
 
@@ -550,17 +554,6 @@ void CheckDMRules (void)
 	if(level.time < votetime)
 		return;
 		
-	/*	if (timelimit->value)
-	{
-		if (level.time >= timelimit->value*60)
-		{
-			my_bprintf (PRINT_HIGH, "Timelimit hit.\n");
-			EndDMLevel ();
-			return;
-		}
-	}
-	*/
-
 	if (match_state == STATE_PLAYING && level.time >= match_state_end)
 	{
 		//if (developer->value)
@@ -571,14 +564,13 @@ void CheckDMRules (void)
 		//start voting
 		if(mapvote->value && maplist->nextmap == -1)
 		{
-//			match_state = STATE_VOTING;
 			votetime = level.time+(int)menutime->value;
 		}
 		else
 			EndDMLevel ();
 		return;
 	}
-	//
+	
 	if (ctf->value)
 	{
 		if (CTFCheckRules())
@@ -586,7 +578,6 @@ void CheckDMRules (void)
 			//start voting
 			if(mapvote->value && maplist->nextmap == -1)
 			{
-//				match_state = STATE_VOTING;
 				my_bprintf(PRINT_CHAT, "Use menu to vote for next map!\n");
 				FillMapNames();
 				votetime = level.time+(int)menutime->value;
@@ -596,6 +587,7 @@ void CheckDMRules (void)
 			return;
 		}
 	}
+
 	if (fraglimit->value)
 	{
 		for (i=0 ; i<maxclients->value ; i++)
@@ -609,7 +601,6 @@ void CheckDMRules (void)
 				//start voting
 				if(mapvote->value && maplist->nextmap == -1)
 				{
-//					match_state = STATE_VOTING;
 					my_bprintf(PRINT_CHAT, "Use menu to vote for next map!\n");
 					FillMapNames();
 					votetime = level.time+(int)menutime->value;
@@ -725,9 +716,7 @@ void G_RunFrame (void)
 			spawncycle = level.time + FRAMETIME * 10;
 	}
 	
-	//RAV
-	//raven run level timer
-	timeleft();
+	TimeLeft();
 
 	//
 	// treat each object in turn
@@ -768,12 +757,11 @@ void G_RunFrame (void)
 
 	if(mapvote->value && maplist->nextmap == -1)
 	{
-//		if (developer->value && ceil(match_state_end - level.time) < 11)
-//			gi.dprintf("5 match_state_end = %f, level.time = %f, votetime = %f\n", match_state_end, level.time, votetime);
+		//if (ceil(match_state_end - level.time) < 11)
+		//	DbgPrintf("5 match_state_end = %f, level.time = %f, votetime = %f\n", match_state_end, level.time, votetime);
 		if((votetime > 0) && (level.time+2 > votetime)) //check for votes and exit intermission
 		{
-//			if (developer->value)
-//				gi.dprintf("4 match_state_end = %f, level.time = %f, votetime = %f\n", match_state_end, level.time, votetime);
+			//DbgPrintf("4 match_state_end = %f, level.time = %f, votetime = %f\n", match_state_end, level.time, votetime);
 			EndDMLevel ();
 		}
 	}

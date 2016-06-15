@@ -244,6 +244,21 @@
     <ClInclude Include="highscore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="p_client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="g_func.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="g_target.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="g_trigger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vote.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

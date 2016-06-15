@@ -326,14 +326,18 @@
     <ClInclude Include="g_chase.h" />
     <ClInclude Include="g_cmds.h" />
     <ClInclude Include="g_ctf.h" />
+    <ClInclude Include="g_func.h" />
     <ClInclude Include="g_items.h" />
     <ClInclude Include="g_local.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gslog.h" />
+    <ClInclude Include="g_target.h" />
+    <ClInclude Include="g_trigger.h" />
     <ClInclude Include="highscore.h" />
     <ClInclude Include="hud.h" />
     <ClInclude Include="m_player.h" />
     <ClInclude Include="performance.h" />
+    <ClInclude Include="p_client.h" />
     <ClInclude Include="p_hud.h" />
     <ClInclude Include="q_shared.h" />
     <ClInclude Include="resource.h" />
@@ -341,6 +345,7 @@
     <ClInclude Include="s_map.h" />
     <ClInclude Include="stdlog.h" />
     <ClInclude Include="timer.h" />
+    <ClInclude Include="vote.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc" />

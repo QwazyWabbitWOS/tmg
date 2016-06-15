@@ -92,7 +92,7 @@ void RavCheckTeams(void);
 void MapVote(edict_t *ent);
 
 void OpenJoinMenu(edict_t *ent);
-void Spec(edict_t *ent, pmenu_t *menu);
+void Spectate(edict_t *ent, pmenu_t *menu);
 void CTFChaseCam(edict_t *ent, pmenu_t *p);
 void RAVspec(edict_t *ent, pmenu_t *p);
 void CTFReturnToMain(edict_t *ent, pmenu_t *p);

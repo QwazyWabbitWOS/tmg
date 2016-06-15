@@ -97,7 +97,7 @@ int CountConnectedClients (void)
 
 
 /************this displays 5 digit min:sec************/
-void timeleft(void)
+void TimeLeft(void)
 {
 	int min , sec;
 	long seconds_left;
@@ -378,16 +378,22 @@ char *rav_gettech(edict_t *ent)
 
 char *tn_showHud (edict_t *ent)
 {
-	static char layout[1024];
+	static char layout[1300];
 	int j = 0;
 	gclient_t	*cl;
 	int	score, ping, fph, fpm, frags, died, num_ppl, rank, shots, eff;
 	int bigspree;
 	int s;  //status bar string length
 
-	//	int	team1score = 0;
-	//	int team2score = 0;
-
+	// chasecam status plate
+	char rectangle[] =  "\22\23\23\23\23\23\23\23\23\23\23\23\23\24\n"
+						"\25\26\26\26\26\26\26\26\26\26\26\26\26\27\n"
+						"\30\31\31\31\31\31\31\31\31\31\31\31\31\32";
+	
+	char hudhelp[] = "Press TAB for Menu\n"
+					"Hit [ or ] for player select\n"
+					"Fire to change view\n";
+	
 	num_ppl = rav_getnumclients();
 	cl = ent->client;
 
@@ -402,12 +408,12 @@ char *tn_showHud (edict_t *ent)
 	if(ent->client->pers.motd == true)
 	{
 
-		j += sprintf (layout+j, "xv 0 yt 55 cstring2 \"%s %s\" ",MOD ,MOD_VERSION);
+		j += sprintf (layout+j, "xv 0 yt 55 cstring2 \"%s\" \"%s\" ", MOD, MOD_VERSION);
 		j += sprintf (layout+j, "xv 0 yt 85 cstring2 \"Welcome to %s\" ", hostname->string);
 
 		if (strlen(motd_line->string))
 		{
-			j += sprintf (layout+j, "xv 0 yt 105 cstring \"%s\" ",motd_line->string);
+			j += sprintf (layout+j, "xv 0 yt 105 cstring \"%s\" ", motd_line->string);
 			if (use_hook->value)
 				j += sprintf (layout+j, "xv 0 yt 125 cstring2 \"Bind a key to +hook for Hook\" ");
 			j += sprintf (layout+j, "xv 0 yt 155 cstring \"Hit Any Key to Begin\" ");
@@ -419,17 +425,19 @@ char *tn_showHud (edict_t *ent)
 			j += sprintf (layout+j, "xv 0 yt 125 cstring \"Hit Any Key to Begin\" ");
 		}
 	}
-	//spec
-	else if ((ent->client->resp.spectator != PL_SPECTATOR || ent->client->pers.pl_state == PL_SPECTATOR)
-			 && (ent->client->pers.motd == false))
+	//spectator hud
+	else if ((ent->client->resp.spectator != PL_SPECTATOR || 
+		ent->client->pers.pl_state == PL_SPECTATOR) && 
+		(ent->client->pers.motd == false))
 	{
 		if (ent->client->chase_mode == 0)
 		{
-			j += sprintf (layout+j, "xv 0 yb -90 cstring \"\22\23\23\23\23\23\23\23\23\23\23\23\23\24\n\25\26\26\26\26\26\26\26\26\26\26\26\26\27\n\30\31\31\31\31\31\31\31\31\31\31\31\31\32\" ");
-			j+= sprintf (layout+j, "xv 0 yb -94 cstring \"\nFreeCam\" ");
+			j += sprintf (layout+j, "xv 0 yb -90 cstring \"%s\" ", rectangle);
+			j += sprintf (layout+j, "xv 0 yb -94 cstring \"\nFreeCam\" ");
 			if(ent->client->chase_target != NULL)
-				j += sprintf (layout+j, "%s", va ("xv 0 yb -78 cstring \"%s\" ", ent->client->chase_target->client->pers.netname ));
-			j += sprintf (layout+j, "xv 0 yb -55 cstring \"Press TAB for Menu\n hit [ or ] for player select\nFire to change view\n\" ");
+				j += sprintf (layout+j, "%s", va ("xv 0 yb -78 cstring \"%s\" ", 
+							ent->client->chase_target->client->pers.netname ));
+			j += sprintf (layout+j, "xv 0 yb -55 cstring \"%s\" ", hudhelp);
 		}
 		else if (ent->client->chase_mode == CHASE_FLOATCAM)
 		{
@@ -441,11 +449,11 @@ char *tn_showHud (edict_t *ent)
 			}
 			else
 			{
-				j += sprintf (layout + j, "xv 0 yb -90 cstring \"\22\23\23\23\23\23\23\23\23\23\23\23\23\24\n\25\26\26\26\26\26\26\26\26\26\26\26\26\27\n\30\31\31\31\31\31\31\31\31\31\31\31\31\32\" ");
-				j+= sprintf (layout+j, "xv 0 yb -94 cstring \"\nFloatCam\" ");
+				j += sprintf (layout + j, "xv 0 yb -90 cstring \"%s\" ", rectangle);
+				j += sprintf (layout+j, "xv 0 yb -94 cstring \"\nFloatCam\" ");
 				j += sprintf (layout+j, "%s", va ("xv 0 yb -78 cstring \"%s\" ",
-												  ent->client->chase_target->client->pers.netname ));
-				j += sprintf (layout+j, "xv 0 yb -55 cstring \"Press TAB for Menu\n hit [ or ] for player select\nFire to change view\n\" ");
+							ent->client->chase_target->client->pers.netname ));
+				j += sprintf (layout+j, "xv 0 yb -55 cstring \"%s\" ", hudhelp);
 			}
 		}
 		else if(ent->client->chase_mode == CHASE_EYECAM)
@@ -458,11 +466,11 @@ char *tn_showHud (edict_t *ent)
 			}
 			else
 			{
-				j += sprintf (layout+j, "xv 0 yb -90 cstring \"\22\23\23\23\23\23\23\23\23\23\23\23\23\24\n\25\26\26\26\26\26\26\26\26\26\26\26\26\27\n\30\31\31\31\31\31\31\31\31\31\31\31\31\32\" ");
-				j+= sprintf (layout+j, "xv 0 yb -94 cstring \"\nEyECam\" ");
+				j += sprintf (layout+j, "xv 0 yb -90 cstring \"%s\" ", rectangle);
+				j += sprintf (layout+j, "xv 0 yb -94 cstring \"\nEyECam\" ");
 				j += sprintf (layout+j, "%s", va ("xv 0 yb -78 cstring \"%s\" ",
-												  ent->client->chase_target->client->pers.netname ));
-				j += sprintf (layout+j, "xv 0 yb -55 cstring \"Press TAB for Menu\n hit [ or ] for player select\nFire to change view\n\" ");
+							ent->client->chase_target->client->pers.netname ));
+				j += sprintf (layout+j, "xv 0 yb -55 cstring \"%s\" ", hudhelp);
 			}
 		}
 		else if(ent->client->chase_mode == CHASE_CHASECAM)
@@ -475,10 +483,11 @@ char *tn_showHud (edict_t *ent)
 			}
 			else
 			{
-				j += sprintf (layout+j, "xv 0 yb -90 cstring \"\22\23\23\23\23\23\23\23\23\23\23\23\23\24\n\25\26\26\26\26\26\26\26\26\26\26\26\26\27\n\30\31\31\31\31\31\31\31\31\31\31\31\31\32\" ");
-				j+= sprintf (layout+j, "xv 0 yb -94 cstring \"\nChaseCam\" ");
-				j += sprintf (layout+j, "%s", va ("xv 0 yb -78 cstring \"%s\" ", ent->client->chase_target->client->pers.netname ));
-				j += sprintf (layout+j, "xv 0 yb -55 cstring \"Press TAB for Menu\n hit [ or ] for player select\nFire to change view\n\" ");
+				j += sprintf (layout+j, "xv 0 yb -90 cstring \"%s\" ", rectangle);
+				j += sprintf (layout+j, "xv 0 yb -94 cstring \"\nChaseCam\" ");
+				j += sprintf (layout+j, "%s", va ("xv 0 yb -78 cstring \"%s\" ", 
+							ent->client->chase_target->client->pers.netname ));
+				j += sprintf (layout+j, "xv 0 yb -55 cstring \"%s\" ", hudhelp);
 			}
 		}
 		else
@@ -629,7 +638,7 @@ char *tn_showHud (edict_t *ent)
 	if ( s > sizeof (layout))
 	{
 		gi.dprintf("%s: Statusbar too big %d\n", __func__, strlen(layout)); //to the log
-		layout[1023] = 0;
+		layout[sizeof(layout) - 1] = 0;
 	}
 	//id disabling added 12-14-99 raven
 

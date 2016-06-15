@@ -29,6 +29,7 @@ extern int CountConnectedClients (void);
 extern int rav_getFPM(gclient_t* cl);
 extern int rav_getFPH(gclient_t* cl);
 extern int rav_time(void);
+extern void TimeLeft(void);
 
 extern char *rav_gettech(edict_t *ent);
 

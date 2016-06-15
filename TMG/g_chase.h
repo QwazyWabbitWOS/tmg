@@ -10,7 +10,7 @@
 #define CHASE_LASTMODE	CHASE_EYECAM
 
 void SwitchModeChaseCam(edict_t *ent);
-//void ToggleChaseCam(edict_t *ent, pmenu_t *p);
+void ToggleChaseCam(edict_t *ent, pmenu_t *p);
 void UpdateChaseCam(edict_t *ent);
 void ChaseNext(edict_t *ent);
 void ChasePrev(edict_t *ent);

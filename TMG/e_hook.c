@@ -394,7 +394,7 @@ void hook_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 	
 	if (other->client) {		// we hit a player
 		// ignore hitting a teammate
-		if (OnSameTeam(other, self->owner) || reset_hook->value)
+		if (OnSameTeam(other, self->owner) || hook_reset->value)
 		{
 		abandon_hook_reset(self);
 			return;

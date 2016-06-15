@@ -599,7 +599,7 @@ extern	cvar_t	*hook_pullspeed;     // sets how fast the hook pulls a player
 extern	cvar_t	*hook_sky;           // enables hooking to the sky
 extern	cvar_t	*hook_maxtime;       // sets max time you can stay hooked
 extern	cvar_t	*hook_damage;        // sets damage hook does to other players
-extern	cvar_t	*reset_hook;
+extern	cvar_t	*hook_reset;
 extern  cvar_t  *hook_color;
 extern  cvar_t  *hook_offhand;
 
@@ -625,7 +625,7 @@ extern  cvar_t  *id_x;
 extern  cvar_t  *id_y;
 extern  cvar_t  *mod;
 extern  cvar_t  *hud_freq;
-extern  cvar_t  *motd_last;
+extern  cvar_t  *motd_time;
 
 extern  cvar_t  *hostname;
 
@@ -1149,7 +1149,6 @@ void CheckDMRules (void);
 void ExitLevel (void);
 void G_RunFrame (void);
 
-void timeleft(void);
 
 //
 // g_save.c
@@ -1222,7 +1221,7 @@ int WFMenuFromNumberKey(edict_t *ent, int slot);
 //
 
 // client data that stays across multiple level loads
-typedef struct
+typedef struct client_persistent_s
 {
 	char		userinfo[MAX_INFO_STRING];
 	char		netname[16];
@@ -1253,11 +1252,11 @@ typedef struct
 	int			power_cubes;	// used for tracking the cubes in coop games
 	int			score;			// for calculating total unit score in coop games
 
-//RAV
-	int           pl_state; //playing 1, spec 0 , 2 warmup ,need spawned 3,cheat bot 5 , 
-	int		   isop; //operators
-//JSW	int		   ismop; //match operators
-	qboolean   motd;
+	//RAV
+	int	pl_state;	//playing 1, spec 0 , 2 warmup ,need spawned 3,cheat bot 5 , 
+	int	isop;		//operators
+	//JSW int	ismop;	//match operators
+	qboolean   motd;	// client needs to see motd
 	qboolean   db_hud;
 	qboolean   db_id;
 	qboolean   name_set;
@@ -1280,12 +1279,12 @@ typedef struct
 	//end
 //
 
-} client_persistant_t;
+} client_persistent_t;
 
 // client data that stays across deathmatch respawns
-typedef struct
+typedef struct client_respawn_s
 {
-	client_persistant_t	coop_respawn;	// what to set client->pers to on a respawn
+	client_persistent_t	coop_respawn;	// what to set client->pers to on a respawn
 	int			enterframe;			// level.framenum the client entered the game
 	int			score;				// frags, etc
 //ZOID
@@ -1341,7 +1340,7 @@ struct gclient_s
 	int				ping;
 
 	// private to game
-	client_persistant_t	pers;
+	client_persistent_t	pers;
 	client_respawn_t	resp;
 	pmove_state_t		old_pmove;	// for detecting out-of-pmove changes
 

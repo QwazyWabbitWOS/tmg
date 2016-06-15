@@ -1703,7 +1703,7 @@ void CTFGrappleTouch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t
 	if (other->takedamage)
 	{
 		T_Damage (other, self, self->owner, self->velocity, self->s.origin, plane->normal, grapple_damage->value  , grapple_damage->value  , 0, MOD_GRAPPLE);
-		if(reset_hook->value)
+		if(hook_reset->value)
 		{
 			CTFResetGrapple(self);
 			return;
@@ -3551,9 +3551,9 @@ void JoinGame(edict_t *ent, pmenu_t *menu)
 	PMenu_Close(ent);
 }
 
-//RAV aDD spectator mode
+//RAV Add spectator mode
 
-void Spec(edict_t *ent, pmenu_t *menu)
+void Spectate(edict_t *ent, pmenu_t *menu)
 {
 	//drop techs and such
 	CTFDeadDropFlag(ent);
@@ -3588,7 +3588,7 @@ void CTFChaseCam(edict_t *ent, pmenu_t *p)
 	if (ent->client->chase_target)
 	{
 		ent->client->chase_target = NULL;
-		Spec(ent, NULL);
+		Spectate(ent, NULL);
 		PMenu_Close(ent);
 		ent->client->pers.pl_state = PL_SPECTATOR;
 		return;
@@ -3602,7 +3602,7 @@ void CTFChaseCam(edict_t *ent, pmenu_t *p)
 			ent->client->chase_target = e;
 			ent->client->update_chase = true;
 			//RAV
-			Spec(ent ,NULL);
+			Spectate(ent ,NULL);
 			found = true;
 			my_bprintf(PRINT_HIGH, "%s Moved to Spectator.\n", ent->client->pers.netname);
 			PMenu_Close(ent);
