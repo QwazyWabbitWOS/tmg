@@ -594,7 +594,6 @@ Cmd_Inven_f
 */
 void Cmd_Inven_f (edict_t *ent)
 {
-	int i;
 
 	if (ent->client->menu)
 	{
@@ -627,19 +626,6 @@ void Cmd_Inven_f (edict_t *ent)
 		OpenJoinMenu(ent);
 		return;
 	}
-//ZOID
-
-	ent->client->showinventory = true;
-	ent->client->showscores = false;
-
-	gi.WriteByte (svc_inventory);
-	
-	for (i = 0; i < MAX_ITEMS; i++)
-	{
-		gi.WriteShort (ent->client->pers.inventory[i]);
-	}
-	
-	gi.unicast (ent, true);
 }
 
 /*
