@@ -483,7 +483,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 		//DB Highscores
 		else if (ent->client->showhighscores)
 		{
-			if (hs_file = fopen(filename, "r"))
+			if ((hs_file = fopen(filename, "r")))
 			{
 				i = 0;
 				while ( fgets(line, 80, hs_file) )
