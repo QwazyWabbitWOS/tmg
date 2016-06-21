@@ -80,19 +80,19 @@ typedef struct banstruct
 #define LT_PERM           1
 #define LT_TEMP           2
 
-typedef struct 
+typedef struct cmdque_s
 {
   byte command;
   float timeout;
   unsigned long data;
   char *str;
-} CMDQUEUE;
+} cmdqueue;
 
 typedef struct
 {
   unsigned char retries;
   unsigned char rbotretries;
-  CMDQUEUE      cmdQueue[20];         // command queue
+  cmdqueue      cmdQueue[20];         // command queue
   int           maxCmds;
   unsigned long	clientcommand;				// internal proxy commands
   char			teststr[9];
@@ -146,7 +146,7 @@ typedef struct
 #define CCMD_NCSILENCE			0x000200
 #define CCMD_SCSILENCE			0x000400
 
-enum _commands 
+enum commands_n 
 {
   QCMD_STARTUP,
   QCMD_STARTUPTEST,
