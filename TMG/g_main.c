@@ -787,10 +787,8 @@ void G_RunFrame (void)
 				e = &g_edicts[i];
 				if (e && e->bot_client)
 				{
-					NumBotsInGame --;
 					ClientDisconnect(e);
 				}
-				NumBotsInGame = 0;
 			}
 			
 			for_each_player(ent, i)
@@ -821,9 +819,6 @@ void G_RunFrame (void)
 			ent = g_edicts + 1 + i;
 			if (ent && ent->bot_client)
 			{
-				//remove from bot count !
-				NumBotsInGame --;
-				//disconnect bot
 				ClientDisconnect(ent);
 			}
 

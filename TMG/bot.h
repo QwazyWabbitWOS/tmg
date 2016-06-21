@@ -105,7 +105,7 @@ extern void CheckCampSite(edict_t *other);
 // bot_func.c
 //
 extern qboolean Get_YenPos(char *Buff,int *curr);
-extern int rav_GetNumBots(void);
+extern int GetNumBots(void);
 extern void BotAssignTeamCtf(gclient_t *who);
 extern void Check_Bot_Number (void);
 extern edict_t *BestScorePlayer(void);
@@ -411,7 +411,6 @@ extern	float		JumpMax;
 extern	int			botskill;
 extern	int			trace_priority;
 extern	int			FFlg[MAX_BOTSKILL];
-extern int NumBotsInGame; //Raven
 extern	int			ListedBots;
 
 //for avoid abnormal frame error

@@ -928,20 +928,20 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	strncpy (level.mapname, mapname, sizeof(level.mapname)-1);
 	strncpy (game.spawnpoint, spawnpoint, sizeof(game.spawnpoint)-1);
 
-//RAV
+	//RAV
 
 	// set client fields on player ents
 	for (i=0 ; i<game.maxclients ; i++)
 		g_edicts[i+1].client = game.clients + i;
 
-//RAV
-   entities = EAVYLoadEntities(mapname, entities);
-//
+	//RAV
+	entities = EAVYLoadEntities(mapname, entities);
+	//
 
 	ent = NULL;
 	inhibit = 0;
 
-// parse ents
+	// parse ents
 	while (1)
 	{
 		// parse the opening brace	
@@ -956,7 +956,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 		else
 			ent = G_Spawn ();
 		entities = ED_ParseEdict (entities, ent);
-		
+
 		// yet another map hack
 		if (!stricmp(level.mapname, "command") && !stricmp(ent->classname, "trigger_once") && !stricmp(ent->model, "*27"))
 			ent->spawnflags &= ~SPAWNFLAG_NOT_HARD;
@@ -992,30 +992,30 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 					((skill->value == 1) && (ent->spawnflags & SPAWNFLAG_NOT_MEDIUM)) ||
 					(((skill->value == 2) || (skill->value == 3)) && (ent->spawnflags & SPAWNFLAG_NOT_HARD))
 					)
-					{
-						G_FreeEdict (ent);	
-						inhibit++;
-						continue;
-					}
+				{
+					G_FreeEdict (ent);	
+					inhibit++;
+					continue;
+				}
 			}
 
 			ent->spawnflags &= ~(SPAWNFLAG_NOT_EASY|SPAWNFLAG_NOT_MEDIUM|SPAWNFLAG_NOT_HARD|SPAWNFLAG_NOT_COOP|SPAWNFLAG_NOT_DEATHMATCH);
 		}
 
 		ED_CallSpawn (ent);
-//laser index
+		//laser index
 		if (Q_stricmp(ent->classname, "target_laser") == 0)
 		{
 			if(laser < MAX_LASERINDEX) LaserIndex[laser++] = ent;
 		}
-//PON-CTF
-	if(ent->solid == SOLID_TRIGGER && ctf->value && chedit->value)
-		ent->moveinfo.speed = 0;
-	if (Q_stricmp(ent->classname, "item_flag_team1") == 0)
-		bot_team_flag1 = ent;
-	else if (Q_stricmp(ent->classname, "item_flag_team2") == 0)
-		bot_team_flag2 = ent;
-//PON-CTF
+		//PON-CTF
+		if(ent->solid == SOLID_TRIGGER && ctf->value && chedit->value)
+			ent->moveinfo.speed = 0;
+		if (Q_stricmp(ent->classname, "item_flag_team1") == 0)
+			bot_team_flag1 = ent;
+		else if (Q_stricmp(ent->classname, "item_flag_team2") == 0)
+			bot_team_flag2 = ent;
+		//PON-CTF
 
 	}	
 
@@ -1025,17 +1025,16 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 
 	PlayerTrail_Init ();
 
-	//func_train‚ÌƒŠƒ“ƒN
+	//func_train
 	G_FindTrainTeam();
-//RAV
+	//RAV
 	ServerInit (true);
-	
+
 	if(ctf->value && dedicated->value)
 		EAVYCTF_Init();
 
-  sl_GameStart( &gi, level );//stdlog mark
-//
-
+	sl_GameStart( &gi, level );//stdlog mark
+	//
 
 	if (!G_Find(NULL, FOFS(classname), "item_flag_team1"))
 	{	// not a CTF level
@@ -1043,8 +1042,8 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	}
 	else	// make sure CTF is enabled, since there is a flag
 	{
-//		gi.cvar_forceset("ctf", "1");
-//		gi.cvar_forceset("grapple", "1");
+		//gi.cvar_forceset("ctf", "1");
+		//gi.cvar_forceset("grapple", "1");
 
 		if (ctf->value)
 		{
@@ -1057,8 +1056,8 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 				gi.configstring (CS_STATUSBAR, ctf_statusbar);
 			}
 			//precaches
-		//	gi.imageindex("sbctf1");
-		//	gi.imageindex("sbctf2");
+			//gi.imageindex("sbctf1");
+			//gi.imageindex("sbctf2");
 			gi.imageindex("i_ctf1");
 			gi.imageindex("i_ctf2");
 			gi.imageindex("i_ctf1d");
@@ -1069,15 +1068,12 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 		}
 	}
 
-//ZOID
-//RAV
+	//ZOID
+	//RAV
 
-  //set up date
 	GetTime();
 	GetDate();
-	//print time to log
-	gi.dprintf ("%s started %10s %8s\n" ,level.mapname, sys_date ,sys_time); 
-
+	gi.dprintf ("%s started %10s %8s\n", level.mapname, sys_date, sys_time); 
 
 	voted = false;
 	mapscrewed = false;
@@ -1086,22 +1082,21 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 		strcpy(defaultmap,	"q2ctf1");
 	else
 		strcpy(defaultmap,	"q2dm1");
-	
+
 	mapvotefilled = false;
 
 	if(highscores->value)
 		LoadHighScores();
-//ponko
 
- if(use_bots->value){
-	CTFSetupNavSpawn();
-	if(!chedit->value) G_FindItemLink();
-	NumBotsInGame = 0;
-	G_SpawnRouteLink();
-	ctfjob_update = level.time;
+	if(use_bots->value)
+	{
+		CTFSetupNavSpawn();
+		if(!chedit->value) 
+			G_FindItemLink();
+		G_SpawnRouteLink();
+		ctfjob_update = level.time;
 	}
-
- }
+}
 
 
 //===================================================================

@@ -14,9 +14,6 @@
 extern float myrand; // Note: Continuous random generation is CPU expensive
 extern float myrandom;
 
-/* global */
-int NumBotsInGame = 0; // [1..MAXBOTS]
-
 qboolean Get_YenPos(char *Buff,int *curr)
 {
 	int i;
@@ -47,26 +44,19 @@ qboolean Get_YenPos(char *Buff,int *curr)
 //check to see if we need to add or remove bots
 //based on bot_free client spaces avaliable
 //========================================
-///////////////get # of clients////////////////
-//QW//int rav_getnumclients();
 
-int rav_GetNumBots(void)
+int GetNumBots(void)
 {
-	int rCount = 0;
 	int i;
 
-	for (i=1; i<=game.maxclients; i++)
-        {
-    	edict_t* ent = g_edicts + i;
-		if (!ent->inuse	|| !ent->bot_client)
-			continue;
-		if (!ent->client)
-			continue;
-
-		rCount++;
-		}
-
-	return rCount;
+	int botCount = 0;
+	for (i = 1; i <= game.maxclients; i++)
+	{
+		edict_t* ent = g_edicts + i;
+		if (ent->inuse && ent->bot_client)
+			botCount++;
+	}
+	return botCount;
 }
 
 
@@ -95,7 +85,7 @@ void Check_Bot_Number (void)
 			wait_time = level.time +3;
 		}
 		//REMOVE A BOT !!  lowest on frags first
-		if ((rav_GetNumBots() > 0) && (rav_getnumclients() > (maxclients->value - bot_free_clients->value )) &&
+		if ((GetNumBots() > 0) && (rav_getnumclients() > (maxclients->value - bot_free_clients->value )) &&
 			(kill_time <= level.time))
 		{
 			// drop a bot to free a client spot
@@ -104,12 +94,10 @@ void Check_Bot_Number (void)
 				ent = &g_edicts[i];
 				if ((ent && !ent->bot_client)|| (rav_getnumclients() <= (maxclients->value - bot_free_clients->value )))
 					continue;
-				//remove from bot count !
-				NumBotsInGame --;
 				//disconnect bot
 				ClientDisconnect(ent);
 				kill_time = level.time +3;
-				gi.dprintf("%i bots are now left in the game\n", rav_GetNumBots());
+				gi.dprintf("%i bots are now left in the game\n", GetNumBots());
 			}
 		}
 	} 
@@ -133,17 +121,19 @@ void BotAssignTeamCtf(gclient_t *who)
 
 		switch (player->client->resp.ctf_team)
 		{
-			case CTF_TEAM1: team1count++; break;
-			case CTF_TEAM2: team2count++; break;
+		case CTF_TEAM1: team1count++; break;
+		case CTF_TEAM2: team2count++; break;
 		}
 	}
-	if (team1count < team2count) who->resp.ctf_team = CTF_TEAM1;
-	else if (team2count < team1count) who->resp.ctf_team = CTF_TEAM2;
-	else if (rand() & 1) who->resp.ctf_team = CTF_TEAM1;
+	if (team1count < team2count) 
+		who->resp.ctf_team = CTF_TEAM1;
+	else if (team2count < team1count) 
+		who->resp.ctf_team = CTF_TEAM2;
+	else if (rand() & 1) 
+		who->resp.ctf_team = CTF_TEAM1;
 	else who->resp.ctf_team = CTF_TEAM2;
-
-
 }
+
 //=======================================================
 //============ TAUNTING/CHATTING/INSULTING ==============
 //=======================================================
@@ -753,8 +743,6 @@ void InitializeBot (edict_t *ent, int botindex)
 	client->pers.max_slugs		= 50;
 	}
 
-	NumBotsInGame ++;
-	
 	ent->client->pers.connected = false;
 	gi.dprintf ("%s connected\n", ent->client->pers.netname);
 
@@ -1388,21 +1376,18 @@ qboolean SpawnBot(int i)
 //----------------------------------------------------------------
 void Bot_SpawnCall(void)
 {
-	int i;
 
-	i = NumBotsInGame;
+	int i = GetNumBots();
 	i++;
-			
-		if(SpawnBot(i))
+
+	if(SpawnBot(i))
 		Bot[i].spflg = BOT_SPAWNED;
-			else
-			{
-				Bot[i].spflg = BOT_SPAWNNOT;
-				targetindex = 0;
-			}
-			SpawnWaitingBots--;
-			
-		
+	else
+	{
+		Bot[i].spflg = BOT_SPAWNNOT;
+		targetindex = 0;
+	}
+	SpawnWaitingBots--;
 }
 //----------------------------------------------------------------
 //Spawn Bot Reserving
@@ -1561,8 +1546,8 @@ void Bot_LevelChange(void)
 {
 	int i,j,k;
 
-	j = 0,k = 0;
-
+	j = 0;
+	k = 0;
 	for(i = 0;i < MAXBOTS;i++)
 	{
 		if(Bot[i].spflg)
@@ -1575,12 +1560,11 @@ void Bot_LevelChange(void)
 			j++;
 		}
 	}
-	for(i = 0;i < k; i++)
+	for(i = 0; i < k; i++)
 	{
 		RemoveBot();
 	}
-
-	SpawnWaitingBots = k;//j;
+	SpawnWaitingBots = k;
 }
 
 

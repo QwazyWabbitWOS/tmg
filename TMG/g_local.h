@@ -1723,7 +1723,7 @@ qboolean G_ClientNotDead(edict_t *ent);
 qboolean G_ClientInGame(edict_t *ent);
 qboolean locked_teams; // teams status
 qboolean mapscrewed;
-char defaultmap[40];
+char defaultmap[MAX_QPATH];
 //even teams stuff
 qboolean notfairRED;
 qboolean notfairBLUE;
