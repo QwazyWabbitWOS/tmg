@@ -50,7 +50,7 @@ qboolean Get_YenPos(char *Buff,int *curr)
 ///////////////get # of clients////////////////
 //QW//int rav_getnumclients();
 
-int rav_getnumbots(void)
+int rav_GetNumBots(void)
 {
 	int rCount = 0;
 	int i;
@@ -95,7 +95,7 @@ void Check_Bot_Number (void)
 			wait_time = level.time +3;
 		}
 		//REMOVE A BOT !!  lowest on frags first
-		if ((rav_getnumbots() > 0) && (rav_getnumclients() > (maxclients->value - bot_free_clients->value )) &&
+		if ((rav_GetNumBots() > 0) && (rav_getnumclients() > (maxclients->value - bot_free_clients->value )) &&
 			(kill_time <= level.time))
 		{
 			// drop a bot to free a client spot
@@ -109,7 +109,7 @@ void Check_Bot_Number (void)
 				//disconnect bot
 				ClientDisconnect(ent);
 				kill_time = level.time +3;
-				gi.dprintf("%i bots are now left in the game\n", rav_getnumbots());
+				gi.dprintf("%i bots are now left in the game\n", rav_GetNumBots());
 			}
 		}
 	} 

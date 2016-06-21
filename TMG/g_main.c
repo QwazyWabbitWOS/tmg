@@ -485,7 +485,8 @@ void EndDMLevel (void)
 
     if( !ent )                          /* added line - mdavies */
     {                                   /* added line - mdavies */
-        if (level.nextmap[0])           /* changed else if to if - mdavies */
+        DbgPrintf("mdsoft_NextMap returned NULL!\n");
+		if (level.nextmap[0])           /* changed else if to if - mdavies */
         {   // go to a specific map
             ent = G_Spawn ();
             ent->classname = "target_changelevel";

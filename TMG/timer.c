@@ -345,7 +345,8 @@ void TimerThink (void)
 				if (carrier->client->resp.vote == true)
 					yesvotes++;
 				else
-					novotes++;
+					if (!carrier->bot_client) // bots can't vote
+						novotes++;
 			}
 			if (ctf->value)
 			{

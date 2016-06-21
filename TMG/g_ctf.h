@@ -22,18 +22,18 @@
 
 #define MAX_MENU_MAPS	14	//number of lines in mapvote menu
 
-typedef enum {
+typedef enum ctfteam_n {
 	CTF_NOTEAM,
 	CTF_TEAM1,
 	CTF_TEAM2
 } ctfteam_t;
 
-typedef enum {
+typedef enum ctfstate_n {
 	CTF_STATE_START,
 	CTF_STATE_PLAYING
 } ctfstate_t;
 
-typedef enum {
+typedef enum ctfgrapplestate_n {
 	CTF_GRAPPLE_STATE_FLY,
 	CTF_GRAPPLE_STATE_PULL,
 	CTF_GRAPPLE_STATE_HANG

@@ -1900,8 +1900,6 @@ Called when a player connects to a server or respawns in
 a deathmatch.
 ============
 */
-void ShowGun(edict_t *ent);
-
 void PutClientInServer (edict_t *ent)
 {
 	vec3_t	mins = {-16, -16, -24};
@@ -1915,7 +1913,7 @@ void PutClientInServer (edict_t *ent)
 	zgcl_t			zgcl;
 	gitem_t		*item, *ammo;
 	
-	DbgPrintf("%s entry\n", __func__);
+	DbgPrintf("%s entered\n", __func__);
 
 	// find a spawn point
 	// do it before setting health back up, so farthest

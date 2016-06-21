@@ -903,10 +903,12 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	float		skill_level;
 
 	int			laser = 0;
-//ponko
+
+	DbgPrintf("%s entered\n", __func__);
+	//ponko
 	memset(mpindex,0,sizeof(mpindex));	//target item index
 	memset(LaserIndex,0,sizeof(LaserIndex));
-//ponko
+	//ponko
 
 	skill_level = floor (skill->value);
 	if (skill_level < 0)

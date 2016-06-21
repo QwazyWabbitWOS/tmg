@@ -103,14 +103,14 @@
 
 static vec3_t VEC_ORIGIN = {0,0,0};
 
-typedef enum
+typedef enum damage_n
 {
 	DAMAGE_NO,
 	DAMAGE_YES,			// will take damage if hit
 	DAMAGE_AIM			// auto targeting recognizes this
 } damage_t;
 
-typedef enum 
+typedef enum weaponstate_n
 {
 	WEAPON_READY, 
 	WEAPON_ACTIVATING,
@@ -118,7 +118,7 @@ typedef enum
 	WEAPON_FIRING
 } weaponstate_t;
 
-typedef enum
+typedef enum ammo_n
 {
 	AMMO_BULLETS,
 	AMMO_SHELLS,
@@ -213,7 +213,7 @@ typedef enum
 
 
 // edict->movetype values
-typedef enum
+typedef enum movetype_n
 {
 MOVETYPE_NONE,			// never moves
 MOVETYPE_NOCLIP,		// origin and angles change with no interaction
@@ -854,7 +854,7 @@ extern	cvar_t	*modversion;
 //
 #define FFL_SPAWNTEMP		1
 
-typedef enum {
+typedef enum fieldtype_n {
 	F_INT, 
 	F_FLOAT,
 	F_LSTRING,			// string on disk, pointer in memory, TAG_LEVEL
@@ -950,6 +950,7 @@ void tolower_text(char *src, char *dest);
 qboolean CheckFlood(edict_t *who);
 void LogConnect(edict_t *ent, qboolean connect);
 void LogChat(char *text);
+
 float yesvotes;
 float novotes;
 qboolean mapvoteactive;
@@ -1173,7 +1174,7 @@ void ReadLevel (char *filename);
 #define ANIM_REVERSE	6
 // ### Hentai ### END
 
-enum {
+enum pmenu_n {
 	PMENU_ALIGN_LEFT,
 	PMENU_ALIGN_CENTER,
 	PMENU_ALIGN_RIGHT

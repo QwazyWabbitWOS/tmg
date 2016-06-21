@@ -141,7 +141,7 @@ void MaplistNextMap(edict_t *ent)
 
 	strcpy(defaultmap,	maplist->mapname[0]);
 	//check for blank mapname or bad map num
-	if(end < 2 || i >=maplist->nummaps )
+	if(end < 2 || i >= maplist->nummaps )
 	{
 		mapscrewed = true;
 		maplist->currentmap = 0;

@@ -14,7 +14,7 @@
 
 // edict->solid values
 
-typedef enum
+typedef enum solid_n
 {
 SOLID_NOT,			// no interaction with other objects
 SOLID_TRIGGER,		// only touch when inside, after moving
