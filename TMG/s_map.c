@@ -12,10 +12,10 @@ static int
 parse_line(FILE	*fpFile, char *pFile, char *pName, int  *pMin, int  *pMax );
 
 // instantiate cvars
-cvar_t	*map_c;	// map_change
-cvar_t	*map_r;	// map_randomize
-cvar_t	*map_o;	// map_once
-cvar_t	*map_d;	// map_debug
+cvar_t	*map_change;
+cvar_t	*map_randomize;
+cvar_t	*map_once;
+cvar_t	*map_debug;
 
 // other cvars used:
 // basedir, game_dir, maplist
@@ -26,10 +26,10 @@ cvar_t	*map_d;	// map_debug
 void mdsoft_InitMaps(void)
 {
 	maplist = gi.TagMalloc (sizeof(maplist_t), TAG_GAME);
-	map_c = gi.cvar( "map_change", "1", 0 );
-	map_r = gi.cvar( "map_randomize", "0", 0 );
-	map_o = gi.cvar( "map_once", "0", 0 );
-	map_d = gi.cvar( "map_debug", "0", 0 );
+	map_change = gi.cvar( "map_change", "1", 0 );
+	map_randomize = gi.cvar( "map_randomize", "0", 0 );
+	map_once = gi.cvar( "map_once", "0", 0 );
+	map_debug = gi.cvar( "map_debug", "0", 0 );
 	maplist->active = false;
 	mdsoft_NextMap();
 }
@@ -48,15 +48,54 @@ void mdsoft_InitMaps(void)
 	populated.
 
  2. mdsoft_map != NULL, the array exists.
-	Select a map at random from the array of maps
-	and return its entity for use at changelevel.
+	Select a map either sequentially or at random 
+	from the array of maps and return its entity 
+	for use at changelevel.
 
  Return pointer to selected map, return NULL on error.
 
  Note: uses realloc, mdsoft_map is global and must
 	be freed in ShutdownGame.
+ 
  FIXME: find a way to use gi.TagMalloc instead.
 
+ BUGS: 
+ If any map in the maplist has min players set
+ to 0, the s_map gets stuck on that map and won't
+ rotate to another unless voted out of the condition.
+ Avoid by setting min players to 2 or more.
+ Should we set min to 1 or 2 by default? Needs testing.
+
+ Map search can fail while indexing through the list.
+ This failure mode should not be possible. 
+ Failure to select a map in the list should never 
+ occur unless the map file doesn't exist and the
+ function doesn't even test for that.
+ This makes it necessary to handle NULL return and
+ go through gyrations to fall back to current map
+ until human players break the cycle by voting
+ a map.
+
+ Maplist must set both min and max or else selection
+ of the map will never occur. (Setting min and not max
+ causes selection fail because max <= min.)
+ Possible fix, set program default max = maxclients->value.
+
+ Search for map fails if min/max players are not
+ set on any maps. Function skips two maps in the 
+ list and picks the next.
+
+ Editorial comment: 
+ This function is entirely too tricky for its 
+ own good. It needs to be broken up into at least
+ five parts.
+ 0. Initialize the list.
+ 1. Seek sequential.
+ 2. Seek random.
+ 3. Verify selected map file exists, report 
+    and reselect if it doesn't.
+ 4. Set next map.
+ 
  */
 
 edict_t *mdsoft_NextMap( void )
@@ -67,7 +106,7 @@ edict_t *mdsoft_NextMap( void )
 	int         nTimes  = 0;
 	int i;
 
-	if( (int) map_c->value == 0 )
+	if(map_change->value == 0 )
 		return NULL;
 
 	/* Load Maps File */
@@ -101,7 +140,7 @@ edict_t *mdsoft_NextMap( void )
 				do
 				{
 					temp.min      = 0;
-					temp.max      = 0;
+					temp.max      = (int) maxclients->value;
 					temp.fVisited = 0;
 
 					element = parse_line( fpFile,
@@ -115,7 +154,7 @@ edict_t *mdsoft_NextMap( void )
 						MAP_ENTRY *newone;
 
 						int size = (mdsoft_map_size + 1) * sizeof(*newone);
-						newone = realloc(mdsoft_map, size);
+						newone = realloc(mdsoft_map, size); //FIXME: gi.TagMalloc here.
 
 						if( newone )
 						{
@@ -142,9 +181,8 @@ edict_t *mdsoft_NextMap( void )
 			else
 			{
 				gi.bprintf (PRINT_HIGH,
-							"ERROR: Could not open maps list file [");
-				gi.bprintf (PRINT_HIGH, pFileName );
-				gi.bprintf (PRINT_HIGH, "]\n" );
+							"WARNING: Could not open maps list file"
+							" [%s]\n", pFileName);
 			}
 		}
 	}
@@ -156,15 +194,13 @@ edict_t *mdsoft_NextMap( void )
 		do
 		{
 			/* Find random map to search from */
-			if( (NULL != map_r) &&
-			   ((int)map_r->value > 0 ) )
+			if(map_randomize->value)
 			{
 				mdsoft_map_last = random() * (mdsoft_map_size-1);
 				if( mdsoft_map_last <= 0 )
 					mdsoft_map_last = 0 - mdsoft_map_last;
 
-				if( (NULL != map_d) &&
-				   ((int)map_d->value > 0 ) )
+				if(map_debug->value)
 					gi.bprintf( PRINT_HIGH,
 							   "Random Map %d %s\n",
 							   mdsoft_map_last,
@@ -175,6 +211,7 @@ edict_t *mdsoft_NextMap( void )
 			{
 				int i;
 				int point = (mdsoft_map_last+1) % mdsoft_map_size;
+				int map_sought = point;
 
 				count = 0;
 				for (i = 0; i < maxclients->value; i++)
@@ -183,9 +220,9 @@ edict_t *mdsoft_NextMap( void )
 						count++;
 				}
 
-				/*gi.bprintf (PRINT_HIGH, "MAP CHANGE: Count = %d \n", count );*/
+				DbgPrintf ("MAP CHANGE: Count = %d \n", count );
 
-				do
+				do 
 				{
 					if( (0 != mdsoft_map[point].max) &&
 					   (0 == mdsoft_map[point].fVisited) )
@@ -197,8 +234,7 @@ edict_t *mdsoft_NextMap( void )
 							point = -1;
 							fFound = 1;
 
-							if( (NULL != map_d) &&
-							   ((int)map_d->value > 0 ) )
+							if(map_debug->value)
 								gi.bprintf( PRINT_HIGH,
 										   "Map Found %s [fVisited = %d]\n",
 										   mdsoft_map[mdsoft_map_last].aFile,
@@ -218,21 +254,20 @@ edict_t *mdsoft_NextMap( void )
 				/* Could not select an appropriate map */
 				if(point == mdsoft_map_last)
 				{
-					if( (NULL != map_d) &&
-					   ((int)map_d->value > 0 ) )
-						DbgPrintf("Map could not be found\n" );
+					if(map_debug->value)
+						DbgPrintf("Map could not be found, "
+						"map_sought %d, point %d name %s\n", 
+						map_sought, point, mdsoft_map[map_sought].aName);
 
 					/* Clear visited flags */
-					if( (NULL != map_o) &&
-					   ((int)map_o->value > 0 ) )
+					if(map_once->value)
 					{
 						int i;
 
-						if( (NULL != map_d) &&
-						   ((int)map_d->value > 0 ) )
+						if(map_debug->value)
 							gi.bprintf(PRINT_HIGH, "Clearing Visited flags\n" );
 
-						for( i=0; i < mdsoft_map_size; i++ )
+						for(i = 0; i < mdsoft_map_size; i++ )
 							mdsoft_map[i].fVisited = 0;
 					}
 
@@ -252,8 +287,7 @@ edict_t *mdsoft_NextMap( void )
 	if( fFound && !ent )
 	{
 		/* Set map as visited */
-		if( (NULL != map_o) &&
-		   ((int)map_o->value > 0 ) )
+		if(map_once->value)
 		{
 			mdsoft_map[mdsoft_map_last].fVisited = 1;
 		}
@@ -265,8 +299,7 @@ edict_t *mdsoft_NextMap( void )
 			ent->classname = "target_changelevel";
 			ent->map = &mdsoft_map[mdsoft_map_last].aFile[0];
 
-			if( (NULL != map_d) &&
-			   ((int)map_d->value > 0 ) )
+			if(map_debug->value)
 			{
 				gi.bprintf (PRINT_HIGH, "MAP CHANGE: %d ", mdsoft_map_last );
 				gi.bprintf (PRINT_HIGH, &mdsoft_map[mdsoft_map_last].aFile[0] );

@@ -35,10 +35,10 @@ extern edict_t *mdsoft_NextMap( void );
 extern void mdsoft_InitMaps(void);
 
 // cvars used by this module
-extern cvar_t	*map_c;
-extern cvar_t	*map_r;
-extern cvar_t	*map_o;
-extern cvar_t	*map_d;
+extern cvar_t	*map_change;
+extern cvar_t	*map_randomize;
+extern cvar_t	*map_once;
+extern cvar_t	*map_debug;
 
 
 #endif //S_MAP_H
