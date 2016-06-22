@@ -602,8 +602,6 @@ void Cmd_Inven_f (edict_t *ent)
 		return;
 	}
 
-	//QW// this should never be true in rails
-	// test and schedule for deletion later
 	if (ent->client->showinventory)
 	{
 		ent->client->showinventory = false;
