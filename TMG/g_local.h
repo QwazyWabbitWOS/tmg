@@ -1257,17 +1257,18 @@ typedef struct client_persistent_s
 	int	pl_state;	//playing 1, spec 0 , 2 warmup ,need spawned 3,cheat bot 5 , 
 	int	isop;		//operators
 	//JSW int	ismop;	//match operators
-	qboolean   motd;	// client needs to see motd
-	qboolean   db_hud;
-	qboolean   db_id;
-	qboolean   name_set;
-	qboolean   skin_set;
+	qboolean	motd;	// show client the motd
+	int			motd_seen;
+	qboolean	db_hud;
+	qboolean	db_id;	// show client the id of target in crosshair
+	qboolean	name_set;
+	qboolean	skin_set;
 	char name_change [16];
 	char skin_change [24];
 	int pitchspeed;
 	int anglespeed;
 	int glmonolightmap;
-	qboolean   in_game;
+	qboolean	in_game;
 	qboolean	HasVoted;
 	char ip[24];
 	//only allow one vote for a map per client per map !

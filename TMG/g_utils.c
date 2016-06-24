@@ -906,7 +906,7 @@ void convert_string(char *src, char start, char end, char add, char *dest)
 }
 
 /**
- Set msb in specified string characters, copying them to destination.
+ Set msb in specified string characters, copying them to destination. 
  Text must be a valid C string.
  Source and destination can be the same.
  If dest == NULL the action occurs in-place.

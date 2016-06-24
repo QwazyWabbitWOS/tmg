@@ -424,7 +424,7 @@ SV_CalcBlend
 =============
 */
 static void
-SV_CalcBlend (edict_t *ent)
+	SV_CalcBlend (edict_t *ent)
 {
 	int		contents;
 	vec3_t	vieworg;
@@ -444,7 +444,7 @@ SV_CalcBlend (edict_t *ent)
 	is_liquid = rune_has_rune(ent, RUNE_LIQUID);
 	//
 	ent->client->ps.blend[0] = ent->client->ps.blend[1] =
-	ent->client->ps.blend[2] = ent->client->ps.blend[3] = 0;
+		ent->client->ps.blend[2] = ent->client->ps.blend[3] = 0;
 
 	// add for contents
 	VectorAdd (ent->s.origin, ent->client->ps.viewoffset, vieworg);
@@ -489,28 +489,30 @@ SV_CalcBlend (edict_t *ent)
 	}
 	//
 	/*
-	 if (contents & (CONTENTS_SOLID|CONTENTS_LAVA))
-		SV_AddBlend (1.0, 0.3, 0.0, 0.6, ent->client->ps.blend);
-	 else if (contents & CONTENTS_SLIME)
-		SV_AddBlend (0.0, 0.1, 0.05, 0.6, ent->client->ps.blend);
-	 else if (contents & CONTENTS_WATER)
-		SV_AddBlend (0.5, 0.3, 0.2, 0.4, ent->client->ps.blend);
-	 */
+	if (contents & (CONTENTS_SOLID|CONTENTS_LAVA))
+	SV_AddBlend (1.0, 0.3, 0.0, 0.6, ent->client->ps.blend);
+	else if (contents & CONTENTS_SLIME)
+	SV_AddBlend (0.0, 0.1, 0.05, 0.6, ent->client->ps.blend);
+	else if (contents & CONTENTS_WATER)
+	SV_AddBlend (0.5, 0.3, 0.2, 0.4, ent->client->ps.blend);
+	*/
 	// add for powerups
 	if (ent->client->quad_framenum > level.framenum)
 	{
 		remaining = ent->client->quad_framenum - level.framenum;
 		if (remaining == 30)	// beginning to fade
 			gi.sound(ent, CHAN_ITEM,
-					 gi.soundindex("items/damage2.wav"), 1, ATTN_NORM, 0);
+			gi.soundindex("items/damage2.wav"), 1, ATTN_NORM, 0);
 		if (remaining == 10 && ((int)quad_notify->value & QUAD_NOTIFY_EXPIRE))
 		{
 			//gi.dprintf("A quad damage has expired!\n");
-			for_each_player(e, i)
+			//for_each_player(e, i)
+			for (i = 1; i <= maxclients->value; i++)
 			{
-				//safe_centerprintf(e, "A quad damage has expired!\n");
-				gi.sound (e, CHAN_AUTO,
-						  gi.soundindex("items/quadexp.wav"), 1, ATTN_NONE, 0);
+				if ((e = &g_edicts[i]) && e && e->inuse && !e->bot_client)
+					//safe_centerprintf(e, "A quad damage has expired!\n");
+					gi.sound (e, CHAN_AUTO,
+					gi.soundindex("items/quadexp.wav"), 1, ATTN_NONE, 0);
 			}
 		}
 		if (remaining > 30 || (remaining & 4) )
@@ -521,7 +523,7 @@ SV_CalcBlend (edict_t *ent)
 		remaining = ent->client->invincible_framenum - level.framenum;
 		if (remaining == 30)	// beginning to fade
 			gi.sound(ent, CHAN_ITEM,
-					 gi.soundindex("items/protect2.wav"), 1, ATTN_NORM, 0);
+			gi.soundindex("items/protect2.wav"), 1, ATTN_NORM, 0);
 		if (remaining > 30 || (remaining & 4) )
 			SV_AddBlend (1, 1, 0, 0.08, ent->client->ps.blend);
 	}
@@ -529,9 +531,9 @@ SV_CalcBlend (edict_t *ent)
 	else if (ent->client->respawn_framenum > level.framenum)
 	{
 		remaining = ent->client->respawn_framenum - level.framenum;
-//		if (remaining <= 30)	// beginning to fade
-//			gi.sound(ent, CHAN_ITEM,
-//					 gi.soundindex("items/protect2.wav"), 1, ATTN_NORM, 0);
+		//		if (remaining <= 30)	// beginning to fade
+		//			gi.sound(ent, CHAN_ITEM,
+		//					 gi.soundindex("items/protect2.wav"), 1, ATTN_NORM, 0);
 		if (remaining > 30 || (remaining & 4) )
 			SV_AddBlend (1, 1, 0, 0.08, ent->client->ps.blend);
 	}
@@ -541,7 +543,7 @@ SV_CalcBlend (edict_t *ent)
 		remaining = ent->client->enviro_framenum - level.framenum;
 		if (remaining == 30)	// beginning to fade
 			gi.sound(ent, CHAN_ITEM,
-					 gi.soundindex("items/airout.wav"), 1, ATTN_NORM, 0);
+			gi.soundindex("items/airout.wav"), 1, ATTN_NORM, 0);
 		if (remaining > 30 || (remaining & 4) )
 			SV_AddBlend (0, 1, 0, 0.08, ent->client->ps.blend);
 	}
@@ -550,7 +552,7 @@ SV_CalcBlend (edict_t *ent)
 		remaining = ent->client->breather_framenum - level.framenum;
 		if (remaining == 30)	// beginning to fade
 			gi.sound(ent, CHAN_ITEM,
-					 gi.soundindex("items/airout.wav"), 1, ATTN_NORM, 0);
+			gi.soundindex("items/airout.wav"), 1, ATTN_NORM, 0);
 		if (remaining > 30 || (remaining & 4) )
 			SV_AddBlend (0.4, 1, 0.4, 0.04, ent->client->ps.blend);
 	}
@@ -558,15 +560,15 @@ SV_CalcBlend (edict_t *ent)
 	// add for damage
 	if (ent->client->damage_alpha > 0)
 		SV_AddBlend (ent->client->damage_blend[0],
-					 ent->client->damage_blend[1],
-					 ent->client->damage_blend[2],
-					 ent->client->damage_alpha,
-					 ent->client->ps.blend);
+		ent->client->damage_blend[1],
+		ent->client->damage_blend[2],
+		ent->client->damage_alpha,
+		ent->client->ps.blend);
 
 	if (ent->client->bonus_alpha > 0)
 		SV_AddBlend (0.85, 0.7, 0.3,
-					 ent->client->bonus_alpha,
-					 ent->client->ps.blend);
+		ent->client->bonus_alpha,
+		ent->client->ps.blend);
 
 	// drop the damage value
 	ent->client->damage_alpha -= 0.06;
@@ -1331,29 +1333,34 @@ void ClientEndServerFrame (edict_t *ent)
 
 	//ZOID
 	//update chasecam follower stats
-//	for (i = 1; i <= maxclients->value; i++)
-//	{
-//		edict_t *e = g_edicts + i;
-//
-//		// ERASER, use player list
-//		for (i = 0; i < num_players; i++)
-//		{
-//			e = players[i];
-//		}
-//		//ERASER
-//	}
+	//	for (i = 1; i <= maxclients->value; i++)
+	//	{
+	//		edict_t *e = g_edicts + i;
+	//
+	//		// ERASER, use player list
+	//		for (i = 0; i < num_players; i++)
+	//		{
+	//			e = players[i];
+	//		}
+	//		//ERASER
+	//	}
 
-	for_each_player(e, i)
+	//for_each_player(e, i)
+	for (i = 1; i <= maxclients->value; i++)
 	{
-		if (!ent->inuse || e->client->chase_target != ent)
-			continue;
+		e = g_edicts + i;
+		if (e && e->inuse && !e->bot_client)
+		{
+			if (!ent->inuse || e->client->chase_target != ent)
+				continue;
 
-		memcpy(e->client->ps.stats,
-			   ent->client->ps.stats,
-			   sizeof(ent->client->ps.stats));
+			memcpy(e->client->ps.stats,
+				ent->client->ps.stats,
+				sizeof(ent->client->ps.stats));
 
-		e->client->ps.stats[STAT_LAYOUTS] = 1;
-		break;
+			e->client->ps.stats[STAT_LAYOUTS] = 1;
+			break;
+		}
 	}
 
 	G_SetClientEvent (ent);
@@ -1372,16 +1379,39 @@ void ClientEndServerFrame (edict_t *ent)
 	if(ent && ent->inuse && !ent->bot_client)
 	{
 		if ((ent->client->showscores && !(level.framenum & 31))
-			|| ((ent->client->pers.db_hud || ent->client->pers.motd == true)
+			|| ((ent->client->pers.db_hud 
+			|| ent->client->pers.motd == true)
 			&& (level.framenum >= ent->client->hudtime)))
 		{
-			if (ent->client->resp.enterframe+30 > level.framenum)
+			// delay before showing HUD (3 seconds)
+			if (ent->client->resp.enterframe + 30 > level.framenum)
+			{
+				ent->client->pers.motd_seen = false;
 				return;
+			}
+
+			// delay 3 more seconds, then put client in server after motd shown
+			// this fixes TastySpleen WallFly blockout.
+			if (ent->client->resp.enterframe + 60 > level.framenum && !ent->client->pers.motd_seen)
+			{
+				DbgPrintf("%s in HUD display delay, framenum: %d\n", __func__, level.framenum);
+			}
+			else if (!ent->client->pers.motd_seen)
+			{
+				ent->client->pers.motd_seen = true;
+				ent->client->pers.in_game = true;
+				ent->client->pers.motd = false;
+				ent->client->pers.pl_state = PL_SPECTATOR;
+				ent->reset_time = level.time + 10;
+			}
+
 			//ZOID
 			if (ent->client->menu)
 			{
 				if(ent->client->resp.menu_time > level.framenum)
+				{
 					return;
+				}
 				else
 				{
 					PMenu_Update(ent);

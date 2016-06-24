@@ -2383,6 +2383,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 	int team;
 	int maxsize = 1400;
 
+	DbgPrintf("%s entered\n", __func__);
 	if (highscores->value && ent->client->showhighscores)
 	{
 		LoadHighScores(); // the message is fully formed
@@ -2394,7 +2395,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 		total[0] = total[1] = 0;
 		last[0] = last[1] = 0;
 		totalscore[0] = totalscore[1] = 0;
-		for (i=0 ; i<game.maxclients ; i++)
+		for (i = 0; i < game.maxclients; i++)
 		{
 			cl_ent = g_edicts + 1 + i;
 			if (!cl_ent->inuse)
@@ -2566,11 +2567,10 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 			sprintf(string + strlen(string), "xv 168 yv %d string \"..and %d more\" ",
 			42 + (last[1]+1)*8, total[1] - last[1] - 1);
 	}
-
+		DbgPrintf("Scoreboard size: %d %.1f\n", strlen(string), level.time);
 	if (strlen(string) > maxsize - 30) // this should never happen
 	{
 		gi.dprintf("Warning: scoreboard string neared or exceeded max length\nDump:\n%s\n---\n", string);
-		DbgPrintf("Scoreboard size: %d %f\n", strlen(string), level.time);
 	}
 	gi.WriteByte (svc_layout);
 	gi.WriteString (string);

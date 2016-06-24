@@ -1137,6 +1137,7 @@ void InitClientPersistant (gclient_t *client)
 	char namepass[16];
 	//
 	qboolean motd,ig;
+	int	motd_seen;
 	char userip[24], namecg[18], skinn[24];
 
 	//JSW
@@ -1147,16 +1148,15 @@ void InitClientPersistant (gclient_t *client)
 	//end
 	plstate = client->pers.pl_state;
 	motd = client->pers.motd;
+	motd_seen = client->pers.motd_seen;
 	ig = client->pers.in_game;
 	strcpy (userip,client->pers.ip);
 	strcpy (namecg,client->pers.name_change);
 	strcpy (skinn,client->pers.skin_change);
 	mapvoted = client->pers.vote_times;
 	//
-	DbgPrintf("%s entered, motd is %d\n", __func__, motd);
 
 	memset (&client->pers, 0, sizeof(client->pers));
-	DbgPrintf("%s after memset, motd is %d\n", __func__, motd);
 
 	//RAV
 	client->pers.pl_state = plstate;
@@ -1167,14 +1167,12 @@ void InitClientPersistant (gclient_t *client)
 	strcpy(client->pers.namepass, namepass);
 	//end
 	client->pers.motd = motd;
+	client->pers.motd_seen = motd_seen;
 	client->pers.in_game = ig;
 	strcpy (client->pers.ip, userip);
 	strcpy (client->pers.name_change, namecg);
 	strcpy (client->pers.skin_change, skinn);
 	client->pers.vote_times = mapvoted;
-
-//	
-	DbgPrintf("%s after restore, motd is %d\n", __func__, motd);
 
 	//RAV
 
@@ -1913,7 +1911,7 @@ void PutClientInServer (edict_t *ent)
 	zgcl_t			zgcl;
 	gitem_t		*item, *ammo;
 	
-	DbgPrintf("%s entered\n", __func__);
+	//DbgPrintf("%s entered time: %.1f\n", __func__, level.time);
 
 	// find a spawn point
 	// do it before setting health back up, so farthest
@@ -1923,7 +1921,7 @@ void PutClientInServer (edict_t *ent)
 	//	SelectSpawnPoint (ent, spawn_origin, spawn_angles);
 	//********************************************************  
 	//	else
-	//no telafragging !
+	//no telefragging !
 	if(!SelectSpawnPointRAV (ent, spawn_origin, spawn_angles))
 	{
 		ent->movetype = MOVETYPE_NOCLIP;
@@ -1942,7 +1940,7 @@ void PutClientInServer (edict_t *ent)
 	// deathmatch wipes most client data every spawn
 	if (deathmatch->value)
 	{
-		char		userinfo[MAX_INFO_STRING];
+		char userinfo[MAX_INFO_STRING];
 
 		resp = client->resp;
 		memcpy (userinfo, client->pers.userinfo, sizeof(userinfo));
@@ -2073,7 +2071,7 @@ void PutClientInServer (edict_t *ent)
 	{
 		if (ent->client->pers.pl_state == 0 && ent->client->resp.ctf_team < 1 && !Check_for_SpecLimit(ent))
 			return;
-		if (CTFStartClient(ent) || ent->client->resp.enterframe+5 > level.framenum)
+		if (CTFStartClient(ent) || ent->client->resp.enterframe + 5 > level.framenum)
 			if(!ent->bot_client)
 				return;
 	}
@@ -2398,7 +2396,6 @@ void Connect (edict_t *ent)
 	ent->client->pers.db_hud = true;
 	ent->client->pers.motd = true;
 	ent->client->pers.in_game = false;
-	DbgPrintf("%s motd %d in_game %d\n", __func__, ent->client->pers.motd, ent->client->pers.in_game);
 }
 //end
 
@@ -2416,8 +2413,6 @@ void ClientBeginDeathmatch (edict_t *ent)
 	char *name;
 	
 	G_InitEdict (ent);
-
-	DbgPrintf("%s entry\n", __func__);
 
 	//jsw
 	CheckPlayers();
@@ -3275,7 +3270,6 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	ent->client->pers.oplevel = 0;
 	//end
 	ent->client->pers.motd = true;
-	DbgPrintf("%s motd %d\n", __func__, ent->client->pers.motd);
 	ent->client->pers.in_game = false;
 	Spectate(ent, NULL);
 	ClientUserinfoChanged (ent, userinfo);
@@ -3286,7 +3280,6 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	ent->client->pers.connected = true;
 	if (log_connect->value)
 		LogConnect(ent, true);
-	DbgPrintf ("[%s] completed ClientConnect\n", Info_ValueForKey (userinfo, "name"));
 	return true;
 }
 
@@ -3547,20 +3540,20 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	if(impulse == 1)
 		gi.bprintf(PRINT_HIGH,"%f\n",ent->s.origin[2]);
 
-	
+
 	// Make sure ent exists!
 	if (!G_EntExists(ent))
 		return;
 
 	//RAV
-    is_jump = rune_has_rune(ent, RUNE_JUMP);
+	is_jump = rune_has_rune(ent, RUNE_JUMP);
 	is_invis = rune_has_rune(ent, RUNE_INVIS);
-    is_speed = rune_has_rune(ent, RUNE_SPEED);
+	is_speed = rune_has_rune(ent, RUNE_SPEED);
 	//JSW
-/*	if (ent->client->resp.bonus == true)
-		is_invis = true;
-*/	//end
-	
+	/*	if (ent->client->resp.bonus == true)
+	is_invis = true;
+	*/	//end
+
 	if(ent->stealth > level.time)
 		is_invis = true;
 
@@ -3651,14 +3644,14 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		{
 			VectorCopy(ent->s.origin,v);
 			old_ground = ent->groundentity;
-//gi.bprintf(PRINT_HIGH,"1\n");
+			//gi.bprintf(PRINT_HIGH,"1\n");
 			if(ent->groundentity)
-			i = true;
+				i = true;
 		}
 		else if(!TraceX(ent,v) /*&& ent->groundentity*/)
 		{
 			VectorCopy(ent->s.old_origin,v);
-//gi.bprintf(PRINT_HIGH,"2\n");
+			//gi.bprintf(PRINT_HIGH,"2\n");
 			i = 3;
 			if(/* DISABLES CODE */ (0)/*ent->groundentity*/)
 			{
@@ -3677,7 +3670,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 			if(ent->client->zc.waterstate > oldwaterstate) VectorCopy(ent->s.origin,v);
 			else VectorCopy(ent->s.old_origin,v);
-//gi.bprintf(PRINT_HIGH,"5\n");
+			//gi.bprintf(PRINT_HIGH,"5\n");
 		}
 		else if(fabs(v[2] - ent->s.origin[2]) > 20)
 		{
@@ -3687,7 +3680,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 				if(k)
 				{
 					VectorCopy(ent->s.origin,v);
-//gi.bprintf(PRINT_HIGH,"3\n");
+					//gi.bprintf(PRINT_HIGH,"3\n");
 					i = true;
 				}
 			}
@@ -3713,15 +3706,15 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			if(!ent->groundentity /*&& j*/&& wasground == true && k)
 			{
 				VectorCopy(ent->s.old_origin,v);
-//gi.bprintf(PRINT_HIGH,"6\n");
+				//gi.bprintf(PRINT_HIGH,"6\n");
 				i = true;
 			}
 			else if(ent->groundentity /*&& !j*/&& wasground == false && k)
 			{
-//				VectorSubtract(ent->s.origin)
+				//VectorSubtract(ent->s.origin)
 
 				VectorCopy(ent->s.origin,v);
-//gi.bprintf(PRINT_HIGH,"7\n");
+				//gi.bprintf(PRINT_HIGH,"7\n");
 				i = true;
 			}
 
@@ -3743,7 +3736,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			if(VectorLength(v) > 0 && Get_vec_yaw(v,x) > 45 && k )
 			{
 				VectorCopy(ent->s.old_origin,v);
-//gi.bprintf(PRINT_HIGH,"8\n");
+				//gi.bprintf(PRINT_HIGH,"8\n");
 				i = true;
 			}
 		}
@@ -3760,7 +3753,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 					{
 						if(old_ground->union_ent->inuse && old_ground->union_ent->classname[0] == 'R')
 						{
-//gi.bprintf(PRINT_HIGH,"plat put\n");
+							//gi.bprintf(PRINT_HIGH,"plat put\n");
 							VectorCopy(old_ground->monsterinfo.last_sighting,v);
 							l = GRS_ONPLAT;
 							i = 2;
@@ -3831,7 +3824,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 				if(!Q_stricmp(old_ground->classname, "func_rotating"))
 				{
 					l = GRS_ONROTATE;
-//					gi.bprintf(PRINT_HIGH,"On Rotate\n");
+					//gi.bprintf(PRINT_HIGH,"On Rotate\n");
 				}
 			}
 
@@ -3845,7 +3838,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 				if(!Q_stricmp(old_ground->target_ent->classname,"path_corner"))
 					VectorCopy(old_ground->target_ent->s.origin,Route[CurrentIndex].Tcourner);
 
-//gi.bprintf(PRINT_HIGH,"get chain\n");
+				//gi.bprintf(PRINT_HIGH,"get chain\n");
 			}
 			//when normal or items
 			if(++CurrentIndex < MAXNODES)
@@ -3855,34 +3848,34 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 				Route[CurrentIndex].index = Route[CurrentIndex - 1].index +1;
 			}
 		}
-//		VectorCopy(ent->s.origin,old_origin);
+		//VectorCopy(ent->s.origin,old_origin);
 		if(ent->groundentity != NULL) wasground = true;
 		else wasground = false;
 	}
 
 
 
-//--------------------------------------
+	//--------------------------------------
 	level.current_entity = ent;
 	client = ent->client;
 
-//RAV
-// this stops respawn protection if you shoot !!
- if((ent->client->respawn_framenum > level.framenum) &&
-    (ucmd->buttons & BUTTON_ATTACK) && (!ent->deadflag) )
-	client->respawn_framenum = level.framenum;
+	//RAV
+	// this stops respawn protection if you shoot !!
+	if((ent->client->respawn_framenum > level.framenum) &&
+		(ucmd->buttons & BUTTON_ATTACK) && (!ent->deadflag) )
+		client->respawn_framenum = level.framenum;
 
 
 	if (client->hook_on && client->hook && ent->client->resp.hook_wait < level.time)
 		abandon_hook_service(client->hook);
 
 	if (client->hook_on && VectorLength(ent->velocity) < 1) 
-		  client->ps.pmove.gravity = 0;
+		client->ps.pmove.gravity = 0;
 
 	if(!ent->client->pers.pl_state)
-	client->ps.pmove.pm_type = PM_SPECTATOR;
+		client->ps.pmove.pm_type = PM_SPECTATOR;
 
-//
+	//
 
 
 
@@ -3895,8 +3888,8 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			level.exitintermission = true;
 		return;
 	}
-//new runes
-//speed
+	//new runes
+	//speed
 
 	if(is_speed)
 	{
@@ -3933,7 +3926,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	//end
 
 	// SUPER JUMP
-	
+
 	if (is_jump)
 	{
 		float vel = 0, mul = 0;
@@ -3977,75 +3970,75 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		}
 
 	}
-	
+
 	//stealth
 	if(is_invis)
 	{
-	 ent->svflags |= SVF_NOCLIENT;
-	if (ucmd->forwardmove  ||  ucmd->sidemove || ucmd->upmove
-		|| ucmd->buttons & BUTTON_ATTACK)
-     ent->svflags &= ~SVF_NOCLIENT;
-	 
-	ent->client->was_stealth = level.time +2;
-	}
-  else
-if(ent->client->pers.pl_state == PL_PLAYING)
- ent->svflags &= ~SVF_NOCLIENT;
-//end
+		ent->svflags |= SVF_NOCLIENT;
+		if (ucmd->forwardmove  ||  ucmd->sidemove || ucmd->upmove
+			|| ucmd->buttons & BUTTON_ATTACK)
+			ent->svflags &= ~SVF_NOCLIENT;
 
-	
+		ent->client->was_stealth = level.time + 2;
+	}
+	else
+		if(ent->client->pers.pl_state == PL_PLAYING)
+			ent->svflags &= ~SVF_NOCLIENT;
+	//end
+
+
 	//RAV
 	if(speed_check->value && ent->client->resp.enterframe+300 > level.framenum)
 	{
 		if ((ucmd->msec >= (int)speed_msec->value)&&
-	(ent->client->resp.enterframe+1000 < level.framenum))
-	{
-	if((ucmd->msec == (int)speed_bust->value) && (ent->client->pers.pl_state == PL_PLAYING))
-	ent->client->resp.speed_cheat ++;
+			(ent->client->resp.enterframe+1000 < level.framenum))
+		{
+			if((ucmd->msec == (int)speed_bust->value) && (ent->client->pers.pl_state == PL_PLAYING))
+				ent->client->resp.speed_cheat ++;
 
-	//lets slow them down a bit (will appear to be laggy for the cheater)
-	ucmd->msec = (int)speed_set->value;
-	
-	if((ent->client->resp.speed_cheat > 100) && (ent->client->pers.pl_state < PL_CHEATBOT)) //100 times over the speed limit!
-	{
-		OnBotDetection(ent, va("speed-hack"));
-		ent->client->pers.pl_state = PL_CHEATBOT;
-		return;
+			//lets slow them down a bit (will appear to be laggy for the cheater)
+			ucmd->msec = (int)speed_set->value;
 
+			if((ent->client->resp.speed_cheat > 100) && (ent->client->pers.pl_state < PL_CHEATBOT)) //100 times over the speed limit!
+			{
+				OnBotDetection(ent, va("speed-hack"));
+				ent->client->pers.pl_state = PL_CHEATBOT;
+				return;
 			}
 		}
 	}
-//gi.dprintf("f: %i, s: %i, u: %i\n", ucmd->forwardmove, ucmd->sidemove, ucmd->upmove);
-//gi.dprintf("%i, %i\n", ucmd->buttons, client->ps.pmove.pm_flags);
+	//gi.dprintf("f: %i, s: %i, u: %i\n", ucmd->forwardmove, ucmd->sidemove, ucmd->upmove);
+	//gi.dprintf("%i, %i\n", ucmd->buttons, client->ps.pmove.pm_flags);
 
 	pm_passent = ent;
-//RAV
-//chasecam
+	//RAV
+	//chasecam
 
 	if(ent->client->pers.pl_state == PL_SPECTATOR
-   && ent->client->pers.motd == false 
-   && match_state == STATE_PLAYING)
-{
-if (!client->buttons && 
-	(ucmd->buttons & BUTTON_ATTACK)){
-	//fire button
-	if(ent->client->resp.spectator == 0)
-	ent->client->resp.spectator = 1;
-	if(!ent->client->pers.db_hud)
-	ent->client->pers.db_hud = true;
-	
-	SwitchModeChaseCam(ent);
-}
+		&& ent->client->pers.motd == false 
+		&& match_state == STATE_PLAYING)
+	{
+		if (!client->buttons && 
+			(ucmd->buttons & BUTTON_ATTACK)){
+				//fire button
+				if(ent->client->resp.spectator == 0)
+					ent->client->resp.spectator = 1;
+				if(!ent->client->pers.db_hud)
+					ent->client->pers.db_hud = true;
 
-}
-//
-//ZOID
-	if (ent->client->chase_target) {
+				SwitchModeChaseCam(ent);
+		}
+
+	}
+	//
+	//ZOID
+	if (ent->client->chase_target) 
+	{
 		client->resp.cmd_angles[0] = SHORT2ANGLE(ucmd->angles[0]);
 		client->resp.cmd_angles[1] = SHORT2ANGLE(ucmd->angles[1]);
 		client->resp.cmd_angles[2] = SHORT2ANGLE(ucmd->angles[2]);
-		
-//RAV chasecam upgrade
+
+		//RAV chasecam upgrade
 
 		// this buttons stuff is copied from further below in ClientThink...
 		client->oldbuttons = client->buttons;
@@ -4054,14 +4047,14 @@ if (!client->buttons &&
 		return;
 		//
 	}
-//ZOID
+	//ZOID
 
 	// set up for pmove
 	memset (&pm, 0, sizeof(pm));
 
 
 	if (ent->movetype == MOVETYPE_NOCLIP)
-	client->ps.pmove.pm_type = PM_SPECTATOR;
+		client->ps.pmove.pm_type = PM_SPECTATOR;
 	else if (ent->s.modelindex != 255)
 		client->ps.pmove.pm_type = PM_GIB;
 	else if (ent->deadflag)
@@ -4081,7 +4074,7 @@ if (!client->buttons &&
 	if (memcmp(&client->old_pmove, &pm.s, sizeof(pm.s)))
 	{
 		pm.snapinitial = true;
-//		gi.dprintf ("pmove changed!\n");
+		//		gi.dprintf ("pmove changed!\n");
 	}
 
 	pm.cmd = *ucmd;
@@ -4135,10 +4128,10 @@ if (!client->buttons &&
 	}
 
 
-//ZOID
+	//ZOID
 	if (client->ctf_grapple)
 		CTFGrapplePull(client->ctf_grapple);
-//ZOID
+	//ZOID
 
 	gi.linkentity (ent);
 
@@ -4169,9 +4162,9 @@ if (!client->buttons &&
 
 	// fire weapon from final position if needed
 	if (client->latched_buttons & BUTTON_ATTACK
-//ZOID
+		//ZOID
 		&& ent->movetype != MOVETYPE_NOCLIP
-//ZOID
+		//ZOID
 		)
 	{
 		if (!client->weapon_thunk)
@@ -4181,33 +4174,33 @@ if (!client->buttons &&
 		}
 	}
 
-//ZOID
-//regen tech
+	//ZOID
+	//regen tech
 	CTFApplyRegeneration(ent);
-//ZOID
+	//ZOID
 
-//ZOID
+	//ZOID
 
 	for (i = 1; i <= maxclients->value; i++) {
 		other = g_edicts + i;
 		if (other->inuse && other->client->chase_target == ent)
 			UpdateChaseCam(other);
 	}
-//RAV
- 	if (ent->client->chase_target != NULL)
-    UpdateChaseCam(ent);
-//ZOID
+	//RAV
+	if (ent->client->chase_target != NULL)
+		UpdateChaseCam(ent);
+	//ZOID
 	if(ent->client->resp.shots != 0)
 	{
-			ent->client->resp.eff = 100 * ent->client->resp.frags / ent->client->resp.shots;
+		ent->client->resp.eff = 100 * ent->client->resp.frags / ent->client->resp.shots;
 	}
 
 	// =========================================================
 	// =========================================================
 
-//RAV  hook stuff
-//if(!chedit->value) //use old hook for normal usage
-//{
+	//RAV  hook stuff
+	//if(!chedit->value) //use old hook for normal usage
+	//{
 	if (ent->client->buttons & BUTTON_USE
 		&& !ent->deadflag && !client->ps.pmove.pm_type == PM_SPECTATOR)			
 	{
@@ -4216,9 +4209,9 @@ if (!client->buttons &&
 	if (Ended_Grappling (client) && 
 		!ent->deadflag && client->hook)
 	{
-	abandon_hook_reset(ent->client->hook);
+		abandon_hook_reset(ent->client->hook);
 	}
-	
+
 	//}
 
 }
@@ -4492,14 +4485,15 @@ void ClientBeginServerFrame (edict_t *ent)
 		
 		if (ent->client->buttons & BUTTON_ANY)
 		{
-			if(ent->client->resp.enterframe+33 > level.framenum)
+			if(ent->client->resp.enterframe + 33 > level.framenum)
 				return;
 			if (ent->client->buttons & BUTTON_ATTACK)
 				return;
+			ent->client->pers.motd_seen = true;
 			ent->client->pers.in_game = true;
 			ent->client->pers.motd = false;
 			ent->client->pers.pl_state = PL_SPECTATOR;
-			ent->reset_time = level.time +10;
+			ent->reset_time = level.time + 10;
 			respawn(ent, true);
 			
 			//raven gzspace bug chase

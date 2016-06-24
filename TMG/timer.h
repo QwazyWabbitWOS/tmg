@@ -18,12 +18,7 @@ extern float match_state_end;
 
 extern void ResetItems (void);
 extern void RestartLevel (void);
-extern void TimerThink (void);  //unused
-
-//QW// these are declared but don't exist
-void MatchInit (int resetall);
-void MatchThink (void);
-//QW//
+extern void TimerThink (void);
 
 int CountDownInFinalMinute (void);
 void CountDown (void);

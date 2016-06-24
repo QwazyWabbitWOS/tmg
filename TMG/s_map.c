@@ -220,7 +220,7 @@ edict_t *mdsoft_NextMap( void )
 						count++;
 				}
 
-				DbgPrintf ("MAP CHANGE: Count = %d \n", count );
+				//DbgPrintf ("MAP CHANGE: Count = %d \n", count );
 
 				do 
 				{

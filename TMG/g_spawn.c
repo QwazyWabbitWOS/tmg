@@ -904,7 +904,6 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 
 	int			laser = 0;
 
-	DbgPrintf("%s entered\n", __func__);
 	//ponko
 	memset(mpindex,0,sizeof(mpindex));	//target item index
 	memset(LaserIndex,0,sizeof(LaserIndex));
