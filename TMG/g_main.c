@@ -435,8 +435,8 @@ void EndDMLevel (void)
 	if (deathmatch->value && ctf->value)
 		CTFCalcScores();
 
-	if(highscores->value)
-		SaveHighScores();
+	//if(highscores->value)
+	//	SaveHighScores();
 
 	// stay on same level flag
 	if (dmflag & DF_SAME_LEVEL)
@@ -505,8 +505,7 @@ void EndDMLevel (void)
 				BeginIntermission (ent);
             }
         }
-    } /* (!ent) */
-
+    }
 	if(use_bots->value)
 		Load_BotInfo();
 }

@@ -492,7 +492,8 @@ char *tn_showHud (edict_t *ent)
 		}
 		else
 			ent->client->chase_mode = CHASE_FREECAM;
-		if(ent->client->chase_target != NULL)
+
+		if(ent->client->chase_target != NULL)	// chasing a player
 		{
 			//Raven 12-31-1999
 			//this replaces the ugly old statusbar
@@ -552,7 +553,7 @@ char *tn_showHud (edict_t *ent)
 		if(match_state == STATE_COUNTDOWN)
 			j += sprintf (layout+j, "xl 22 yb -200 string2 \"Seconds Until Level Starts\" ");
 	}
-	//this replaces the ugly old statusbar
+	// the player in game HUD
 	if(ent->client->pers.pl_state != PL_SPECTATOR)
 	{
 		//parse out the info
@@ -565,7 +566,6 @@ char *tn_showHud (edict_t *ent)
 		fph = rav_getFPH(cl);
 		rank = rav_getrank(ent);
 		bigspree = cl->resp.spree;
-
 
 		//score
 		j += sprintf (layout+j, "xr -70 yt 2 string2 \"Score\" ");
@@ -596,7 +596,6 @@ char *tn_showHud (edict_t *ent)
 
 		j += sprintf (layout+j, "xr -70 yt 122 string2 \"Frags\" ");
 		j += sprintf (layout+j, "xr -70 yt 130 string \"%i \" ", frags);
-
 
 		j += sprintf (layout+j, "xr -70 yt 138 string2 \"Spree\" ");
 		j += sprintf (layout+j, "xr -70 yt 146 string \"%i \" ", bigspree);

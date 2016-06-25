@@ -52,6 +52,9 @@ void MoveClientToIntermission (edict_t *ent)
 	ent->s.sound = 0;
 	ent->solid = SOLID_NOT;
 
+	if(highscores->value)
+		SaveHighScores();
+
 	// add the layout
 
 	if (!ent->bot_client && (deathmatch->value || coop->value))
@@ -699,7 +702,8 @@ void Cmd_Score_f (edict_t *ent)
 		ent->client->showhighscores = false;
 	}
 
-	//RAV //QW// this block may be obsolete on r1q2 server
+	//QW// this block may be obsolete on r1q2 server
+	//RAV
 	// do not update twice prevent netchan bug, overflows
 	if (ent->client->resp.menu_time == level.framenum)
 		return; 
@@ -711,9 +715,6 @@ void Cmd_Score_f (edict_t *ent)
 	if (ent->client->menu)
 		PMenu_Close(ent);
 	//ZOID
-
-	//if (!deathmatch->value && !coop->value)
-	//	return;
 
 	if (ent->client->showscores)
 	{

@@ -1807,9 +1807,7 @@ void CopyToBodyQue (edict_t *ent)
 	// FIXME: send an effect on the removed body
 
 	gi.unlinkentity (ent);
-
 	gi.unlinkentity (body);
-
 	return;
 
 //	body->s = ent->s;
@@ -1836,23 +1834,9 @@ void CopyToBodyQue (edict_t *ent)
 }
 
 
-//void respawn (edict_t *self)
-void respawn (edict_t *self, qboolean spawn)//vik
+void respawn (edict_t *self, qboolean spawn)
 {
-	// spectator's don't leave bodies
-	// if (self->movetype != MOVETYPE_NOCLIP)
-	//	if(self->client->resp.was_spec == true)
-	/*	CopyToBodyQue (self);
-	self->svflags &= ~SVF_NOCLIENT;
-	PutClientInServer (self);
-    // add a teleportation effect
-    self->s.event = EV_PLAYER_TELEPORT;
-    // hold in place briefly
-    self->client->ps.pmove.pm_flags = PMF_TIME_TELEPORT;
-    self->client->ps.pmove.pm_time = 14;
-    self->client->respawn_time = level.time;
-	return;*/
-  	if(!spawn)//vik
+  	if(!spawn)
 		CopyToBodyQue (self);
 	if(self->bot_client)
 		PutBotInServer(self);
@@ -1866,29 +1850,6 @@ void respawn (edict_t *self, qboolean spawn)//vik
 	self->client->respawn_time = level.time;
 	return;
 }
-/*	if (deathmatch->value || coop->value)
-	{
-		CopyToBodyQue (self);
-		PutClientInServer (self);
-
-		// add a teleportation effect
-		self->s.event = EV_PLAYER_TELEPORT;
-
-		// hold in place briefly
-		self->client->ps.pmove.pm_flags = PMF_TIME_TELEPORT;
-		self->client->ps.pmove.pm_time = 14;
-
-		self->client->respawn_time = level.time;
-
-		return;
-	}
-
-	// restart the entire server
-	gi.AddCommandString ("menu_loadgame\n");
-}
-*/
-//==============================================================
-
 
 /*
 ===========
@@ -1903,13 +1864,15 @@ void PutClientInServer (edict_t *ent)
 	vec3_t	mins = {-16, -16, -24};
 	vec3_t	maxs = {16, 16, 32};
 	int		index;
-	vec3_t	spawn_origin, spawn_angles;
+	vec3_t	spawn_origin;
+	vec3_t	spawn_angles;
 	gclient_t	*client;
 	int		i;
+	zgcl_t	zgcl;
+	gitem_t	*item;
+	gitem_t	*ammo;
 	client_persistent_t	saved;
 	client_respawn_t	resp;
-	zgcl_t			zgcl;
-	gitem_t		*item, *ammo;
 	
 	//DbgPrintf("%s entered time: %.1f\n", __func__, level.time);
 
@@ -1972,9 +1935,9 @@ void PutClientInServer (edict_t *ent)
 
 	// clear everything but the persistant data
 	saved = client->pers;
-	memcpy (&zgcl,&client->zc,sizeof(zgcl_t));
+	memcpy (&zgcl, &client->zc, sizeof(zgcl_t));
 	memset (client, 0, sizeof(*client));
-	memcpy (&client->zc,&zgcl,sizeof(zgcl_t));
+	memcpy (&client->zc, &zgcl, sizeof(zgcl_t));
 	
 	client->pers = saved;
 	client->resp = resp;
@@ -1993,8 +1956,8 @@ void PutClientInServer (edict_t *ent)
 	if(match_state < STATE_WARMUP)
 		ent->takedamage = DAMAGE_NO;
 	else
-	//
 		ent->takedamage = DAMAGE_AIM;
+
 	ent->movetype = MOVETYPE_WALK;
 	ent->viewheight = 22;
 	ent->inuse = true;
@@ -2045,7 +2008,7 @@ void PutClientInServer (edict_t *ent)
 	ent->s.effects = 0;
 	ent->s.skinnum = ent - g_edicts - 1;
 	ent->s.modelindex = 255;		// will use the skin specified model
-	//	ent->s.modelindex2 = 255;		// custom gun model
+	//ent->s.modelindex2 = 255;		// custom gun model
 	ShowGun(ent);
 
 	ent->s.frame = 0;
@@ -4591,7 +4554,7 @@ void ClientBeginServerFrame (edict_t *ent)
 			player_die1 (ent, ent, ent, 100000, vec3_origin);
 			if(ctf->value)
 				ent->client->resp.ctf_state = CTF_STATE_START;
-			respawn(ent,true);
+			respawn(ent, true);
 			break;
 		case PL_WARMUP:
 			//limbo mode while in level countdown

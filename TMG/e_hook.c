@@ -5,25 +5,27 @@
 #include "g_cmds.h"
 #include "timer.h"
 
-//void P_ProjectSource (gclient_t *client, vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result);
-void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int *pause_frames, int *fire_frames, void (*fire)(edict_t *ent));
+void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, 
+	int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, 
+	int *pause_frames, int *fire_frames, void (*fire)(edict_t *ent));
 
 
 void hackLift(edict_t *player) 
 {
 
-// A bug was introduced into Q2's physics with version 3.17 where 
-// a player given an upward velocity will stay stuck to the ground
-// if the velocity isn't large enough.  This workaround will lift
-// the player a small amount off the ground so that the sticking
-// doesn't occur.
+	// A bug was introduced into Q2's physics with version 3.17 where 
+	// a player given an upward velocity will stay stuck to the ground
+	// if the velocity isn't large enough.  This workaround will lift
+	// the player a small amount off the ground so that the sticking
+	// doesn't occur.
 
 	vec3_t traceTo;
 	trace_t trace;
-	
+
 	// if there is an upward component to the player's velocity
 	// (don't do this if the game is paused, it will move players out of the world!)
-	if (player->velocity[2] > 0 ) {
+	if (player->velocity[2] > 0 ) 
+	{
 
 		// find the point immediately above the player's origin
 		VectorCopy(player->s.origin, traceTo);
@@ -33,7 +35,8 @@ void hackLift(edict_t *player)
 		trace = gi.trace(traceTo, player->mins, player->maxs, traceTo, player, MASK_PLAYERSOLID);
 
 		// if there isn't a solid immediately above the player
-		if (!trace.startsolid) {
+		if (!trace.startsolid) 
+		{
 			player->s.origin[2] += 1;	// make sure player off ground
 		}
 	}
@@ -58,9 +61,10 @@ qboolean Is_Grappling (gclient_t *client)
 void hook_laser_think(edict_t *self)
 {
 	vec3_t	forward, right, offset, start;
-	
+
 	// stupid check for NULL pointers ...
-	if (!self->owner || !self->owner->owner || !self->owner->owner->client) {
+	if (!self->owner || !self->owner->owner || !self->owner->owner->client) 
+	{
 		// ok, something's screwy
 		G_FreeEdict(self);		// go away
 		return;	
@@ -69,13 +73,15 @@ void hook_laser_think(edict_t *self)
 	// put start position into start
 	AngleVectors (self->owner->owner->client->v_angle, forward, right, NULL);
 	VectorSet(offset, 24, 8, self->owner->owner->viewheight-8);
-//	if(hook_offhand->value)
-	P_ProjectSource_Reverse (self->owner->owner->client, self->owner->owner->s.origin, offset, forward, right, start);
-//	else
-//	P_ProjectSource (self->owner->owner->client, self->owner->owner->s.origin, offset, forward, right, start);
+	//	if(hook_offhand->value)
+	P_ProjectSource_Reverse (self->owner->owner->client, 
+		self->owner->owner->s.origin, offset, forward, right, start);
+	//	else
+	//	P_ProjectSource (self->owner->owner->client, 
+	//		self->owner->owner->s.origin, offset, forward, right, start);
 
 	// move the two ends
-//	gi.unlinkentity(self);
+	//	gi.unlinkentity(self);
 	VectorCopy (start, self->s.origin);
 	VectorCopy (self->owner->s.origin, self->s.old_origin);
 	gi.linkentity(self);
@@ -94,11 +100,11 @@ void hook_laser_think(edict_t *self)
 edict_t *abandon_hook_laser_start(edict_t *ent)
 {
 	edict_t *self;
-	
+
 	char		*info;
-	
-//	int			randyhook;
-	
+
+	//	int			randyhook;
+
 	self = G_Spawn();
 	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_NOT;
@@ -109,12 +115,11 @@ edict_t *abandon_hook_laser_start(edict_t *ent)
 	// set the beam diameter
 	self->s.frame = 3;
 
-
 	info = Info_ValueForKey (ent->owner->client->pers.userinfo, "hook_color");
 	//set the color
 	//gi.dprintf("Hook color selected it \"%s\".\n",info);
-	
-//	randyhook = random() * 4294967295;
+
+	//	randyhook = random() * 4294967295;
 
 	// ADJ CTF team colours on the hook
 	if (ctf->value)
@@ -127,35 +132,27 @@ edict_t *abandon_hook_laser_start(edict_t *ent)
 		case CTF_TEAM2:
 			self->s.skinnum = 0xf3f3f1f1; // blue
 			break;
-	
 		}
-
 	}
-	else{
-   	if (hook_color->value == 1)
-		self->s.skinnum = 0xf2f2f0f0;		// red
 	else
-		if (hook_color->value == 2)
-		self->s.skinnum = 0xf3f3f1f1;		// sorta blue			
-	else
-		if (hook_color->value == 3)
-		self->s.skinnum = 0xd0d1d2d3;		// green 
-	else	
-		if (hook_color->value == 4)
-		self->s.skinnum = 0xdcdddedf;		// brown
-	else	
-		if (hook_color->value == 5)
-		self->s.skinnum = 0xe0e1e2e3;   //yellow strobe
-	else	
-		if (hook_color->value == 6)
-		self->s.skinnum = 0xb0b1b2b3;  //purple
-	else	
-		if (hook_color->value == 7)
-		self->s.skinnum = 0xb7b7b7b7;  //purple
-	else	
-       self->s.skinnum = 0xe0e1e2e3;		//8 JR another purple
-
-}
+	{
+		if (hook_color->value == 1)
+			self->s.skinnum = 0xf2f2f0f0;	// red
+		else if (hook_color->value == 2)
+			self->s.skinnum = 0xf3f3f1f1;	// sorta blue			
+		else if (hook_color->value == 3)
+			self->s.skinnum = 0xd0d1d2d3;	// green 
+		else if (hook_color->value == 4)
+			self->s.skinnum = 0xdcdddedf;	// brown
+		else if (hook_color->value == 5)
+			self->s.skinnum = 0xe0e1e2e3;	//yellow strobe
+		else if (hook_color->value == 6)
+			self->s.skinnum = 0xb0b1b2b3;	//purple
+		else if (hook_color->value == 7)
+			self->s.skinnum = 0xb7b7b7b7;	//purple
+		else	
+			self->s.skinnum = 0xe0e1e2e3;	//8 JR another purple
+	}
 
 	self->think = hook_laser_think;
 
@@ -168,10 +165,6 @@ edict_t *abandon_hook_laser_start(edict_t *ent)
 	hook_laser_think (self);
 	return(self);
 }
-
-
-
-
 
 // Function name	: hook_reset
 // Description	    : reset the hook.  pull all entities out of the world and reset
@@ -186,8 +179,10 @@ void abandon_hook_reset(edict_t *rhook)
 	// start with NULL pointer checks
 	if (!rhook) return;
 
-	if (rhook->owner) { 
-		if (rhook->owner->client) {
+	if (rhook->owner) 
+	{ 
+		if (rhook->owner->client) 
+		{
 			// client's hook is no longer out (duh)
 			rhook->owner->client->hook_out = false;
 			rhook->owner->client->hook_on = false;
@@ -199,46 +194,44 @@ void abandon_hook_reset(edict_t *rhook)
 				G_FreeEdict(rhook->laser);
 
 			rhook->owner->client->buttons |= BUTTON_USE;
-//PON-CTF
-	if(chedit->value && rhook->owner == &g_edicts[1] && rhook->owner->client->hook)
-	{
-		e = (edict_t*)rhook->owner->client->hook;
-		VectorCopy(e->s.origin,vv);
-
-		for(i = 1;(CurrentIndex - i) > 0;i++)
-		{
-			if(Route[CurrentIndex - i].state == GRS_GRAPHOOK) break;
-			else if(Route[CurrentIndex - i].state == GRS_GRAPSHOT) break;
-		}
-		if(Route[CurrentIndex - i].state == GRS_GRAPHOOK)
-		{
-			Route[CurrentIndex].state = GRS_GRAPRELEASE;
-			VectorCopy(rhook->owner->s.origin,Route[CurrentIndex].Pt);
-			VectorSubtract(rhook->owner->s.origin,vv,v);
-			Route[CurrentIndex].Tcourner[0] = VectorLength(v);
-//gi.bprintf(PRINT_HIGH,"length %f\n",VectorLength(v));
-		}
-		else if(Route[CurrentIndex - i].state == GRS_GRAPSHOT)
-		{
-			CurrentIndex = CurrentIndex - i -1;
-		}
-//gi.bprintf(PRINT_HIGH,"length %f\n",VectorLength(v));
-
-		if((CurrentIndex - i) > 0)
-		{
-			if(++CurrentIndex < MAXNODES)
+			//PON-CTF
+			if(chedit->value && rhook->owner == &g_edicts[1] && rhook->owner->client->hook)
 			{
-				gi.bprintf(PRINT_HIGH,"Grapple has been released.Last %i pod(s).\n",MAXNODES - CurrentIndex);
-				memset(&Route[CurrentIndex],0,sizeof(route_t)); //initialize
-				Route[CurrentIndex].index = Route[CurrentIndex - 1].index +1;
-			}
-		}
-	}
-//PON-CTF
+				e = (edict_t*)rhook->owner->client->hook;
+				VectorCopy(e->s.origin,vv);
 
+				for(i = 1;(CurrentIndex - i) > 0;i++)
+				{
+					if(Route[CurrentIndex - i].state == GRS_GRAPHOOK) break;
+					else if(Route[CurrentIndex - i].state == GRS_GRAPSHOT) break;
+				}
+				if(Route[CurrentIndex - i].state == GRS_GRAPHOOK)
+				{
+					Route[CurrentIndex].state = GRS_GRAPRELEASE;
+					VectorCopy(rhook->owner->s.origin,Route[CurrentIndex].Pt);
+					VectorSubtract(rhook->owner->s.origin,vv,v);
+					Route[CurrentIndex].Tcourner[0] = VectorLength(v);
+					//gi.bprintf(PRINT_HIGH,"length %f\n",VectorLength(v));
+				}
+				else if(Route[CurrentIndex - i].state == GRS_GRAPSHOT)
+				{
+					CurrentIndex = CurrentIndex - i -1;
+				}
+				//gi.bprintf(PRINT_HIGH,"length %f\n",VectorLength(v));
+
+				if((CurrentIndex - i) > 0)
+				{
+					if(++CurrentIndex < MAXNODES)
+					{
+						gi.bprintf(PRINT_HIGH,"Grapple has been released.Last %i pod(s).\n",MAXNODES - CurrentIndex);
+						memset(&Route[CurrentIndex],0,sizeof(route_t)); //initialize
+						Route[CurrentIndex].index = Route[CurrentIndex - 1].index +1;
+					}
+				}
+			} //PON-CTF
 		}
 	}
-	
+
 	// delete ourself
 	G_FreeEdict(rhook);
 }
@@ -250,31 +243,31 @@ void abandon_hook_reset(edict_t *rhook)
 // Return type		: qboolean 
 // Argument         : edict_t *self
 qboolean hook_cond_reset(edict_t *self) {
-		// this should never be true
-		if ( !self || !self->inuse || !self->enemy || !self->owner) {
-                abandon_hook_reset (self);
-                return (true);
-        }
-	
-		// drop the hook if either party dies/leaves the game/etc.
-        if ((!self->enemy->inuse) || (!self->owner->inuse) ||
-			(self->enemy->client && self->enemy->health <= 0) || 
-			(self->owner->health <= 0))
-        {
-                abandon_hook_reset (self);
-                return (true);
-        }
+	// this should never be true
+	if ( !self || !self->inuse || !self->enemy || !self->owner) {
+		abandon_hook_reset (self);
+		return (true);
+	}
 
-    /*    // drop the hook if player lets go of button
-		// and has the hook as current weapon
-        if (!((self->owner->client->latched_buttons|self->owner->client->buttons) & BUTTON_ATTACK)
-			&& (strcmp(self->owner->client->pers.weapon->pickup_name, "Hook") == 0))
-        {
-                abandon_hook_reset (self);
-				return (true);
-        }
-*/
-		return(false);
+	// drop the hook if either party dies/leaves the game/etc.
+	if ((!self->enemy->inuse) || (!self->owner->inuse) ||
+		(self->enemy->client && self->enemy->health <= 0) || 
+		(self->owner->health <= 0))
+	{
+		abandon_hook_reset (self);
+		return (true);
+	}
+
+	/*    // drop the hook if player lets go of button
+	// and has the hook as current weapon
+	if (!((self->owner->client->latched_buttons|self->owner->client->buttons) & BUTTON_ATTACK)
+	&& (strcmp(self->owner->client->pers.weapon->pickup_name, "Hook") == 0))
+	{
+	abandon_hook_reset (self);
+	return (true);
+	}
+	*/
+	return(false);
 }
 
 
@@ -285,81 +278,81 @@ void SV_AddGravity (edict_t *ent);	//JSW
 // Return type		: void 
 // Argument         : edict_t *self
 void abandon_hook_service(edict_t *self) {
-        vec3_t	hook_dir;
+	vec3_t	hook_dir;
 
-	
-		if(!self)
-			return;
 
-		// if hook should be dropped, just return
-		if (hook_cond_reset(self)) return;
-		
-		//timer in action ?
-		if(hook_maxtime->value && self->owner->hooktime !=0
-			&& self->owner->hooktime <= level.time){
+	if(!self)
+		return;
+
+	// if hook should be dropped, just return
+	if (hook_cond_reset(self)) return;
+
+	//timer in action ?
+	if(hook_maxtime->value && self->owner->hooktime !=0
+		&& self->owner->hooktime <= level.time)
+	{
 			abandon_hook_reset (self);
 			return;
-		}
+	}
 
+	hackLift(self);
 
-		hackLift(self);
+	// give the client some velocity ...
+	if (self->enemy->client)
+		_VectorSubtract(self->enemy->s.origin, self->owner->s.origin, hook_dir);
+	else
+		_VectorSubtract(self->s.origin, self->owner->s.origin, hook_dir);
+	VectorNormalize(hook_dir);
 
+	//JSW slow down flag carriers
+	if (self->owner->hasflag)
+		VectorScale(hook_dir, hook_carrierspeed->value, self->owner->velocity);
+	else //end
+		VectorScale(hook_dir, hook_pullspeed->value, self->owner->velocity);
 
-		// give the client some velocity ...
-		if (self->enemy->client)
-			_VectorSubtract(self->enemy->s.origin, self->owner->s.origin, hook_dir);
-		else
-			_VectorSubtract(self->s.origin, self->owner->s.origin, hook_dir);
-        VectorNormalize(hook_dir);
+	//JSW - Add gravity
+	//self->owner->velocity[2] -= self->owner->gravity * sv_gravity->value * FRAMETIME * 2;
 
-		//JSW slow down flag carriers
-		if (self->owner->hasflag)
-			VectorScale(hook_dir, hook_carrierspeed->value, self->owner->velocity);
-		else //end
-			VectorScale(hook_dir, hook_pullspeed->value, self->owner->velocity);
-
-		//JSW - Add gravity
-		//self->owner->velocity[2] -= self->owner->gravity * sv_gravity->value * FRAMETIME * 2;
-
-		// avoid "falling" damage JMC
-		//VectorCopy(self->owner->velocity, self->owner->client->oldvelocity);
+	// avoid "falling" damage JMC
+	//VectorCopy(self->owner->velocity, self->owner->client->oldvelocity);
 }
-
-
 
 // Function name	: hook_track
 // Description	    : keeps the invisible hook entity on hook->enemy (can be world or an entity)
 // Return type		: void 
 // Argument         : edict_t *self
-void abandon_hook_track(edict_t *self) {
-		vec3_t	normal;
+void abandon_hook_track(edict_t *self) 
+{
+	vec3_t	normal;
 
-		// if hook should be dropped, just return
-		if (hook_cond_reset(self)) return;
+	// if hook should be dropped, just return
+	if (hook_cond_reset(self)) return;
 
-		// bring the pAiN!
-        if (self->enemy->client)
-        {
-			// move the hook along with the player.  It's invisible, but
-			// we need this to make the sound come from the right spot
-//			gi.unlinkentity(self);
-			VectorCopy(self->enemy->s.origin, self->s.origin);
-//			gi.linkentity(self);
-			
-			_VectorSubtract(self->owner->s.origin, self->enemy->s.origin, normal);
+	// bring the pAiN!
+	if (self->enemy->client)
+	{
+		// move the hook along with the player.  It's invisible, but
+		// we need this to make the sound come from the right spot
+		//			gi.unlinkentity(self);
+		VectorCopy(self->enemy->s.origin, self->s.origin);
+		//			gi.linkentity(self);
 
-			
-			T_Damage (self->enemy, self, self->owner, vec3_origin, self->enemy->s.origin, normal, hook_damage->value, 0, DAMAGE_NO_KNOCKBACK, MOD_GRAPPLE);
-        } else {
+		_VectorSubtract(self->owner->s.origin, self->enemy->s.origin, normal);
 
-        	// If the hook is not attached to the player, constantly copy
-	        // copy the target's velocity. Velocity copying DOES NOT work properly
-	        // for a hooked client. 
-            VectorCopy(self->enemy->velocity, self->velocity);
-		}
+		T_Damage (self->enemy, self, self->owner, vec3_origin, 
+			self->enemy->s.origin, normal, hook_damage->value, 
+			0, DAMAGE_NO_KNOCKBACK, MOD_GRAPPLE);
+	} 
+	else 
+	{
+		// If the hook is not attached to the player, constantly copy
+		// copy the target's velocity. Velocity copying DOES NOT work properly
+		// for a hooked client. 
+		VectorCopy(self->enemy->velocity, self->velocity);
+	}
 
-		gi.linkentity(self);
-        self->nextthink = level.time + 0.1;
+	gi.linkentity(self);
+	self->nextthink = level.time + 0.1;
 }
 
 
@@ -382,69 +375,71 @@ void hook_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 		return;
 	}
 
-
-	
 	// ignore hitting the person who launched us
 	if (other == self->owner)
 		return;
-	
+
 	// ignore hitting items/projectiles/etc.
 	if (other->solid == SOLID_NOT || other->solid == SOLID_TRIGGER || other->movetype == MOVETYPE_FLYMISSILE)
 		return;
-	
-	if (other->client) {		// we hit a player
+
+	if (other->client) 
+	{	// we hit a player
 		// ignore hitting a teammate
 		if (OnSameTeam(other, self->owner) || hook_reset->value)
 		{
-		abandon_hook_reset(self);
+			abandon_hook_reset(self);
 			return;
 		}
-			// we hit an enemy, so do a bit of damage
+		// we hit an enemy, so do a bit of damage
 		_VectorSubtract(other->s.origin, self->owner->s.origin, dir);
 		_VectorSubtract(self->owner->s.origin, other->s.origin, normal);
 		T_Damage(other, self, self->owner, dir, self->s.origin, normal, hook_damage->value, hook_damage->value, 0, MOD_GRAPPLE);
-	} else {					// we hit something thats not a player
+	} 
+	else 
+	{	// we hit something thats not a player
 		// if we can hurt it, then do a bit of damage
-		if (other->takedamage) {
+		if (other->takedamage) 
+		{
 			_VectorSubtract(other->s.origin, self->owner->s.origin, dir);
 			_VectorSubtract(self->owner->s.origin, other->s.origin, normal);
 			T_Damage(other, self, self->owner, dir, self->s.origin, normal, 1, 1, 0, MOD_HIT);
 		}
 		// stop moving
 		VectorClear(self->velocity);
-		
+
 		// gi.sound() doesnt work because the origin of an entity with no model is not 
 		// transmitted to clients or something.  hoped this would be fixed in Q2 ...
 		gi.positioned_sound(self->s.origin, self, CHAN_WEAPON, gi.soundindex("flyer/Flyatck2.wav"), 1, ATTN_NORM, 0);
 	}
-	
 
-// handled in hook_cond_reset()
+	// handled in hook_cond_reset()
 	// check to see if we already let up on the fire button
-//	if ( !((self->owner->client->latched_buttons|self->owner->client->buttons) & BUTTON_ATTACK) ) {
-//		abandon_hook_reset(self);
-//		return;
-//	}
+	//	if ( !((self->owner->client->latched_buttons|self->owner->client->buttons) & BUTTON_ATTACK) ) {
+	//		abandon_hook_reset(self);
+	//		return;
+	//	}
 
 	// remember who/what we hit
 	// this must be set before hook_cond_reset() is called
 	self->enemy = other;
 
 	// if hook should be dropped, just return
-	if (hook_cond_reset(self)) return;
+	if (hook_cond_reset(self)) 
+		return;
 
 	// pull us off the ground (figuratively)
-//	self->owner->groundentity = NULL;
+	//	self->owner->groundentity = NULL;
 
 	// we are now anchored
 	self->owner->client->hook_on = true;
 	if(self->owner->bot_client)
-	self->owner->hooktime = level.time +2;
+		self->owner->hooktime = level.time + 2;
 
 	// keep up with that thing
 	self->think = abandon_hook_track;
 	self->nextthink = level.time + 0.1;
-	
+
 	self->solid = SOLID_NOT;
 
 	//lets make some sparks !!
@@ -455,7 +450,7 @@ void hook_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 	gi.multicast (self->s.origin, MULTICAST_PVS);
 
 
-//PON-CTF
+	//PON-CTF
 	if(chedit->value && self->owner == &g_edicts[1])
 	{
 		i = CurrentIndex;
@@ -477,13 +472,8 @@ void hook_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 			Route[CurrentIndex].index = Route[CurrentIndex - 1].index +1;
 		}
 	}
-//PON-CTF
-
-
-
+	//PON-CTF
 }
-
-
 
 // Function name	: fire_hook
 // Description	    : creates the invisible hook entity and sends it on its way attaches a laser to it
@@ -491,61 +481,58 @@ void hook_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 // Argument         : edict_t *owner
 // Argument         : vec3_t start
 // Argument         : vec3_t forward
-void abandon_fire_hook(edict_t *owner, vec3_t start, vec3_t forward) {
-		edict_t	*hook;
-		trace_t tr;
+void abandon_fire_hook(edict_t *owner, vec3_t start, vec3_t forward) 
+{
+	edict_t	*hook;
+	trace_t tr;
 
-
-		if(match_state != STATE_PLAYING || !owner->client || !owner )
-			return;
-
-
-        hook = G_Spawn();
-
-		if(!hook)
+	if(match_state != STATE_PLAYING || !owner->client || !owner )
 		return;
-        hook->movetype = MOVETYPE_FLYMISSILE;
-        hook->solid = SOLID_BBOX;
-		hook->clipmask = MASK_SHOT;
-        hook->owner = owner;			// this hook belongs to me
-		owner->client->hook = hook;		// this is my hook
-        hook->classname = "hook";		// this is a hook
-		
-		
-		vectoangles (forward, hook->s.angles);
-        VectorScale(forward, hook_speed->value, hook->velocity);
 
-        hook->touch = hook_touch;
+	hook = G_Spawn();
 
-		hook->think = abandon_hook_reset;
-		hook->nextthink = level.time + 5;
-		hook->noblock = true;
+	if(!hook)
+		return;
+	hook->movetype = MOVETYPE_FLYMISSILE;
+	hook->solid = SOLID_BBOX;
+	hook->clipmask = MASK_SHOT;
+	hook->owner = owner;			// this hook belongs to me
+	owner->client->hook = hook;		// this is my hook
+	hook->classname = "hook";		// this is a hook
 
-		gi.setmodel(hook, "");
+	vectoangles (forward, hook->s.angles);
+	VectorScale(forward, hook_speed->value, hook->velocity);
 
-        VectorCopy(start, hook->s.origin);
-		VectorCopy(hook->s.origin, hook->s.old_origin);
+	hook->touch = hook_touch;
 
-		VectorClear(hook->mins);
-		VectorClear(hook->maxs);
+	hook->think = abandon_hook_reset;
+	hook->nextthink = level.time + 5;
+	hook->noblock = true;
 
-		// start up the laser
- 		hook->laser = abandon_hook_laser_start(hook);
+	gi.setmodel(hook, "");
 
-		// put it in the world
-		gi.linkentity(hook);
+	VectorCopy(start, hook->s.origin);
+	VectorCopy(hook->s.origin, hook->s.old_origin);
 
-		//start the hook reset timer 
-		owner->hooktime = level.time +(int)hook_maxtime->value;
+	VectorClear(hook->mins);
+	VectorClear(hook->maxs);
 
-// from id's code.  I don't question these things...		
-		tr = gi.trace (owner->s.origin, NULL, NULL, hook->s.origin, hook, MASK_SHOT);
-		if (tr.fraction < 1.0)
-		{
-			VectorMA (hook->s.origin, -10, forward, hook->s.origin);
-			hook->touch (hook, tr.ent, NULL, NULL);
-		}
+	// start up the laser
+	hook->laser = abandon_hook_laser_start(hook);
 
+	// put it in the world
+	gi.linkentity(hook);
+
+	//start the hook reset timer 
+	owner->hooktime = level.time +(int)hook_maxtime->value;
+
+	// from id's code.  I don't question these things...		
+	tr = gi.trace (owner->s.origin, NULL, NULL, hook->s.origin, hook, MASK_SHOT);
+	if (tr.fraction < 1.0)
+	{
+		VectorMA (hook->s.origin, -10, forward, hook->s.origin);
+		hook->touch (hook, tr.ent, NULL, NULL);
+	}
 }
 
 
@@ -554,7 +541,8 @@ void abandon_fire_hook(edict_t *owner, vec3_t start, vec3_t forward) {
 // Description	    : a call has been made to fire the hook
 // Return type		: void 
 // Argument         : edict_t *ent
-void abandon_hook_fire(edict_t *ent) {
+void abandon_hook_fire(edict_t *ent) 
+{
 	vec3_t	forward, right;
 	vec3_t	start;
 	vec3_t	offset;
@@ -564,10 +552,10 @@ void abandon_hook_fire(edict_t *ent) {
 	// since we don't want to be in any other real state,
 	// we just set it to some 'invalid' state and everything works
 	// fine :)
-/*	if (ent->client->pers.weapon &&
-		strcmp(ent->client->pers.weapon->pickup_name, "Hook") == 0)
-			ent->client->weaponstate = -1;	// allow weapon change
-*/
+	/*	if (ent->client->pers.weapon &&
+	strcmp(ent->client->pers.weapon->pickup_name, "Hook") == 0)
+	ent->client->weaponstate = -1;	// allow weapon change
+	*/
 	if (!use_hook->value)
 	{
 		if (!ent->client->pers.hookmsg)
@@ -584,29 +572,28 @@ void abandon_hook_fire(edict_t *ent) {
 	if(ent->client->resp.hook_wait > level.time)
 		return;
 
-
 	if (ent->client->ps.pmove.pm_type == PM_SPECTATOR)
 		return;
 
 	if (ent->client->hook_out)		// reject subsequent calls from Weapon_Generic
 		return;
 
-    ent->client->hook_out = true;
+	ent->client->hook_out = true;
 
 	// calculate start position and forward direction
 	AngleVectors (ent->client->v_angle, forward, right, NULL);
 	VectorSet(offset, 24, 8, ent->viewheight-8);
-//	if(hook_offhand->value)
+	//	if(hook_offhand->value)
 	P_ProjectSource_Reverse (ent->client, ent->s.origin, offset, forward, right, start);
-//	else
-//	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
+	//	else
+	//	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
 
 	// kick back??
 	VectorScale (forward, -2, ent->client->kick_origin);
 	ent->client->kick_angles[0] = -1;
 
 	hackLift(ent);
-	
+
 	// actually launch the hook off
 	abandon_fire_hook (ent, start, forward);
 
@@ -614,7 +601,7 @@ void abandon_hook_fire(edict_t *ent) {
 
 	PlayerNoise(ent, start, PNOISE_WEAPON);
 
-//PON-CTF
+	//PON-CTF
 	if(chedit->value && ent == &g_edicts[1])
 	{
 		Route[CurrentIndex].state = GRS_GRAPSHOT;
@@ -627,9 +614,7 @@ void abandon_hook_fire(edict_t *ent) {
 			Route[CurrentIndex].index = Route[CurrentIndex - 1].index +1;
 		}
 	}
-//PON-CTF
-
-
+	//PON-CTF
 }
 
 // Function name	: Weapon_Hook
@@ -641,7 +626,5 @@ void abandon_Weapon_Hook(edict_t *ent)
 	static int	pause_frames[]	= {19, 32, 0};
 	static int	fire_frames[]	= {5, 0};
 
-//	Weapon_Generic (ent, 4, 8, 52, 55, pause_frames, fire_frames, Weapon_Blaster_Fire);
 	Weapon_Generic (ent, 4, 8, 52, 55, pause_frames, fire_frames, abandon_hook_fire);
 }
-

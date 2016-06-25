@@ -1476,7 +1476,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 			if(ent->client->pers.oplevel != OP_NAMEPASS && ent->client->pers.oplevel != 0)
 				sprintf(text2, "<OP_SPEC> %s", text);
 			else
-				sprintf(text2, "<SPECTATOR> %s", text);
+				sprintf(text2, "<SPEC> %s", text);
 		}
 		else
 		{
@@ -1493,7 +1493,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 			if(ent->client->pers.oplevel != OP_NAMEPASS && ent->client->pers.oplevel != 0)
 				sprintf(text2, "<OP_SPEC> %s", text);
 			else
-				sprintf(text2, "<SPECTATOR> %s", text);
+				sprintf(text2, "<SPEC> %s", text);
 		}
 		else
 		{

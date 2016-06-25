@@ -707,7 +707,6 @@ void InitializeBot (edict_t *ent, int botindex)
 	char		pinfo[200];
 	int			index;
 
-
 	index = ent-g_edicts-1;
 	ent->client = &game.clients[index];
 
@@ -761,16 +760,12 @@ void PutBotInServer (edict_t *ent)
 	vec3_t	spawn_origin, spawn_angles;
 	trace_t		rs_trace;
 	gitem_t	    *ammo;
-
-
 	zgcl_t		*zc;
 
 	zc = &ent->client->zc;
 
-
 	//current weapon
 	client = ent->client;
-
 	
 //RAV
 //  start weapons & respawn protection
