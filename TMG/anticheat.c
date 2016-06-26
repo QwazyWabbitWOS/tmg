@@ -122,7 +122,6 @@ BotDetection(edict_t *ent, usercmd_t *ucmd)
 		{
 			OnBotDetection(ent, va("impulse %d", ucmd->impulse));
 			return;
-
 		}
 	}
 }
@@ -233,7 +232,8 @@ void BadPlayer(edict_t *ent)
 		ent->flashlight = NULL;
 	}
 
-	if(ctf->value){
+	if(ctf->value)
+	{
 		CTFPlayerResetGrapple(ent);
 		CTFDeadDropFlag(ent);
 		CTFDeadDropTech(ent);
@@ -287,17 +287,19 @@ OnBotDetection(edict_t *ent, char *msg)
 		addEntry2 ("logs/bot_detected.txt", logged);
 	}
 
-	if (botdetection & BOT_NOTIFY) {
+	if (botdetection & BOT_NOTIFY)
+	{
 		safe_bprintf(PRINT_HIGH, "%s %s\n",
 					 user,"was Busted By -=BOtCRuSher=-");
 	}
 
-	if(botdetection & BOT_BAN){
+	if(botdetection & BOT_BAN)
+	{
 		addEntry ("ip_banned.txt", userip);
 	}
 
-
-	if (botdetection & BOT_KICK) {
+	if (botdetection & BOT_KICK)
+	{
 		char	command [256];
 
 		ent->movetype = MOVETYPE_NOCLIP;
@@ -322,18 +324,17 @@ InitBotDetection(void)
 void
 EndBotDetection(void)
 {
-    if (fpBot)
-        fclose(fpBot);
+	if (fpBot)
+		fclose(fpBot);
 }
 
 int isBlank(char *buff1)
 {
-  while(*buff1 == ' ')
-  {
-    buff1++;
-  }
-
-  return !(*buff1);
+	while(*buff1 == ' ')
+	{
+		buff1++;
+	}
+	return !(*buff1);
 }
 
 qboolean CheckForConnection(edict_t *player)
@@ -354,4 +355,3 @@ qboolean CheckForConnection(edict_t *player)
 
 	return false;
 }
-

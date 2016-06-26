@@ -1,0 +1,4 @@
+*.xcodeproj
+*.o
+*.so
+dependencies
