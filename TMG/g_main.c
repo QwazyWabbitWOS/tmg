@@ -432,8 +432,8 @@ void EndDMLevel (void)
 {
 	edict_t		*ent = NULL;
  	
-	if (deathmatch->value && ctf->value)
-		CTFCalcScores();
+	//if (deathmatch->value && ctf->value)
+	//	CTFCalcScores();
 
 	//if(highscores->value)
 	//	SaveHighScores();

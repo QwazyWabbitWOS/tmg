@@ -52,9 +52,6 @@ void MoveClientToIntermission (edict_t *ent)
 	ent->s.sound = 0;
 	ent->solid = SOLID_NOT;
 
-	if(highscores->value)
-		SaveHighScores();
-
 	// add the layout
 
 	if (!ent->bot_client && (deathmatch->value || coop->value))
@@ -160,13 +157,18 @@ void BeginIntermission (edict_t *targ)
 	VectorCopy (ent->s.origin, level.intermission_origin);
 	VectorCopy (ent->s.angles, level.intermission_angle);
 
+	if (deathmatch->value && ctf->value)
+		CTFCalcScores();
+
+	if(highscores->value)
+		SaveHighScores();
+
 	// move all clients to the intermission point
 	for (i=0 ; i<maxclients->value ; i++)
 	{
 		client = g_edicts + 1 + i;
-		if (!client->inuse)
-			continue;
-		MoveClientToIntermission (client);
+		if (client->inuse)
+			MoveClientToIntermission (client);
 	}
 }
 
