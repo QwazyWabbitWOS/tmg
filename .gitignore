@@ -1,3 +1,4 @@
+TMG/.svn*.manifest*.lastbuildstate*.idb*.sdf*.vcproj*.gitignore*.opensdf*.ipch*.res
 *.xcodeproj
 *.o
 *.so
