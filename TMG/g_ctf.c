@@ -1223,6 +1223,7 @@ void CTFCalcScores(void)
 {
 	int i;
 
+	DbgPrintf("%s entered\n", __func__);
 	ctfgame.total1 = ctfgame.total2 = 0;
 	for (i = 0; i < maxclients->value; i++) {
 		if (!g_edicts[i+1].inuse)

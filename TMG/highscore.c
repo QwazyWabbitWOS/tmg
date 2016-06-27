@@ -45,6 +45,7 @@ void SaveHighScores (void)
 	int		count = 0;
 	size_t	cnt = 0;
 
+	DbgPrintf("%s entered\n", __func__);
 	i =  sprintf(binfile, "./");
 	i += sprintf(binfile + i, "%s/%s", game_dir->string, cfgdir->string);
 	i += sprintf(binfile + i, "/hs/%s_hs.bin", level.mapname);
@@ -72,7 +73,8 @@ void SaveHighScores (void)
 			{ // if it beat the lowest, keep score
 				//my_bprintf (PRINT_HIGH, "High scores changed\n");
 				strcpy(g_TopScores[SCORESTOKEEP-1].netname, game.clients[i].pers.netname);
-				g_TopScores[SCORESTOKEEP-1].score = game.clients[i].ps.stats[STAT_FRAGS];
+				g_TopScores[SCORESTOKEEP-1].score = game.clients[i].resp.score;
+				DbgPrintf("Keeping %s - %d\n", g_TopScores[SCORESTOKEEP-1].netname, g_TopScores[SCORESTOKEEP-1].score);
 				strcpy(g_TopScores[SCORESTOKEEP-1].date , sys_date);
 				// sort it
 				qsort(g_TopScores, sizeof(g_TopScores)/sizeof(g_TopScores[0]), sizeof(g_TopScores[0]), MP_Sort);
@@ -91,7 +93,7 @@ void SaveHighScores (void)
 			if (cl_ent->inuse && (cl_ent->client->pers.pl_state == PL_PLAYING || cl_ent->client->pers.pl_state == PL_WARMUP))
 			{
 				strcpy(g_TopScores[count].netname, game.clients[i].pers.netname);
-				g_TopScores[count].score = game.clients[i].ps.stats[STAT_FRAGS];
+				g_TopScores[count].score = game.clients[i].resp.score;
 				strcpy(g_TopScores[count].date , sys_date);
 				count++;
 				if (count >= SCORESTOKEEP)
