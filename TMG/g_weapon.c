@@ -854,7 +854,7 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 	int			k;
 	char		string[1024];
 
-	START_PERFORMANCE_TIMER;
+	//START_PERFORMANCE_TIMER;
 	// long tracelines chew up HUGE amounts of CPU, only do for client
 	VectorMA (start, inc, aimdir, end);
 	dist = inc;
@@ -995,7 +995,7 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 
 	if (self->client)
 		PlayerNoise(self, tr.endpos, PNOISE_IMPACT);
-	_STOP_PERFORMANCE_TIMER(__func__);
+	//_STOP_PERFORMANCE_TIMER(__func__);
 }
 
 
