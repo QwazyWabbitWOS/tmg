@@ -4,6 +4,7 @@
 #include "g_cmds.h"
 #include "runes.h"
 #include "timer.h"
+#include "performance.h"
 
 char *rune_namefornum[] =
  {
@@ -227,7 +228,8 @@ void Rune_Spawn(edict_t *rune, gitem_t *item)
 	if ((spot = FindRuneSpawn()) != NULL)
 	{
 		SpawnTech(rune->item, spot);
-		DbgPrintf("Tech 0x%x type %s spawned time: %.1f\n", rune, rune->classname, level.time);
+		if (DEBUG_RUNES) 
+			DbgPrintf("Tech 0x%x type %s spawned time: %.1f\n", rune, rune->classname, level.time);
 		rune->noblock = true;
 		return;
 	}
@@ -280,8 +282,3 @@ void runes_spawn_start(void)
 	temp->think = runes_spawn;
 	temp->nextthink = level.time + 3 + warmup_time->value;
 }
-
-
-
-
-

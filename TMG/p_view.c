@@ -6,6 +6,7 @@
 #include "p_hud.h"
 #include "bot.h"
 #include "runes.h"
+#include "performance.h"
 
 edict_t		*current_player;
 gclient_t	*current_client;
@@ -1394,7 +1395,8 @@ void ClientEndServerFrame (edict_t *ent)
 			// this fixes TastySpleen WallFly blockout.
 			if (ent->client->resp.enterframe + 60 > level.framenum && !ent->client->pers.motd_seen)
 			{
-				DbgPrintf("%s in HUD display delay, framenum: %d\n", __func__, level.framenum);
+				if (DEBUG_HUD) 
+					DbgPrintf("%s in HUD display delay, framenum: %d\n", __func__, level.framenum);
 			}
 			else if (!ent->client->pers.motd_seen)
 			{

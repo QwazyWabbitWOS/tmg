@@ -1,6 +1,7 @@
 // g_phys.c
 
 #include "g_local.h"
+#include "performance.h"
 
 /*
 
@@ -434,9 +435,10 @@ retry:
 	if (voosh->value && ent->inuse)
 		gi.linkentity (ent);
 
-	//if (!ent->inuse) 
-	//	DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
-	//	__FUNCTION__, ent->movetype, ent->inuse, ent->classname, level.time);
+	if (DEBUG_PHYSICS)
+		if (!ent->inuse) 
+			DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
+			__FUNCTION__, ent->movetype, ent->inuse, ent->classname, level.time);
 
 	if (trace.fraction != 1.0)
 	{
@@ -466,6 +468,7 @@ typedef struct
 	vec3_t	angles;
 	float	deltayaw;
 } pushed_t;
+
 pushed_t	pushed[MAX_EDICTS], *pushed_p;
 
 edict_t	*obstacle;
@@ -878,7 +881,8 @@ SV_Physics_Toss (edict_t *ent)
 	vec3_t		old_origin;
 
 	if (!ent->inuse && developer->value)
-		DbgPrintf ("%s entity %d inuse: %d classname %s time: %.1f\n", 
+		if (DEBUG_PHYSICS)
+			DbgPrintf ("%s entity %d inuse: %d classname %s time: %.1f\n", 
 		__FUNCTION__, ent->movetype, ent->inuse, ent->classname, level.time);
 
 	// regular thinking

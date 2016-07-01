@@ -1,5 +1,6 @@
 #include "g_local.h"
 #include "s_map.h"
+#include "performance.h"
 
 MAP_ENTRY   *mdsoft_map = NULL;
 
@@ -170,11 +171,13 @@ edict_t *mdsoft_NextMap( void )
 
 				for (i = 0; i < maplist->nummaps; i++)
 				{
-					DbgPrintf("Map loaded: %s \"%s\"\n",
-						   maplist->mapname[i], maplist->mapnick[i]);
+					if (DEBUG_SMAP)
+						DbgPrintf("Map loaded: %s \"%s\"\n",
+								maplist->mapname[i], maplist->mapnick[i]);
 				}
 
-				DbgPrintf("%d maps loaded.\n", maplist->nummaps);
+				if (DEBUG_SMAP)
+					DbgPrintf("%d maps loaded.\n", maplist->nummaps);
 
 				fclose( fpFile );
 			}
@@ -220,7 +223,8 @@ edict_t *mdsoft_NextMap( void )
 						count++;
 				}
 
-				//DbgPrintf ("MAP CHANGE: Count = %d \n", count );
+				if (DEBUG_SMAP)
+					DbgPrintf ("MAP CHANGE: Count = %d \n", count );
 
 				do 
 				{
@@ -254,7 +258,7 @@ edict_t *mdsoft_NextMap( void )
 				/* Could not select an appropriate map */
 				if(point == mdsoft_map_last)
 				{
-					if(map_debug->value)
+					if (DEBUG_SMAP)
 						DbgPrintf("Map could not be found, "
 						"map_sought %d, point %d name %s\n", 
 						map_sought, point, mdsoft_map[map_sought].aName);

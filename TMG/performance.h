@@ -19,4 +19,15 @@ void _START_PERFORMANCE_TIMER (void);
 
 void DbgPrintf (char *msg, ...);
 
+/* Select debug features */
+/* 
+Turn these on to debug areas of interest.
+*/
+#define DEBUG_HSCORES 1
+#define DEBUG_HUD 0
+#define DEBUG_PHYSICS 0
+#define DEBUG_RUNES 0
+#define DEBUG_SMAP 1
+#define DEBUG_SPAWN 1
+
 #endif /* PERFORMANCE_H */

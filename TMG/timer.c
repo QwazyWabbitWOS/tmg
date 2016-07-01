@@ -1,4 +1,5 @@
 #include "g_local.h"
+#include "performance.h"
 #include "g_items.h"
 #include "g_cmds.h"
 #include "timer.h"
@@ -52,11 +53,11 @@ void RestartLevel()
 	edict_t *dropped = NULL;
 	techspawn = false;
 	ResetItems();
-	match_nextthink = level.time + 1;
+	match_nextthink = level.time + FRAMETIME * 10.0;
 	match_state = STATE_NEEDPLAYERS;
-	match_state_end = 1;
+	match_state_end = 1.0f;
 	ResetCaps();
-	hstime = level.time - 10;
+	hstime = level.time - 10.0;
 	mapvoteactive = false;
 
 	for_each_player(player, i)
@@ -91,7 +92,7 @@ void RestartLevel()
 			{
 				dropped->think = G_FreeEdict;
 				dropped->timestamp = level.time;
-				dropped->nextthink = level.time + 0.2;
+				dropped->nextthink = level.time + FRAMETIME;
 			}
 			//JSW - clear flag carrier var
 			player->hasflag = 0;
@@ -108,7 +109,7 @@ void ServerInit (int resetall)
 	// reset server state.
 	techspawn = false;
 	level.allowpickup = level.time;
-	match_nextthink = level.time + 1;
+	match_nextthink = level.time + FRAMETIME * 10.0;
 	match_state = STATE_NEEDPLAYERS;
 	match_state_end = 1;
 	locked_teams = false;
@@ -189,8 +190,8 @@ void CountDown()
 		return;
 
 	// how long left ?
-	seconds_left = ceil(match_state_end - level.time);
-	
+	seconds_left = (long) ceil(match_state_end - level.time);
+	DbgPrintf("%d %f %f\n", seconds_left, match_state_end, level.time);
 	// ignore if <0 seconds
 	if (seconds_left < 0)
 		return;
@@ -235,7 +236,7 @@ void CountDown()
 	}
 	
 	// do K3WL stuff for the countdown to start.
-	if (match_state == STATE_COUNTDOWN && seconds_left<=30)
+	if (match_state == STATE_COUNTDOWN && seconds_left <= 30)
 	{
 		// iterate thru all clients, count down by seconds now.
 		for_each_player(player, i)
@@ -275,7 +276,7 @@ void CheckState()
 	{
 		match_state = STATE_COUNTDOWN;
 		match_state_end = level.time + warmup_time->value;
-		match_nextthink = level.time + 0.1;
+		match_nextthink = level.time + FRAMETIME;
 		CountDown ();
 		return;
 	}
@@ -329,7 +330,7 @@ void TimerThink (void)
 		CheckState ();
 		if(use_bots->value)
 			Check_Bot_Number();
-		match_nextthink += 1.0;
+		match_nextthink += FRAMETIME * 10.0;
 		ctfgame.players1 = 0;
 		ctfgame.players2 = 0;
 		ctfgame.players3 = 0;

@@ -21,7 +21,7 @@
 #include <ctype.h>
 
 #include "q_shared.h"
-#include "performance.h"
+//#include "performance.h"
 
 // define GAME_INCLUDE so that game.h does not define the
 // short, server-visible gclient_t and edict_t structures,
@@ -38,7 +38,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.12"
+#define MOD_VERSION "0.2.15"
 #define MOD "TMG_MOD"
 // protocol bytes that can be directly added to messages
 #define	svc_muzzleflash		1

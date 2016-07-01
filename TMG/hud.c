@@ -381,7 +381,9 @@ char *tn_showHud (edict_t *ent)
 	static char layout[1300];
 	int j = 0;
 	gclient_t	*cl;
-	int	score, ping, fph, fpm, frags, died, num_ppl, rank, shots, eff;
+	int	score, ping, fph, fpm;
+	int frags, died, num_ppl, rank;
+	int shots, eff;
 	int bigspree;
 	int s;  //status bar string length
 

@@ -2,6 +2,7 @@
 
 #include "g_local.h"
 #include "highscore.h"
+#include "performance.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -45,7 +46,8 @@ void SaveHighScores (void)
 	int		count = 0;
 	size_t	cnt = 0;
 
-	DbgPrintf("%s entered\n", __func__);
+	if (DEBUG_HSCORES) 
+		DbgPrintf("%s entered\n", __func__);
 	i =  sprintf(binfile, "./");
 	i += sprintf(binfile + i, "%s/%s", game_dir->string, cfgdir->string);
 	i += sprintf(binfile + i, "/hs/%s_hs.bin", level.mapname);
@@ -54,7 +56,8 @@ void SaveHighScores (void)
 	i += sprintf(txtfile + i, "%s/%s", game_dir->string, cfgdir->string);
 	i += sprintf(txtfile + i, "/hs/%s_hs.txt", level.mapname);
 	
-	DbgPrintf("Opened for reading %s\n", binfile);
+	if (DEBUG_HSCORES) 
+		DbgPrintf("Opened for reading %s\n", binfile);
 	HS_file = fopen(binfile, "rb");
 	
 	if(HS_file)
@@ -74,7 +77,8 @@ void SaveHighScores (void)
 				//my_bprintf (PRINT_HIGH, "High scores changed\n");
 				strcpy(g_TopScores[SCORESTOKEEP-1].netname, game.clients[i].pers.netname);
 				g_TopScores[SCORESTOKEEP-1].score = game.clients[i].resp.score;
-				DbgPrintf("Keeping %s - %d\n", g_TopScores[SCORESTOKEEP-1].netname, g_TopScores[SCORESTOKEEP-1].score);
+				if (DEBUG_HSCORES) 
+					DbgPrintf("Keeping %s - %d\n", g_TopScores[SCORESTOKEEP-1].netname, g_TopScores[SCORESTOKEEP-1].score);
 				strcpy(g_TopScores[SCORESTOKEEP-1].date , sys_date);
 				// sort it
 				qsort(g_TopScores, sizeof(g_TopScores)/sizeof(g_TopScores[0]), sizeof(g_TopScores[0]), MP_Sort);
@@ -111,15 +115,18 @@ void SaveHighScores (void)
 	{
 		fwrite(g_TopScores, sizeof(g_TopScores[0]), SCORESTOKEEP, HS_file);
 		fclose(HS_file);
-		DbgPrintf("File written %s\n", binfile);
+		if (DEBUG_HSCORES) 
+			DbgPrintf("File written %s\n", binfile);
 	}
 	else
 	{
-		DbgPrintf("Can't write %s\n", binfile);
+		if (DEBUG_HSCORES) 
+			DbgPrintf("Can't write %s\n", binfile);
 	}
 	
 	// print top scores to a man-readable file
-	DbgPrintf("Opened for writing %s\n", txtfile);
+	if (DEBUG_HSCORES) 
+		DbgPrintf("Opened for writing %s\n", txtfile);
 	HS_file = fopen(txtfile, "wt");
 	if (HS_file)
 	{
@@ -133,7 +140,8 @@ void SaveHighScores (void)
 		fprintf(HS_file,"\n     %s  %s\n", MOD, MOD_VERSION);
 		fprintf(HS_file,"              www.railwarz.com");
 		fclose(HS_file);
-		DbgPrintf("File written %s\n", txtfile);
+		if (DEBUG_HSCORES) 
+			DbgPrintf("File written %s\n", txtfile);
 	}
 	else
 	{
@@ -159,7 +167,8 @@ void LoadHighScores (void)
 	
 	if (!(motd_file = fopen(filename, "r")))
 	{
-		DbgPrintf("Can't open highscores using %s\n", filename);
+		if (DEBUG_HSCORES) 
+			DbgPrintf("Can't open highscores using %s\n", filename);
 		return;
 	}
 	string[0] = 0;

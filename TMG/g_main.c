@@ -1,5 +1,6 @@
 
 #include "g_local.h"
+#include "performance.h"
 #include "g_items.h"
 #include "anticheat.h"
 #include "g_cmds.h"

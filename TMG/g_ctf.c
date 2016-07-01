@@ -15,6 +15,7 @@
 #include "stdlog.h"	//	StdLog - Mark Davies
 #include "gslog.h"	//	StdLog - Mark Davies. Depends on level_locals_t
 #include "highscore.h"
+#include "performance.h"
 
 cvar_t *dropflag_delay;
 
@@ -1223,7 +1224,8 @@ void CTFCalcScores(void)
 {
 	int i;
 
-	DbgPrintf("%s entered\n", __func__);
+	if (DEBUG_HSCORES) 
+		DbgPrintf("%s entered\n", __func__);
 	ctfgame.total1 = ctfgame.total2 = 0;
 	for (i = 0; i < maxclients->value; i++) {
 		if (!g_edicts[i+1].inuse)
@@ -2384,7 +2386,8 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 	int team;
 	int maxsize = 1400;
 
-	DbgPrintf("%s entered\n", __func__);
+	if (DEBUG_HSCORES) 
+		DbgPrintf("%s entered\n", __func__);
 	if (highscores->value && ent->client->showhighscores)
 	{
 		LoadHighScores(); // the message is fully formed
