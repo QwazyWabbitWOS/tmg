@@ -60,7 +60,7 @@ int GetNumBots(void)
 }
 
 
-void Check_Bot_Number (void)
+void Adjust_Bot_Number (void)
 {
 	edict_t  *ent;
 	int	i;
@@ -82,7 +82,7 @@ void Check_Bot_Number (void)
 		if ((wait_time <= level.time) && (rav_getnumclients() < (maxclients->value - bot_free_clients->value )))
 		{
 			gi.AddCommandString ("sv spb 1");
-			wait_time = level.time +3;
+			wait_time = level.time + 3;
 		}
 		//REMOVE A BOT !!  lowest on frags first
 		if ((GetNumBots() > 0) && (rav_getnumclients() > (maxclients->value - bot_free_clients->value )) &&
@@ -92,11 +92,11 @@ void Check_Bot_Number (void)
 			for (i=1; i<=maxclients->value; i++)
 			{
 				ent = &g_edicts[i];
-				if ((ent && !ent->bot_client)|| (rav_getnumclients() <= (maxclients->value - bot_free_clients->value )))
+				if ((ent && !ent->bot_client) || (rav_getnumclients() <= (maxclients->value - bot_free_clients->value )))
 					continue;
 				//disconnect bot
 				ClientDisconnect(ent);
-				kill_time = level.time +3;
+				kill_time = level.time + 3;
 				gi.dprintf("%i bots are now left in the game\n", GetNumBots());
 			}
 		}

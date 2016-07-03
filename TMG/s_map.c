@@ -2,6 +2,8 @@
 #include "s_map.h"
 #include "performance.h"
 
+#define DEBUG_SMAP 0
+
 MAP_ENTRY   *mdsoft_map = NULL;
 
 maplist_t	*maplist;

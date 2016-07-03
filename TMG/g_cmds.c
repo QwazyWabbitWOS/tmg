@@ -14,6 +14,7 @@
 #include "filtering.h"
 #include "hud.h"
 #include "runes.h"
+#include "maplist.h"
 
 int LIGHTS = 0;
 void no (edict_t *ent);
@@ -978,21 +979,29 @@ void MapVoteThink(qboolean passed, qboolean now)
 		if (now)
 		{
 			my_bprintf (PRINT_CHAT,
-						"Immediate map change to %s \"%s\" has passed.\n",
-						maplist->mapname[maplist->currentmapvote],
-						maplist->mapnick[maplist->currentmapvote]);
+				"Immediate map change to %s \"%s\" has passed.\n",
+				maplist->mapname[maplist->currentmapvote],
+				maplist->mapnick[maplist->currentmapvote]);
 			ent = G_Spawn ();
 			ent->classname = "target_changelevel";
 			ent->map = maplist->mapname[maplist->currentmapvote];
-			BeginIntermission (ent);
+			if (Maplist_CheckFileExists(ent->map))
+				BeginIntermission (ent);
+			else
+			{
+				gi.bprintf(PRINT_CHAT,"Map %s does not exist on server, reverting to last map.\n", ent->map);
+				ent->map = level.mapname;
+				votetime = 0;
+				BeginIntermission (ent);
+			}
 			mapvoteactive = false;
 		}
 		else
 		{
 			my_bprintf (PRINT_CHAT,
-						"End of level map change to %s \"%s\" has passed.\n",
-						maplist->mapname[maplist->currentmapvote],
-						maplist->mapnick[maplist->currentmapvote]);
+				"End of level map change to %s \"%s\" has passed.\n",
+				maplist->mapname[maplist->currentmapvote],
+				maplist->mapnick[maplist->currentmapvote]);
 			maplist->nextmap = maplist->currentmapvote;
 			mapvoteactive = false;
 		}
@@ -1005,33 +1014,33 @@ void MapVoteThink(qboolean passed, qboolean now)
 			{
 				votemapnow = true;
 				sprintf(string,
-						"An immediate mapvote has been started for %s \"%s\". Type 'YES' to vote yes.\n",
-						maplist->mapname[maplist->currentmapvote],
-						maplist->mapnick[maplist->currentmapvote]);
+					"An immediate mapvote has been started for %s \"%s\". Type 'YES' to vote yes.\n",
+					maplist->mapname[maplist->currentmapvote],
+					maplist->mapnick[maplist->currentmapvote]);
 			}
 			else
 			{
 				votemapnow = false;
 				sprintf(string,
-						"An end of level mapvote has been started for %s \"%s\". Type 'YES' to vote yes.\n",
-						maplist->mapname[maplist->currentmapvote],
-						maplist->mapnick[maplist->currentmapvote]);
+					"An end of level mapvote has been started for %s \"%s\". Type 'YES' to vote yes.\n",
+					maplist->mapname[maplist->currentmapvote],
+					maplist->mapnick[maplist->currentmapvote]);
 			}
 			convert_string(string, 0, 127, 128, string); // white -> green
 			my_bprintf(PRINT_HIGH, string);
 			mapvoteactive = true;
 			mapvotetime = level.time + vote_timeout->value;
 
-//			gi.dprintf ("D. map to be voted on is %s %s\n",
-//						maplist->mapname[maplist->currentmapvote],
-//						maplist->mapnick[maplist->currentmapvote]);
+			//			gi.dprintf ("D. map to be voted on is %s %s\n",
+			//						maplist->mapname[maplist->currentmapvote],
+			//						maplist->mapnick[maplist->currentmapvote]);
 		}
 		else
 		{
 			sprintf(string,
-					"Mapvote for %s \"%s\" has failed.\n",
-					maplist->mapname[maplist->currentmapvote],
-					maplist->mapnick[maplist->currentmapvote]);
+				"Mapvote for %s \"%s\" has failed.\n",
+				maplist->mapname[maplist->currentmapvote],
+				maplist->mapnick[maplist->currentmapvote]);
 
 			for_each_player(player, i)
 			{
@@ -1040,8 +1049,8 @@ void MapVoteThink(qboolean passed, qboolean now)
 			convert_string(string, 0, 127, 128, string); // white -> green
 			my_bprintf(PRINT_HIGH, string);
 			mapvoteactive = false;
-//			gi.dprintf ("E. map to be voted on is %s\n",
-//						maplist->mapname[maplist->currentmapvote]);
+			//			gi.dprintf ("E. map to be voted on is %s\n",
+			//						maplist->mapname[maplist->currentmapvote]);
 		}
 	}
 }

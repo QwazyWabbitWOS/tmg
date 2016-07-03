@@ -16,6 +16,7 @@
 #include "gslog.h"	//	StdLog - Mark Davies. Depends on level_locals_t
 #include "highscore.h"
 #include "hud.h"
+#include "maplist.h"
 
 game_locals_t	game;
 level_locals_t	level;
@@ -453,7 +454,16 @@ void EndDMLevel (void)
 		ent = G_Spawn ();
 		ent->classname = "target_changelevel";
 		ent->map = maplist->mapname[maplist->nextmap];
-		BeginIntermission (ent);
+
+		if (Maplist_CheckFileExists(ent->map))
+			BeginIntermission (ent);
+		else
+		{
+			gi.bprintf(PRINT_CHAT,"Map %s does not exist on server, reverting to last map.\n", ent->map);
+			ent->map = level.mapname;
+			votetime = 0;
+			BeginIntermission (ent);
+		}
 	}
 
 	if (mapvote->value && !ent)
@@ -464,6 +474,15 @@ void EndDMLevel (void)
 		ent = G_Spawn ();
 		ent->classname = "target_changelevel";
 		MaplistNextMap(ent);
+
+		if (!Maplist_CheckFileExists(ent->map))
+		{
+			gi.bprintf(PRINT_CHAT,"Map %s does not exist on server, reverting to last map.\n", ent->map);
+			ent->map = level.mapname;
+			votetime = 0;
+			BeginIntermission (ent);
+		}
+
 		if(mapscrewed)
 			ent = NULL;
 

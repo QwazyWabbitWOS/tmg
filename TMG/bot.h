@@ -107,7 +107,7 @@ extern void CheckCampSite(edict_t *other);
 extern qboolean Get_YenPos(char *Buff,int *curr);
 extern int GetNumBots(void);
 extern void BotAssignTeamCtf(gclient_t *who);
-extern void Check_Bot_Number (void);
+extern void Adjust_Bot_Number (void);
 extern edict_t *BestScorePlayer(void);
 extern void InsultVictim(edict_t *ent, edict_t *victim);
 extern void TauntVictim(edict_t *ent, edict_t *victim);

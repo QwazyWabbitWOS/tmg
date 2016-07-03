@@ -329,7 +329,7 @@ void TimerThink (void)
 		// check duel state... 
 		CheckState ();
 		if(use_bots->value)
-			Check_Bot_Number();
+			Adjust_Bot_Number();
 		match_nextthink += FRAMETIME * 10.0;
 		ctfgame.players1 = 0;
 		ctfgame.players2 = 0;

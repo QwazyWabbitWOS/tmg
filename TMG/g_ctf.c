@@ -1027,12 +1027,13 @@ void CTFDropFlagTouch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t 
 	if (dropflag_delay->value <= 0)
 		gi.cvar_set("dropflag_delay", "0.1"); //prevent instant pickup
 	if (dropflag_delay->value > 3)
-		gi.cvar_set("dropflag_delay", "3.0");
+		gi.cvar_set("dropflag_delay", "3.0"); // upper limit time
 
 	//owner (who dropped us) can't touch for prescribed time
 	if ((other == ent->owner) &&
 		(ent->timestamp > level.time - dropflag_delay->value))
 		return;
+	
 	ent->timestamp = level.time;
 	Touch_Item (ent, other, plane, surf);
 }
@@ -1040,10 +1041,14 @@ void CTFDropFlagTouch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t 
 
 static void CTFDropFlagThink(edict_t *ent)
 {
-	if ((ent->timestamp + CTF_AUTO_FLAG_RETURN_TIMEOUT < level.time) || 
-		level.intermissiontime || 
+	qboolean iw;
+	if ((ent->timestamp + auto_flag_return->value < level.time) || 
+		level.intermissiontime ||
+		(iw = InsideWall(ent)) ||
 		((mapvote->value) && (level.time+(int)menutime->value-1 < votetime)))//raven
 	{
+		if (iw)
+			DbgPrintf("%s found inside solid, instant auto-return.\n", ent->classname);
 		// auto return the flag
 		// reset flag will remove ourselves
 		if (strcmp(ent->classname, "item_flag_team1") == 0)
@@ -2571,9 +2576,9 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 			sprintf(string + strlen(string), "xv 168 yv %d string \"..and %d more\" ",
 			42 + (last[1]+1)*8, total[1] - last[1] - 1);
 	}
-		DbgPrintf("Scoreboard size: %d %.1f\n", strlen(string), level.time);
 	if (strlen(string) > maxsize - 30) // this should never happen
 	{
+		DbgPrintf("Scoreboard size: %d %.1f\n", strlen(string), level.time);
 		gi.dprintf("Warning: scoreboard string neared or exceeded max length\nDump:\n%s\n---\n", string);
 	}
 	gi.WriteByte (svc_layout);

@@ -405,7 +405,7 @@ void InitGame (void)
 	console_chat = gi.cvar("console_chat", "1", 0);
 	no_hum = gi.cvar ("no_hum", "0", 0);
 	developer = gi.cvar ("developer", "0", 0);
-	basedir = gi.cvar("basedir", ".", 0);
+	basedir = gi.cvar("basedir", "", CVAR_NOSET);	//established by engine, read-only
 	mercylimit = gi.cvar ("mercylimit", "0", 0);
 	randomrcon = gi.cvar ("randomrcon", "0", CVAR_ARCHIVE);
 	defaultoplevel = gi.cvar ("defaultoplevel", "0", 0);

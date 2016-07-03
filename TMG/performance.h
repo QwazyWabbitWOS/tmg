@@ -10,7 +10,7 @@
 void _STOP_PERFORMANCE_TIMER (char* str);
 void _START_PERFORMANCE_TIMER (void);
 #define START_PERFORMANCE_TIMER _START_PERFORMANCE_TIMER()
-#define STOP_PERFORMANCE_TIMER _STOP_PERFORMANCE_TIMER()
+#define STOP_PERFORMANCE_TIMER _STOP_PERFORMANCE_TIMER(char* str)
 #else
 #define START_PERFORMANCE_TIMER
 #define STOP_PERFORMANCE_TIMER
@@ -23,11 +23,9 @@ void DbgPrintf (char *msg, ...);
 /* 
 Turn these on to debug areas of interest.
 */
-#define DEBUG_HSCORES 1
+#define DEBUG_HSCORES 0
 #define DEBUG_HUD 0
 #define DEBUG_PHYSICS 0
-#define DEBUG_RUNES 0
-#define DEBUG_SMAP 1
-#define DEBUG_SPAWN 1
+#define DEBUG_SPAWN 0
 
 #endif /* PERFORMANCE_H */

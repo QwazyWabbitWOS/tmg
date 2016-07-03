@@ -159,6 +159,9 @@
     <ClCompile Include="performance.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="maplist.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="changelog.txt" />
@@ -257,6 +260,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vote.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="maplist.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

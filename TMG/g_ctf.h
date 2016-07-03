@@ -69,7 +69,7 @@ extern cvar_t *dropflag_delay;
 #define CTF_FRAG_CARRIER_ASSIST_TIMEOUT		10
 #define CTF_RETURN_FLAG_ASSIST_TIMEOUT		10
 
-#define CTF_AUTO_FLAG_RETURN_TIMEOUT		auto_flag_return->value//30	// number of seconds before dropped flag auto-returns
+//#define CTF_AUTO_FLAG_RETURN_TIMEOUT		auto_flag_return->value//30	// number of seconds before dropped flag auto-returns
 
 #define CTF_TECH_TIMEOUT					60  // seconds before techs spawn again
 

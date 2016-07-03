@@ -6,6 +6,8 @@
 #include "timer.h"
 #include "performance.h"
 
+#define DEBUG_RUNES 0
+
 char *rune_namefornum[] =
  {
 	"Strength Rune",
