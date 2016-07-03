@@ -63,7 +63,7 @@ GAME_OBJS = \
 	filehand.o filtering.o g_chase.o g_cmds.o g_combat.o g_ctf.o g_func.o \
 	g_items.o g_main.o g_misc.o g_monster.o g_phys.o g_save.o g_spawn.o \
 	g_svcmds.o g_target.o g_trigger.o g_utils.o g_weapon.o gslog.o \
-	highscore.o hud.o intro.o locdamage.o m_move.o s_map.o models.o \
+	highscore.o hud.o intro.o locdamage.o m_move.o maplist.o s_map.o models.o \
 	p_client.o p_hud.o p_light.o p_menu.o p_trail.o p_view.o p_weapon.o \
 	performance.o q_shared.o runes.o stdlog.o timer.o vote.o
 
