@@ -245,19 +245,19 @@ qboolean Maplist_CheckFileExists(char *mapname)
 //	return true;	// good to go
 //}
 
-static int Maplist_CountPlayers(void)
-{
-	int i, count;
-	edict_t *e;
-	
-	count = 0;
-	for (i = 1; i <= maxclients->value; i++) {
-		e = g_edicts + i;
-		if (e->inuse)	//only active players
-			count++;
-	}
-	return (count);
-}
+//static int Maplist_CountPlayers(void)
+//{
+//	int i, count;
+//	edict_t *e;
+//	
+//	count = 0;
+//	for (i = 1; i <= maxclients->value; i++) {
+//		e = g_edicts + i;
+//		if (e->inuse)	//only active players
+//			count++;
+//	}
+//	return (count);
+//}
 
 // maplist varies with number of players
 //static void Maplist_VariableLoad(void)

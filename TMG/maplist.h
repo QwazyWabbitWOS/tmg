@@ -63,8 +63,8 @@ qboolean	Maplist_CheckStockmaps(char *thismap);
 qboolean	Maplist_CheckFileExists(char *mapname);
 
 //private
-static int  Maplist_CountPlayers(void);
-static void Maplist_VariableLoad(void);
-static void Maplist_VariesMonthly(void);
+//static int  Maplist_CountPlayers(void);
+//static void Maplist_VariableLoad(void);
+//static void Maplist_VariesMonthly(void);
 
 #endif
