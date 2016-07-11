@@ -1,11 +1,9 @@
 //
 //  p_client.h
-//  tmg
-//
 //
 
-#ifndef p_client_h
-#define p_client_h
+#ifndef P_CLIENT_H
+#define P_CLIENT_H
 
 extern void ClientThink (edict_t *ent, usercmd_t *ucmd);
 extern void SP_info_player_start(edict_t *self);
@@ -69,4 +67,4 @@ extern void SendStatusBar(edict_t *ent, char *bar);
 extern void Spec_Check (edict_t *ent);
 
 
-#endif /* p_client_h */
+#endif /* P_CLIENT_H */

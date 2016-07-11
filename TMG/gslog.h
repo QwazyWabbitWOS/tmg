@@ -5,8 +5,8 @@
  * $Id: gslog.h 1.1 1998/04/04 11:05:17 mdavies Exp $
  */
 
-#ifndef __GSLOG_H__
-#define __GSLOG_H__
+#ifndef GSLOG_H
+#define GSLOG_H
 
 /*
  *   OLD API

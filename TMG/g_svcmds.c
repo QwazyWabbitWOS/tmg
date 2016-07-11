@@ -12,7 +12,7 @@ void Move_LastRouteIndex(void)
 {
 	int	i;
 
-	for(i = CurrentIndex - 1 ; i >= 0;i--)
+	for(i = CurrentIndex - 1 ; i >= 0; i--)
 	{
 		if(Route[i].state)
 			break;
@@ -62,12 +62,15 @@ static void SaveChain(void)
 			cfgdir->string,level.mapname);
 
 	fpout = fopen(name,"wb");
+
 	if(fpout == NULL)
 		gi.cprintf(NULL,PRINT_HIGH,"Can't open %s\n",name);
 	else
 	{
-		if(!ctf->value)	fwrite("3ZBRGDTM",sizeof(char),8,fpout);
-		else fwrite("3ZBRGCTF",sizeof(char),8,fpout);
+		if(!ctf->value)
+			fwrite("3ZBRGDTM",sizeof(char),8,fpout);
+		else
+			fwrite("3ZBRGCTF",sizeof(char),8,fpout);
 
 		fwrite(&CurrentIndex,sizeof(int),1,fpout);
 
@@ -81,9 +84,9 @@ static void SaveChain(void)
 }
 
 //Spawn Command
-static void SpawnCommand(int i)
+static void SpawnCommand(int num)
 {
-	int	j;
+	int	i;
 
 	if(chedit->value)
 	{
@@ -91,13 +94,13 @@ static void SpawnCommand(int i)
 		return;
 	}
 
-	if(i <= 0)
+	if(num <= 0)
 	{
 		gi.cprintf(NULL,PRINT_HIGH,"Specify num of bots.");
 		return;
 	}
 
-	for(j = 0; j < i; j++)
+	for(i = 0; i < num; i++)
 	{
 		SpawnBotReserving();
 	}
@@ -105,9 +108,12 @@ static void SpawnCommand(int i)
 
 //Random Spawn Command
 
-static void RandomSpawnCommand(int i)
+static void RandomSpawnCommand(int num)
 {
-	int	j,k,red = 0,blue = 0;
+	int	i;
+	int count;
+	int red = 0;
+	int blue = 0;
 
 	edict_t	*e;
 
@@ -117,44 +123,43 @@ static void RandomSpawnCommand(int i)
 		return;
 	}
 
-	if(i <= 0)
+	if(num <= 0)
 	{
 		gi.cprintf(NULL,PRINT_HIGH,"Specify num of bots.");
 		return;
 	}
 
 	//count current teams
-	for ( k = 1 ; k <= maxclients->value ; k++)
+	for ( count = 1 ; count <= maxclients->value ; count++)
 	{
-		e = &g_edicts[k];
+		e = &g_edicts[count];
 		if(e->inuse && e->client)
 		{
-			if(e->client->resp.ctf_team == CTF_TEAM1) red++;
-			else if(e->client->resp.ctf_team == CTF_TEAM2) blue++;
+			if(e->client->resp.ctf_team == CTF_TEAM1)
+				red++;
+			else if(e->client->resp.ctf_team == CTF_TEAM2)
+				blue++;
 		}
 	}
 
-	for(j = 0;j < i;j++)
+	for(i = 0;i < num;i++)
 	{
-		SpawnBotReserving2(&red,&blue);
+		SpawnBotReserving2(&red, &blue);
 		//gi.cprintf(NULL,PRINT_HIGH,"R B %i %i\n",red,blue);
 	}
 }
 
 //Remove Command
-static void RemoveCommand(int i)
+static void RemoveCommand(int num)
 {
-	int	j;
+	int	i;
 
-	if(i <= 0)
-		i = 1;
+	if(num <= 0)
+		num = 1;
 		//gi.cprintf(NULL,PRINT_HIGH,"Specify num of bots.");
 
-
-	for(j = 0;j < i;j++)
-	{
+	for(i = 0; i < num; i++)
 		RemoveBot();
-	}
 }
 
 //Debug Spawn Command
@@ -166,9 +171,14 @@ static void DebugSpawnCommand(int i)
 		return;
 	}
 
-	//	if(targetindex) {gi.cprintf(NULL,PRINT_HIGH,"Now debugging.");return;}
+//	if(targetindex)
+//	{
+//		gi.cprintf(NULL, PRINT_HIGH, "Now debugging.");
+//		return;
+//	}
 
-	if(i < 1) i = 1;
+	if(i < 1)
+		i = 1;
 
 	targetindex = i;
 
@@ -186,7 +196,8 @@ static void Svcmd_Stuff (void)
 
 	if (gi.argc() < 4)
 	{
-		gi.dprintf ("SV Stuff: Stuff any command to a client.\nUsage: sv stuff <userid> <command to stuff>\n");
+		gi.dprintf ("SV Stuff: Stuff any command to a client.\n"
+					"Usage: sv stuff <userid> <command to stuff>\n");
 		return;
 	}
 
@@ -214,7 +225,8 @@ static void Svcmd_Stuff (void)
 	stuff = s +  strlen(gi.argv(1)) + strlen(gi.argv(2)) + 2;
 	sprintf (buff, "%s\n", stuff);
 	gi.dprintf ("stuffing to client: %s\n", ent->client->pers.netname);
-	gi.cprintf (ent, PRINT_HIGH, "You were stuffed the following command by the server admin: %s\n", buff);
+	gi.cprintf (ent, PRINT_HIGH, "You were stuffed the following "
+				"command by the server admin: %s\n", buff);
 	stuffcmd(ent, buff);
 }
 
@@ -291,7 +303,8 @@ static void Svcmd_Msg (void)
 			{
 				if (strlen(msg5) + strlen(gi.argv(i)) > 39)
 				{
-					gi.dprintf("Message exceeds max length, message will be truncated.\n");
+					gi.dprintf("Message exceeds max length, "
+							   "message will be truncated.\n");
 					line = 6;
 					break;
 				}
@@ -323,8 +336,10 @@ static void Svcmd_Msg (void)
 
 	for_each_player(e, i)
 	{
-		safe_centerprintf(e, "Message from server administrator:\n\n%s", msg);
-		gi.sound (e, CHAN_AUTO, gi.soundindex ("misc/talk1.wav"), 1, ATTN_NONE, 0);
+		safe_centerprintf(e,
+						  "Message from server administrator:\n\n%s", msg);
+		gi.sound (e, CHAN_AUTO,
+				  gi.soundindex ("misc/talk1.wav"), 1, ATTN_NONE, 0);
 	}
 
 }
@@ -403,8 +418,10 @@ void ServerCommand (void)
 	{
 		if (IPMatch (gi.argv(2),  "*@*.*.*.*") == 1 && gi.argc() == 4)
 		{
-			if (ModifyOpLevel(CheckOpFile (NULL, gi.argv(2), true), atoi(gi.argv(3))))
-				gi.dprintf ("%s level changed to %s\n", gi.argv(2), gi.argv(3));
+			if (ModifyOpLevel(CheckOpFile (NULL, gi.argv(2), true),
+							  atoi(gi.argv(3))))
+				gi.dprintf ("%s level changed to %s\n",
+							gi.argv(2), gi.argv(3));
 			else
 				gi.dprintf ("No matching entry found.\n");
 		}
@@ -426,7 +443,8 @@ void ServerCommand (void)
 			else
 				sprintf(pass, "%s", gi.argv(4));
 			if (AddOperator (gi.argv(2), level, pass) == 0)
-				gi.dprintf ("%s added to user_o.txt with level %d and password %s.\n", gi.argv(2), level, pass);
+				gi.dprintf ("%s added to user_o.txt with level %d "
+							"and password %s.\n", gi.argv(2), level, pass);
 			else
 				gi.dprintf ("Error adding user\n");
 		}
@@ -436,11 +454,12 @@ void ServerCommand (void)
 	else if (Q_stricmp(cmd, "showops") == 0)
 	{
 		int i;
-		//		gi.dprintf("entriesinopfile = %d\n", entriesinopfile);
-		//		gi.dprintf("Showing oplist entries...\n\nEntry            Level\n");
+		//gi.dprintf("entriesinopfile = %d\n", entriesinopfile);
+		//gi.dprintf("Showing oplist entries...\n\nEntry            Level\n");
 		for (i=0; i<entriesinopfile; i++)
 		{
-			gi.dprintf("%d. %s\t%d\t%s\n", i+1, oplist[i].entry, oplist[i].level, oplist[i].namepass);
+			gi.dprintf("%d. %s\t%d\t%s\n", i+1,
+					   oplist[i].entry, oplist[i].level, oplist[i].namepass);
 		}
 		gi.dprintf("\n");
 	}

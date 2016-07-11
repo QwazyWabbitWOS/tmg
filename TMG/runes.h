@@ -1,3 +1,5 @@
+#ifndef RUNES_H
+#define RUNES_H
 
 #define		RUNE_FIRST		0
 #define		RUNE_STRENGTH	0
@@ -31,3 +33,4 @@ extern void Rune_Spawn(edict_t *rune, gitem_t *item);
 extern void runes_spawn(edict_t *self);
 extern void runes_spawn_start(void);
 
+#endif /* RUNES_H */

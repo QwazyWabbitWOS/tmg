@@ -5,8 +5,8 @@
  * $Id: stdlog.h 1.7 1998/04/06 09:24:23 mdavies Exp $
  */
 
-#ifndef __STDLOG_H__
-#define __STDLOG_H__
+#ifndef STDLOG_H
+#define STDLOG_H
 
 // #include "g_local.h"
 
@@ -72,7 +72,7 @@ extern void sl_LogPlayerRename( game_import_t  *gi,
                                 float           timeInSeconds);
 
 
-#endif
+#endif /* STDLOG_H */
 
 /* end of file */
 

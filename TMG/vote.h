@@ -1,10 +1,9 @@
 //
 //  vote.h
-//  tmg
 //
 
-#ifndef vote_h
-#define vote_h
+#ifndef VOTE_H
+#define VOTE_H
 
 extern void ClearMapVotes(void) ;
 extern int MapMaxVotes(void);
@@ -14,4 +13,4 @@ extern void ClearMapList(void);
 extern void MaplistNextMap(edict_t *ent);
 
 
-#endif /* vote_h */
+#endif /* VOTE_H */

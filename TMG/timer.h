@@ -2,8 +2,8 @@
 //  timer.h
 //
 
-#ifndef timer_h
-#define timer_h
+#ifndef TIMER_H
+#define TIMER_H
 
 #define STATE_NEEDPLAYERS 0
 #define STATE_ENDGAME 1
@@ -40,4 +40,4 @@ for(INDEX = 1;INDEX <= maxclients->value; INDEX++) \
 
 #define STAT_COUNTDOWN          28
 
-#endif  //timer_h
+#endif  /* TIMER_H */

@@ -2,8 +2,8 @@
 //  g_func.h
 //
 
-#ifndef g_func_h
-#define g_func_h
+#ifndef G_FUNC_H
+#define G_FUNC_H
 
 extern void SP_func_rotating (edict_t *ent);
 extern void SP_func_button (edict_t *ent);
@@ -20,4 +20,4 @@ extern void SP_func_conveyor (edict_t *self);
 extern void SP_func_door_secret (edict_t *ent);
 extern void SP_func_killbox (edict_t *ent);
 
-#endif /* g_func_h */
+#endif /* G_FUNC_H */

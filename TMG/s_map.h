@@ -41,4 +41,4 @@ extern cvar_t	*map_once;
 extern cvar_t	*map_debug;
 
 
-#endif //S_MAP_H
+#endif /* S_MAP_H */

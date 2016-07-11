@@ -2,6 +2,9 @@
 // g_local.h -- local definitions for game module
 //
 
+#ifndef G_LOCAL_H
+#define G_LOCAL_H
+
 #ifdef _WIN32
   #define WIN32_LEAN_AND_MEAN	//non-MFC
   #include <windows.h>
@@ -1950,3 +1953,5 @@ typedef struct ctfgame_s
 	int last_capture_team;
 } ctfgame_t;
 ctfgame_t ctfgame;
+
+#endif /* G_LOCAL_H */

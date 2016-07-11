@@ -2,8 +2,8 @@
 //  g_cmds.h
 //
 
-#ifndef g_cmds_h
-#define g_cmds_h
+#ifndef G_CMDS_H
+#define G_CMDS_H
 
 //
 // g_cmds.c
@@ -60,4 +60,4 @@ void player_set_observer(edict_t *ent, int value);
 
 
 
-#endif /* g_cmds_h */
+#endif /* G_CMDS_H */

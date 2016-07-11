@@ -2,8 +2,8 @@
 //  g_trigger.h
 //
 
-#ifndef g_trigger_h
-#define g_trigger_h
+#ifndef G_TRIGGER_H
+#define G_TRIGGER_H
 
 extern void SP_trigger_multiple (edict_t *ent);
 extern void SP_trigger_once(edict_t *ent);
@@ -16,4 +16,4 @@ extern void SP_trigger_hurt (edict_t *self);
 extern void SP_trigger_gravity (edict_t *self);
 extern void SP_trigger_monsterjump (edict_t *self);
 
-#endif /* g_trigger_h */
+#endif /* G_TRIGGER_H */

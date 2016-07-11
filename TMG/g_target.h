@@ -1,13 +1,9 @@
 //
 //  g_target.h
-//  tmg
-//
-//  Created by Geoff Joy on 5/28/16.
-//  Copyright © 2016 Geoff Joy. All rights reserved.
 //
 
-#ifndef g_target_h
-#define g_target_h
+#ifndef G_TARGET_H
+#define G_TARGET_H
 
 extern void SP_target_speaker (edict_t *ent);
 
@@ -27,4 +23,4 @@ extern void SP_target_laser (edict_t *self);
 extern void SP_target_lightramp (edict_t *self);
 extern void SP_target_earthquake (edict_t *self);
 
-#endif /* g_target_h */
+#endif /* G_TARGET_H */
