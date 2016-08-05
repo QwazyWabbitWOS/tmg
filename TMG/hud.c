@@ -382,7 +382,7 @@ char *tn_showHud (edict_t *ent)
 	int j = 0;
 	gclient_t	*cl;
 	int	score, ping, fph, fpm;
-	int frags, died, num_ppl, rank;
+	int frags, captures, died, num_ppl, rank;
 	int shots, eff;
 	int bigspree;
 	int s;  //status bar string length
@@ -502,6 +502,7 @@ char *tn_showHud (edict_t *ent)
 			//parse out the info
 			score = cl->chase_target->client->resp.score;
 			frags = cl->chase_target->client->resp.frags;
+			captures = cl->chase_target->client->resp.captures;
 			shots = cl->chase_target->client->resp.shots;
 			eff = cl->chase_target->client->resp.eff;
 			ping = cl->chase_target->client->ping;
@@ -527,22 +528,21 @@ char *tn_showHud (edict_t *ent)
 			//rank
 			j += sprintf (layout+j, "xr -70 yt 74 string2 \"Rank\" ");
 			j += sprintf (layout+j, "xr -70 yt 82 string \"%i/%i \" ", rank, num_ppl);
-			//if(!voosh->value){
 			//time
 			j += sprintf (layout+j, "xr -70 yt 90 string2 \"Time\" ");
 			j += sprintf (layout+j, "xr -70 yt 98 string \"%s \" ", time_left);
-			//		}
-			//	if(!ctf->value){
 			//Deaths
 			j += sprintf (layout+j, "xr -70 yt 106 string2 \"Deaths\" ");
 			j += sprintf (layout+j, "xr -70 yt 114 string \"%i \" ", died);
 
 			j += sprintf (layout+j, "xr -70 yt 122 string2 \"Frags\" ");
 			j += sprintf (layout+j, "xr -70 yt 130 string \"%i \" ", frags);
-			//	}
 
-			j += sprintf (layout+j, "xr -70 yt 138 string2 \"Spree\" ");
-			j += sprintf (layout+j, "xr -70 yt 146 string \"%i \" ", bigspree);
+			j += sprintf (layout+j, "xr -70 yt 138 string2 \"Caps\" ");
+			j += sprintf (layout+j, "xr -70 yt 146 string \"%i \" ", captures);
+
+			j += sprintf (layout+j, "xr -70 yt 154 string2 \"Spree\" ");
+			j += sprintf (layout+j, "xr -70 yt 162 string \"%i \" ", bigspree);
 
 		}
 	}
@@ -561,6 +561,7 @@ char *tn_showHud (edict_t *ent)
 		//parse out the info
 		score = cl->resp.score;
 		frags = cl->resp.frags;
+		captures = cl->resp.captures;
 		shots = cl->resp.shots;
 		eff = cl->resp.eff;
 		ping = cl->ping;
@@ -599,8 +600,11 @@ char *tn_showHud (edict_t *ent)
 		j += sprintf (layout+j, "xr -70 yt 122 string2 \"Frags\" ");
 		j += sprintf (layout+j, "xr -70 yt 130 string \"%i \" ", frags);
 
-		j += sprintf (layout+j, "xr -70 yt 138 string2 \"Spree\" ");
-		j += sprintf (layout+j, "xr -70 yt 146 string \"%i \" ", bigspree);
+		j += sprintf (layout+j, "xr -70 yt 138 string2 \"Caps\" ");
+		j += sprintf (layout+j, "xr -70 yt 146 string \"%i \" ", captures);
+
+		j += sprintf (layout+j, "xr -70 yt 154 string2 \"Spree\" ");
+		j += sprintf (layout+j, "xr -70 yt 162 string \"%i \" ", bigspree);
 
 		//only show if hud is active
 		//stuff on lower left hand area

@@ -913,6 +913,7 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 				{
 					my_bprintf(PRINT_HIGH, "%s captured the %s flag! %s\n",		//JSW added heldtime
 						other->client->pers.netname, CTFOtherTeamName(ctf_team), heldtime);
+					other->client->resp.captures++;
 					//RAV
 					// Log Flag Capture - MarkDavies
 					sl_LogScore( &gi, other->client->pers.netname, NULL, "F Capture",
