@@ -447,6 +447,8 @@ void InitGame (void)
 	if (dropflag_delay->value < 0 || dropflag_delay->value > 3)
 		gi.cvar_set("dropflag_delay", "1");
 
+	newscore = gi.cvar ("newscore", "1", 0); // new scoreboard shows captures
+
 	extrasounds = gi.cvar ("extrasounds", "0", 0);
 	ctf_forcejoin = gi.cvar("ctf_forcejoin", "", 0);
 	allow_vote = gi.cvar ( "allow_vote", "0", 0);
