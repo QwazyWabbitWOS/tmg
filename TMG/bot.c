@@ -101,7 +101,7 @@ qboolean Bot_trace (edict_t *ent,edict_t *other)
 			ttx[2] -= 12;
 		}
 
-		rs_trace = gi.trace (ttx, NULL, NULL, tty ,ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME /*| CONTENTS_TRANSLUCENT*/);
+		rs_trace = gi.trace (ttx, NULL, NULL, tty, ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME /*| CONTENTS_TRANSLUCENT*/);
 		if(rs_trace.fraction == 1.0 && !rs_trace.allsolid && !rs_trace.startsolid) return true;
 		if( ent->maxs[2] < 32 ) return false;
 
@@ -131,7 +131,7 @@ qboolean Bot_trace (edict_t *ent,edict_t *other)
 			|| ent->s.origin[2]-24 >  other->s.origin[2]) return false;
 
 		ttx[2] -= 36;
-		rs_trace = gi.trace (ttx, NULL, NULL, other->s.origin ,ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME /*|CONTENTS_TRANSLUCENT*/);
+		rs_trace = gi.trace (ttx, NULL, NULL, other->s.origin, ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME /*|CONTENTS_TRANSLUCENT*/);
 		if(rs_trace.fraction == 1.0 && !rs_trace.allsolid && !rs_trace.startsolid) return true;
 		return false;
 }
@@ -146,7 +146,7 @@ qboolean Bot_traceX (edict_t *ent,edict_t *other)
 		ttx[2] += 16;
 		tty[2] += 16;
 
-		rs_trace = gi.trace (ttx, NULL, NULL, tty ,ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
+		rs_trace = gi.trace (ttx, NULL, NULL, tty, ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
 		if(rs_trace.fraction == 1.0 ) return true;
 		return false;
 }
@@ -162,7 +162,7 @@ qboolean Bot_traceY (edict_t *ent,edict_t *other)
 
 		tty[2] += 16;
 
-		rs_trace = gi.trace (ttx, NULL, NULL, tty ,ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
+		rs_trace = gi.trace (ttx, NULL, NULL, tty, ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
 		if(rs_trace.fraction == 1.0 ) return true;
 		return false;
 }
@@ -179,7 +179,7 @@ qboolean Bot_trace2 (edict_t *ent,vec3_t ttz)
 		if(ent->maxs[2] >=32) ttx[2] += 24;
 		else ttx[2] -= 12;
 
-		rs_trace = gi.trace (ttx, NULL, NULL, ttz ,ent, CONTENTS_SOLID | CONTENTS_LAVA | CONTENTS_SLIME /*| CONTENTS_TRANSLUCENT*/);
+		rs_trace = gi.trace (ttx, NULL, NULL, ttz, ent, CONTENTS_SOLID | CONTENTS_LAVA | CONTENTS_SLIME /*| CONTENTS_TRANSLUCENT*/);
 		if(rs_trace.fraction != 1.0 ) return false;
 		return true;
 }
@@ -203,7 +203,7 @@ qboolean Bot_traceS (edict_t *ent,edict_t *other)
 
 	if(Bot[ent->client->zc.botindex].param[BOP_NOSTHRWATER]) goto WATERMODE;
 
-	rs_trace = gi.trace (start, NULL, NULL, end ,ent,CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
+	rs_trace = gi.trace (start, NULL, NULL, end, ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
 
 	if(rs_trace.fraction != 1.0 ) return false;
 	return true;
@@ -213,12 +213,12 @@ WATERMODE:
 
 	if((mycont & CONTENTS_WATER) && !other->waterlevel)
 	{
-		rs_trace = gi.trace (end, NULL, NULL, start ,ent,CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME | CONTENTS_WATER);
+		rs_trace = gi.trace (end, NULL, NULL, start, ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME | CONTENTS_WATER);
 		if(rs_trace.surface)
 		{
 			if(rs_trace.surface->flags & SURF_WARP) return false;
 		}
-		rs_trace = gi.trace (start, NULL, NULL, end ,ent,CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
+		rs_trace = gi.trace (start, NULL, NULL, end, ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
 		if(rs_trace.fraction != 1.0 ) return false;
 		return true;
 	}
@@ -226,7 +226,7 @@ WATERMODE:
 	{
 		VectorCopy(other->s.origin,end);
 		end[2] -= 16;
-		rs_trace = gi.trace (start, NULL, NULL, end ,ent,CONTENTS_SOLID | CONTENTS_WINDOW );
+		rs_trace = gi.trace (start, NULL, NULL, end, ent, CONTENTS_SOLID | CONTENTS_WINDOW );
 		if(rs_trace.fraction != 1.0 ) return false;
 		return true;
 	}
@@ -235,7 +235,7 @@ WATERMODE:
 	{
 		VectorCopy(other->s.origin,end);
 		end[2] += 32;
-		rs_trace = gi.trace (start, NULL, NULL, end ,ent,CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_WATER);
+		rs_trace = gi.trace (start, NULL, NULL, end, ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_WATER);
 		if(rs_trace.surface)
 		{
 			if(rs_trace.surface->flags & SURF_WARP) return false;
@@ -244,7 +244,7 @@ WATERMODE:
 //		return true;
 	}
 
-	rs_trace = gi.trace (start, NULL, NULL, end ,ent,CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
+	rs_trace = gi.trace (start, NULL, NULL, end, ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
 	if(rs_trace.fraction != 1.0 ) return false;
 	return true;
 }

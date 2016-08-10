@@ -38,7 +38,7 @@ void _STOP_PERFORMANCE_TIMER (char* str)
 	QueryPerformanceFrequency (&freq);
 	diff = stop.QuadPart - start.QuadPart;
 	res = ((double)((double)diff / (double)freq.QuadPart));
-	sprintf(string, "%s executed in %.6f secs.\n", str ,res);
+	sprintf(string, "%s executed in %.6f secs.\n", str, res);
 	OutputDebugString(string);
 	//	Com_Printf (string);
 	totalTime += res;

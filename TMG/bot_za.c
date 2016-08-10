@@ -446,7 +446,7 @@ static void Bot_SearchItems (edict_t *ent)
 							trmax[0] = (trent->absmin[0] + trent->absmax[0]) / 2;
 							trmax[1] = (trent->absmin[1] + trent->absmax[1]) / 2;
 							trmax[2] = (trent->absmin[2] + trent->absmax[2]) / 2;
-							rs_trace = gi.trace (ent->s.origin, NULL, NULL, trmax ,ent, MASK_SHOT);
+							rs_trace = gi.trace (ent->s.origin, NULL, NULL, trmax, ent, MASK_SHOT);
 
 							if(rs_trace.ent == trent)
 							{
@@ -977,7 +977,7 @@ int Bot_moveT ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom)
 		if(!moveok/*i >= tracelimit+4*/)
 //		if(i >= tracelimit - 4)
 		{
-//gi.bprintf(PRINT_HIGH,"apooX %f >= %f\n",i ,tracelimit);
+//gi.bprintf(PRINT_HIGH,"apooX %f >= %f\n",i, tracelimit);
 //if(ent->client->ps.pmove.pm_flags & PMF_DUCKED) gi.bprintf(PRINT_HIGH,"apoo1 %f %f \n",i,trmax[2]);
 			return false;
 		}
@@ -999,7 +999,7 @@ int Bot_moveT ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom)
 
 		if( *bottom >/*=*/ tracelimit - 5)
 		{
-//gi.bprintf(PRINT_HIGH,"apooY %f > %f\n",*bottom ,tracelimit - 5);
+//gi.bprintf(PRINT_HIGH,"apooY %f > %f\n", *bottom, tracelimit - 5);
 //gi.bprintf(PRINT_HIGH,"apoo3\n");
 //if(ent->client->zc.waterstate == 1 && ryaw == ent->client->zc.moveyaw) gi.bprintf(PRINT_HIGH,"apoo3\n");
 			return false;
@@ -1360,7 +1360,7 @@ qboolean HazardCheck(edict_t *ent,vec3_t pos)
 				trmax[0] = (trent->absmin[0] + trent->absmax[0]) / 2;
 				trmax[1] = (trent->absmin[1] + trent->absmax[1]) / 2;
 				trmax[2] = (trent->absmin[2] + trent->absmax[2]) / 2;
-				rs_trace = gi.trace (ent->s.origin, NULL, NULL, trmax ,ent, MASK_SHOT);
+				rs_trace = gi.trace (ent->s.origin, NULL, NULL, trmax, ent, MASK_SHOT);
 
 				if(rs_trace.ent == trent)
 							{
@@ -1620,7 +1620,7 @@ qboolean Bot_Fall(edict_t *ent,vec3_t pos,float dist)
 		vel = ent->velocity[2];
 //		grav = ent->gravity * sv_gravity->value * FRAMETIME;
 		l = 1.0;
-		for(x = 1;x <= FALLCHK_LOOPMAX;++x ,l += x )
+		for(x = 1; x <= FALLCHK_LOOPMAX; ++x, l += x )
 		{
 			vel -= grav;// * l;
 			yori += vel * FRAMETIME;
@@ -1669,7 +1669,7 @@ qboolean Bot_Fall(edict_t *ent,vec3_t pos,float dist)
 		vel = ent->velocity[2];
 		//grav = ent->gravity * sv_gravity->value * FRAMETIME;
 		l = 1.0;
-		for(x = 1;x <= FALLCHK_LOOPMAX;++x ,l += x )
+		for(x = 1; x <= FALLCHK_LOOPMAX; ++x, l += x )
 		{
 			vel -= grav;// * l;
 			yori += vel * FRAMETIME;
@@ -2298,7 +2298,7 @@ void Bots_Move_NORM (edict_t *ent)
 	//Solid Check
 	i = gi.pointcontents (ent->s.origin);
 	if(i & CONTENTS_SOLID)
-		T_Damage (ent, ent, ent, ent->s.origin, ent->s.origin, ent->s.origin,100 , 1, 0, MOD_CRUSH);
+		T_Damage (ent, ent, ent, ent->s.origin, ent->s.origin, ent->s.origin, 100, 1, 0, MOD_CRUSH);
 
 
 	if(VectorCompare(ent->s.origin,ent->s.old_origin))
@@ -2577,7 +2577,7 @@ void Bots_Move_NORM (edict_t *ent)
 			ent->client->ps.pmove.pm_flags &= ~PMF_DUCKED;
 			ent->maxs[2] = 32;
 		}
-		//		else gi.bprintf(PRINT_HIGH,"failed %i %i\n",rs_trace.startsolid ,rs_trace.allsolid);
+		//		else gi.bprintf(PRINT_HIGH,"failed %i %i\n",rs_trace.startsolid, rs_trace.allsolid);
 	}
 	else if(ent->velocity[2] > 10 && ent->groundentity == NULL
 			&& !(zc->zcstate & STS_SJMASK))
@@ -3711,7 +3711,7 @@ DCHCANC:// keep squatting
 				if(Route[zc->routeindex].state == GRS_ONTRAIN && !zc->waterstate /* < WAS_IN */
 				   /*ent->groundentity*/)
 				{
-					Get_RouteOrigin(zc->routeindex -1 ,trmin);
+					Get_RouteOrigin(zc->routeindex -1, trmin);
 					if((trmin[2] - ent->s.origin[2]) > /*2*/JumpMax
 					   && (v[2] - ent->s.origin[2]) > JumpMax
 					   && ent->waterlevel < 3)
@@ -4283,7 +4283,7 @@ DCHCANC:// keep squatting
 			//			if(zc->waitin_obj->velocity[2] == 0) k = false;
 			if(zc->routeindex - 1 > 0 && zc->waterstate < WAS_IN)
 			{
-				Get_RouteOrigin(zc->routeindex -1 ,trmin);
+				Get_RouteOrigin(zc->routeindex -1, trmin);
 				if((trmin[2] - ent->s.origin[2]) > JumpMax
 				   && (v[2] - ent->s.origin[2]) > JumpMax)
 					//				Get_RouteOrigin(zc->routeindex - 1,v);
@@ -4696,12 +4696,12 @@ GOMOVE:
 				   && ent->velocity[2] >= 100
 				   && ent->velocity[2] < (100 + ent->gravity * sv_gravity->value * FRAMETIME))
 				{
-					Get_RouteOrigin(zc->routeindex ,v);
-					Get_RouteOrigin(zc->routeindex + 1,vv);
+					Get_RouteOrigin(zc->routeindex, v);
+					Get_RouteOrigin(zc->routeindex + 1, vv);
 					k = 0;
 
-					j = Bot_moveT(ent,yaw,trmin,16,&f1);
-					VectorSubtract(v,ent->s.origin,trmin);
+					j = Bot_moveT(ent, yaw, trmin, 16, &f1);
+					VectorSubtract(v, ent->s.origin, trmin);
 					if((vv[2] - v[2]) > JumpMax) k = 1;
 					else if((v[2] - ent->s.origin[2]) > JumpMax) k = 2;
 					else if(!TargetJump_Chk(ent,vv,0) && VectorLength(trmin) < 64)
@@ -4769,8 +4769,8 @@ GOMOVE:
 				   && ent->velocity[2] >= 100
 				   && ent->velocity[2] < (100 + ent->gravity * sv_gravity->value * FRAMETIME))
 				{
-					Get_RouteOrigin(zc->routeindex ,v);
-					Get_RouteOrigin(zc->routeindex + 1,vv);
+					Get_RouteOrigin(zc->routeindex, v);
+					Get_RouteOrigin(zc->routeindex + 1, vv);
 					k = 0;
 
 					j = Bot_moveT(ent,yaw,trmin,16,&f1);
@@ -5392,7 +5392,7 @@ GOMOVE:
 	touchmin[2] -= 5;
 	touchmax[0] += 48;//32;
 	touchmax[1] += 48;//32;
-	i = gi.BoxEdicts ( touchmin ,touchmax,touch,MAX_EDICTS,AREA_SOLID);
+	i = gi.BoxEdicts (touchmin, touchmax, touch, MAX_EDICTS, AREA_SOLID);
 
 	if(i)
 	{

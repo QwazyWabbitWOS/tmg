@@ -99,7 +99,8 @@ int CountConnectedClients (void)
 /************this displays 5 digit min:sec************/
 void TimeLeft(void)
 {
-	int min , sec;
+	int min;
+	int sec;
 	long seconds_left;
 	// how long left ?
 	seconds_left = ceil(match_state_end - level.time);
@@ -111,7 +112,7 @@ void TimeLeft(void)
 		return;
 	timer = 0;
 
-	//	strcpy (time_left ,"/0");
+	//	strcpy (time_left, "/0");
 
 	if (sec < 0)
 	{
@@ -203,7 +204,7 @@ static char *tn_id (edict_t *ent)
 		//no matter what the light situation.  Who cares about dist varying
 
 		//		if (dist <= (float)ent->client->resp.iddist)
-		j += sprintf(stats + j, "xv 0 yb -58 string \"Viewing %s\" " , tr.ent->client->pers.netname );
+		j += sprintf(stats + j, "xv 0 yb -58 string \"Viewing %s\" ", tr.ent->client->pers.netname );
 
 	/*		if ((mindist >= dist) && (dist <= max_hud_dist->value))
 	 JSW			j += sprintf(stats + j, "xv 0 yb -58 string \"%s\" "
@@ -221,16 +222,16 @@ char *tn_vote_msg (edict_t *ent)
 	int xv1, xv2;
 
 	if (Q_stricmp(vote_cmd,"map")==0)
-		sprintf (line1, "%s : change map to %s.", votestarter->client->pers.netname , vote_entry);
+		sprintf (line1, "%s : change map to %s.", votestarter->client->pers.netname, vote_entry);
 	else
 	if (Q_stricmp(vote_cmd,"cycle")==0)
-		sprintf (line1, "%s : change cycle to %s.", votestarter->client->pers.netname , vote_entry);
+		sprintf (line1, "%s : change cycle to %s.", votestarter->client->pers.netname, vote_entry);
 	else
 	if (Q_stricmp(vote_cmd,"promote")==0)
-		sprintf (line1, "%s : promote %s.", votestarter->client->pers.netname , votetarget->client->pers.netname );
+		sprintf (line1, "%s : promote %s.", votestarter->client->pers.netname, votetarget->client->pers.netname );
 	else
 	if (Q_stricmp(vote_cmd,"demote")==0)
-		sprintf (line1, "%s : demote %s.", votestarter->client->pers.netname , votetarget->client->pers.netname );
+		sprintf (line1, "%s : demote %s.", votestarter->client->pers.netname, votetarget->client->pers.netname );
 	sprintf (line2, "Agree? Go to Consol and type (yes/no)");
  
 	xv1 = 160-(strlen(line1)*4);
@@ -611,7 +612,7 @@ char *tn_showHud (edict_t *ent)
 		if(ent->client->pers.db_hud)
 		{
 			/* Very bottom left corner */
-			j += sprintf (layout+j, "xl 2 yb -10 string2 \"%s %s\" ", MOD , MOD_VERSION);
+			j += sprintf (layout+j, "xl 2 yb -10 string2 \"%s %s\" ", MOD, MOD_VERSION);
 
 			//JSW
 			if (ent->client->pers.isop == 1)

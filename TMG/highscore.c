@@ -31,8 +31,8 @@ HS_STRUCT g_TopScores[SCORESTOKEEP];
 
 void InitHighScores (void)
 {
-	highscores = gi.cvar ("highscores", "1" , CVAR_LATCH);
-	show_highscores = gi.cvar ("show_highscores", "0" , CVAR_LATCH);
+	highscores = gi.cvar ("highscores", "1", CVAR_LATCH);
+	show_highscores = gi.cvar ("show_highscores", "0", CVAR_LATCH);
 }
 
 void SaveHighScores (void)
@@ -70,7 +70,8 @@ void SaveHighScores (void)
 		for (i = 0 ; i < maxclients->value ; i++)
 		{
 			cl_ent = g_edicts + 1 + i;
-			if((game.clients[i].pers.pl_state == PL_PLAYING || cl_ent->client->pers.pl_state == PL_WARMUP)
+			if((game.clients[i].pers.pl_state == PL_PLAYING 
+				|| cl_ent->client->pers.pl_state == PL_WARMUP)
 				&& (game.clients[i].ps.stats[STAT_FRAGS] > g_TopScores[SCORESTOKEEP-1].score)
 				&& (game.clients[i].ps.stats[STAT_FRAGS] > 0))
 			{ // if it beat the lowest, keep score
@@ -78,8 +79,10 @@ void SaveHighScores (void)
 				strcpy(g_TopScores[SCORESTOKEEP-1].netname, game.clients[i].pers.netname);
 				g_TopScores[SCORESTOKEEP-1].score = game.clients[i].resp.score;
 				if (DEBUG_HSCORES) 
-					DbgPrintf("Keeping %s - %d\n", g_TopScores[SCORESTOKEEP-1].netname, g_TopScores[SCORESTOKEEP-1].score);
-				strcpy(g_TopScores[SCORESTOKEEP-1].date , sys_date);
+					DbgPrintf("Keeping %s - %d\n", 
+					g_TopScores[SCORESTOKEEP-1].netname, 
+					g_TopScores[SCORESTOKEEP-1].score);
+				strcpy(g_TopScores[SCORESTOKEEP-1].date, sys_date);
 				// sort it
 				qsort(g_TopScores, sizeof(g_TopScores)/sizeof(g_TopScores[0]), sizeof(g_TopScores[0]), MP_Sort);
 			}
@@ -98,7 +101,7 @@ void SaveHighScores (void)
 			{
 				strcpy(g_TopScores[count].netname, game.clients[i].pers.netname);
 				g_TopScores[count].score = game.clients[i].resp.score;
-				strcpy(g_TopScores[count].date , sys_date);
+				strcpy(g_TopScores[count].date, sys_date);
 				count++;
 				if (count >= SCORESTOKEEP)
 					break;
@@ -136,7 +139,7 @@ void SaveHighScores (void)
 		fprintf(HS_file, "%s", string);
 		for (i = 0; i < SCORESTOKEEP; i++)
 			fprintf(HS_file, "  %2d - %8s - %i - %-12.12s\n", i + 1, 
-					g_TopScores[i].date , g_TopScores[i].score, g_TopScores[i].netname);
+					g_TopScores[i].date, g_TopScores[i].score, g_TopScores[i].netname);
 		fprintf(HS_file,"\n     %s  %s\n", MOD, MOD_VERSION);
 		fprintf(HS_file,"              www.railwarz.com");
 		fclose(HS_file);

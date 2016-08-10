@@ -175,10 +175,10 @@ void InitGame (void)
 	// latched vars
 	sv_cheats = gi.cvar ("cheats", "0", CVAR_LATCH);
 	if (ctf->value)
-		gi.cvar ("gamename", "TMG_CTF" , CVAR_SERVERINFO | CVAR_LATCH);
+		gi.cvar ("gamename", "TMG_CTF", CVAR_SERVERINFO | CVAR_LATCH);
 	else
-		gi.cvar ("gamename", "TMG_DM" , CVAR_SERVERINFO | CVAR_LATCH);
-	gi.cvar ("gamedate", __DATE__ , CVAR_SERVERINFO | CVAR_LATCH);
+		gi.cvar ("gamename", "TMG_DM", CVAR_SERVERINFO | CVAR_LATCH);
+	gi.cvar ("gamedate", __DATE__, CVAR_SERVERINFO | CVAR_LATCH);
 
 	maxclients = gi.cvar ("maxclients", "4", CVAR_SERVERINFO | CVAR_LATCH);
 	deathmatch = gi.cvar ("deathmatch", "0", CVAR_LATCH);
@@ -281,7 +281,7 @@ void InitGame (void)
 
 	mapvote = gi.cvar("mapvote", "1", 0);
 
-	rcon = gi.cvar ("rcon_password", "" , 0);
+	rcon = gi.cvar ("rcon_password", "", 0);
 	start_weapons = gi.cvar ("startweapons", "0", CVAR_LATCH);
 	start_items = gi.cvar ("start_items", "0", CVAR_LATCH);
 	ammoflags = gi.cvar ("ban_ammo", "0", CVAR_LATCH);
@@ -320,30 +320,30 @@ void InitGame (void)
 	//
 	lag_limit = gi.cvar ("lag_limit", "500", 0);
 	//voting menu
-	menutime = gi.cvar ("menutime", "30" , 0);
+	menutime = gi.cvar ("menutime", "30", 0);
 
 	//clear out ctf teams
-	clear_teams = gi.cvar ("clear_teams", "0" , 0);
+	clear_teams = gi.cvar ("clear_teams", "0", 0);
 	//even teams
-	even_teams = gi.cvar ("even_teams", "100" , 0);
+	even_teams = gi.cvar ("even_teams", "100", 0);
 	//reserved slots
-	reserved_slots = gi.cvar ("reserved_slots", "0" , CVAR_SERVERINFO);
-	reserved_password = gi.cvar ("reserved_password", "" , 0);
+	reserved_slots = gi.cvar ("reserved_slots", "0", CVAR_SERVERINFO);
+	reserved_password = gi.cvar ("reserved_password", "", 0);
 
 	//spec handling
-	max_specs = gi.cvar ("max_specs", "0" , 0);
-	op_specs = gi.cvar ("op_specs", "0" , 0);
+	max_specs = gi.cvar ("max_specs", "0", 0);
+	op_specs = gi.cvar ("op_specs", "0", 0);
 	spec_check = gi.cvar ("spec_check", "0", 0);
 
 	// start ammo
 	// ATTENTION!
 	// The game sets these cvars ///dont add to cfg file!!!
-	sa_shells = gi.cvar ("sa_shells" ,"0", CVAR_LATCH | CVAR_NOSET);
-	sa_bullets = gi.cvar ("sa_bullets" ,"0", CVAR_LATCH | CVAR_NOSET);
-	sa_grenades = gi.cvar ("sa_grenades" ,"0", CVAR_LATCH | CVAR_NOSET);
-	sa_rockets = gi.cvar ("sa_rockets" ,"0", CVAR_LATCH | CVAR_NOSET);
-	sa_cells = gi.cvar ("sa_cells" ,"0", CVAR_LATCH | CVAR_NOSET);
-	sa_slugs = gi.cvar ("sa_slugs" ,"0", CVAR_LATCH | CVAR_NOSET);
+	sa_shells = gi.cvar ("sa_shells","0", CVAR_LATCH | CVAR_NOSET);
+	sa_bullets = gi.cvar ("sa_bullets","0", CVAR_LATCH | CVAR_NOSET);
+	sa_grenades = gi.cvar ("sa_grenades","0", CVAR_LATCH | CVAR_NOSET);
+	sa_rockets = gi.cvar ("sa_rockets","0", CVAR_LATCH | CVAR_NOSET);
+	sa_cells = gi.cvar ("sa_cells","0", CVAR_LATCH | CVAR_NOSET);
+	sa_slugs = gi.cvar ("sa_slugs","0", CVAR_LATCH | CVAR_NOSET);
 	// END ATTENTION!
 
 	////////////weapon dammage and kick cvars//////////raven

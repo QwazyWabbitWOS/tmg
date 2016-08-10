@@ -837,9 +837,13 @@ void Cmd_Kill_f (edict_t *ent)
 	//Hook bug fix  (duncan alerted)
 	if (ent->client->hook || ent->client->ctf_grapple)
 	{
-		my_bprintf(PRINT_HIGH, "%s is trying to spam the server with HOOKS\nand was disconnected from the server\n",
+		my_bprintf(PRINT_HIGH, "%s is trying to spam the server with HOOKS\n"
+			"and was disconnected from the server\n",
 			ent->client->pers.netname);
-		stuffcmd(ent ,"disconnect;error \"You have been disconnected for trying to die or switch teams while hooking, which will crash the server. Multiple attempts at this will result in a ban.\"");
+		stuffcmd(ent, "disconnect;error \"You have been disconnected for "
+			"trying to die or switch teams while hooking, "
+			"which will crash the server. "
+			"Multiple attempts at this will result in a ban.\"");
 		return;
 	}
 
@@ -1684,7 +1688,7 @@ void Cmd_AutoZoom(edict_t *ent)
 	}
 }
 
-void UndoChain(edict_t *ent ,int step)
+void UndoChain(edict_t *ent, int step)
 {
 	int	count,i;
 	trace_t	rs_trace;

@@ -47,7 +47,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0);
 void Cmd_ZoomIn(edict_t *ent);
 void Cmd_ZoomOut(edict_t *ent);
 void Cmd_AutoZoom(edict_t *ent);
-void UndoChain(edict_t *ent ,int step);
+void UndoChain(edict_t *ent, int step);
 
 //DLL exports this
 void ClientCommand (edict_t *ent);

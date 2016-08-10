@@ -627,7 +627,7 @@ void AddModelSkin (char *modelfile, char *skinname)
 	char	buffer;
 	size_t	count = 0;
 
-	i = sprintf(infilename , "%s", modelfile);
+	i = sprintf(infilename, "%s", modelfile);
 
 	f = fopen (infilename, "rb");
 

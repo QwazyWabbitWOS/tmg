@@ -1712,7 +1712,9 @@ void CTFGrappleTouch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t
 
 	if (other->takedamage)
 	{
-		T_Damage (other, self, self->owner, self->velocity, self->s.origin, plane->normal, grapple_damage->value  , grapple_damage->value  , 0, MOD_GRAPPLE);
+		T_Damage (other, self, self->owner, self->velocity, 
+			self->s.origin, plane->normal, grapple_damage->value, 
+			grapple_damage->value, 0, MOD_GRAPPLE);
 		if(hook_reset->value)
 		{
 			CTFResetGrapple(self);
@@ -2347,15 +2349,20 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 	//if on the hook drop it also 
 	if (ent->client->hook || ent->client->ctf_grapple)
 	{
-		my_bprintf(PRINT_HIGH, "%s is trying to spam the server with HOOKS\n and was disconnected from this server\n",
+		my_bprintf(PRINT_HIGH, "%s is trying to spam the server with HOOKS\n"
+			"and was disconnected from this server\n",
 			ent->client->pers.netname);
-		stuffcmd(ent ,"disconnect;error \"You have been disconnected for trying to die or switch teams while hooking, which will crash the server. Multiple attempts at this will result in a ban.\"");
+		stuffcmd(ent, "disconnect;error \"You have been disconnected for "
+			"trying to die or switch teams while hooking, which will crash "
+			"the server. Multiple attempts at this will result in a ban.\"");
 		return;
 	}
 	ent->client->resp.score = 0;
 	CheckPlayers();
-	my_bprintf(PRINT_HIGH, "%s changed to the %s team. (%d red, %d blue, %d spectators)\n",
-		ent->client->pers.netname, CTFTeamName(desired_team), ctfgame.players1, ctfgame.players2, ctfgame.specs);
+	my_bprintf(PRINT_HIGH, "%s changed to the %s team. "
+		"(%d red, %d blue, %d spectators)\n",
+		ent->client->pers.netname, CTFTeamName(desired_team), 
+		ctfgame.players1, ctfgame.players2, ctfgame.specs);
 	ent->client->pers.pl_state = PL_PLAYING;
 	ent->client->resp.spectator = 0;
 	//skin change is allowed here
@@ -2363,8 +2370,12 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 	// if hook should be dropped, just return
 	if (ent->client->hook || ent->client->ctf_grapple)
 	{
-		my_bprintf(PRINT_HIGH, "%s is trying to spam the server with HOOKS\n and was disconnected from the server\n", ent->client->pers.netname);
-		stuffcmd(ent ,"disconnect;error \"You have been disconnected for trying to die or switch teams while hooking, which will crash the server. Multiple attempts at this will result in a ban.\"");
+		my_bprintf(PRINT_HIGH, "%s is trying to spam the server with HOOKS\n"
+			"and was disconnected from the server\n", 
+			ent->client->pers.netname);
+		stuffcmd(ent, "disconnect;error \"You have been disconnected for "
+			"trying to die or switch teams while hooking, which will crash "
+			"the server. Multiple attempts at this will result in a ban.\"");
 		return;
 	}
 
@@ -3649,7 +3660,7 @@ void CTFChaseCam(edict_t *ent, pmenu_t *p)
 			ent->client->chase_target = e;
 			ent->client->update_chase = true;
 			//RAV
-			Spectate(ent ,NULL);
+			Spectate(ent, NULL);
 			found = true;
 			my_bprintf(PRINT_HIGH, "%s Moved to Spectator.\n", ent->client->pers.netname);
 			PMenu_Close(ent);
@@ -4597,7 +4608,7 @@ char *GetIpOp(edict_t *ent)
 		j++;
 		ec++;
 	}
-	sprintf (modif, "%s@%s.%s.%s.*",ent->client->pers.netname , ipp1, ipp2, ipp3);
+	sprintf (modif, "%s@%s.%s.%s.*", ent->client->pers.netname, ipp1, ipp2, ipp3);
 	return (modif);
 }
 
@@ -5469,7 +5480,8 @@ void List_Players(edict_t *ent)
 		if (!G_EntExists(e))
 			continue;
 
-		sprintf(menustring[pos],"%d. %s %s", pos, e->client->pers.netname ,Info_ValueForKey (e->client->pers.userinfo, "ip"));
+		sprintf(menustring[pos],"%d. %s %s", pos, e->client->pers.netname, 
+			Info_ValueForKey (e->client->pers.userinfo, "ip"));
 		playerlistmenu[pos].text = menustring[pos];
 		playerlistmenu[pos].SelectFunc = NULL;
 		playerlistmenu[pos].arg = i;

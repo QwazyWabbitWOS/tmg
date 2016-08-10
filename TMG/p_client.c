@@ -753,7 +753,10 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 			}
 			if (ff)
 			{
-				safe_bprintf (PRINT_CHAT ,"%s Killed His own TeamMate!! %s and LOST A FRAG!!\n", attacker->client->pers.netname, self->client->pers.netname);
+				safe_bprintf (PRINT_CHAT, 
+					"%s Killed His own TeamMate!! %s and LOST A FRAG!!\n", 
+					attacker->client->pers.netname, 
+					self->client->pers.netname);
 				if(match_state == STATE_PLAYING)
 				{
 					attacker->client->resp.frags++;
@@ -2739,7 +2742,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 			else if(ent->client->pers.anglespeed != newas)
 			{
 				gi.bprintf (PRINT_HIGH, "%s changed anglespeed to %d and was Warned\n", ent->client->pers.netname, newas);
-				// stuffcmd (ent, va("set cl_anglespeedkey %i u\n" ,ent->client->pers.anglespeed));
+				// stuffcmd (ent, va("set cl_anglespeedkey %i u\n", ent->client->pers.anglespeed));
 				ent->command = 6;
 				newas = ent->client->pers.anglespeed;
 				safe_cprintf (ent, PRINT_HIGH, "Pitch and Angle Speed changing is not permitted here\n ");
@@ -2758,7 +2761,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 			else if(ent->client->pers.glmonolightmap != newglmono)
 			{
 				gi.bprintf (PRINT_HIGH, "%s tried to use gl_monolightmap and was Warned\n", ent->client->pers.netname);
-				// stuffcmd (ent, va("set cl_anglespeedkey %i u\n" ,ent->client->pers.anglespeed));
+				// stuffcmd (ent, va("set cl_anglespeedkey %i u\n", ent->client->pers.anglespeed));
 				ent->command = 9;
 				newglmono = ent->client->pers.glmonolightmap;
 				safe_cprintf (ent, PRINT_HIGH, "Pitch and Angle Speed changing is not permitted here\n ");
@@ -2889,7 +2892,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	}
 
 	//RAV operators
-	strcpy (player ,"/0");
+	strcpy(player, "/0");
 	strcpy(player, ent->client->pers.name_change);
 	strcat(player, "@");
 	strcat(player, ent->client->pers.ip);
@@ -2899,7 +2902,8 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	//end
 
 	// save off the userinfo in case we want to check something later
-	strncpy (ent->client->pers.userinfo, userinfo, sizeof(ent->client->pers.userinfo)-1);
+	strncpy(ent->client->pers.userinfo, 
+		userinfo, sizeof(ent->client->pers.userinfo)-1);
 }
 
 /*
@@ -3053,7 +3057,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	}
 
 
-	strcpy (player ,"/0");
+	strcpy(player, "/0");
 	strcpy(player, name);
 	strcat(player, "@");
 	strcat(player, ip);
@@ -3172,8 +3176,8 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 				//disable the reconnection  on a LAN !!!
 				if(!lan->value)
 				{
-					//need to set the addy on first connect , check for same on 2nd and let play if same , if not force 3rd try (bot)
-					//then bust them , be sure after 2nd to kill the stored ip  so 3rd try will bust them .
+					//need to set the addy on first connect, check for same on 2nd and let play if same, if not force 3rd try (bot)
+					//then bust them, be sure after 2nd to kill the stored ip so 3rd try will bust them.
 					if(strcmp(proxyinfo[client].firstport,"") == 0)
 					{
 						q2a_strcpy(proxyinfo[client].firstport, GetPort(ent,Info_ValueForKey(userinfo, "ip")));
@@ -3454,7 +3458,7 @@ qboolean TraceX (edict_t *ent,vec3_t p2)
 		contents |= CONTENTS_LAVA | CONTENTS_SLIME;
 	}
 
-	rs_trace = gi.trace (ent->s.origin, v1, v2, p2 ,ent, contents );
+	rs_trace = gi.trace (ent->s.origin, v1, v2, p2, ent, contents);
 	if(rs_trace.fraction == 1.0 && !rs_trace.allsolid && !rs_trace.startsolid ) return true;
 
 	if(ent->client->zc.route_trace && rs_trace.ent && (ent->bot_client))
@@ -3657,7 +3661,8 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			k = true;//false;
 			VectorCopy(ent->s.old_origin,v);
 			v[2] -= 2;
-			rs_trace = gi.trace(ent->s.old_origin,ent->mins ,ent->maxs, v ,ent,MASK_PLAYERSOLID);
+			rs_trace = gi.trace(ent->s.old_origin, 
+				ent->mins, ent->maxs, v, ent, MASK_PLAYERSOLID);
 			if(rs_trace.fraction != 1.0) j = true;
 
 			if(old_ground)
@@ -4381,40 +4386,43 @@ void ClientBeginServerFrame (edict_t *ent)
 		{
 			ent->commandtimeout = level.time + 5;
 			//fixes bad names and cl_ stuff
-			if (ent->command== 2)
+			if (ent->command == 2)
 			{
 				//name
-				stuffcmd (ent, va("name %s\n",ent->client->pers.name_change));
+				stuffcmd (ent, va("name %s\n", ent->client->pers.name_change));
 				ent->command = 0;
 			}
-			else if (ent->command== 3)
+			else if (ent->command == 3)
 			{
 				//skin
 				stuffcmd (ent, va("skin %s\n",ent->client->pers.skin_change));
 				ent->command = 0;
 			}
-			else if (ent->command== 4)
+			else if (ent->command == 4)
 			{
 				//Clan name
 				stuffcmd (ent, va("disconnect\n"));
 				ent->command = 0;
 			}
-			else if (ent->command== 5)
+			else if (ent->command == 5)
 			{
 				//Anglespeed
-				stuffcmd (ent, va("set cl_anglespeedkey %i u\n" ,ent->client->pers.anglespeed));
+				stuffcmd (ent, va("set cl_anglespeedkey %i u\n", 
+					ent->client->pers.anglespeed));
 				ent->command = 0;
 			}
-			else if (ent->command== 6)
+			else if (ent->command == 6)
 			{
 				//Anglespeed
-				stuffcmd (ent, va("set cl_anglespeedkey %i u\n" ,ent->client->pers.anglespeed));
+				stuffcmd (ent, va("set cl_anglespeedkey %i u\n",
+					ent->client->pers.anglespeed));
 				ent->command = 0;
 			}
-			else if (ent->command== 7)
+			else if (ent->command == 7)
 			{
 				//Anglespeed
-				stuffcmd (ent, va("set cl_pitchspeed %i u\n" ,ent->client->pers.pitchspeed));
+				stuffcmd (ent, va("set cl_pitchspeed %i u\n",
+					ent->client->pers.pitchspeed));
 				ent->command = 0;
 			}
 			else if (ent->command== 8)

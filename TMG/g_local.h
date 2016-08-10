@@ -1184,7 +1184,7 @@ enum pmenu_n {
 };
 
 // constants for pl_state
-//playing 1, spec 0 , 2 warmup ,need spawned 3,cheat bot 5 ,
+//playing 1, spec 0, warmup 2, need spawned 3, cheat bot 5 
 /**
  Player states for spectator, playing, warmup, dead, cheater
  */
@@ -1257,7 +1257,8 @@ typedef struct client_persistent_s
 	int			score;			// for calculating total unit score in coop games
 
 	//RAV
-	int	pl_state;	//playing 1, spec 0 , 2 warmup ,need spawned 3,cheat bot 5 , 
+	// QW: see pl_state_n
+	int	pl_state;	// playing 1, spec 0, warmup 2, need spawned 3, cheat bot 5
 	int	isop;		//operators
 	//JSW int	ismop;	//match operators
 	qboolean	motd;	// show client the motd
@@ -1714,7 +1715,7 @@ int ApplyLocationalSystem (edict_t *attacker, edict_t *targ, vec3_t point, int m
 //
 // models.c
 //
-qboolean CheckModel(edict_t *ent ,char *s);
+qboolean CheckModel(edict_t *ent, char *s);
 
 
 //Voting /MAP

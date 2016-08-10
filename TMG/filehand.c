@@ -96,7 +96,7 @@ char *NameAndIp (edict_t *ent)
 	static char ip[IP_LENGTH];
 	int  j;
 //raven 12-16-99 changed for  extended name stuff
-	strcpy (ip ,"/0");
+	strcpy (ip, "/0");
 	strcpy(ip, ent->client->pers.netname);
 	strcat(ip, "@");
 	strcat(ip, Info_ValueForKey (ent->client->pers.userinfo, "ip"));

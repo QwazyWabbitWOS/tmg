@@ -1264,7 +1264,7 @@ if (sa_slugs->value)
 	gi.linkentity (ent);
 	VectorAdd (spawn_origin, ent->mins, ent->absmin);
 	VectorAdd (spawn_origin, ent->maxs, ent->absmax);
-	entcount = gi.BoxEdicts ( ent->absmin ,ent->absmax,touch,MAX_EDICTS,AREA_SOLID);
+	entcount = gi.BoxEdicts (ent->absmin, ent->absmax, touch, MAX_EDICTS, AREA_SOLID);
 	while (entcount-- > 0)
 	{
 		if(Q_stricmp (touch[entcount]->classname, "player") == 0)
@@ -1314,7 +1314,7 @@ qboolean SpawnBot(int i)
 	bot = Get_NewClient();
 	if(bot == NULL) return false;
 
-	InitializeBot( bot , i);
+	InitializeBot (bot, i);
 	PutBotInServer ( bot );
 
 	j = targetindex;
