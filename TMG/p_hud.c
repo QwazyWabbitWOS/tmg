@@ -681,7 +681,7 @@ Display the current help message
 */
 void Cmd_Help_f (edict_t *ent)
 {
-	// this is for backwards compatability
+	// this is for backwards compatibility
 	if (deathmatch->value)
 	{
 		Cmd_Score_f (ent);

@@ -42,6 +42,7 @@ typedef enum ctfgrapplestate_n {
 extern cvar_t *ctf;
 extern cvar_t *dropflag_delay;
 extern cvar_t *newscore;
+extern cvar_t *ctf_deathscores;
 
 #define CTF_TEAM1_SKIN "ctf_r"
 #define CTF_TEAM2_SKIN "ctf_b"

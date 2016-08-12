@@ -19,6 +19,7 @@
 
 cvar_t *dropflag_delay;
 cvar_t *newscore;
+cvar_t *ctf_deathscores;
 
 //3ZB
 //qboolean bots_moveok ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom);
@@ -1043,7 +1044,7 @@ void CTFDropFlagTouch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t 
 
 static void CTFDropFlagThink(edict_t *ent)
 {
-	qboolean iw;
+	qboolean iw = 0;
 	if ((ent->timestamp + auto_flag_return->value < level.time) || 
 		level.intermissiontime ||
 		(iw = InsideWall(ent)) ||
@@ -2406,6 +2407,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 
 	if (DEBUG_HSCORES) 
 		DbgPrintf("%s entered\n", __func__);
+	
 	if (highscores->value && ent->client->showhighscores)
 	{
 		LoadHighScores(); // the message is fully formed
@@ -2428,6 +2430,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 				team = 1;
 			else
 				continue; // unknown team?
+			
 			score = game.clients[i].resp.score;
 			for (j=0 ; j<total[team] ; j++)
 			{

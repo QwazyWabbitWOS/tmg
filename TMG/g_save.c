@@ -451,6 +451,7 @@ void InitGame (void)
 
 	extrasounds = gi.cvar ("extrasounds", "0", 0);
 	ctf_forcejoin = gi.cvar("ctf_forcejoin", "", 0);
+	ctf_deathscores = gi.cvar("ctf_deathscores", "0", 0);
 	allow_vote = gi.cvar ( "allow_vote", "0", 0);
 	vote_timeout = gi.cvar ("vote_timeout", "30", 0);
 	vote_percentage = gi.cvar ("vote_percentage", "67", 0);

@@ -1055,7 +1055,7 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 		CTFDeadDropTech(self);
 		//ZOID
 		
-		if (deathmatch->value && !self->bot_client)
+		if (deathmatch->value && ctf_deathscores->value && !self->bot_client)
 			Cmd_Help_f (self);		// show scores
 	}
 
