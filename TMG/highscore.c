@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#define SCORESTOKEEP 10
+#define KEEP 10
 
 cvar_t  *highscores;
 cvar_t	*show_highscores;
@@ -27,7 +27,7 @@ typedef struct {
 } HS_STRUCT;
 
 // room to hold max # of players
-HS_STRUCT g_TopScores[SCORESTOKEEP];
+HS_STRUCT g_TopScores[KEEP];
 
 void InitHighScores (void)
 {
@@ -44,7 +44,6 @@ void SaveHighScores (void)
 	char	txtfile[MAX_QPATH];
 	char	string[128];
 	int		count = 0;
-	size_t	cnt = 0;
 
 	if (DEBUG_HSCORES) 
 		DbgPrintf("%s entered\n", __func__);
@@ -62,7 +61,7 @@ void SaveHighScores (void)
 	
 	if(HS_file)
 	{
-		cnt = fread(g_TopScores, sizeof(g_TopScores[0]) * SCORESTOKEEP, 1, HS_file);
+		fread(g_TopScores, sizeof(g_TopScores[0]) * KEEP, 1, HS_file);
 		fclose(HS_file);
 
 		//JSW
@@ -72,19 +71,21 @@ void SaveHighScores (void)
 			cl_ent = g_edicts + 1 + i;
 			if((game.clients[i].pers.pl_state == PL_PLAYING 
 				|| cl_ent->client->pers.pl_state == PL_WARMUP)
-				&& (game.clients[i].ps.stats[STAT_FRAGS] > g_TopScores[SCORESTOKEEP-1].score)
+				&& (game.clients[i].ps.stats[STAT_FRAGS] >
+					g_TopScores[KEEP-1].score)
 				&& (game.clients[i].ps.stats[STAT_FRAGS] > 0))
 			{ // if it beat the lowest, keep score
 				//my_bprintf (PRINT_HIGH, "High scores changed\n");
-				strcpy(g_TopScores[SCORESTOKEEP-1].netname, game.clients[i].pers.netname);
-				g_TopScores[SCORESTOKEEP-1].score = game.clients[i].resp.score;
+				strcpy(g_TopScores[KEEP-1].netname, game.clients[i].pers.netname);
+				g_TopScores[KEEP-1].score = game.clients[i].resp.score;
 				if (DEBUG_HSCORES) 
 					DbgPrintf("Keeping %s - %d\n", 
-					g_TopScores[SCORESTOKEEP-1].netname, 
-					g_TopScores[SCORESTOKEEP-1].score);
-				strcpy(g_TopScores[SCORESTOKEEP-1].date, sys_date);
+					g_TopScores[KEEP-1].netname, 
+					g_TopScores[KEEP-1].score);
+				strcpy(g_TopScores[KEEP-1].date, sys_date);
 				// sort it
-				qsort(g_TopScores, sizeof(g_TopScores)/sizeof(g_TopScores[0]), sizeof(g_TopScores[0]), MP_Sort);
+				qsort(g_TopScores, sizeof(g_TopScores)/sizeof(g_TopScores[0]),
+					  sizeof(g_TopScores[0]), MP_Sort);
 			}
 		}
 		//end
@@ -97,26 +98,29 @@ void SaveHighScores (void)
 		for (i = 0 ; i < maxclients->value; i++)
 		{
 			cl_ent = g_edicts + 1 + i;
-			if (cl_ent->inuse && (cl_ent->client->pers.pl_state == PL_PLAYING || cl_ent->client->pers.pl_state == PL_WARMUP))
+			if (cl_ent->inuse &&
+				(cl_ent->client->pers.pl_state == PL_PLAYING ||
+				 cl_ent->client->pers.pl_state == PL_WARMUP))
 			{
 				strcpy(g_TopScores[count].netname, game.clients[i].pers.netname);
 				g_TopScores[count].score = game.clients[i].resp.score;
 				strcpy(g_TopScores[count].date, sys_date);
 				count++;
-				if (count >= SCORESTOKEEP)
+				if (count >= KEEP)
 					break;
 			}
 		}
 		
 		// sort it
-		qsort(g_TopScores, sizeof(g_TopScores)/sizeof(g_TopScores[0]), sizeof(g_TopScores[0]), MP_Sort);
+		qsort(g_TopScores, sizeof(g_TopScores)/sizeof(g_TopScores[0]),
+			  sizeof(g_TopScores[0]), MP_Sort);
 	}
 
 	// write the high score HS_file
 	HS_file = fopen(binfile, "wb");
 	if (HS_file)
 	{
-		fwrite(g_TopScores, sizeof(g_TopScores[0]), SCORESTOKEEP, HS_file);
+		fwrite(g_TopScores, sizeof(g_TopScores[0]), KEEP, HS_file);
 		fclose(HS_file);
 		if (DEBUG_HSCORES) 
 			DbgPrintf("File written %s\n", binfile);
@@ -133,13 +137,18 @@ void SaveHighScores (void)
 	HS_file = fopen(txtfile, "wt");
 	if (HS_file)
 	{
-		sprintf(string, "    Top %d Scores for %s\n\n", SCORESTOKEEP, level.mapname);
+		sprintf(string, "    Top %d Scores for %s\n\n", KEEP, level.mapname);
 		highlight_text(string, string);
-		//fprintf(HS_file,"    Top %d Scores for %s\n\n", SCORESTOKEEP, level.mapname);
 		fprintf(HS_file, "%s", string);
-		for (i = 0; i < SCORESTOKEEP; i++)
-			fprintf(HS_file, "  %2d - %8s - %i - %-12.12s\n", i + 1, 
-					g_TopScores[i].date, g_TopScores[i].score, g_TopScores[i].netname);
+
+		for (i = 0; i < KEEP; i++)
+			fprintf(HS_file,
+					"  %2d - %8s - %i - %-12.12s\n",
+					i + 1,
+					g_TopScores[i].date,
+					g_TopScores[i].score,
+					g_TopScores[i].netname);
+
 		fprintf(HS_file,"\n     %s  %s\n", MOD, MOD_VERSION);
 		fprintf(HS_file,"              www.railwarz.com");
 		fclose(HS_file);
@@ -167,7 +176,7 @@ void LoadHighScores (void)
 	i =  sprintf(filename, "./");
 	i += sprintf(filename + i, "%s/%s", game_dir->string, cfgdir->string);
 	i += sprintf(filename + i, "/hs/%s_hs.txt", level.mapname);
-	
+
 	if (!(motd_file = fopen(filename, "r")))
 	{
 		if (DEBUG_HSCORES) 
@@ -181,7 +190,8 @@ void LoadHighScores (void)
 	{
 		if (strstr (line, sys_date))
 			highlight_text(line, NULL); // white -> green
-		Com_sprintf (entry, sizeof(entry), "xv 2 yv %i string \"%s\" ", i*8 + 24, line);
+		Com_sprintf (entry, sizeof(entry),
+					 "xv 2 yv %i string \"%s\" ", i*8 + 24, line);
 		j = strlen(entry);
 		if (stringlength + j > 1400)
 			break;

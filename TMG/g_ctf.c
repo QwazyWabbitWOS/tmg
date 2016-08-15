@@ -21,14 +21,13 @@ cvar_t *dropflag_delay;
 cvar_t *newscore;
 cvar_t *ctf_deathscores;
 
-//3ZB
-//qboolean bots_moveok ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom);
-//
-
 char menustring[24][64];
 
 // private
-static void old_teleporter_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
+static void old_teleporter_touch (edict_t *self,
+								  edict_t *other,
+								  cplane_t *plane,
+								  csurface_t *surf);
 
 qboolean firsttechs;
 gitem_t	*item_tech1, *item_tech2, *item_tech3, *item_tech4;
@@ -244,9 +243,8 @@ int CountSpecClients (void)
 	for (n = 1; n <= maxclients->value; n++)
 	{
 		player = &g_edicts[n];
-		if (!player->inuse || player->client->pers.pl_state != PL_SPECTATOR)
-			continue;
-		count++;
+		if (player->inuse && player->client->pers.pl_state == PL_SPECTATOR)
+			count++;
 	}
 	ctfgame.specs = count;
 	return(count);
@@ -258,28 +256,28 @@ int CountSpecClients (void)
 void CheckPlayers (void)
 {
 	int i;
-	edict_t	*carrier;
+	edict_t	*ent;
 	ctfgame.players1 = 0;	//team1
 	ctfgame.players2 = 0;	//team2
-	ctfgame.players3 = 0;	//all players
+	ctfgame.players_total = 0;
 	ctfgame.specs = 0;		//spectators
 
 	for (i = 1; i <= maxclients->value; i++)
 	{
-		carrier = g_edicts + i;
+		ent = g_edicts + i;
 		if (ctf->value)
 		{
-			if (carrier->inuse && carrier->client->resp.ctf_team > 0)
+			if (ent->inuse && ent->client->resp.ctf_team > 0)
 			{
-				if(carrier->client->resp.ctf_team == 1)
+				if(ent->client->resp.ctf_team == 1)
 					ctfgame.players1++;
 				else
 					ctfgame.players2++;
 			}
 		}
-		else if (carrier->inuse && carrier->client->pers.pl_state > PL_SPECTATOR)
+		else if (ent->inuse && ent->client->pers.pl_state > PL_SPECTATOR)
 		{
-			ctfgame.players3++;	// total players
+			ctfgame.players_total++;
 		}
 	}
 	// count spectators
@@ -288,8 +286,9 @@ void CheckPlayers (void)
 
 
 /*
- This function is to force spectators to join a team if the max_spec or op_spec cvars are
- used have to keep in mind that only players- reserved are to be counted
+ This function is to force spectators to join a team if the 
+ max_spec or op_spec cvars are used.
+ We have to keep in mind that only players - reserved are to be counted.
  */
 
 /**
@@ -298,19 +297,25 @@ void CheckPlayers (void)
 qboolean Check_for_SpecLimit(edict_t *who)
 {
 	int force = 0;
-	if(CountConnectedClients()+2 < (maxclients->value - (int)reserved_slots->value))
+	int ceiling;
+
+	ceiling = (int)(maxclients->value - reserved_slots->value);
+	if(CountConnectedClients() + 2 < ceiling)
 		return false;
 	if(!op_specs->value && !max_specs->value)
 		return false;
+
 	if((max_specs->value) && (CountSpecClients() >= (max_specs->value)))
 		force = 1;
 	if((op_specs->value) && (CountSpecClients() >= (max_specs->value)))
 		force = 1;
+
 	if(force == 1)
 	{
-		edict_t		*player;
+		edict_t	*player;
 		int i;
-		int team1count = 0, team2count = 0;
+		int team1count = 0;
+		int team2count = 0;
 		who->client->resp.ctf_state = CTF_STATE_START;
 		for (i = 1; i <= maxclients->value; i++)
 		{
@@ -328,13 +333,13 @@ qboolean Check_for_SpecLimit(edict_t *who)
 		}
 
 		if (team1count < team2count)
-			CTFJoinTeam1(who,NULL);
+			CTFJoinTeam1(who, NULL);
 		else if (team2count < team1count)
-			CTFJoinTeam2(who,NULL);
+			CTFJoinTeam2(who, NULL);
 		else if (rand() & 1)
-			CTFJoinTeam1(who,NULL);
+			CTFJoinTeam1(who, NULL);
 		else
-			CTFJoinTeam2(who,NULL);
+			CTFJoinTeam2(who, NULL);
 		return true;
 	}
 	return false;
@@ -361,7 +366,7 @@ static edict_t *loc_findradius (edict_t *from, vec3_t org, float rad)
 	{
 		if (!from->inuse)
 			continue;
-		for (j=0 ; j<3 ; j++)
+		for (j = 0; j < 3; j++)
 			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j])*0.5);
 
 		if (VectorLength(eorg) > rad)
@@ -372,7 +377,8 @@ static edict_t *loc_findradius (edict_t *from, vec3_t org, float rad)
 	return NULL;
 }
 
-static void loc_buildboxpoints(vec3_t p[8], vec3_t org, vec3_t mins, vec3_t maxs)
+static
+void loc_buildboxpoints(vec3_t p[8], vec3_t org, vec3_t mins, vec3_t maxs)
 {
 	VectorAdd(org, mins, p[0]);
 	VectorCopy(p[0], p[1]);
@@ -407,7 +413,8 @@ static qboolean loc_CanSee (edict_t *targ, edict_t *inflictor)
 	viewpoint[2] += inflictor->viewheight;
 	for (i = 0; i < 8; i++)
 	{
-		trace = gi.trace (viewpoint, vec3_origin, vec3_origin, targpoints[i], inflictor, MASK_SOLID);
+		trace = gi.trace (viewpoint, vec3_origin, vec3_origin,
+						  targpoints[i], inflictor, MASK_SOLID);
 		if (trace.fraction == 1.0)
 			return true;
 	}
@@ -503,16 +510,25 @@ void CTFAssignSkin(edict_t *ent, char *s)
 	switch (ent->client->resp.ctf_team)
 	{
 	case CTF_TEAM1:
-		gi.configstring (CS_PLAYERSKINS+playernum, va("%s\\%s%s", ent->client->pers.netname, t, CTF_TEAM1_SKIN) );
+		gi.configstring (CS_PLAYERSKINS + playernum,
+						va("%s\\%s%s",
+						ent->client->pers.netname,
+						t, CTF_TEAM1_SKIN) );
 		break;
 	case CTF_TEAM2:
-		gi.configstring (CS_PLAYERSKINS+playernum, va("%s\\%s%s", ent->client->pers.netname, t, CTF_TEAM2_SKIN) );
+		gi.configstring (CS_PLAYERSKINS+playernum,
+						va("%s\\%s%s",
+						ent->client->pers.netname,
+						t, CTF_TEAM2_SKIN) );
 		break;
 	default:
-		gi.configstring (CS_PLAYERSKINS+playernum, va("%s\\%s", ent->client->pers.netname, s) );
+		gi.configstring (CS_PLAYERSKINS+playernum,
+						va("%s\\%s",
+						ent->client->pers.netname, s) );
 		break;
 	}
-	//	gi.dprintf(ent, PRINT_HIGH, "%s has been assigned skin: %s\n", ent->client->pers.netname);
+	//	gi.dprintf(ent, PRINT_HIGH,
+	//  "%s has been assigned skin: %s\n", ent->client->pers.netname);
 }
 
 void CTFAssignTeam(gclient_t *who)
@@ -677,11 +693,13 @@ void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker)
 		attacker->client->resp.ctf_lastfraggedcarrier = level.time;
 		attacker->client->resp.score += CTF_FRAG_CARRIER_BONUS;
 		if (!attacker->bot_client)
-			safe_cprintf(attacker, PRINT_MEDIUM, "BONUS: %d points for fragging enemy flag carrier.\n",
-			(int)CTF_FRAG_CARRIER_BONUS);
+			safe_cprintf(attacker, PRINT_MEDIUM,
+						 "BONUS: %d points for fragging enemy flag carrier.\n",
+						 (int)CTF_FRAG_CARRIER_BONUS);
 		//RAV
 		// Log Flag Carrier Frag - MarkDavies
-		sl_LogScore( &gi, attacker->client->pers.netname, NULL, "FC Frag", NULL, CTF_FRAG_CARRIER_BONUS, level.time);
+		sl_LogScore( &gi, attacker->client->pers.netname,
+					NULL, "FC Frag", NULL, CTF_FRAG_CARRIER_BONUS, level.time);
 		//end
 		// the the target had the flag, clear the hurt carrier
 		// field on the other team
@@ -693,17 +711,23 @@ void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker)
 		}
 		return;
 	}
-	if (targ->client->resp.ctf_lasthurtcarrier && level.time - targ->client->resp.ctf_lasthurtcarrier < CTF_CARRIER_DANGER_PROTECT_TIMEOUT &&
+	if (targ->client->resp.ctf_lasthurtcarrier &&
+		level.time - targ->client->resp.ctf_lasthurtcarrier <
+		CTF_CARRIER_DANGER_PROTECT_TIMEOUT &&
 		!attacker->client->pers.inventory[ITEM_INDEX(flag_item)])
 	{
 		// attacker is on the same team as the flag carrier and
 		// fragged a guy who hurt our flag carrier
 		attacker->client->resp.score += CTF_CARRIER_DANGER_PROTECT_BONUS;
-		my_bprintf(PRINT_MEDIUM, "%s defends %s's flag carrier against an agressive enemy\n",
-			attacker->client->pers.netname, CTFTeamName(attacker->client->resp.ctf_team));
+		my_bprintf(PRINT_MEDIUM,
+				   "%s defends %s's flag carrier against an agressive enemy\n",
+				   attacker->client->pers.netname,
+				   CTFTeamName(attacker->client->resp.ctf_team));
 		//RAV
 		// Log Flag Danger Carrier Protect Frag - MarkDavies
-		sl_LogScore( &gi, attacker->client->pers.netname, NULL, "FC Def", NULL, CTF_CARRIER_DANGER_PROTECT_BONUS, level.time );
+		sl_LogScore( &gi, attacker->client->pers.netname,
+					NULL, "FC Def", NULL,
+					CTF_CARRIER_DANGER_PROTECT_BONUS, level.time );
 		//end
 		return;
 	}
@@ -734,7 +758,10 @@ void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker)
 	if(attacker)
 	{
 		VectorSubtract(targ->s.origin,attacker->s.origin,v1);
-		if(VectorLength(v1) < 300 && attacker->client && !(attacker->deadflag) && (attacker->svflags & SVF_MONSTER))
+		if(VectorLength(v1) < 300
+		   && attacker->client
+		   && !(attacker->deadflag)
+		   && (attacker->svflags & SVF_MONSTER))
 		{
 			attacker->client->zc.second_target = flag;
 		}
@@ -744,7 +771,8 @@ void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker)
 	for (i = 1; i <= maxclients->value; i++)
 	{
 		carrier = g_edicts + i;
-		if (carrier->inuse && carrier->client->pers.inventory[ITEM_INDEX(flag_item)])
+		if (carrier->inuse
+			&& carrier->client->pers.inventory[ITEM_INDEX(flag_item)])
 			break;
 		carrier = NULL;
 	}
@@ -752,20 +780,27 @@ void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker)
 	// check to see if we are defending the base's flag
 	VectorSubtract(targ->s.origin, flag->s.origin, v1);
 	VectorSubtract(attacker->s.origin, flag->s.origin, v2);
-	if (VectorLength(v1) < CTF_TARGET_PROTECT_RADIUS || VectorLength(v2) < CTF_TARGET_PROTECT_RADIUS ||
-		loc_CanSee(flag, targ) || loc_CanSee(flag, attacker))
+	if (VectorLength(v1) < CTF_TARGET_PROTECT_RADIUS
+		|| VectorLength(v2) < CTF_TARGET_PROTECT_RADIUS
+		|| loc_CanSee(flag, targ) || loc_CanSee(flag, attacker))
 	{
 		// we defended the base flag
 		attacker->client->resp.score += CTF_FLAG_DEFENSE_BONUS;
 		if (flag->solid == SOLID_NOT)
-			my_bprintf(PRINT_MEDIUM, "%s defends the %s base.\n", attacker->client->pers.netname,
+			my_bprintf(PRINT_MEDIUM,
+					   "%s defends the %s base.\n",
+					   attacker->client->pers.netname,
 			CTFTeamName(attacker->client->resp.ctf_team));
 		else
-			my_bprintf(PRINT_MEDIUM, "%s defends the %s flag.\n", attacker->client->pers.netname,
+			my_bprintf(PRINT_MEDIUM,
+					   "%s defends the %s flag.\n",
+					   attacker->client->pers.netname,
 			CTFTeamName(attacker->client->resp.ctf_team));
 		//RAV
 		// Log Flag Defense - MarkDavies
-		sl_LogScore( &gi, attacker->client->pers.netname, NULL, "F Def", NULL, CTF_FLAG_DEFENSE_BONUS, level.time );
+		sl_LogScore( &gi, attacker->client->pers.netname,
+					NULL, "F Def", NULL,
+					CTF_FLAG_DEFENSE_BONUS, level.time );
 		//end
 		return;
 	}
@@ -774,15 +809,20 @@ void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker)
 	{
 		VectorSubtract(targ->s.origin, carrier->s.origin, v1);
 		VectorSubtract(attacker->s.origin, carrier->s.origin, v1);
-		if (VectorLength(v1) < CTF_ATTACKER_PROTECT_RADIUS || VectorLength(v2) < CTF_ATTACKER_PROTECT_RADIUS ||
-			loc_CanSee(carrier, targ) || loc_CanSee(carrier, attacker))
+		if (VectorLength(v1) < CTF_ATTACKER_PROTECT_RADIUS
+			|| VectorLength(v2) < CTF_ATTACKER_PROTECT_RADIUS
+			|| loc_CanSee(carrier, targ) || loc_CanSee(carrier, attacker))
 		{
 			attacker->client->resp.score += CTF_CARRIER_PROTECT_BONUS;
-			my_bprintf(PRINT_MEDIUM, "%s defends the %s's flag carrier.\n",
-				attacker->client->pers.netname, CTFTeamName(attacker->client->resp.ctf_team));
+			my_bprintf(PRINT_MEDIUM,
+					   "%s defends the %s's flag carrier.\n",
+					   attacker->client->pers.netname,
+					   CTFTeamName(attacker->client->resp.ctf_team));
 			//RAV
 			// Log Flag Carrier Protect Frag - MarkDavies
-			sl_LogScore( &gi, attacker->client->pers.netname, NULL, "FC Def", NULL, CTF_CARRIER_PROTECT_BONUS, level.time );
+			sl_LogScore( &gi, attacker->client->pers.netname,
+						NULL, "FC Def", NULL,
+						CTF_CARRIER_PROTECT_BONUS, level.time );
 			//end
 			return;
 		}
@@ -880,7 +920,8 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 	else
 	{
 		if (!ent->bot_client)
-			safe_cprintf(ent, PRINT_HIGH, "Don't know what team the flag is on.\n");
+			safe_cprintf(ent, PRINT_HIGH,
+						 "Don't know what team the flag is on.\n");
 		return false;
 	}
 
@@ -902,7 +943,8 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 		{
 			//RAV
 			//if teams are not even do not allow capture!
-			if ((ctf_team == 1 && !notfairBLUE) || (ctf_team == 2 && !notfairRED))
+			if ((ctf_team == 1 && !notfairBLUE) ||
+				(ctf_team == 2 && !notfairRED))
 			{
 				// the flag is at home base.  if the player has the enemy
 				// flag, he's just won!
@@ -913,13 +955,17 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 				//end
 				if (other->client->pers.inventory[ITEM_INDEX(enemy_flag_item)])
 				{
-					my_bprintf(PRINT_HIGH, "%s captured the %s flag! %s\n",		//JSW added heldtime
-						other->client->pers.netname, CTFOtherTeamName(ctf_team), heldtime);
+					my_bprintf(PRINT_HIGH,
+							   "%s captured the %s flag! %s\n",
+							   other->client->pers.netname,
+							   CTFOtherTeamName(ctf_team),
+							   heldtime);	//JSW added heldtime
 					other->client->resp.captures++;
 					//RAV
 					// Log Flag Capture - MarkDavies
-					sl_LogScore( &gi, other->client->pers.netname, NULL, "F Capture",
-						NULL, CTF_CAPTURE_BONUS, level.time );
+					sl_LogScore( &gi, other->client->pers.netname,
+								NULL, "F Capture", NULL,
+								CTF_CAPTURE_BONUS, level.time );
 					//end
 					other->client->pers.inventory[ITEM_INDEX(enemy_flag_item)] = 0;
 					ctfgame.last_flag_capture = level.time;
@@ -928,7 +974,9 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 						ctfgame.team1++;
 					else
 						ctfgame.team2++;
-					gi.sound (ent, CHAN_RELIABLE+CHAN_NO_PHS_ADD+CHAN_VOICE, gi.soundindex("ctf/flagcap.wav"), 1, ATTN_NONE, 0);
+					gi.sound (ent, CHAN_RELIABLE+CHAN_NO_PHS_ADD+CHAN_VOICE,
+							  gi.soundindex("ctf/flagcap.wav"),
+							  1, ATTN_NONE, 0);
 					// other gets another 10 frag bonus
 					other->client->resp.score += CTF_CAPTURE_BONUS;
 					// Ok, let's do the player loop, hand out the bonuses
@@ -946,7 +994,8 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 								player->client->resp.score += CTF_TEAM_BONUS;
 								// Log Flag Capture Team Score - MarkDavies
 								sl_LogScore( &gi, player->client->pers.netname,
-									NULL, "Team Score", NULL, CTF_TEAM_BONUS, level.time );
+											NULL, "Team Score", NULL,
+											CTF_TEAM_BONUS, level.time );
 							}
 							//end
 							// award extra points for capture assists
@@ -956,19 +1005,25 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 								player->client->resp.score += CTF_RETURN_FLAG_ASSIST_BONUS;
 								//RAV
 								// Log Flag Capture Team Score - MarkDavies
-								sl_LogScore( &gi, player->client->pers.netname, NULL, "F Return Assist",
-									NULL, CTF_RETURN_FLAG_ASSIST_BONUS, level.time );
+								sl_LogScore( &gi, player->client->pers.netname,
+											NULL, "F Return Assist", NULL,
+											CTF_RETURN_FLAG_ASSIST_BONUS,
+											level.time );
 								//end
 							}
 
 							if (player->client->resp.ctf_lastfraggedcarrier + CTF_FRAG_CARRIER_ASSIST_TIMEOUT > level.time)
 							{
-								my_bprintf(PRINT_HIGH, "%s gets an assist for fragging the flag carrier!\n", player->client->pers.netname);
+								my_bprintf(PRINT_HIGH,
+										   "%s gets an assist for fragging the flag carrier!\n",
+										   player->client->pers.netname);
 								player->client->resp.score += CTF_FRAG_CARRIER_ASSIST_BONUS;
 								//RAV
 								// Log Flag Capture Team Score - MarkDavies
-								sl_LogScore( &gi, player->client->pers.netname, NULL,
-									"FC Frag Assist", NULL, CTF_FRAG_CARRIER_ASSIST_BONUS, level.time );
+								sl_LogScore( &gi, player->client->pers.netname,
+											NULL, "FC Frag Assist", NULL,
+											CTF_FRAG_CARRIER_ASSIST_BONUS,
+											level.time );
 								//end
 							}
 						}
@@ -981,15 +1036,21 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 			return false; // its at home base already
 		}
 		// hey, its not home.  return it by teleporting it back
-		my_bprintf(PRINT_HIGH, "%s returned the %s flag!\n", other->client->pers.netname, CTFTeamName(ctf_team));
+		my_bprintf(PRINT_HIGH,
+				   "%s returned the %s flag!\n",
+				   other->client->pers.netname,
+				   CTFTeamName(ctf_team));
 		//RAV
 		// Log Flag Recover - MarkDavies
-		sl_LogScore( &gi, other->client->pers.netname, NULL,
-			"F Return", NULL, CTF_RECOVERY_BONUS, level.time );
+		sl_LogScore( &gi, other->client->pers.netname,
+					NULL, "F Return", NULL,
+					CTF_RECOVERY_BONUS,
+					level.time );
 		//end
 		other->client->resp.score += CTF_RECOVERY_BONUS;
 		other->client->resp.ctf_lastreturnedflag = level.time;
-		gi.sound (ent, CHAN_RELIABLE+CHAN_NO_PHS_ADD+CHAN_VOICE, gi.soundindex("ctf/flagret.wav"), 1, ATTN_NONE, 0);
+		gi.sound (ent, CHAN_RELIABLE+CHAN_NO_PHS_ADD+CHAN_VOICE,
+				  gi.soundindex("ctf/flagret.wav"), 1, ATTN_NONE, 0);
 		//CTFResetFlag will remove this entity!  We must return false
 		CTFResetFlag(ctf_team);
 		return false;
@@ -1001,7 +1062,9 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 	other->client->resp.score += CTF_FLAG_BONUS;
 	//RAV
 	// Log Flag Pickup - MarkDavies
-	sl_LogScore( &gi, other->client->pers.netname, NULL, "F Pickup", NULL, CTF_FLAG_BONUS, level.time );
+	sl_LogScore( &gi, other->client->pers.netname,
+				NULL, "F Pickup", NULL,
+				CTF_FLAG_BONUS, level.time );
 	//end
 
 	other->client->pers.inventory[ITEM_INDEX(flag_item)] = 1;
@@ -1045,24 +1108,30 @@ void CTFDropFlagTouch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t 
 static void CTFDropFlagThink(edict_t *ent)
 {
 	qboolean iw = 0;
-	if ((ent->timestamp + auto_flag_return->value < level.time) || 
+
+	if ((ent->timestamp + auto_flag_return->value < level.time) ||
 		level.intermissiontime ||
 		(iw = InsideWall(ent)) ||
-		((mapvote->value) && (level.time+(int)menutime->value-1 < votetime)))//raven
+		((mapvote->value) && (level.time+(int)menutime->value-1 < votetime)))
 	{
 		if (iw)
-			DbgPrintf("%s found inside solid, instant auto-return.\n", ent->classname);
+			DbgPrintf("%s found inside solid, instant auto-return.\n",
+					  ent->classname);
 		// auto return the flag
 		// reset flag will remove ourselves
 		if (strcmp(ent->classname, "item_flag_team1") == 0)
 		{
 			CTFResetFlag(CTF_TEAM1);
-			safe_bprintf(PRINT_HIGH, "The %s flag has returned!\n", CTFTeamName(CTF_TEAM1));
+			safe_bprintf(PRINT_HIGH,
+						 "The %s flag has returned!\n",
+						 CTFTeamName(CTF_TEAM1));
 		}
 		else if (strcmp(ent->classname, "item_flag_team2") == 0)
 		{
 			CTFResetFlag(CTF_TEAM2);
-			safe_bprintf(PRINT_HIGH, "The %s flag has returned!\n", CTFTeamName(CTF_TEAM2));
+			safe_bprintf(PRINT_HIGH,
+						 "The %s flag has returned!\n",
+						 CTFTeamName(CTF_TEAM2));
 		}
 	}
 	ent->nextthink = level.time + 0.2;
@@ -1073,6 +1142,7 @@ static void CTFDropFlagThink(edict_t *ent)
 void CTFDeadDropFlag(edict_t *self)
 {
 	edict_t *dropped = NULL;
+
 	if (!ctf->value)
 		return;
 
@@ -1109,6 +1179,7 @@ void CTFDeadDropFlag(edict_t *self)
 void CTFDrop_Flag(edict_t *ent, gitem_t *item)
 {
 	edict_t *dropped = NULL;
+
 	if (!ctf->value)
 		return;
 
@@ -1196,7 +1267,8 @@ void CTFFlagSetup (edict_t *ent)
 	tr = gi.trace (ent->s.origin, ent->mins, ent->maxs, dest, ent, MASK_SOLID);
 	if (tr.startsolid)
 	{
-		gi.dprintf ("CTFFlagSetup: %s startsolid at %s\n", ent->classname, vtos(ent->s.origin));
+		gi.dprintf ("CTFFlagSetup: %s startsolid at %s\n",
+					ent->classname, vtos(ent->s.origin));
 		G_FreeEdict (ent);
 		return;
 	}
@@ -1258,11 +1330,13 @@ void CTFID_f (edict_t *ent)
 {
 	if (ent->client->resp.id_state) {
 		if (!ent->bot_client)
-			safe_cprintf(ent, PRINT_HIGH, "Disabling player identication display.\n");
+			safe_cprintf(ent, PRINT_HIGH, 
+						"Disabling player identication display.\n");
 		ent->client->resp.id_state = false;
 	} else {
 		if (!ent->bot_client)
-			safe_cprintf(ent, PRINT_HIGH, "Activating player identication display.\n");
+			safe_cprintf(ent, PRINT_HIGH, 
+						"Activating player identication display.\n");
 		ent->client->resp.id_state = true;
 	}
 }
@@ -1298,140 +1372,6 @@ static void CTFSetIDView(edict_t *ent)
 }
 */
 
-/*
-void SetCTFStats(edict_t *ent)
-{
-	gitem_t *tech;
-	int i;
-	int p1, p2;
-	edict_t *e;
-
-	//T-MEK
-	int rfc;  //red flag carrier
-	int bfc;  //blue flag carrier
-	rfc = 0;
-	bfc = 0;
-	//T-MEK
-
-	// logo headers for the frag display
-	ent->client->ps.stats[STAT_CTF_TEAM1_HEADER] = gi.imageindex ("ctfsb1");
-	ent->client->ps.stats[STAT_CTF_TEAM2_HEADER] = gi.imageindex ("ctfsb2");
-
-	// if during intermission, we must blink the team header of the winning team
-	if (level.intermissiontime && (level.framenum & 8)) { // blink 1/8th second
-														  // note that ctfgame.total[12] is set when we go to intermission
-		if (ctfgame.team1 > ctfgame.team2)
-			ent->client->ps.stats[STAT_CTF_TEAM1_HEADER] = 0;
-		else if (ctfgame.team2 > ctfgame.team1)
-			ent->client->ps.stats[STAT_CTF_TEAM2_HEADER] = 0;
-		else if (ctfgame.total1 > ctfgame.total2) // frag tie breaker
-			ent->client->ps.stats[STAT_CTF_TEAM1_HEADER] = 0;
-		else if (ctfgame.total2 > ctfgame.total1)
-			ent->client->ps.stats[STAT_CTF_TEAM2_HEADER] = 0;
-		else { // tie game!
-			ent->client->ps.stats[STAT_CTF_TEAM1_HEADER] = 0;
-			ent->client->ps.stats[STAT_CTF_TEAM2_HEADER] = 0;
-		}
-	}
-
-	// tech icon
-	i = 0;
-	ent->client->ps.stats[STAT_CTF_TECH] = 0;
-	while (tnames[i]) {
-		if ((tech = FindItemByClassname(tnames[i])) != NULL &&
-			ent->client->pers.inventory[ITEM_INDEX(tech)]) {
-			ent->client->ps.stats[STAT_CTF_TECH] = gi.imageindex(tech->icon);
-			break;
-		}
-		i++;
-	}
-
-	// figure out what icon to display for team logos
-	// three states:
-	//   flag at base
-	//   flag taken
-	//   flag dropped
-	p1 = gi.imageindex ("i_ctf1");
-	e = G_Find(NULL, FOFS(classname), "item_flag_team1");
-	if (e != NULL) {
-		if (e->solid == SOLID_NOT) {
-			int i;
-
-			// not at base
-			// check if on player
-			p1 = gi.imageindex ("i_ctf1d"); // default to dropped
-			for (i = 1; i <= maxclients->value; i++)
-				if (g_edicts[i].inuse &&
-					g_edicts[i].client->pers.inventory[ITEM_INDEX(flag1_item)]) {
-					// enemy has it
-					p1 = gi.imageindex ("i_ctf1t");
-					bfc=i;  //T-MEK
-					break;
-				}
-		} else if (e->spawnflags & DROPPED_ITEM)
-			p1 = gi.imageindex ("i_ctf1d"); // must be dropped
-	}
-	p2 = gi.imageindex ("i_ctf2");
-	e = G_Find(NULL, FOFS(classname), "item_flag_team2");
-	if (e != NULL) {
-		if (e->solid == SOLID_NOT) {
-			int i;
-
-			// not at base
-			// check if on player
-			p2 = gi.imageindex ("i_ctf2d"); // default to dropped
-			for (i = 1; i <= maxclients->value; i++)
-				if (g_edicts[i].inuse &&
-					g_edicts[i].client->pers.inventory[ITEM_INDEX(flag2_item)]) {
-					// enemy has it
-					p2 = gi.imageindex ("i_ctf2t");
-					rfc = i; //T-MEK
-					break;
-				}
-		} else if (e->spawnflags & DROPPED_ITEM)
-			p2 = gi.imageindex ("i_ctf2d"); // must be dropped
-	}
-
-	ent->client->ps.stats[STAT_CTF_TEAM1_PIC] = p1;
-	ent->client->ps.stats[STAT_CTF_TEAM2_PIC] = p2;
-
-	if (ctfgame.last_flag_capture && level.time - ctfgame.last_flag_capture < 5) {
-		if (ctfgame.last_capture_team == CTF_TEAM1)
-			if (level.framenum & 8)
-				ent->client->ps.stats[STAT_CTF_TEAM1_PIC] = p1;
-			else
-				ent->client->ps.stats[STAT_CTF_TEAM1_PIC] = 0;
-			else
-				if (level.framenum & 8)
-					ent->client->ps.stats[STAT_CTF_TEAM2_PIC] = p2;
-				else
-					ent->client->ps.stats[STAT_CTF_TEAM2_PIC] = 0;
-	}
-
-	ent->client->ps.stats[STAT_CTF_TEAM1_CAPS] = ctfgame.team1;
-	ent->client->ps.stats[STAT_CTF_TEAM2_CAPS] = ctfgame.team2;
-
-	ent->client->ps.stats[STAT_CTF_JOINED_TEAM1_PIC] = 0;
-	ent->client->ps.stats[STAT_CTF_JOINED_TEAM2_PIC] = 0;
-	if (ent->client->resp.ctf_team == CTF_TEAM1)
-		ent->client->ps.stats[STAT_CTF_JOINED_TEAM1_PIC] = gi.imageindex ("i_ctfj");
-	else if (ent->client->resp.ctf_team == CTF_TEAM2)
-		ent->client->ps.stats[STAT_CTF_JOINED_TEAM2_PIC] = gi.imageindex ("i_ctfj");
-
-	//T-MEK
-	if (rfc != 0 )
-		rfc = rfc + (CS_PLAYERNAMESRIGHT - 1);
-	else
-		rfc = CS_EMPTYSTRING;
-	
-	if (bfc != 0 )
-		bfc = bfc + (CS_PLAYERNAMESRIGHT - 1);
-	else
-		bfc = CS_EMPTYSTRING;
-	ent->client->ps.stats[STAT_CTF_RED_FLAG_CARRIER] = rfc;
-	ent->client->ps.stats[STAT_CTF_BLUE_FLAG_CARRIER] = bfc;
-}
-*/
 
 void SetCTFStats(edict_t *ent)
 {
@@ -1646,7 +1586,9 @@ void CTFPlayerResetGrapple(edict_t *ent)
 		{
 			if(++CurrentIndex < MAXNODES)
 			{
-				gi.bprintf(PRINT_HIGH,"Grapple has been released.Last %i pod(s).\n",MAXNODES - CurrentIndex);
+				gi.bprintf(PRINT_HIGH,
+						   "Grapple has been released.Last %i pod(s).\n",
+						   MAXNODES - CurrentIndex);
 				memset(&Route[CurrentIndex],0,sizeof(route_t)); //initialize
 				Route[CurrentIndex].index = Route[CurrentIndex - 1].index +1;
 			}
@@ -1676,7 +1618,9 @@ void CTFResetGrapple(edict_t *self)
 		if (self->owner->client->silencer_shots)
 			volume = 0.2;
 
-		gi.sound (self->owner, CHAN_RELIABLE+CHAN_WEAPON, gi.soundindex("weapons/grapple/grreset.wav"), volume, ATTN_NORM, 0);
+		gi.sound (self->owner, CHAN_RELIABLE+CHAN_WEAPON,
+				  gi.soundindex("weapons/grapple/grreset.wav"),
+				  volume, ATTN_NORM, 0);
 		cl = self->owner->client;
 		cl->ctf_grapple = NULL;
 		cl->ctf_grapplereleasetime = level.time;
@@ -1690,7 +1634,10 @@ void CTFResetGrapple(edict_t *self)
 	}
 }
 
-void CTFGrappleTouch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void CTFGrappleTouch (edict_t *self,
+					  edict_t *other,
+					  cplane_t *plane,
+					  csurface_t *surf)
 {
 	short	i;
 	float volume = 1.0;
@@ -1743,7 +1690,9 @@ void CTFGrappleTouch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t
 
 		if(++CurrentIndex < MAXNODES)
 		{
-			gi.bprintf(PRINT_HIGH,"Grapple has been hooked.Last %i pod(s).\n",MAXNODES - CurrentIndex);
+			gi.bprintf(PRINT_HIGH,
+					   "Grapple has been hooked.Last %i pod(s).\n",
+					   MAXNODES - CurrentIndex);
 			memset(&Route[CurrentIndex],0,sizeof(route_t)); //initialize
 			Route[CurrentIndex].index = Route[CurrentIndex - 1].index +1;
 		}
@@ -1755,37 +1704,46 @@ void CTFGrappleTouch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t
 	if (self->owner->client->silencer_shots)
 		volume = 0.2;
 
-	gi.sound (self->owner, CHAN_RELIABLE+CHAN_WEAPON, gi.soundindex("weapons/grapple/grpull.wav"), volume, ATTN_NORM, 0);
-	gi.sound (self, CHAN_WEAPON, gi.soundindex("weapons/grapple/grhit.wav"), volume, ATTN_NORM, 0);
+	gi.sound (self->owner, CHAN_RELIABLE+CHAN_WEAPON,
+			  gi.soundindex("weapons/grapple/grpull.wav"),
+			  volume, ATTN_NORM, 0);
+
+	gi.sound (self, CHAN_WEAPON,
+			  gi.soundindex("weapons/grapple/grhit.wav"),
+			  volume, ATTN_NORM, 0);
 
 	gi.WriteByte (svc_temp_entity);
 	gi.WriteByte (TE_SPARKS);
 	gi.WritePosition (self->s.origin);
+
 	if (!plane)
 		gi.WriteDir (vec3_origin);
 	else
 		gi.WriteDir (plane->normal);
+
 	gi.multicast (self->s.origin, MULTICAST_PVS);
 }
+
 //========================================================
 //==========================================================
 // This is the same as function P_ProjectSource in the source 
 // except it projects in reverse...
 //==========================================================
 void P_ProjectSource_Reverse(gclient_t *client,
-	vec3_t point,
-	vec3_t distance,
-	vec3_t forward,
-	vec3_t right,
-	vec3_t result)
+							 vec3_t point,
+							 vec3_t distance,
+							 vec3_t forward,
+							 vec3_t right,
+							 vec3_t result)
 {
-	vec3_t dist; 
+	vec3_t dist;
 
 	VectorCopy(distance, dist);
 	if (client->pers.hand == RIGHT_HANDED)
 		dist[1] *= -1; // Left Hand already defaulted
 	else if (client->pers.hand == CENTER_HANDED)
 		dist[1]= 0;
+
 	G_ProjectSource(point, dist, forward, right, result);
 } 
 
@@ -1803,9 +1761,11 @@ void CTFGrappleDrawCable(edict_t *self)
 		AngleVectors (self->owner->client->v_angle, f, r, NULL);
 		VectorSet(offset, 16, -16, self->owner->viewheight-8);
 		//		if(hook_offhand->value)
-		P_ProjectSource_Reverse (self->owner->client, self->owner->s.origin, offset, f, r, start);
+		P_ProjectSource_Reverse (self->owner->client,
+								 self->owner->s.origin, offset, f, r, start);
 		//		else
-		//		P_ProjectSource (self->owner->client, self->owner->s.origin, offset, f, r, start);
+		//		P_ProjectSource (self->owner->client,
+		//						 self->owner->s.origin, offset, f, r, start);
 	}
 	else
 	{
@@ -1840,7 +1800,8 @@ void CTFGrappleDrawCable(edict_t *self)
 	trace_t	tr; //!!
 
 	tr = gi.trace (start, NULL, NULL, self->s.origin, self, MASK_SHOT);
-	if (tr.ent != self) {
+	if (tr.ent != self)
+	{
 		CTFResetGrapple(self);
 		return;
 	}
@@ -1888,34 +1849,53 @@ void CTFGrapplePull(edict_t *self)
 
 	//timer in action ?
 	if(hook_maxtime->value && self->owner->hooktime !=0
-		&& self->owner->hooktime <= level.time){
-			CTFResetGrapple(self);
-			return;
+	   && self->owner->hooktime <= level.time)
+	{
+		CTFResetGrapple(self);
+		return;
 	}
 
-	if (self->enemy) {
-		if (self->enemy->solid == SOLID_NOT) {
+	if (self->enemy)
+	{
+		if (self->enemy->solid == SOLID_NOT)
+		{
 			CTFResetGrapple(self);
 			return;
 		}
-		if (self->enemy->solid == SOLID_BBOX) {
+		if (self->enemy->solid == SOLID_BBOX)
+		{
 			VectorScale(self->enemy->size, 0.5, v);
 			VectorAdd(v, self->enemy->s.origin, v);
 			VectorAdd(v, self->enemy->mins, self->s.origin);
 			gi.linkentity (self);
-		} else
-			VectorCopy(self->enemy->velocity, self->velocity);
-		if (self->enemy->takedamage &&
-			!CheckTeamDamage (self->enemy, self->owner)) {
-				float volume = 1.0;
-
-				if (self->owner->client->silencer_shots)
-					volume = 0.2;
-
-				T_Damage (self->enemy, self, self->owner, self->velocity, self->s.origin, vec3_origin, 1, 1, 0, MOD_GRAPPLE);
-				//	gi.sound (self, CHAN_WEAPON, gi.soundindex("weapons/grapple/grhurt.wav"), volume, ATTN_NORM, 0);
 		}
-		if (self->enemy->deadflag) { // he died
+		else
+		{
+			VectorCopy(self->enemy->velocity, self->velocity);
+		}
+
+		if (self->enemy->takedamage &&
+			!CheckTeamDamage (self->enemy, self->owner))
+		{
+			//			float volume = 1.0;
+
+			//QW silencer unused in TMG
+			//if (self->owner->client->silencer_shots)
+				//volume = 0.2;
+
+			T_Damage (self->enemy, self,
+					  self->owner,
+					  self->velocity,
+					  self->s.origin,
+					  vec3_origin, 1, 1, 0, MOD_GRAPPLE);
+
+//			gi.sound (self, CHAN_WEAPON,
+//					  gi.soundindex("weapons/grapple/grhurt.wav"),
+//					  volume, ATTN_NORM, 0);
+		}
+
+		if (self->enemy->deadflag) // he died
+		{
 			CTFResetGrapple(self);
 			return;
 		}
@@ -1925,7 +1905,8 @@ void CTFGrapplePull(edict_t *self)
 
 	//	hackLift(self);
 
-	if (self->owner->client->ctf_grapplestate > CTF_GRAPPLE_STATE_FLY) {
+	if (self->owner->client->ctf_grapplestate > CTF_GRAPPLE_STATE_FLY)
+	{
 		// pull player toward grapple
 		// this causes icky stuff with prediction, we need to extend
 		// the prediction layer to include two new fields in the player
@@ -1952,29 +1933,40 @@ void CTFGrapplePull(edict_t *self)
 		vlen = VectorLength(hookdir);
 
 		if (self->owner->client->ctf_grapplestate == CTF_GRAPPLE_STATE_PULL &&
-			vlen < 64) {
-				float volume = 1.0;
+			vlen < 64)
+		{
+			float volume = 1.0;
 
-				if (self->owner->client->silencer_shots)
-					volume = 0.2;
+			if (self->owner->client->silencer_shots)
+				volume = 0.2;
 
-				self->owner->client->ps.pmove.pm_flags |= PMF_NO_PREDICTION;
-				gi.sound (self->owner, CHAN_RELIABLE+CHAN_WEAPON, gi.soundindex("weapons/grapple/grhang.wav"), volume, ATTN_NORM, 0);
-				self->owner->client->ctf_grapplestate = CTF_GRAPPLE_STATE_HANG;
+			self->owner->client->ps.pmove.pm_flags |= PMF_NO_PREDICTION;
+			gi.sound (self->owner,
+					  CHAN_RELIABLE + CHAN_WEAPON,
+					  gi.soundindex("weapons/grapple/grhang.wav"),
+					  volume, ATTN_NORM, 0);
+			self->owner->client->ctf_grapplestate = CTF_GRAPPLE_STATE_HANG;
 		}
 
 		VectorNormalize (hookdir);
+
 		if(self->owner->bot_client)
 			VectorScale(hookdir, 750, hookdir);
 		else
 			VectorScale(hookdir, CTF_GRAPPLE_PULL_SPEED, hookdir);
+
 		VectorCopy(hookdir, self->owner->velocity);
 		SV_AddGravity(self->owner);
 	}
 }
 
 
-void CTFFireGrapple (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect)
+void CTFFireGrapple (edict_t *self,
+					 vec3_t start,
+					 vec3_t dir,
+					 int damage,
+					 int speed,
+					 int effect)
 {
 	edict_t	*grapple;
 	trace_t	tr;
@@ -1992,15 +1984,17 @@ void CTFFireGrapple (edict_t *self, vec3_t start, vec3_t dir, int damage, int sp
 	grapple->s.effects |= effect;
 	VectorClear (grapple->mins);
 	VectorClear (grapple->maxs);
-	//	grapple->s.modelindex = gi.modelindex ("models/weapons/grapple/hook/tris.md2");
-	//	grapple->s.sound = gi.soundindex ("misc/lasfly.wav");
+//	grapple->s.modelindex = gi.modelindex ("models/weapons/grapple/hook/tris.md2");
+//	grapple->s.sound = gi.soundindex ("misc/lasfly.wav");
 	grapple->owner = self;
 	grapple->touch = CTFGrappleTouch;
-	//	grapple->nextthink = level.time + FRAMETIME;
-	//	grapple->think = CTFGrappleThink;
+//	grapple->nextthink = level.time + FRAMETIME;
+//	grapple->think = CTFGrappleThink;
 	grapple->dmg = damage;
 	self->client->ctf_grapple = grapple;
-	self->client->ctf_grapplestate = CTF_GRAPPLE_STATE_FLY; // we're firing, not on hook
+
+	// we're firing, not on hook
+	self->client->ctf_grapplestate = CTF_GRAPPLE_STATE_FLY;
 	// start up the laser
 	if (use_grapple->value)
 	{
@@ -2016,7 +2010,8 @@ void CTFFireGrapple (edict_t *self, vec3_t start, vec3_t dir, int damage, int sp
 	//start the hook reset timer 
 	self->hooktime = level.time +(int)hook_maxtime->value;
 
-	tr = gi.trace (self->s.origin, NULL, NULL, grapple->s.origin, grapple, MASK_SHOT);
+	tr = gi.trace (self->s.origin, NULL, NULL,
+				   grapple->s.origin, grapple, MASK_SHOT);
 	if (tr.fraction < 1.0)
 	{
 		VectorMA (grapple->s.origin, -10, dir, grapple->s.origin);
@@ -2031,7 +2026,9 @@ void CTFFireGrapple (edict_t *self, vec3_t start, vec3_t dir, int damage, int sp
 
 		if(++CurrentIndex < MAXNODES)
 		{
-			gi.bprintf(PRINT_HIGH,"Hook has been fired.Last %i pod(s).\n",MAXNODES - CurrentIndex);
+			gi.bprintf(PRINT_HIGH,
+					   "Hook has been fired.Last %i pod(s).\n",
+					   MAXNODES - CurrentIndex);
 			memset(&Route[CurrentIndex],0,sizeof(route_t)); //initialize
 			Route[CurrentIndex].index = Route[CurrentIndex - 1].index +1;
 		}
@@ -2052,17 +2049,8 @@ void CTFGrappleFire (edict_t *ent, vec3_t g_offset, int damage, int effect)
 		return; // it's already out
 
 	AngleVectors (ent->client->v_angle, forward, right, NULL);
-	/*
-	if(ent->bot_client){
-	VectorSet(offset, 24, -16, ent->viewheight-8+2);
-	}
-	else*/
 	VectorSet(offset, 24, 16, ent->viewheight-8+2);
 
-	//	VectorAdd (offset, g_offset, offset);
-	//	if(hook_offhand->value)
-	//	P_ProjectSource_Reverse (ent->client, ent->s.origin, offset, forward, right, start);
-	//	else
 	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
 
 	VectorScale (forward, -2, ent->client->kick_origin);
@@ -2071,11 +2059,18 @@ void CTFGrappleFire (edict_t *ent, vec3_t g_offset, int damage, int effect)
 	if (ent->client->silencer_shots)
 		volume = 0.2;
 
-	//	gi.positioned_sound(ent->s.origin, ent, CHAN_WEAPON, gi.soundindex("flyer/Flyatck2.wav"), 1, ATTN_NORM, 0);
+	//	gi.positioned_sound(ent->s.origin,
+	//						ent, CHAN_WEAPON,
+	//						gi.soundindex("flyer/Flyatck2.wav"),
+	//						1, ATTN_NORM, 0);
 
-	gi.sound (ent, CHAN_RELIABLE+CHAN_WEAPON, gi.soundindex("weapons/grapple/grfire.wav"), volume, ATTN_NORM, 0);
+	gi.sound (ent, CHAN_RELIABLE + CHAN_WEAPON,
+			  gi.soundindex("weapons/grapple/grfire.wav"),
+			  volume, ATTN_NORM, 0);
+
 	CTFFireGrapple (ent, start, forward, damage, CTF_GRAPPLE_SPEED, effect);
-	/* 
+
+	/*
 	#if 0
 	// send muzzle flash
 	gi.WriteByte (svc_muzzleflash);
@@ -2171,8 +2166,10 @@ void CTFWeapon_Grapple (edict_t *ent)
 			{
 				if(++CurrentIndex < MAXNODES)
 				{
-					gi.bprintf(PRINT_HIGH,"Hook has been released.Last %i pod(s).\n",MAXNODES - CurrentIndex);
-					memset(&Route[CurrentIndex],0,sizeof(route_t)); //initialize
+					gi.bprintf(PRINT_HIGH,
+							   "Hook has been released.Last %i pod(s).\n",
+							   MAXNODES - CurrentIndex);
+					memset(&Route[CurrentIndex], 0, sizeof(route_t));
 					Route[CurrentIndex].index = Route[CurrentIndex - 1].index +1;
 				}
 			}
@@ -2242,7 +2239,10 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 
 	if (ent->classname[0] == 'c')
 	{	// in CAM mode
-		safe_cprintf(ent, PRINT_HIGH, "You are in CAM mode. You must reconnect or restart the game to rejoin the action.\n");
+		safe_cprintf(ent, PRINT_HIGH,
+					 "You are in CAM mode. "
+					 "You must reconnect or restart the "
+					 "game to rejoin the action.\n");
 		return;
 	}
 
@@ -2277,13 +2277,17 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 
 	if(notfairRED && desired_team == CTF_TEAM1)
 	{
-		safe_cprintf(ent, PRINT_HIGH, "You cannot join that team at this time (unfair teams.)\n");
+		safe_cprintf(ent, PRINT_HIGH,
+					 "You cannot join that team"
+					 " at this time (unfair teams.)\n");
 		return;
 	}
 
 	if(notfairBLUE && desired_team == CTF_TEAM2)
 	{
-		safe_cprintf(ent, PRINT_HIGH, "You cannot join that team at this time (unfair teams.)\n");
+		safe_cprintf(ent, PRINT_HIGH,
+					 "You cannot join that team"
+					 " at this time (unfair teams.)\n");
 		return;
 	}
 
@@ -2306,6 +2310,7 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 		//set up the no delta value
 		stuffcmd(ent, "set cl_notelta $cl_nodelta u\n");
 	}
+
 	ent->svflags = 0;
 	ent->flags &= ~FL_GODMODE;
 	ent->client->resp.ctf_team = desired_team;
@@ -2314,8 +2319,10 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 	//skin change is allowed here
 	ent->client->skintime = level.time -1;
 	CTFAssignSkin(ent, s);
+
 	if (ent->client && ent->client->ctf_grapple)
 		CTFResetGrapple(ent->client->ctf_grapple);
+
 	if (ent->solid == SOLID_NOT || ent->client->resp.spectator !=0)
 	{ // spectator
 		PutClientInServer (ent);
@@ -2325,29 +2332,41 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 		ent->client->ps.pmove.pm_flags = PMF_TIME_TELEPORT;
 		ent->client->ps.pmove.pm_time = 14;
 		CheckPlayers();
-		my_bprintf(PRINT_HIGH, "%s joined the %s team. (%d red, %d blue, %d spectators)\n", ent->client->pers.netname,
-			CTFTeamName(desired_team), ctfgame.players1, ctfgame.players2, ctfgame.specs);
+		my_bprintf(PRINT_HIGH,
+				   "%s joined the %s team. "
+				   "(%d red, %d blue, %d spectators)\n",
+				   ent->client->pers.netname,
+				   CTFTeamName(desired_team),
+				   ctfgame.players1,
+				   ctfgame.players2,
+				   ctfgame.specs);
 		ent->client->pers.pl_state = PL_PLAYING;
 		ent->client->resp.spectator = 0;
 		return;
 	}
+
 	ent->health = 0;
 	//	player_die (ent, ent, ent, 100000, vec3_origin);
+
 	CTFDeadDropFlag(ent);
 	CTFDeadDropTech(ent);
+
 	if (!voosh->value)
 		TossClientWeapon(ent);
 	if (ent->client && ent->client->ctf_grapple)
 		CTFResetGrapple(ent->client->ctf_grapple);
+
 	CTFPlayerResetGrapple(ent);
 	// drop the rune if we have one
 	runes_drop(ent);
+
 	if ( ent->flashlight )
 	{
 		G_FreeEdict(ent->flashlight);
 		ent->flashlight = NULL;
 	}
-	//if on the hook drop it also 
+
+	//if on the hook drop it also
 	if (ent->client->hook || ent->client->ctf_grapple)
 	{
 		my_bprintf(PRINT_HIGH, "%s is trying to spam the server with HOOKS\n"
@@ -2394,7 +2413,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 {
 	char	entry[1024];
 	char	string[1400];
-	int		len;
+	int		len = 0;
 	int		i, j, k, n;
 	int		sorted[2][MAX_CLIENTS];
 	int		sortedscores[2][MAX_CLIENTS];
@@ -2451,7 +2470,6 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 		// print level name and exit rules
 		// add the clients in sorted order
 		*string = 0;
-		len = 0;
 
 		// team plates with total scores, red and blue teams
 		if (newscore->value)
@@ -2527,7 +2545,9 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 						cl->ping);
 
 					if (cl_ent->client->pers.inventory[ITEM_INDEX(flag2_item)])
-						sprintf(entry + strlen(entry), "xv 56 yv %d picn sbfctf2 ",	42 + i * 8);
+						sprintf(entry + strlen(entry),
+								"xv 56 yv %d picn sbfctf2 ",
+								42 + i * 8);
 				}
 
 				if (maxsize - len > strlen(entry))
@@ -2566,8 +2586,9 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 						cl->resp.score,
 						cl->ping);
 					if (cl_ent->client->pers.inventory[ITEM_INDEX(flag1_item)])
-						sprintf(entry + strlen(entry), "xv 216 yv %d picn sbfctf1 ",
-						42 + i * 8);
+						sprintf(entry + strlen(entry),
+								"xv 216 yv %d picn sbfctf1 ",
+								42 + i * 8);
 				}
 				if (maxsize - len > strlen(entry))
 				{
@@ -2592,8 +2613,11 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 			{
 				cl_ent = g_edicts + 1 + i;
 				cl = &game.clients[i];
-				if (!cl_ent->inuse || cl_ent->solid != SOLID_NOT || cl_ent->client->resp.ctf_team != CTF_NOTEAM)
+				if (!cl_ent->inuse ||
+					cl_ent->solid != SOLID_NOT ||
+					cl_ent->client->resp.ctf_team != CTF_NOTEAM)
 					continue;
+
 				if (!k)
 				{
 					k = 1;
@@ -2610,11 +2634,13 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 					i, // client index
 					cl->resp.score,
 					cl->ping > 999 ? 999 : cl->ping);
+
 				if (maxsize - len > strlen(entry))
 				{
 					strcat(string, entry);
 					len = strlen(string);
 				}
+
 				if (n & 1)
 					j += 8;
 				n++;
@@ -2622,16 +2648,21 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 		}
 
 		if (total[0] - last[0] > 1) // couldn't fit everyone
-			sprintf(string + strlen(string), "xv 8 yv %d string \"..and %d more\" ",
-			42 + (last[0]+1)*8, total[0] - last[0] - 1);
+			sprintf(string + strlen(string),
+					"xv 8 yv %d string \"..and %d more\" ",
+					42 + (last[0]+1)*8, total[0] - last[0] - 1);
+
 		if (total[1] - last[1] > 1) // couldn't fit everyone
-			sprintf(string + strlen(string), "xv 168 yv %d string \"..and %d more\" ",
-			42 + (last[1]+1)*8, total[1] - last[1] - 1);
+			sprintf(string + strlen(string),
+					"xv 168 yv %d string \"..and %d more\" ",
+					42 + (last[1]+1)*8, total[1] - last[1] - 1);
 	}
+
 	if (strlen(string) > maxsize - 30) // this should never happen
 	{
 		DbgPrintf("Scoreboard size: %d %.1f\n", strlen(string), level.time);
-		gi.dprintf("Warning: scoreboard string neared or exceeded max length\nDump:\n%s\n---\n", string);
+		gi.dprintf("Warning: scoreboard string neared or exceeded max length\n"
+				   "Dump:\n%s\n---\n", string);
 	}
 	gi.WriteByte (svc_layout);
 	gi.WriteString (string);
@@ -2655,10 +2686,13 @@ gitem_t *CTFWhat_Tech(edict_t *ent)
 {
 	gitem_t *tech;
 	int i;
+
 	i = 0;
-	while (tnames[i]) {
+	while (tnames[i])
+	{
 		if ((tech = FindItemByClassname(tnames[i])) != NULL &&
-			ent->client->pers.inventory[ITEM_INDEX(tech)]) {
+			ent->client->pers.inventory[ITEM_INDEX(tech)])
+		{
 				return tech;
 		}
 		i++;
@@ -2670,6 +2704,7 @@ qboolean CTFPickup_Tech (edict_t *ent, edict_t *other)
 {
 	gitem_t *tech;
 	int i;
+
 	i = 0;
 	if (rune_has_a_rune(other))
 	{
@@ -2685,8 +2720,9 @@ qboolean CTFPickup_Tech (edict_t *ent, edict_t *other)
 	while (tnames[i])
 	{
 		//		tech = FindItemByClassname(tnames[i]);
-		if ((tech = FindItemByClassname(tnames[i])) != NULL && other->client->pers.inventory[ITEM_INDEX(tech)])
-			//		if (other->client->pers.inventory[ITEM_INDEX(tech)])
+		if ((tech = FindItemByClassname(tnames[i])) != NULL
+			&& other->client->pers.inventory[ITEM_INDEX(tech)])
+		//		if (other->client->pers.inventory[ITEM_INDEX(tech)])
 		{
 			CTFHasTech(other);
 			return false; // has this one
@@ -2803,8 +2839,10 @@ void CTFDeadDropTech(edict_t *ent)
 
 	if (!ctf->value)
 		return;
+
 	i = 0;
-	while (tnames[i]) {
+	while (tnames[i])
+	{
 		if ((tech = FindItemByClassname(tnames[i])) != NULL &&
 			ent->client->pers.inventory[ITEM_INDEX(tech)]) {
 				dropped = Drop_Item(ent, tech);
@@ -2840,15 +2878,24 @@ void SpawnTech(gitem_t *item, edict_t *spot)
 
 	//RAV
 	//ban runes
-	if ((((int)(runeflags->value) & 1) && (Q_stricmp(ent->classname, "item_rune_strength")==0)) ||
-		(((int)(runeflags->value) & 2) && (Q_stricmp(ent->classname, "item_rune_resist")==0)) ||
-		(((int)(runeflags->value) & 4) && (Q_stricmp(ent->classname, "item_rune_haste")==0)) ||
-		(((int)(runeflags->value) & 8) && (Q_stricmp(ent->classname, "item_rune_regen")==0)) ||
-		(((int)(runeflags->value) & 16) && (Q_stricmp(ent->classname, "item_rune_jump")==0)) ||
-		(((int)(runeflags->value) & 32) && (Q_stricmp(ent->classname, "item_rune_liquid")==0)) ||
-		(((int)(runeflags->value) & 64) && (Q_stricmp(ent->classname, "item_rune_invis")==0)) ||
-		(((int)(runeflags->value) & 128) && (Q_stricmp(ent->classname, "item_rune_vamp")==0)) ||
-		(((int)(runeflags->value) & 256) && (Q_stricmp(ent->classname, "item_rune_speed")==0)))
+	if ((((int)(runeflags->value) & 1) &&
+		 (Q_stricmp(ent->classname, "item_rune_strength")==0)) ||
+		(((int)(runeflags->value) & 2) &&
+		 (Q_stricmp(ent->classname, "item_rune_resist")==0)) ||
+		(((int)(runeflags->value) & 4) &&
+		 (Q_stricmp(ent->classname, "item_rune_haste")==0)) ||
+		(((int)(runeflags->value) & 8) &&
+		 (Q_stricmp(ent->classname, "item_rune_regen")==0)) ||
+		(((int)(runeflags->value) & 16) &&
+		 (Q_stricmp(ent->classname, "item_rune_jump")==0)) ||
+		(((int)(runeflags->value) & 32) &&
+		 (Q_stricmp(ent->classname, "item_rune_liquid")==0)) ||
+		(((int)(runeflags->value) & 64) &&
+		 (Q_stricmp(ent->classname, "item_rune_invis")==0)) ||
+		(((int)(runeflags->value) & 128) &&
+		 (Q_stricmp(ent->classname, "item_rune_vamp")==0)) ||
+		(((int)(runeflags->value) & 256) &&
+		 (Q_stricmp(ent->classname, "item_rune_speed")==0)))
 	{
 		G_FreeEdict(ent);
 		return;
@@ -2888,7 +2935,10 @@ void SpawnTech(gitem_t *item, edict_t *spot)
 	}
 	if (strcmp(ent->classname, "item_rune_speed")==0)
 	{
-		ent->s.renderfx |= RF_SHELL_RED | RF_SHELL_GREEN | RF_SHELL_BLUE | RF_SHELL_HALF_DAM;
+		ent->s.renderfx |= RF_SHELL_RED
+						| RF_SHELL_GREEN
+						| RF_SHELL_BLUE
+						| RF_SHELL_HALF_DAM;
 	}
 	VectorSet (ent->mins, -15, -15, -15);
 	VectorSet (ent->maxs, 15, 15, 15);
@@ -2958,13 +3008,15 @@ static void SpawnTechs(edict_t *ent)
 
 		if (teamtechs->value)
 		{
-			if ((tech = FindItemByClassname(tnames[i])) != NULL && (spot = FindTechSpawnCTF(team)) != NULL)
-				SpawnTech(tech, spot);
+			if ((tech = FindItemByClassname(tnames[i])) != NULL
+				&& (spot = FindTechSpawnCTF(team)) != NULL)
+					SpawnTech(tech, spot);
 		}
 		else
 		{
-			if ((tech = FindItemByClassname(tnames[i])) != NULL && (spot = FindTechSpawn()) != NULL)
-				SpawnTech(tech, spot);
+			if ((tech = FindItemByClassname(tnames[i])) != NULL
+				&& (spot = FindTechSpawn()) != NULL)
+					SpawnTech(tech, spot);
 		}
 
 		i++;
@@ -2977,8 +3029,10 @@ static void SpawnTechs(edict_t *ent)
 void CTFRespawnTech(edict_t *ent)
 {
 	edict_t *spot;
+
 	if ((spot = FindTechSpawn()) != NULL)
 		SpawnTech(ent->item, spot);
+
 	G_FreeEdict(ent);
 }
 
@@ -3007,9 +3061,13 @@ int CTFApplyResistance(edict_t *ent, int dmg)
 
 	if (!tech)
 		tech = FindItemByClassname("item_tech1");
-	if (dmg && tech && ent->client && ent->client->pers.inventory[ITEM_INDEX(tech)]) {
+
+	if (dmg && tech && ent->client
+		&& ent->client->pers.inventory[ITEM_INDEX(tech)])
+	{
 		// make noise
-		gi.sound(ent, CHAN_VOICE, gi.soundindex("ctf/tech1.wav"), volume, ATTN_NORM, 0);
+		gi.sound(ent, CHAN_VOICE,
+				 gi.soundindex("ctf/tech1.wav"), volume, ATTN_NORM, 0);
 		return dmg / 2;
 	}
 	return dmg;
@@ -3021,7 +3079,10 @@ int CTFApplyStrength(edict_t *ent, int dmg)
 
 	if (!tech)
 		tech = FindItemByClassname("item_tech2");
-	if (dmg && tech && ent->client && ent->client->pers.inventory[ITEM_INDEX(tech)]) {
+
+	if (dmg && tech && ent->client
+		&& ent->client->pers.inventory[ITEM_INDEX(tech)])
+	{
 		return dmg * 2;
 	}
 	return dmg;
@@ -3037,15 +3098,20 @@ qboolean CTFApplyStrengthSound(edict_t *ent)
 
 	if (!tech)
 		tech = FindItemByClassname("item_tech2");
+
 	if (tech && ent->client && ent->client->pers.inventory[ITEM_INDEX(tech)])
 	{
 		if (ent->client->ctf_techsndtime < level.time)
 		{
 			ent->client->ctf_techsndtime = level.time + 1;
 			if (ent->client->quad_framenum > level.framenum)
-				gi.sound(ent, CHAN_VOICE, gi.soundindex("ctf/tech2x.wav"), volume, ATTN_NORM, 0);
+				gi.sound(ent, CHAN_VOICE,
+						 gi.soundindex("ctf/tech2x.wav"),
+						 volume, ATTN_NORM, 0);
 			else
-				gi.sound(ent, CHAN_VOICE, gi.soundindex("ctf/tech2.wav"), volume, ATTN_NORM, 0);
+				gi.sound(ent, CHAN_VOICE,
+						 gi.soundindex("ctf/tech2.wav"),
+						 volume, ATTN_NORM, 0);
 		}
 		return true;
 	}
@@ -3074,11 +3140,15 @@ void CTFApplyHasteSound(edict_t *ent)
 
 	if (!tech)
 		tech = FindItemByClassname("item_tech3");
+
 	if (tech && ent->client &&
 		ent->client->pers.inventory[ITEM_INDEX(tech)] &&
-		ent->client->ctf_techsndtime < level.time) {
+		ent->client->ctf_techsndtime < level.time)
+	{
 			ent->client->ctf_techsndtime = level.time + 1;
-			gi.sound(ent, CHAN_VOICE, gi.soundindex("ctf/tech3.wav"), volume, ATTN_NORM, 0);
+			gi.sound(ent, CHAN_VOICE,
+					 gi.soundindex("ctf/tech3.wav"),
+					 volume, ATTN_NORM, 0);
 	}
 }
 
@@ -3099,10 +3169,13 @@ void CTFApplyRegeneration(edict_t *ent)
 
 	if (!tech)
 		tech = FindItemByClassname("item_tech4");
-	if (tech && client->pers.inventory[ITEM_INDEX(tech)]) {
-		if (client->ctf_regentime < level.time) {
+	if (tech && client->pers.inventory[ITEM_INDEX(tech)])
+	{
+		if (client->ctf_regentime < level.time)
+		{
 			client->ctf_regentime = level.time;
-			if (ent->health < 150) {
+			if (ent->health < 150)
+			{
 				ent->health += 5;
 				if (ent->health > 150)
 					ent->health = 150;
@@ -3110,7 +3183,8 @@ void CTFApplyRegeneration(edict_t *ent)
 				noise = true;
 			}
 			index = ArmorIndex (ent);
-			if (index && client->pers.inventory[index] < 150) {
+			if (index && client->pers.inventory[index] < 150)
+			{
 				client->pers.inventory[index] += 5;
 				if (client->pers.inventory[index] > 150)
 					client->pers.inventory[index] = 150;
@@ -3118,9 +3192,12 @@ void CTFApplyRegeneration(edict_t *ent)
 				noise = true;
 			}
 		}
-		if (noise && ent->client->ctf_techsndtime < level.time) {
+		if (noise && ent->client->ctf_techsndtime < level.time)
+		{
 			ent->client->ctf_techsndtime = level.time + 1;
-			gi.sound(ent, CHAN_VOICE, gi.soundindex("ctf/tech4.wav"), volume, ATTN_NORM, 0);
+			gi.sound(ent, CHAN_VOICE,
+					 gi.soundindex("ctf/tech4.wav"),
+					 volume, ATTN_NORM, 0);
 		}
 	}
 }
@@ -3131,9 +3208,11 @@ qboolean CTFHasRegeneration(edict_t *ent)
 
 	if (!tech)
 		tech = FindItemByClassname("item_tech4");
+
 	if (tech && ent->client &&
 		ent->client->pers.inventory[ITEM_INDEX(tech)])
 		return true;
+
 	return false;
 }
 /*
@@ -3143,10 +3222,12 @@ SAY_TEAM
 */
 // This array is in 'importance order', it indicates what items are
 // more important when reporting their names.
-struct {
+struct
+{
 	char *classname;
 	int priority;
-} loc_names[] = 
+}
+loc_names[] =
 {
 	{	"item_flag_team1",			1 },
 	{	"item_flag_team2",			1 },
@@ -3337,7 +3418,7 @@ static void CTFSay_Team_Tech(edict_t *who, char *buf)
 	//rune addition
 	if (rune_has_a_rune(who))
 	{
-		for (i=RUNE_FIRST; i<=RUNE_LAST; i++)
+		for (i = RUNE_FIRST; i <= RUNE_LAST; i++)
 		{
 			if (rune_has_rune(who, i))
 			{
@@ -3349,8 +3430,9 @@ static void CTFSay_Team_Tech(edict_t *who, char *buf)
 		}
 	}
 
-	//
-	while (tnames[i]) {
+	//FIXME: what is value of i here? need to reset to 0?
+	while (tnames[i])
+	{
 		if ((tech = FindItemByClassname(tnames[i])) != NULL &&
 			who->client->pers.inventory[ITEM_INDEX(tech)]) {
 				sprintf(buf, "the %s", tech->pickup_name);
@@ -3380,12 +3462,17 @@ static void CTFSay_Team_Sight(edict_t *who, char *buf)
 	char s2[1024];
 
 	*s = *s2 = 0;
-	for (i = 1; i <= maxclients->value; i++) {
+	for (i = 1; i <= maxclients->value; i++)
+	{
 		targ = g_edicts + i;
-		if (!targ->inuse || targ == who || targ->client->resp.spectator || !loc_CanSee(targ, who))
+		if (!targ->inuse || targ == who
+			|| targ->client->resp.spectator
+			|| !loc_CanSee(targ, who))
 			continue;
-		if (*s2) {
-			if (strlen(s) + strlen(s2) + 3 < sizeof(s)) {
+		if (*s2)
+		{
+			if (strlen(s) + strlen(s2) + 3 < sizeof(s))
+			{
 				if (n)
 					strcat(s, ", ");
 				strcat(s, s2);
@@ -3395,14 +3482,17 @@ static void CTFSay_Team_Sight(edict_t *who, char *buf)
 		}
 		strcpy(s2, targ->client->pers.netname);
 	}
-	if (*s2) {
-		if (strlen(s) + strlen(s2) + 6 < sizeof(s)) {
+	if (*s2)
+	{
+		if (strlen(s) + strlen(s2) + 6 < sizeof(s))
+		{
 			if (n)
 				strcat(s, " and ");
 			strcat(s, s2);
 		}
 		strcpy(buf, s);
-	} else
+	}
+	else
 		strcpy(buf, "no one");
 }
 
@@ -3596,7 +3686,9 @@ void JoinGame(edict_t *ent, pmenu_t *menu)
 	ent->client->resp.spectator = false;
 	PutClientInServer (ent);
 	CheckPlayers();
-	my_bprintf(PRINT_HIGH, "%s Has a DeathWish. (%d players, %d spectators)\n",	ent->client->pers.netname, ctfgame.players3, ctfgame.specs);
+	my_bprintf(PRINT_HIGH,
+			   "%s Has a DeathWish. (%d players, %d spectators)\n",
+			   ent->client->pers.netname, ctfgame.players_total, ctfgame.specs);
 
 	if(!ent->bot_client)
 	{
@@ -3665,7 +3757,9 @@ void CTFChaseCam(edict_t *ent, pmenu_t *p)
 			//RAV
 			Spectate(ent, NULL);
 			found = true;
-			my_bprintf(PRINT_HIGH, "%s Moved to Spectator.\n", ent->client->pers.netname);
+			my_bprintf(PRINT_HIGH,
+					   "%s Moved to Spectator.\n",
+					   ent->client->pers.netname);
 			PMenu_Close(ent);
 			ent->client->pers.pl_state = PL_SPECTATOR;
 			break;
@@ -3773,7 +3867,7 @@ pmenu_t creditsmenu[] = {
 	{ "*Original CTF Art Design",		PMENU_ALIGN_CENTER,  0, NULL },
 	{ "Brian 'Whaleboy' Cozzens",		PMENU_ALIGN_CENTER,  0, NULL },
 	{ NULL,								PMENU_ALIGN_CENTER,  0, NULL },
-	{ "Return to Main Menu",			PMENU_ALIGN_LEFT,    0, CTFReturnToMain }
+	{ "Return to Main Menu",			PMENU_ALIGN_LEFT,    0, CTFReturnToMain}
 };
 
 //RAV
@@ -4397,7 +4491,9 @@ void VoteChangeMap(edict_t *ent, pmenu_t *p)
 		maplist->currentmapvote = p->arg;
 		PMenu_Close(ent);
 		ent->client->resp.vote = true;
-		PMenu_Open(ent, noworlatermenu, -1, sizeof(noworlatermenu) / sizeof(pmenu_t), true, false);
+		PMenu_Open(ent, noworlatermenu, -1,
+				   sizeof(noworlatermenu) / sizeof(pmenu_t),
+				   true, false);
 	}
 	else
 	{
@@ -4414,8 +4510,15 @@ void VoteMapNames3(void)
 
 	for (i = 28; i < maplist->nummaps && pos < MAX_MENU_MAPS+1; ++i)
 	{
-		sprintf(menustring[pos],"%d. %s - %s", i+1, maplist->mapname[i], maplist->mapnick[i]);
-		//sprintf(menustring[pos],"%s: %-19.19s", maplist->mapname[i], maplist->mapnick[i]);
+		sprintf(menustring[pos],
+				"%d. %s - %s",
+				i + 1,
+				maplist->mapname[i],
+				maplist->mapnick[i]);
+//		sprintf(menustring[pos],
+//				"%s: %-19.19s",
+//				maplist->mapname[i],
+//				maplist->mapnick[i]);
 		menustring[pos][45] = '\0';
 		votemapmenu3[pos].text = menustring[pos];
 		votemapmenu3[pos].SelectFunc = VoteChangeMap;
@@ -4444,7 +4547,9 @@ void VoteMap3(edict_t *ent, pmenu_t *p)
 	if (ent->client->menu)
 		PMenu_Close(ent);
 	VoteMapNames3();
-	PMenu_Open(ent, votemapmenu3, -1, sizeof(votemapmenu3) / sizeof(pmenu_t), true, false);
+	PMenu_Open(ent, votemapmenu3, -1,
+			   sizeof(votemapmenu3) / sizeof(pmenu_t),
+			   true, false);
 }
 
 void VoteMapNames2(void)
@@ -4455,8 +4560,15 @@ void VoteMapNames2(void)
 
 	for (i = 14; i < maplist->nummaps && pos < MAX_MENU_MAPS+1; ++i)
 	{
-		sprintf(menustring[pos],"%d. %s - %s", i+1, maplist->mapname[i], maplist->mapnick[i]);
-		//sprintf(menustring[pos],"%s: %-19.19s", maplist->mapname[i], maplist->mapnick[i]);
+		sprintf(menustring[pos],
+				"%d. %s - %s",
+				i + 1,
+				maplist->mapname[i],
+				maplist->mapnick[i]);
+//		sprintf(menustring[pos],
+//				"%s: %-19.19s",
+//				maplist->mapname[i],
+//				maplist->mapnick[i]);
 		menustring[pos][45] = '\0';
 		votemapmenu2[pos].text = menustring[pos];
 		votemapmenu2[pos].SelectFunc = VoteChangeMap;
@@ -4495,7 +4607,9 @@ void VoteMap2(edict_t *ent, pmenu_t *p)
 	if (ent->client->menu)
 		PMenu_Close(ent);
 	VoteMapNames2();
-	PMenu_Open(ent, votemapmenu2, -1, sizeof(votemapmenu2) / sizeof(pmenu_t), true, false);
+	PMenu_Open(ent, votemapmenu2,
+			   -1, sizeof(votemapmenu2) / sizeof(pmenu_t),
+			   true, false);
 }
 
 void VoteMapNames(void)
@@ -4506,7 +4620,10 @@ void VoteMapNames(void)
 
 	for (i = 0; i < maplist->nummaps && pos < MAX_MENU_MAPS+1; ++i)
 	{
-		sprintf(menustring[pos],"%d. %s - %s", pos, maplist->mapname[i], maplist->mapnick[i]);
+		sprintf(menustring[pos],
+				"%d. %s - %s", pos,
+				maplist->mapname[i],
+				maplist->mapnick[i]);
 		//sprintf(menustring[pos],"%s: %-19.19s", maplist->mapname[i], maplist->mapnick[i]);
 		//strncpy(menustring[pos], string, 24);
 		menustring[pos][45] = '\0';
@@ -4550,14 +4667,21 @@ void VoteMap(edict_t *ent, pmenu_t *p)
 	if (mapvoteactive == true)
 	{
 		string[0] = '*';
-		sprintf(string+1, "%s - %s", maplist->mapname[maplist->currentmapvote], maplist->mapnick[maplist->currentmapvote]);
+		sprintf(string + 1,
+				"%s - %s",
+				maplist->mapname[maplist->currentmapvote],
+				maplist->mapnick[maplist->currentmapvote]);
 		yesnomenu[1].text = string;
-		PMenu_Open(ent, yesnomenu, -1, sizeof(yesnomenu) / sizeof(pmenu_t), true, false);
+		PMenu_Open(ent, yesnomenu,
+				   -1, sizeof(yesnomenu) / sizeof(pmenu_t),
+				   true, false);
 	}
 	else
 	{
 		VoteMapNames();
-		PMenu_Open(ent, votemapmenu, -1, sizeof(votemapmenu) / sizeof(pmenu_t), true, false);
+		PMenu_Open(ent, votemapmenu,
+				   -1, sizeof(votemapmenu) / sizeof(pmenu_t),
+				   true, false);
 	}
 }
 
@@ -4565,13 +4689,14 @@ char *GetIpOp(edict_t *ent)
 {
 	static char modif[40];
 	char entry[64], namep[20], ipp1[3],ipp2[3],ipp3[3],ipp4[3];
-	int ec, j;
+	int ec = 0;
+	int j = 0;
 
 	if (!G_EntExists(ent))
 		return (0);
 
-	printf(entry, "%s@%s", ent->client->pers.netname, ent->client->pers.ip);
-	j=0;
+	sprintf(entry, "%s@%s", ent->client->pers.netname, ent->client->pers.ip);
+	j = 0;
 	ec = 0;
 	while (!strchr("@", entry[ec]))
 	{
@@ -4611,7 +4736,10 @@ char *GetIpOp(edict_t *ent)
 		j++;
 		ec++;
 	}
-	sprintf (modif, "%s@%s.%s.%s.*", ent->client->pers.netname, ipp1, ipp2, ipp3);
+	sprintf (modif,
+			 "%s@%s.%s.%s.*",
+			 ent->client->pers.netname,
+			 ipp1, ipp2, ipp3);
 	return (modif);
 }
 
@@ -4651,7 +4779,9 @@ void OpPlayer(edict_t *ent, pmenu_t *p)
 	if (ent->client->menu)
 		PMenu_Close(ent);
 	List_Op(ent);
-	PMenu_Open(ent, promotemenu, -1, sizeof(promotemenu) / sizeof(pmenu_t), true, false);
+	PMenu_Open(ent, promotemenu,
+			   -1, sizeof(promotemenu) / sizeof(pmenu_t),
+			   true, false);
 }
 
 void OpMe(edict_t *ent, pmenu_t *p)
@@ -4668,7 +4798,8 @@ void OpMe(edict_t *ent, pmenu_t *p)
 	if (!G_EntExists(e))
 		return;
 
-	sprintf(entry, "addop %s %d nopass", GetIp(e), (int)defaultoplevel->value);
+	sprintf(entry, "addop %s %d nopass",
+			GetIp(e), (int)defaultoplevel->value);
 	stuffcmd (ent, entry);
 }
 
@@ -4752,7 +4883,9 @@ void SwitchPlayer(edict_t *ent, pmenu_t *p)
 	if (ent->client->menu)
 		PMenu_Close(ent);
 	List_Switch(ent);
-	PMenu_Open(ent, switchmenu, -1, sizeof(switchmenu) / sizeof(pmenu_t), true, false);
+	PMenu_Open(ent, switchmenu,
+			   -1, sizeof(switchmenu) / sizeof(pmenu_t),
+			   true, false);
 }
 
 void SwitchMe(edict_t *ent, pmenu_t *p)
@@ -4770,7 +4903,8 @@ void SwitchMe(edict_t *ent, pmenu_t *p)
 
 	if (e->client->hook)
 	{
-		safe_cprintf (ent, PRINT_CHAT, "Player switch attempted while player was hooking\n");
+		safe_cprintf (ent, PRINT_CHAT,
+					  "Player switch attempted while player was hooking\n");
 		return;
 	}
 
@@ -4801,12 +4935,14 @@ void SpecMe(edict_t *ent, pmenu_t *p)
 		return;
 	if (e->bot_client)
 	{
-		safe_cprintf (ent, PRINT_CHAT, "Player spec force attempted on bot client\n");
+		safe_cprintf (ent, PRINT_CHAT,
+					  "Player spec force attempted on bot client\n");
 		return;
 	}
 	if (e->client->hook)
 	{
-		safe_cprintf (ent, PRINT_CHAT, "Player spec force attempted while player was hooking\n");
+		safe_cprintf (ent, PRINT_CHAT,
+					  "Player spec force attempted while player was hooking\n");
 		return;
 	}
 	stuffcmd (e, va("spec\n"));
@@ -4849,7 +4985,9 @@ void SpecPlayer(edict_t *ent, pmenu_t *p)
 	if (ent->client->menu)
 		PMenu_Close(ent);
 	List_Spec(ent);
-	PMenu_Open(ent, specmenu, -1, sizeof(specmenu) / sizeof(pmenu_t), true, false);
+	PMenu_Open(ent, specmenu,
+			   -1, sizeof(specmenu) / sizeof(pmenu_t),
+			   true, false);
 }
 
 void List_UnSilence(edict_t *ent)
@@ -4888,7 +5026,9 @@ void UnSilencePlayer(edict_t *ent, pmenu_t *p)
 {
 	if (ent->client->menu) PMenu_Close(ent);
 	List_UnSilence(ent);
-	PMenu_Open(ent, unsilencemenu, -1, sizeof(unsilencemenu) / sizeof(pmenu_t), true, false);
+	PMenu_Open(ent, unsilencemenu,
+			   -1, sizeof(unsilencemenu) / sizeof(pmenu_t),
+			   true, false);
 }
 
 
@@ -4942,7 +5082,9 @@ void SilencePlayer(edict_t *ent, pmenu_t *p)
 {
 	if (ent->client->menu) PMenu_Close(ent);
 	List_Silence(ent);
-	PMenu_Open(ent, silencemenu, -1, sizeof(silencemenu) / sizeof(pmenu_t), true, false);
+	PMenu_Open(ent, silencemenu,
+			   -1, sizeof(silencemenu) / sizeof(pmenu_t),
+			   true, false);
 }
 
 void SilenceMe(edict_t *ent, pmenu_t *p)
@@ -5012,7 +5154,9 @@ char *GetIp(edict_t *ent)
 void LightsMenu(edict_t *ent, pmenu_t *p)
 {
 	if (ent->client->menu) PMenu_Close(ent);
-	PMenu_Open(ent, lightsmenu, -1, sizeof(lightsmenu) / sizeof(pmenu_t), true, false);
+	PMenu_Open(ent, lightsmenu,
+			   -1, sizeof(lightsmenu) / sizeof(pmenu_t),
+			   true, false);
 }
 
 void PlayerMenu(edict_t *ent, pmenu_t *p)
@@ -5021,7 +5165,9 @@ void PlayerMenu(edict_t *ent, pmenu_t *p)
 
 	if (ent->client->menu)
 		PMenu_Close(ent);
-	PMenu_Open(ent, opmenuP, -1, sizeof(opmenuP) / sizeof(pmenu_t), true, false);
+	PMenu_Open(ent, opmenuP,
+			   -1, sizeof(opmenuP) / sizeof(pmenu_t),
+			   true, false);
 }
 
 //Player lister
@@ -5062,7 +5208,9 @@ void KicknBanPlayer(edict_t *ent, pmenu_t *p)
 {
 	if (ent->client->menu) PMenu_Close(ent);
 	List_KickBan(ent);
-	PMenu_Open(ent, kicknbanmenu, -1, sizeof(kicknbanmenu) / sizeof(pmenu_t), true, false);
+	PMenu_Open(ent, kicknbanmenu,
+			   -1, sizeof(kicknbanmenu) / sizeof(pmenu_t),
+			   true, false);
 }
 
 void KicknBanMe(edict_t *ent, pmenu_t *p)
@@ -5135,7 +5283,9 @@ void BanPlayer(edict_t *ent, pmenu_t *p)
 {
 	if (ent->client->menu) PMenu_Close(ent);
 	List_Ban(ent);
-	PMenu_Open(ent, banmenu, -1, sizeof(banmenu) / sizeof(pmenu_t), true, false);
+	PMenu_Open(ent, banmenu,
+			   -1, sizeof(banmenu) / sizeof(pmenu_t),
+			   true, false);
 }
 
 
@@ -5157,8 +5307,17 @@ void OpMapNames3(void)
 
 	for (i = 28; i < maplist->nummaps && pos < MAX_MENU_MAPS+1; ++i)
 	{
-		sprintf(menustring[pos],"%d. %s - %s", i+1, maplist->mapname[i], maplist->mapnick[i]);
-		//sprintf(menustring[pos],"%s: %-19.19s", maplist->mapname[i], maplist->mapnick[i]);
+		sprintf(menustring[pos],
+				"%d. %s - %s",
+				i + 1,
+				maplist->mapname[i],
+				maplist->mapnick[i]);
+
+		//sprintf(menustring[pos],
+		//		"%s: %-19.19s",
+		//		maplist->mapname[i],
+		//		maplist->mapnick[i]);
+
 		menustring[pos][45] = '\0';
 		opmapmenu3[pos].text = menustring[pos];
 		opmapmenu3[pos].SelectFunc = OpChangeMap;
@@ -5187,7 +5346,9 @@ void OpMap3(edict_t *ent, pmenu_t *p)
 	if (ent->client->menu)
 		PMenu_Close(ent);
 	OpMapNames3();
-	PMenu_Open(ent, opmapmenu3, -1, sizeof(opmapmenu3) / sizeof(pmenu_t), true, false);
+	PMenu_Open(ent, opmapmenu3,
+			   -1, sizeof(opmapmenu3) / sizeof(pmenu_t),
+			   true, false);
 }
 
 void OpMapNames2(void)
@@ -5198,8 +5359,15 @@ void OpMapNames2(void)
 
 	for (i = 14; i < maplist->nummaps && pos < MAX_MENU_MAPS+1; ++i)
 	{
-		sprintf(menustring[pos],"%d. %s - %s", i+1, maplist->mapname[i], maplist->mapnick[i]);
-		//		sprintf(menustring[pos],"%s: %-19.19s", maplist->mapname[i], maplist->mapnick[i]);
+		sprintf(menustring[pos],
+				"%d. %s - %s",
+				i + 1,
+				maplist->mapname[i],
+				maplist->mapnick[i]);
+		//		sprintf(menustring[pos],
+		//				"%s: %-19.19s",
+		//				maplist->mapname[i],
+		//				maplist->mapnick[i]);
 		menustring[pos][45] = '\0';
 		opmapmenu2[pos].text = menustring[pos];
 		opmapmenu2[pos].SelectFunc = OpChangeMap;
@@ -5238,7 +5406,9 @@ void OpMap2(edict_t *ent, pmenu_t *p)
 	if (ent->client->menu)
 		PMenu_Close(ent);
 	OpMapNames2();
-	PMenu_Open(ent, opmapmenu2, -1, sizeof(opmapmenu2) / sizeof(pmenu_t), true, false);
+	PMenu_Open(ent, opmapmenu2,
+			   -1, sizeof(opmapmenu2) / sizeof(pmenu_t),
+			   true, false);
 }
 
 void OpMapNames(void)
@@ -5249,8 +5419,15 @@ void OpMapNames(void)
 
 	for (i = 0; i < maplist->nummaps && pos < MAX_MENU_MAPS+1; ++i)
 	{
-		//sprintf(menustring[pos],"%s: %-19.19s", maplist->mapname[i], maplist->mapnick[i]);
-		sprintf(menustring[pos],"%d. %s - %s", i+1, maplist->mapname[i], maplist->mapnick[i]);
+//		sprintf(menustring[pos],
+//				"%s: %-19.19s",
+//				maplist->mapname[i],
+//				maplist->mapnick[i]);
+		sprintf(menustring[pos],
+				"%d. %s - %s",
+				i + 1,
+				maplist->mapname[i],
+				maplist->mapnick[i]);
 		menustring[pos][45] = '\0';
 		opmapmenu[pos].text = menustring[pos];
 		opmapmenu[pos].SelectFunc = OpChangeMap;
@@ -5281,7 +5458,9 @@ void OpMap(edict_t *ent, pmenu_t *p)
 {
 	if (ent->client->menu) PMenu_Close(ent);
 	OpMapNames();
-	PMenu_Open(ent, opmapmenu, -1, sizeof(opmapmenu) / sizeof(pmenu_t), true, false);
+	PMenu_Open(ent, opmapmenu,
+			   -1, sizeof(opmapmenu) / sizeof(pmenu_t),
+			   true, false);
 }
 
 void KickMe(edict_t *ent, pmenu_t *p)
@@ -5334,7 +5513,9 @@ void KickPlayer(edict_t *ent, pmenu_t *p)
 {
 	if (ent->client->menu) PMenu_Close(ent);
 	List_Kick(ent);
-	PMenu_Open(ent, kickmenu, -1, sizeof(kickmenu) / sizeof(pmenu_t), true, false);
+	PMenu_Open(ent, kickmenu,
+			   -1, sizeof(kickmenu) / sizeof(pmenu_t),
+			   true, false);
 }
 
 //JSW
@@ -5356,7 +5537,8 @@ void UpdateOpMenu(edict_t *ent)
 		strcat (str, "Change Map\t");
 	if (ent->client->pers.oplevel & OP_LIGHTS)
 		strcat (str, "Lights Control\t");
-	if (ent->client->pers.oplevel & OP_LOCKTEAMS) {
+	if (ent->client->pers.oplevel & OP_LOCKTEAMS)
+	{
 		if (locked_teams)
 			strcat (str, "Unlock Teams\t");
 		else
@@ -5505,7 +5687,9 @@ void ListPlayers(edict_t *ent, pmenu_t *p)
 {
 	if (ent->client->menu) PMenu_Close(ent);
 	List_Players(ent);
-	PMenu_Open(ent, playerlistmenu, -1, sizeof(playerlistmenu) / sizeof(pmenu_t), true, false);
+	PMenu_Open(ent, playerlistmenu,
+			   -1, sizeof(playerlistmenu) / sizeof(pmenu_t),
+			   true, false);
 }
 
 void OPMenu(edict_t *ent, pmenu_t *p)
@@ -5520,7 +5704,9 @@ void OPMenu(edict_t *ent, pmenu_t *p)
 	UpdateOpMenu(ent);
 
 	if(ent->client->pers.isop == 1)
-		PMenu_Open(ent, opmenu, -1, sizeof(opmenu) / sizeof(pmenu_t), true, false);
+		PMenu_Open(ent, opmenu,
+				   -1, sizeof(opmenu) / sizeof(pmenu_t),
+				   true, false);
 }
 
 void FillMapNames(void)
@@ -5570,7 +5756,11 @@ void FillMapNames(void)
 				m=i;
 		}
 
-		sprintf(menustring[pos],"%d. %s - %s", pos, maplist->mapname[i],maplist->mapnick[i]);
+		sprintf(menustring[pos],
+				"%d. %s - %s",
+				pos,
+				maplist->mapname[i],
+				maplist->mapnick[i]);
 		tmgmapvote[pos].text = menustring[pos];
 		tmgmapvote[pos].SelectFunc = PickMap;
 		tmgmapvote[pos].arg = i;
@@ -5579,9 +5769,13 @@ void FillMapNames(void)
 	}
 
 	//tell the server console the next voting options !!
-	gi.dprintf ("\nMap Vote options are\n1: %s \"%s\"\n2: %s \"%s\"\n3: %s \"%s\"\n\n",
-		maplist->mapname[k],maplist->mapnick[k],maplist->mapname[l],maplist->mapnick[l],
-		maplist->mapname[m],maplist->mapnick[m]);
+	gi.dprintf ("\nMap Vote options are\n"
+				"1: %s \"%s\"\n"
+				"2: %s \"%s\"\n"
+				"3: %s \"%s\"\n\n",
+				maplist->mapname[k], maplist->mapnick[k],
+				maplist->mapname[l], maplist->mapnick[l],
+				maplist->mapname[m], maplist->mapnick[m]);
 
 	//Clear the rest of the menu
 	//	while (pos < 38)
@@ -5599,7 +5793,9 @@ void MapVote(edict_t *ent)
 {
 	if (ent->client->menu)
 		PMenu_Close(ent);
-	PMenu_Open(ent, tmgmapvote, -1, sizeof(tmgmapvote) / sizeof(pmenu_t), true, false);
+	PMenu_Open(ent, tmgmapvote,
+			   -1, sizeof(tmgmapvote) / sizeof(pmenu_t),
+			   true, false);
 }
 
 
@@ -5617,7 +5813,11 @@ void PickMap(edict_t *ent, pmenu_t *p)
 		ent->client->pers.HasVoted = true;
 		name = ent->client->pers.netname;
 		convert_string(name, 0, 127, 128, name);
-		sprintf (text, "%s voted for %s \"%s\"\n", name, maplist->mapname[i],maplist->mapnick[i]);
+		sprintf (text,
+				 "%s voted for %s \"%s\"\n",
+				 name,
+				 maplist->mapname[i],
+				 maplist->mapnick[i]);
 		my_bprintf (PRINT_HIGH, text);
 		ent->client->pers.vote_times ++;
 	}
@@ -5640,9 +5840,7 @@ int CTFUpdateJoinMenu(edict_t *ent)
 	static char team2players[32];
 	int num1, num2, i;
 
-	//JSW
-	//if (!ent->client->pers.isop && !ent->client->pers.ismop)
-	if (ent->client->pers.isop)// != OP_NAMEPASS && ent->client->pers.oplevel != 0)
+	if (ent->client->pers.isop)
 	{
 		joinmenu[10].text = "Op Menu";
 		joinmenu[10].SelectFunc = OPMenu;
@@ -5652,7 +5850,6 @@ int CTFUpdateJoinMenu(edict_t *ent)
 		joinmenu[10].text = NULL;
 		joinmenu[10].SelectFunc = NULL;
 	}
-	//end
 
 	if (!locked_teams)
 	{
@@ -5742,14 +5939,17 @@ int CTFUpdateJoinMenu(edict_t *ent)
 		return CTF_TEAM2; //JSW fixed, was team 1
 	else if (num2 > num1)
 		return CTF_TEAM1;
+
 	//JSW Added
 	//if teams are equal then put player on team with worse score
-	if (ctfgame.team1 > ctfgame.team2)  
+
+	if (ctfgame.team1 > ctfgame.team2)
 		return CTF_TEAM2;
 	else if (ctfgame.team2 > ctfgame.team1)
 		return CTF_TEAM1;
-	//if teams and score are equal put on random team
 	//end
+
+	//if teams and score are equal put on random team
 	return (rand() & 1) ? CTF_TEAM1 : CTF_TEAM2;
 }
 
@@ -5772,13 +5972,17 @@ void CTFOpenJoinMenu(edict_t *ent)
 	else
 		team = 6;
 
-	PMenu_Open(ent, joinmenu, team, sizeof(joinmenu) / sizeof(pmenu_t), true, true);
+	PMenu_Open(ent, joinmenu,
+			   team, sizeof(joinmenu) / sizeof(pmenu_t),
+			   true, true);
 }
 
 void CTFCredits(edict_t *ent, pmenu_t *p)
 {
 	PMenu_Close(ent);
-	PMenu_Open(ent, creditsmenu, -1, sizeof(creditsmenu) / sizeof(pmenu_t), true, true);
+	PMenu_Open(ent, creditsmenu,
+			   -1, sizeof(creditsmenu) / sizeof(pmenu_t),
+			   true, true);
 }
 
 qboolean CTFStartClient(edict_t *ent)
@@ -5974,12 +6178,16 @@ qboolean CTFCheckRules(void)
 		for (i = 1; i <= maxclients->value; i++)
 		{
 			carrier = g_edicts + i;
-			if (carrier->inuse && carrier->client->pers.inventory[ITEM_INDEX(flag1_item)] && !redflaggone && red && match_state == STATE_WARMUP)
+			if (carrier->inuse &&
+				carrier->client->pers.inventory[ITEM_INDEX(flag1_item)] &&
+				!redflaggone && red && match_state == STATE_WARMUP)
 			{
 				carrier->client->pers.inventory[ITEM_INDEX(flag1_item)] = 0;
 				gi.dprintf ("Duplicate RED flag found!\n");
 			}
-			if (carrier->inuse && carrier->client->pers.inventory[ITEM_INDEX(flag2_item)] && !blueflaggone && blue && match_state == STATE_WARMUP)
+			if (carrier->inuse &&
+				carrier->client->pers.inventory[ITEM_INDEX(flag2_item)] &&
+				!blueflaggone && blue && match_state == STATE_WARMUP)
 			{
 				gi.dprintf ("Duplicate BLUE flag found!\n");
 				carrier->client->pers.inventory[ITEM_INDEX(flag2_item)] = 0;
@@ -6055,7 +6263,10 @@ qboolean CTFCheckRules(void)
 *--------------------------------------------------------------------------*/
 
 
-static void old_teleporter_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+static void old_teleporter_touch (edict_t *self,
+								  edict_t *other,
+								  cplane_t *plane,
+								  csurface_t *surf)
 {
 	edict_t		*dest;
 	int			i;
@@ -6092,7 +6303,8 @@ static void old_teleporter_touch (edict_t *self, edict_t *other, cplane_t *plane
 
 	// set angles
 	for (i=0 ; i<3 ; i++)
-		other->client->ps.pmove.delta_angles[i] = ANGLE2SHORT(dest->s.angles[i] - other->client->resp.cmd_angles[i]);
+		other->client->ps.pmove.delta_angles[i] =
+		ANGLE2SHORT(dest->s.angles[i] - other->client->resp.cmd_angles[i]);
 
 	other->s.angles[PITCH] = 0;
 	other->s.angles[YAW] = dest->s.angles[YAW];
@@ -6176,15 +6388,16 @@ void CTFSetupNavSpawn(void)
 	//PONKO
 	spawncycle = level.time + FRAMETIME * 100;
 	//PONKO
-	//ƒ‹[ƒg‰Šú‰»
 	CurrentIndex = 0;
 	memset(Route,0,sizeof(Route));
 	memset(code,0,8);
 
 	if(!ctf->value)
-		sprintf(name,"./%s/%s/nav/%s.nav",game_dir->string, cfgdir->string, level.mapname);
+		sprintf(name, "./%s/%s/nav/%s.nav",
+				game_dir->string, cfgdir->string, level.mapname);
 	else
-		sprintf(name,"./%s/%s/nav/%s.nav",game_dir->string, cfgdir->string,level.mapname);
+		sprintf(name, "./%s/%s/nav/%s.nav",
+				game_dir->string, cfgdir->string, level.mapname);
 
 	fpout = fopen(name,"rb");
 	if(fpout == NULL)
@@ -6197,22 +6410,31 @@ void CTFSetupNavSpawn(void)
 	else
 	{
 		count = fread(code, sizeof(char), 8, fpout);
+		if (count != 8)
+			gi.dprintf("Error reading NAV code in %s\n", __FUNCTION__);
 
-		if(!ctf->value) strncpy(SRCcode,"3ZBRGDTM", 8);
-		else strncpy(SRCcode,"3ZBRGCTF", 8);
+		if(!ctf->value)
+			strncpy(SRCcode,"3ZBRGDTM", 8);
+		else
+			strncpy(SRCcode,"3ZBRGCTF", 8);
 
-		if(strncmp(code,SRCcode,8))
+		if(strncmp(code, SRCcode, 8))
 		{
 			CurrentIndex = 0;
 			gi.dprintf("Chaining: %s.nav is not a chaining file.\n",level.mapname);
 			fclose(fpout);
 			return;
 		}
-		gi.dprintf("Chaining: %s.nav found.\n",level.mapname);
+		gi.dprintf("Chaining: %s.nav found.\n", level.mapname);
+
 		count = fread(&CurrentIndex, sizeof(int), 1, fpout);
+		if (count != 1)
+			gi.dprintf("Error reading NAV file index in %s\n", __FUNCTION__);
 
 		size = (unsigned int)CurrentIndex * sizeof(route_t);
 		count = fread(Route, size, 1, fpout);
+		if (count != 1)
+			gi.dprintf("Error reading NAV file Route in %s\n", __FUNCTION__);
 
 		for(i = 0; i < CurrentIndex; i++)
 		{
@@ -6268,11 +6490,13 @@ void CTFSetupNavSpawn(void)
 								}
 							}
 						}
-						else if(Route[i].state == GRS_ITEMS
-							|| Route[i].state == GRS_REDFLAG || Route[i].state == GRS_BLUEFLAG)
+						else if(Route[i].state == GRS_ITEMS ||
+								Route[i].state == GRS_REDFLAG ||
+								Route[i].state == GRS_BLUEFLAG)
 						{
 							//else gi.dprintf("CYAU!!!!!!!\n");
-							if(VectorCompare (Route[i].Pt,other->monsterinfo.last_sighting/*->s.origin*/))
+							if(VectorCompare (Route[i].Pt,
+											  other->monsterinfo.last_sighting))
 							{
 								//onplat
 								if(1/*other->classname[0] == 'w' || other->classname[0] == 'i'*/)
@@ -6292,7 +6516,12 @@ void CTFSetupNavSpawn(void)
 						}
 					}
 				}
-				if(j >= globals.num_edicts && (Route[i].state == GRS_ITEMS || Route[i].state == GRS_REDFLAG || Route[i].state == GRS_BLUEFLAG)) gi.dprintf("kicked item\n");
+				if(j >= globals.num_edicts &&
+				   (Route[i].state == GRS_ITEMS ||
+					Route[i].state == GRS_REDFLAG ||
+					Route[i].state == GRS_BLUEFLAG))
+						gi.dprintf("kicked item\n");
+
 				if(j >= globals.num_edicts) Route[i].state = GRS_NORMAL;
 			}
 		}
@@ -6353,38 +6582,43 @@ void CTFJobAssign (void)
 			if(e->client->resp.ctf_team == CTF_TEAM1)
 			{
 				mate1++;
-				if( e->client->pers.inventory[ITEM_INDEX(FindItem("Blue Flag"))])
+				if(e->client->pers.inventory[ITEM_INDEX(FindItem("Blue Flag"))])
 				{
 					client->zc.ctfstate = CTFS_CARRIER;
 				}
 				if(1/*e->svflags & SVF_MONSTER*/)
 				{
 
-					if( client->zc.ctfstate == CTFS_OFFENCER && random()>0.7) defei1 = e;
+					if( client->zc.ctfstate == CTFS_OFFENCER && random()>0.7)
+						defei1 = e;
 					else if( client->zc.ctfstate == CTFS_DEFENDER)
 					{
-						if(random()>0.7) geti1 = e;
+						if(random()>0.7)
+							geti1 = e;
 						defend1++;
 					}
-					else if( client->zc.ctfstate == CTFS_CARRIER ) defend1++;
+					else if( client->zc.ctfstate == CTFS_CARRIER )
+						defend1++;
 				}
 			}
 			else if(e->client->resp.ctf_team == CTF_TEAM2)
 			{
 				mate2++;
-				if( e->client->pers.inventory[ITEM_INDEX(FindItem("Red Flag"))])
+				if(e->client->pers.inventory[ITEM_INDEX(FindItem("Red Flag"))])
 				{
 					client->zc.ctfstate = CTFS_CARRIER;
 				}
 				if(1/*e->svflags & SVF_MONSTER*/)
 				{
-					if( client->zc.ctfstate == CTFS_OFFENCER && random()>0.8) defei2 = e;
+					if( client->zc.ctfstate == CTFS_OFFENCER && random()>0.8)
+						defei2 = e;
 					else if( client->zc.ctfstate == CTFS_DEFENDER)
 					{
 						if(random()>0.7) geti2 = e;
 						defend2++;
 					}
-					else if( client->zc.ctfstate == CTFS_CARRIER ) defend2++;
+					else if( client->zc.ctfstate == CTFS_CARRIER )
+						defend2++;
 				}
 			}
 		}
@@ -6392,19 +6626,23 @@ void CTFJobAssign (void)
 
 	if(defend1 < mate1 / 3 && mate1 >= 2)
 	{
-		if(defei1 != NULL) defei1->client->zc.ctfstate = CTFS_DEFENDER;
+		if(defei1 != NULL)
+			defei1->client->zc.ctfstate = CTFS_DEFENDER;
 	}
 	else if(defend1 > mate1 / 3  )
 	{
-		if(geti1 != NULL) geti1->client->zc.ctfstate = CTFS_OFFENCER;
+		if(geti1 != NULL)
+			geti1->client->zc.ctfstate = CTFS_OFFENCER;
 	}
 	if(defend2 < mate2 / 3 && mate2 >= 2)
 	{
-		if(defei2 != NULL) defei2->client->zc.ctfstate = CTFS_DEFENDER;
+		if(defei2 != NULL)
+			defei2->client->zc.ctfstate = CTFS_DEFENDER;
 	}
 	else if(defend2 > mate2 / 3 )
 	{
-		if(geti2 != NULL) geti2->client->zc.ctfstate = CTFS_OFFENCER;
+		if(geti2 != NULL)
+			geti2->client->zc.ctfstate = CTFS_OFFENCER;
 	}
 	///	gi.bprintf(PRINT_HIGH,"Called!!!!\n");
 }

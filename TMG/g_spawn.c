@@ -1430,7 +1430,8 @@ void SP_worldspawn (edict_t *ent)
 		
 		song[0] = '\0';
 
-		sprintf(file_name, "%s/%s/%s/intro.txt", basedir->string, game_dir->string, cfgdir->string);
+		sprintf(file_name, "%s/%s/%s/intro.txt",
+				basedir->string, game_dir->string, cfgdir->string);
 
 		file = fopen(file_name, "r");
 		if (file != NULL)
@@ -1448,15 +1449,21 @@ void SP_worldspawn (edict_t *ent)
 			}
 			rewind(file);
 			p_buffer = gi.TagMalloc(file_size, TAG_LEVEL);
-			memset(p_buffer,0,file_size);
+			memset(p_buffer, 0, file_size);
 			count = fread((void *)p_buffer, sizeof(char), file_size, file);
+			if (!count)
+				gi.dprintf("%s read %d of %d bytes in %s\n",
+						   __FUNCTION__, count, file_size, file);
+
 			p_name = p_buffer;
 			do
 			{
 				// niq: skip rest of line after a '#' (works with Unix?)
 				if(*p_name == '#')
 				{
-					while ((*p_name != '\n') && (*p_name != '\r') && counter < file_size)
+					while ((*p_name != '\n') &&
+						   (*p_name != '\r') &&
+						   counter < file_size)
 					{
 						p_name++;
 						counter++;
@@ -1464,7 +1471,13 @@ void SP_worldspawn (edict_t *ent)
 				}
 				else
 				{
-					while ((((*p_name >= 'a') && (*p_name <= 'z')) || ((*p_name >= 'A') && (*p_name <= 'Z')) || ((*p_name >= '0') && (*p_name <= '9')) || (*p_name == '_') || (*p_name == '-') || (*p_name == '/') || (*p_name == '\\')) && counter < file_size)
+					while ((((*p_name >= 'a') && (*p_name <= 'z')) ||
+							((*p_name >= 'A') && (*p_name <= 'Z')) ||
+							((*p_name >= '0') && (*p_name <= '9')) ||
+							(*p_name == '_') ||
+							(*p_name == '-') ||
+							(*p_name == '/') ||
+							(*p_name == '\\')) && counter < file_size)
 					{
 						n_chars++;
 						counter++;
@@ -1487,7 +1500,8 @@ void SP_worldspawn (edict_t *ent)
 					n_chars = 0;
 					if (levels_ >= 256)
 					{
-						gi.dprintf("\nMAXSONGS exceeded\nUnable to add more Wav's.\n");
+						gi.dprintf("\nMAXSONGS exceeded\n"
+								   "Unable to add more Wav's.\n");
 						break;
 					}
 				}
@@ -1496,7 +1510,14 @@ void SP_worldspawn (edict_t *ent)
 				counter++;
 				p_name++;
 				// eat up non-characters (niq: except #)
-				while (!((*p_name == '#') || ((*p_name >= 'a') && (*p_name <= 'z')) || ((*p_name >= 'A') && (*p_name <= 'Z')) || ((*p_name >= '0') && (*p_name <= '9')) || (*p_name == '_') || (*p_name == '-') || (*p_name == '/') || (*p_name == '\\')) && counter < file_size)
+				while (!((*p_name == '#') ||
+						 ((*p_name >= 'a') && (*p_name <= 'z')) ||
+						 ((*p_name >= 'A') && (*p_name <= 'Z')) ||
+						 ((*p_name >= '0') && (*p_name <= '9')) ||
+						 (*p_name == '_') ||
+						 (*p_name == '-') ||
+						 (*p_name == '/') ||
+						 (*p_name == '\\')) && counter < file_size)
 				{
 					counter++;
 					p_name++;

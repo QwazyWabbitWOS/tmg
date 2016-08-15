@@ -2043,14 +2043,18 @@ void ClientCommand (edict_t *ent)
 		CheckPlayers();
 		if (ctf->value)
 			my_bprintf(PRINT_HIGH,
-				"%s has become a spectator. (%d red, %d blue, %d spectators)\n",
-				ent->client->pers.netname,
-				ctfgame.players1,
-				ctfgame.players2, ctfgame.specs);
+					   "%s has become a spectator. "
+					   "(%d red, %d blue, %d spectators)\n",
+					   ent->client->pers.netname,
+					   ctfgame.players1,
+					   ctfgame.players2, ctfgame.specs);
 		else
 			my_bprintf(PRINT_HIGH,
-				"%s has become a spectator. (%d players, %d spectators)\n",
-				ent->client->pers.netname, ctfgame.players3, ctfgame.specs);
+					   "%s has become a spectator. "
+					   "(%d players, %d spectators)\n",
+					   ent->client->pers.netname,
+					   ctfgame.players_total,
+					   ctfgame.specs);
 
 	}
 	

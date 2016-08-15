@@ -2387,7 +2387,7 @@ void ClientBeginDeathmatch (edict_t *ent)
 	if (ctf->value)
 		sprintf (text, "%s entered the game (%d red, %d blue, %d spectators)\n", name, ctfgame.players1, ctfgame.players2, ctfgame.specs);
 	else
-		sprintf (text, "%s entered the game (%d players, %d spectators)\n", name, ctfgame.players3, ctfgame.specs);
+		sprintf (text, "%s entered the game (%d players, %d spectators)\n", name, ctfgame.players_total, ctfgame.specs);
 	my_bprintf (PRINT_HIGH, text);
 
 	InitClientResp (ent->client);
@@ -2507,7 +2507,7 @@ void ClientBegin (edict_t *ent)
 			if (ctf->value)
 				my_bprintf (PRINT_HIGH, "%s entered the game (%d red, %d blue, %d spectators)\n", ent->client->pers.netname, ctfgame.players1, ctfgame.players2, ctfgame.specs);
 			else
-				my_bprintf (PRINT_HIGH, "%s entered the game (%d players, %d spectators)\n", ent->client->pers.netname, ctfgame.players3, ctfgame.specs);
+				my_bprintf (PRINT_HIGH, "%s entered the game (%d players, %d spectators)\n", ent->client->pers.netname, ctfgame.players_total, ctfgame.specs);
 		}
 	}
 
@@ -3319,9 +3319,9 @@ void ClientDisconnect (edict_t *ent)
 	if (ctf->value)
 		sprintf (text, "%s has left the server. (%d red, %d blue, %d spectators remaining)\n", name, ctfgame.players1, ctfgame.players2, ctfgame.specs);
 	else
-		sprintf (text, "%s has left the server. (%d players, %d spectators remaining)\n", name, ctfgame.players3, ctfgame.specs);
+		sprintf (text, "%s has left the server. (%d players, %d spectators remaining)\n", name, ctfgame.players_total, ctfgame.specs);
 	my_bprintf (PRINT_HIGH, text);
-	if (ctfgame.players1 + ctfgame.players2 + ctfgame.players3 + ctfgame.specs == 0)
+	if (ctfgame.players1 + ctfgame.players2 + ctfgame.players_total + ctfgame.specs == 0)
 		locked_teams = false;
 
 	gi.configstring (CS_PLAYERSKINS+playernum, "");

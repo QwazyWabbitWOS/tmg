@@ -640,38 +640,37 @@ ExitLevel
 */
 void ExitLevel (void)
 {
-	int		i,j;
+	int		i;
 	edict_t	*ent;
 	char	command [256];
 
 	Com_sprintf (command, sizeof(command), "gamemap \"%s\"\n", level.changemap);
+
 	gi.AddCommandString (command);
 	level.changemap = NULL;
 	level.exitintermission = 0;
 	level.intermissiontime = 0;
 	ClientEndServerFrames ();
 
-	
 	// clear some things before going to next level
-	j = 0;
-	for (i=0 ; i<maxclients->value ; i++)
+	for (i = 0; i < maxclients->value; i++)
 	{
 		ent = g_edicts + 1 + i;
-		if (!ent->inuse)
-			continue;
-		if (ent->health > ent->client->pers.max_health)
-			ent->health = ent->client->pers.max_health;
-	
+		if (ent && ent->inuse)
+		{
+			if (ent->health > ent->client->pers.max_health)
+				ent->health = ent->client->pers.max_health;
+		}
 	}
 
-		hs_show = true;
+	hs_show = true;
 
-		SetBotFlag1(NULL);
-		SetBotFlag2(NULL);
+	SetBotFlag1(NULL);
+	SetBotFlag2(NULL);
 
 //ZOID
-		if (ctf->value)
-			CTFInit();
+	if (ctf->value)
+		CTFInit();
 //ZOID
 }
 

@@ -1949,7 +1949,7 @@ typedef struct ctfgame_s
 	int total1, total2; // these are only set when going into intermission!
 	int players1;	// team1 count
 	int players2;	// team2 count
-	int players3;	// total player count
+	int players_total;	// total player count
 	int	specs;	// spectator count filled by CountSpecClients
 	float last_flag_capture;
 	int last_capture_team;
