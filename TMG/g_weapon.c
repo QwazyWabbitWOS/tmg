@@ -849,7 +849,8 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 	edict_t		*ignore;
 	int			mask;
 	qboolean	water;
-	float		dist, inc=128;
+	float		dist;
+	float		inc=128;
 	int			j=0;
 	int			k;
 	char		string[1024];

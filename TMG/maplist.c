@@ -93,7 +93,7 @@ qboolean Maplist_CheckStockmaps(char *thismap)
 qboolean Maplist_CheckFileExists(char *mapname)
 {
 	FILE *mf;
-	char buffer[MAX_QPATH + 1];
+	char buffer[MAX_QPATH];
 	
 	// check basedir
 	sprintf(buffer, "%s/baseq2/maps/%s.bsp", basedir->string, mapname);

@@ -433,12 +433,7 @@ The timelimit or fraglimit has been exceeded
 void EndDMLevel (void)
 {
 	edict_t		*ent = NULL;
- 	
-	//if (deathmatch->value && ctf->value)
-	//	CTFCalcScores();
-
-	//if(highscores->value)
-	//	SaveHighScores();
+ 	int	votedmap = NO_MAPVOTES;
 
 	// stay on same level flag
 	if (dmflag & DF_SAME_LEVEL)
@@ -468,14 +463,11 @@ void EndDMLevel (void)
 
 	if (mapvote->value && !ent)
 	{
-		//gi.dprintf ("Z. map to be voted on is %s\n",
-		//		   maplist->mapname[maplist->currentmapvote]);
-
 		ent = G_Spawn ();
 		ent->classname = "target_changelevel";
-		MaplistNextMap(ent);
+		votedmap = MaplistNextMap(ent);
 
-		if (!Maplist_CheckFileExists(ent->map))
+		if (votedmap != NO_MAPVOTES && !Maplist_CheckFileExists(ent->map))
 		{
 			gi.bprintf(PRINT_CHAT,"Map %s does not exist on server, reverting to last map.\n", ent->map);
 			ent->map = level.mapname;
@@ -485,9 +477,6 @@ void EndDMLevel (void)
 
 		if(mapscrewed)
 			ent = NULL;
-
-		//gi.dprintf("6 match_state_end = %f, level.time = %f, votetime = %f\n",
-		//		  match_state_end, level.time, votetime);
 
 		votetime = 0;
 		if (ent != NULL)
@@ -778,7 +767,7 @@ void G_RunFrame (void)
 	{
 		//if (ceil(match_state_end - level.time) < 11)
 		//	DbgPrintf("5 match_state_end = %f, level.time = %f, votetime = %f\n", match_state_end, level.time, votetime);
-		if((votetime > 0) && (level.time+2 > votetime)) //check for votes and exit intermission
+		if((votetime > 0) && (level.time + 2 > votetime)) //check for votes and exit intermission
 		{
 			//DbgPrintf("4 match_state_end = %f, level.time = %f, votetime = %f\n", match_state_end, level.time, votetime);
 			EndDMLevel ();

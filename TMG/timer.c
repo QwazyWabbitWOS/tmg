@@ -192,7 +192,7 @@ void CountDown()
 
 	// how long left ?
 	seconds_left = (long) ceil(match_state_end - level.time);
-	DbgPrintf("%d %f %f\n", seconds_left, match_state_end, level.time);
+	//DbgPrintf("%d %f %f\n", seconds_left, match_state_end, level.time);
 	// ignore if <0 seconds
 	if (seconds_left < 0)
 		return;
@@ -319,7 +319,7 @@ void CheckState()
 
 		level.newframenum = 0;
 		level.allowpickup = level.time + 1;
-		gi.dprintf("Match Started!!\n");
+		gi.dprintf("Match Started!! Level: %s\n", level.mapname);
 
 		//BOTZ spawning
 		if(use_bots->value)

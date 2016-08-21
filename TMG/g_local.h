@@ -41,7 +41,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.18"
+#define MOD_VERSION "0.2.19"
 #define MOD "TMG_MOD"
 // protocol bytes that can be directly added to messages
 #define	svc_muzzleflash		1

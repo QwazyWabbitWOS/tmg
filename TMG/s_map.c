@@ -2,8 +2,6 @@
 #include "s_map.h"
 #include "performance.h"
 
-#define DEBUG_SMAP 0
-
 MAP_ENTRY   *mdsoft_map = NULL;
 
 maplist_t	*maplist;
@@ -63,12 +61,6 @@ void mdsoft_InitMaps(void)
  FIXME: find a way to use gi.TagMalloc instead.
 
  BUGS: 
- If any map in the maplist has min players set
- to 0, the s_map gets stuck on that map and won't
- rotate to another unless voted out of the condition.
- Avoid by setting min players to 2 or more.
- Should we set min to 1 or 2 by default? Needs testing.
-
  Map search can fail while indexing through the list.
  This failure mode should not be possible. 
  Failure to select a map in the list should never 
@@ -78,15 +70,6 @@ void mdsoft_InitMaps(void)
  go through gyrations to fall back to current map
  until human players break the cycle by voting
  a map.
-
- Maplist must set both min and max or else selection
- of the map will never occur. (Setting min and not max
- causes selection fail because max <= min.)
- Possible fix, set program default max = maxclients->value.
-
- Search for map fails if min/max players are not
- set on any maps. Function skips two maps in the 
- list and picks the next.
 
  Editorial comment: 
  This function is entirely too tricky for its 
@@ -98,7 +81,7 @@ void mdsoft_InitMaps(void)
  3. Verify selected map file exists, report 
     and reselect if it doesn't.
  4. Set next map.
- 
+
  */
 
 edict_t *mdsoft_NextMap( void )
@@ -173,12 +156,13 @@ edict_t *mdsoft_NextMap( void )
 
 				for (i = 0; i < maplist->nummaps; i++)
 				{
-					if (DEBUG_SMAP)
-						DbgPrintf("Map loaded: %s \"%s\"\n",
-								maplist->mapname[i], maplist->mapnick[i]);
+					if (map_debug->value)
+						DbgPrintf("Map loaded: %s \"%s\" %d %d\n",
+								mdsoft_map[i].aFile, mdsoft_map[i].aName,
+								mdsoft_map[i].min, mdsoft_map[i].max);
 				}
 
-				if (DEBUG_SMAP)
+				if (map_debug->value)
 					DbgPrintf("%d maps loaded.\n", maplist->nummaps);
 
 				fclose( fpFile );
@@ -225,7 +209,7 @@ edict_t *mdsoft_NextMap( void )
 						count++;
 				}
 
-				if (DEBUG_SMAP)
+				if (map_debug->value)
 					DbgPrintf ("MAP CHANGE: Count = %d \n", count );
 
 				do 
@@ -260,7 +244,7 @@ edict_t *mdsoft_NextMap( void )
 				/* Could not select an appropriate map */
 				if(point == mdsoft_map_last)
 				{
-					if (DEBUG_SMAP)
+					if (map_debug->value)
 						DbgPrintf("Map could not be found, "
 						"map_sought %d, point %d name %s\n", 
 						map_sought, point, mdsoft_map[map_sought].aName);
@@ -305,13 +289,14 @@ edict_t *mdsoft_NextMap( void )
 			ent->classname = "target_changelevel";
 			ent->map = &mdsoft_map[mdsoft_map_last].aFile[0];
 
+			if (map_debug->value)
+				DbgPrintf ("MAP CHANGE: Selected = %d \n", mdsoft_map_last);
+
 			if(map_debug->value)
 			{
 				gi.bprintf (PRINT_HIGH, "MAP CHANGE: %d ", mdsoft_map_last );
 				gi.bprintf (PRINT_HIGH, &mdsoft_map[mdsoft_map_last].aFile[0] );
-
-				gi.bprintf (PRINT_HIGH,
-							" [min = %d,max = %d, players = %d]\n",
+				gi.bprintf (PRINT_HIGH, " [min = %d, max = %d, players = %d]\n",
 							mdsoft_map[mdsoft_map_last].min,
 							mdsoft_map[mdsoft_map_last].max,
 							count );

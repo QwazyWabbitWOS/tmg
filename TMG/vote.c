@@ -30,7 +30,7 @@ int MapMaxVotes(void)
 	int index;
 
 	numvotes = 0;
-	index = -1;
+	index = NO_MAPVOTES;
 	i = 0;
 
 	while (i < maplist->nummaps)
@@ -78,10 +78,8 @@ void ClearMapList(void)
 	ClearMapVotes();
 }
 
-
-// MaplistNextMap
 // Choose the next map in the list, or use voting system
-void MaplistNextMap(edict_t *ent)
+int MaplistNextMap(edict_t *ent)
 {
 	int votemap;
 	int i = 0;
@@ -90,49 +88,11 @@ void MaplistNextMap(edict_t *ent)
 
 	DumpMapVotes();
 
-	//	j = maplist->currentmap;
-
-	/*	switch ((int)map_randomize->value)        // choose next map in list
-	 {
-	 case 0:        // sequential rotation
-		if (maplist->nummaps > 1)
-		{
-	 do
-	 {
-	 i = (j + 1) % maplist->nummaps;
-	 j++;
-	 if(j > maplist->nummaps+1)
-	 {
-	 //let the blank mapname check reset us to start of file
-	 i= maplist->currentmap+1;
-	 break;
-	 }
-	 } while ((int)mapvote->value);
-		}
-		else
-	 i = maplist->currentmap+1;
-		break;
-	 case 1:     // random rotation
-		if (maplist->nummaps > 1)
-		{
-	 do
-	 {
-	 i = (int) (random() * maplist->nummaps);
-	 } while (i == j);
-		}
-		else
-	 i = 0;
-		break;
-	 default:       // should never happen, but set to first map if it does
-		i=0;
-	 } // end switch
-	 */
-
 	//See if map voting is on
 	if (mapvote->value)
 	{
 		votemap = MapMaxVotes();
-		if (votemap >= 0)	//Yes there was one picked
+		if (votemap != NO_MAPVOTES)	//Yes, there was one picked
 		{
 			i = votemap;
 			end = strlen(maplist->mapname[i]);
@@ -152,5 +112,6 @@ void MaplistNextMap(edict_t *ent)
 		maplist->currentmap = i;
 		ent->map = maplist->mapname[i];
 	}
+	return votemap;
 }
 
