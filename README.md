@@ -1,7 +1,7 @@
 ### What is this repository for? ###
 
 * This is TMG for Quake II, Railwarz CTF with Eraser bot support.
-* Version 2.12
+* Version 2.19
 
 ### How do I get set up? ###
 
