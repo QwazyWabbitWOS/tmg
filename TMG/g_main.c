@@ -17,6 +17,7 @@
 #include "highscore.h"
 #include "hud.h"
 #include "maplist.h"
+#include "log_manager.h"
 
 game_locals_t	game;
 level_locals_t	level;
@@ -676,7 +677,16 @@ void G_RunFrame (void)
 	edict_t	*ent, *e;
 
 	botdetection = (int) sv_botdetection->value;
-	
+
+	// every 10th frame do logfile management
+	if (level.framenum % 10 == 0)
+	{
+		if (Log_CheckLocalMidnight())
+		{
+			Log_RenameConsoleLog();
+		}
+	}
+
 	level.framenum++;
 	level.time = level.framenum*FRAMETIME;
 	level.newframenum++;

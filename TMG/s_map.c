@@ -289,11 +289,9 @@ edict_t *mdsoft_NextMap( void )
 			ent->classname = "target_changelevel";
 			ent->map = &mdsoft_map[mdsoft_map_last].aFile[0];
 
-			if (map_debug->value)
-				DbgPrintf ("MAP CHANGE: Selected = %d \n", mdsoft_map_last);
-
 			if(map_debug->value)
 			{
+				DbgPrintf ("MAP CHANGE: Selected = %d \n", mdsoft_map_last);
 				gi.bprintf (PRINT_HIGH, "MAP CHANGE: %d ", mdsoft_map_last );
 				gi.bprintf (PRINT_HIGH, &mdsoft_map[mdsoft_map_last].aFile[0] );
 				gi.bprintf (PRINT_HIGH, " [min = %d, max = %d, players = %d]\n",

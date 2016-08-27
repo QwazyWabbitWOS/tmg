@@ -247,6 +247,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="log_manager.c" />
     <ClCompile Include="maplist.c" />
     <ClCompile Include="m_move.c">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -336,6 +337,7 @@
     <ClInclude Include="g_trigger.h" />
     <ClInclude Include="highscore.h" />
     <ClInclude Include="hud.h" />
+    <ClInclude Include="log_manager.h" />
     <ClInclude Include="maplist.h" />
     <ClInclude Include="m_player.h" />
     <ClInclude Include="performance.h" />

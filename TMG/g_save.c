@@ -11,6 +11,7 @@
 #include "bot.h"
 #include "g_ctf.h"
 #include "highscore.h"
+#include "log_manager.h"
 
 //RAV
 #include "gslog.h"	//	StdLog - Mark Davies
@@ -278,7 +279,7 @@ void InitGame (void)
 	lights_out = gi.cvar ("lights_out", "1", CVAR_LATCH);
 
 	InitHighScores();
-
+	Log_Init_vars();
 	mapvote = gi.cvar("mapvote", "1", 0);
 
 	rcon = gi.cvar ("rcon_password", "", 0);
