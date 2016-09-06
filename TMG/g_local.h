@@ -24,7 +24,7 @@
 #include <ctype.h>
 
 #include "q_shared.h"
-//#include "performance.h"
+#include "performance.h"
 
 // define GAME_INCLUDE so that game.h does not define the
 // short, server-visible gclient_t and edict_t structures,

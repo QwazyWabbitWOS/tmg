@@ -33,7 +33,8 @@ qboolean Get_YenPos(char *Buff,int *curr)
 			*curr = i;
 			return true;
 		}
-		if(Buff[i] == '\t') Buff[i] = 0;
+		if(Buff[i] == '\t') 
+			Buff[i] = 0;
 		i++;
 	}
 
@@ -66,8 +67,8 @@ void Adjust_Bot_Number (void)
 	int	i;
 	
 	//  check if we need to add a bot
-	//for a dm server that wants to be "full"
-	//but allow clients # to dictate bot comming
+	// for a dm server that wants to be "full"
+	// but allow clients # to dictate bot coming
 	// and going 
 	
 	if(match_state != STATE_PLAYING)
@@ -361,32 +362,37 @@ void Load_BotInfo(void)
 	char	MessageSection[50];
 	char	Buff[1024];
 	int		i,j,k,l;
-
+	char	filename[MAX_QPATH];
 	FILE	*fp;
 
 	SpawnWaitingBots = 0;
 	ListedBotCount = 0;
 
 	//init message
-	memset(ClientMessage,0,sizeof(ClientMessage));
+	memset(ClientMessage, 0, sizeof(ClientMessage));
+
 	//set message section
-	if(!ctf->value && chedit->value) strcpy(MessageSection,MESS_CHAIN_DM);
-	else if(ctf->value && !chedit->value) strcpy(MessageSection,MESS_CTF);
-	else if(ctf->value && chedit->value) strcpy(MessageSection,MESS_CHAIN_CTF);
-	else strcpy(MessageSection,MESS_DEATHMATCH);
+	if(!ctf->value && chedit->value) 
+		strcpy(MessageSection, MESS_CHAIN_DM);
+	else if(ctf->value && !chedit->value) 
+		strcpy(MessageSection, MESS_CTF);
+	else if(ctf->value && chedit->value) 
+		strcpy(MessageSection, MESS_CHAIN_CTF);
+	else 
+		strcpy(MessageSection, MESS_DEATHMATCH);
 
 	//init botlist
 	ListedBots = 0;
 	j = 1;
-	for(i = 0;i < MAXBOTS;i++)
+	for(i = 0; i < MAXBOTS; i++)
 	{
 		//netname
-		sprintf(Buff,"TMGBot[%i]",i);
-		strcpy(Bot[i].netname,Buff);
+		sprintf(Buff,"TMGBot[%i]", i);
+		strcpy(Bot[i].netname, Buff);
 		//model
-		strcpy(Bot[i].model,"female");
+		strcpy(Bot[i].model, "female");
 		//skin
-		strcpy(Bot[i].model,"athena");
+		strcpy(Bot[i].model, "athena");
 
 		//param
 		Bot[i].param[BOP_WALK] = 0;
@@ -402,45 +408,53 @@ void Load_BotInfo(void)
 		Bot[i].spflg = 0;
 		//team
 		Bot[i].team = j;
-		if(++j > 2) j = 1;
+		if(++j > 2) 
+			j = 1;
 	}
 
 	//botlist value
 	botlist = gi.cvar ("botlist", "default", CVAR_LATCH);
-//	gamepath = gi.cvar ("game", "0", CVAR_NOSET);
 
 	//load info
-	sprintf(Buff, "%s/%s/%s/TMGBot.cfg", basedir->string, game_dir->string, cfgdir->string);
+	sprintf(Buff, "%s/%s/%s/TMGBot.cfg", 
+		basedir->string, game_dir->string, cfgdir->string);
 
-	//sprintf(Buff,"./%s/TMGbot.cfg",gamepath->string);
-	fp = fopen(Buff,"rt");
+	fp = fopen(Buff, "rt");
 	if(fp == NULL)
 	{
-		gi.dprintf("TMGbot.cfg: file not found.\n");
+		gi.dprintf("File not found %s\n", Buff);
+		gi.dprintf("Using default bot configuration.\n");
 		return;
 	}
 	else
 	{
+		strcpy(filename, Buff);
 		fseek( fp, 0, SEEK_SET);
 		while(1)
 		{
-			if(fgets( Buff, sizeof(Buff), fp ) == NULL) goto MESS_NOTFOUND;
-			if(!strnicmp(MessageSection,Buff,strlen(MessageSection))) 
+			if(fgets( Buff, sizeof(Buff), fp ) == NULL) 
+				goto MESS_NOTFOUND;
+			if(!strnicmp(MessageSection, Buff, strlen(MessageSection))) 
 				break;
 		}
 
 		while(1)
 		{
-			if(fgets( Buff, sizeof(Buff), fp ) == NULL) goto MESS_NOTFOUND;
-			if(Buff[0] == '.' || Buff[0] == '[' || Buff[0] == '#') break;
+			if(fgets( Buff, sizeof(Buff), fp ) == NULL) 
+				goto MESS_NOTFOUND;
+			if(Buff[0] == '.' || Buff[0] == '[' || Buff[0] == '#')
+				break;
 			k = strlen(Buff);
-			if((strlen(Buff) + strlen(ClientMessage)) > MAX_STRING_CHARS - 1) break;
-			strcat(ClientMessage,Buff);
+			if((strlen(Buff) + strlen(ClientMessage)) > MAX_STRING_CHARS - 1)
+				break;
+			strcat(ClientMessage, Buff);
 		}
+
 MESS_NOTFOUND:
-		//if(botlist->string == NULL) strcpy(MessageSection,BOTLIST_SECTION_DM);
+		//if(botlist->string == NULL) 
+		//	strcpy(MessageSection, BOTLIST_SECTION_DM);
 		//else
-		sprintf(MessageSection,"[%s]",botlist->string);
+		sprintf(MessageSection, "[%s]", botlist->string);
 		fseek( fp, 0, SEEK_SET);
 		while(1)
 		{
@@ -449,99 +463,127 @@ MESS_NOTFOUND:
 				MessageSection[0] = 0;
 				break;
 			}
-			if(!strnicmp(MessageSection,Buff,strlen(MessageSection))) 
+			if(!strnicmp(MessageSection, Buff, strlen(MessageSection)))
 				break;
 		}
 		//when not found
 		if(MessageSection[0] == 0)
 		{
-			strcpy(MessageSection,BOTLIST_SECTION_DM);
+			strcpy(MessageSection, BOTLIST_SECTION_DM);
 			fseek( fp, 0, SEEK_SET);
 			while(1)
 			{
-				if(fgets( Buff, sizeof(Buff), fp ) == NULL) goto BOTLIST_NOTFOUND;
-				if(!strnicmp(MessageSection,Buff,strlen(MessageSection))) 
+				if(fgets( Buff, sizeof(Buff), fp ) == NULL) 
+					goto BOTLIST_NOTFOUND;
+				if(!strnicmp(MessageSection, Buff, strlen(MessageSection))) 
 					break;
 			}
 		}
 
-		i = 0;
-		for(i = 0;i < MAXBOTS;i++)
+		for(i = 0; i < MAXBOTS; i++)
 		{
-			if(fgets( Buff, sizeof(Buff), fp ) == NULL) break;
-			if(Buff[0] == '[') break;
-			if(Buff[0] == '\n' || Buff[0] == '#') {i--;continue;}
-			j = 2,k = 1;
+			if(fgets( Buff, sizeof(Buff), fp ) == NULL)
+				break;
+			if(Buff[0] == '[')
+				break;
+			if(Buff[0] == '\n' || Buff[0] == '#')
+			{
+				i--;
+				continue;
+			}
+			j = 2, k = 1;
 			if(!strncmp(Buff,"\\\\",2))
 			{
 				//netname
-				if(Get_YenPos(Buff,&k))
+				if(Get_YenPos(Buff, &k))
 				{
 					Buff[k] = 0;
-					if(strlen(&Buff[j]) < 21) strcpy(Bot[i].netname,&Buff[j]);
+					if(strlen(&Buff[j]) < 21) 
+						strcpy(Bot[i].netname, &Buff[j]);
 					j = k + 1;
 				}
-				else break;
+				else 
+					break;
 				//model name
-				if(Get_YenPos(Buff,&k))
+				if(Get_YenPos(Buff, &k))
 				{
 					Buff[k] = 0;
-					if(strlen(&Buff[j]) < 21) strcpy(Bot[i].model,&Buff[j]);
+					if(strlen(&Buff[j]) < 21) 
+						strcpy(Bot[i].model, &Buff[j]);
 					j = k + 1;
 					k++;
 				}
-				else break;
+				else 
+					break;
 				//skin name
-				if(Get_YenPos(Buff,&k))
+				if(Get_YenPos(Buff, &k))
 				{
 					Buff[k] = 0;
-					if(strlen(&Buff[j]) < 21) strcpy(Bot[i].skin,&Buff[j]);
+					if(strlen(&Buff[j]) < 21) 
+						strcpy(Bot[i].skin, &Buff[j]);
 					j = k + 1;
 					k++;
 				}
-				else break;
+				else 
+					break;
+
 				for(l = 0;l < MAXBOP;l++)
 				{
 					//param0-7
-					if(Get_YenPos(Buff,&k))
+					if(Get_YenPos(Buff, &k))
 					{
 						Buff[k] = 0;
 						Bot[i].param[l] = (unsigned char)atoi(&Buff[j]);
 						j = k + 1;
 						k++;
 					}
-					else break;
+					else 
+						break;
 				}
-				if(l < MAXBOP) break;
+				if(l < MAXBOP) 
+					break;
 				//team
-				if(Get_YenPos(Buff,&k))
+				if(Get_YenPos(Buff, &k))
 				{
 					Buff[k] = 0;
-					if(Buff[j] == 'R') Bot[i].team = 1;
-					else if(Buff[j] == 'B') Bot[i].team = 2;
-					else Bot[i].team = 1;
+					if(Buff[j] == 'R') 
+						Bot[i].team = 1;
+					else if(Buff[j] == 'B') 
+						Bot[i].team = 2;
+					else 
+						Bot[i].team = 1;
 					j = k + 1;
 					k++;
 				}
-				else break;
+				else 
+					break;
 				//auto spawn
 				if(Get_YenPos(Buff,&k))
 				{
 					Buff[k] = 0;
 					Bot[i].spflg = atoi(&Buff[j]);
-//gi.dprintf("%i %s\n",Bot[i].spflg,&Buff[j]);
-					if(Bot[i].spflg == BOT_SPRESERVED && autospawn->value && !chedit->value) SpawnWaitingBots++; 
-					else Bot[i].spflg = BOT_SPAWNNOT;
+					//gi.dprintf("%i %s\n",Bot[i].spflg,&Buff[j]);
+					if(Bot[i].spflg == BOT_SPRESERVED && autospawn->value && !chedit->value)
+						SpawnWaitingBots++; 
+					else 
+						Bot[i].spflg = BOT_SPAWNNOT;
 				}
-				else break;
+				else 
+					break;
 				ListedBots++;
+			}
+			else
+			{
+				gi.dprintf("Error loading bot configuration!\n");
+				gi.dprintf("Error line is: %s", Buff);
+				gi.dprintf("Check %s\n", filename);
 			}
 		}
 	}
 BOTLIST_NOTFOUND:
 	fclose(fp);
 
-	gi.dprintf("%i bots parsed\n",ListedBots);
+	gi.dprintf("%i bots parsed\n", ListedBots);
 	spawncycle = level.time + FRAMETIME * 100;
 }
 
@@ -712,7 +754,7 @@ void InitializeBot (edict_t *ent, int botindex)
 
 	client = ent->client;
 
-	memset (&client->zc,0,sizeof(zgcl_t));
+	memset (&client->zc, 0, sizeof(zgcl_t));
 	memset (&client->pers, 0, sizeof(client->pers));
 	memset (&client->resp, 0, sizeof(client->resp));
 
@@ -722,7 +764,8 @@ void InitializeBot (edict_t *ent, int botindex)
 	client->resp.enterframe = level.framenum;
 
 	//set netname model skil and CTF team
-	sprintf(pinfo,"\\rate\\25000\\msg\\1\\fov\\90\\skin\\%s/%s\\name\\%s\\hand\\0",Bot[botindex].model,Bot[botindex].skin,Bot[botindex].netname);
+	sprintf(pinfo,"\\rate\\25000\\msg\\1\\fov\\90\\skin\\%s/%s\\name\\%s\\hand\\0",
+			Bot[botindex].model,Bot[botindex].skin,Bot[botindex].netname);
 	//ent->client->resp.ctf_team = Bot[botindex].team; //CTF_TEAM1,CTF_TEAM2
 	
 	if(ctf->value)
@@ -757,7 +800,8 @@ void PutBotInServer (edict_t *ent)
 	int			i,j,entcount;
 	gitem_t		*item;
 	gclient_t	*client;
-	vec3_t	spawn_origin, spawn_angles;
+	vec3_t	spawn_origin;
+	vec3_t	spawn_angles;
 	trace_t		rs_trace;
 	gitem_t	    *ammo;
 	zgcl_t		*zc;
@@ -1198,7 +1242,7 @@ if (sa_slugs->value)
 
 	ent->prethink = NULL;
 	ent->think = Bot_Think;
-	ent->nextthink = level.time + FRAMETIME;
+	ent->nextthink = level.time + FRAMETIME * 5;	//QW// hold for 1/2 second
 	ent->svflags /*|*/= SVF_MONSTER ;
 	ent->s.renderfx = 0;
 	ent->s.effects = 0;
@@ -1206,10 +1250,11 @@ if (sa_slugs->value)
 	SelectSpawnPoint (ent, spawn_origin, spawn_angles);
 	VectorCopy (spawn_origin, ent->s.origin);
 	VectorCopy (spawn_angles, ent->s.angles);
-//	spawn_origin[2] -= 300;
+	spawn_origin[2] += 1;
 	rs_trace = gi.trace(ent->s.origin,ent->mins,ent->maxs,spawn_origin,ent,MASK_SOLID);
-	if(!rs_trace.allsolid) VectorCopy (rs_trace.endpos, ent->s.origin);
-	VectorSet(ent->velocity,0,0,0);
+	if(!rs_trace.allsolid) 
+		VectorCopy (rs_trace.endpos, ent->s.origin);
+	VectorClear(ent->velocity);
 	ent->moveinfo.speed = 0;
 	ent->groundentity = rs_trace.ent;
 	ent->client->ps.pmove.pm_flags &= ~PMF_DUCKED;
@@ -1301,9 +1346,8 @@ qboolean SpawnBot(int i)
 	edict_t		*bot,*ent;
 	int			k,j;
 
-
-//gi.cprintf (NULL,PRINT_HIGH,"Called %s %s %s?n",Bot[i].netname,Bot[i].model,Bot[i].skin);
-//return false;
+	DbgPrintf ("Called %s %s %s %s %d\n", __FUNCTION__, 
+			Bot[i].netname, Bot[i].model, Bot[i].skin, i);
 
 	if(	Get_NumOfPlayer () >= game.maxclients )
 	{
@@ -1368,12 +1412,12 @@ qboolean SpawnBot(int i)
 //
 //	int i	index of bot list
 //
+// Count the number of active bots and spawn
+// new ones up to the number of waiting bots.
 //----------------------------------------------------------------
 void Bot_SpawnCall(void)
 {
-
 	int i = GetNumBots();
-	i++;
 
 	if(SpawnBot(i))
 		Bot[i].spflg = BOT_SPAWNED;
@@ -1384,6 +1428,7 @@ void Bot_SpawnCall(void)
 	}
 	SpawnWaitingBots--;
 }
+
 //----------------------------------------------------------------
 //Spawn Bot Reserving
 //

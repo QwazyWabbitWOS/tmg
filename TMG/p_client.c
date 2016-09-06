@@ -1737,8 +1737,7 @@ void	SelectSpawnPoint (edict_t *ent, vec3_t origin, vec3_t angles)
 	}
 
 	VectorCopy (spot->s.origin, origin);
-	if(ent->bot_client) origin[2] += 32;
-	else origin[2] += 9;
+	origin[2] += 9;
 	VectorCopy (spot->s.angles, angles);
 }
 
