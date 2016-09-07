@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>+set dedicated 1 +set game tmg_mod +set sv_gamedebug 0 +set ctf 1 +set developer 0 +exec railwarz.cfg</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>+set dedicated 1 +set game ctf +set sv_gamedebug 0 +set ctf 1 +set developer 0 +exec railwarz.cfg</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>c:\quake2\r1q2</LocalDebuggerCommand>
     <LocalDebuggerWorkingDirectory>c:\quake2</LocalDebuggerWorkingDirectory>
@@ -9,7 +9,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerCommand>c:\quake2\r1q2</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>+set dedicated 1 +set game tmg_mod +set sv_gamedebug 1 +set developer 1 +exec railwarz.cfg</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>+set dedicated 1 +set game ctf +set sv_gamedebug 1 +set developer 1 +exec railwarz.cfg</LocalDebuggerCommandArguments>
     <LocalDebuggerWorkingDirectory>c:\quake2</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
 </Project>
