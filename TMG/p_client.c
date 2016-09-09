@@ -831,10 +831,13 @@ void QuadTimeout (edict_t *ent)
 	int	i;
 
 	//gi.dprintf("A quad damage has expired!\n");
-	for_each_player(e, i)
+	for (i = 1; i <= maxclients->value; i++)
 	{
-		//safe_centerprintf(e, "A quad damage has expired!\n");
-		gi.sound (e, CHAN_AUTO, gi.soundindex ("items/quadexp.wav"), 1, ATTN_NONE, 0);
+		if ((e = &g_edicts[i]) && e && e->inuse && !e->bot_client)
+		{
+			//safe_centerprintf(e, "A quad damage has expired!\n");
+			gi.sound (e, CHAN_AUTO, gi.soundindex ("items/quadexp.wav"), 1, ATTN_NONE, 0);
+		}
 	}
 	G_FreeEdict(ent);
 }

@@ -14,16 +14,12 @@
 extern float myrand; // Note: Continuous random generation is CPU expensive
 extern float myrandom;
 
-qboolean Get_YenPos(char *Buff,int *curr)
+qboolean Get_YenPos(char *Buff, int *curr)
 {
-	int i;
-
-	i = *curr + 1;
-
+	int i = *curr + 1;
 	while(1)
 	{
-//		if(i >= strlen(Buff)) return false;
-		if(Buff[i] == 0 || Buff[i] == 10 || Buff[i] == 13)
+		if(Buff[i] == '\0' || Buff[i] == '\n' || Buff[i] == '\r')
 		{
 			*curr = i;
 			return true;
@@ -33,12 +29,11 @@ qboolean Get_YenPos(char *Buff,int *curr)
 			*curr = i;
 			return true;
 		}
-		if(Buff[i] == '\t') 
-			Buff[i] = 0;
+		if(Buff[i] == '\t')
+			Buff[i] = '\0';
 		i++;
 	}
-
-  return false;
+	return false;
 }
 //======================================
 //RaVeN  12-18-99
@@ -49,8 +44,8 @@ qboolean Get_YenPos(char *Buff,int *curr)
 int GetNumBots(void)
 {
 	int i;
-
 	int botCount = 0;
+
 	for (i = 1; i <= game.maxclients; i++)
 	{
 		edict_t* ent = g_edicts + i;
@@ -59,7 +54,6 @@ int GetNumBots(void)
 	}
 	return botCount;
 }
-
 
 void Adjust_Bot_Number (void)
 {
@@ -596,16 +590,17 @@ BOTLIST_NOTFOUND:
 
 int Get_NumOfPlayer (void) //Bots plus players
 {
-	int i,j;
+	int i;
 	edict_t *ent;
 
-	j = 0;
-	for (i=0 ; i<maxclients->value ; i++)
+	int count = 0;
+	for (i = 0; i < maxclients->value; i++)
 	{
 		ent = g_edicts + 1 + i;
-		if (ent->inuse)	j++;
+		if (ent->inuse)
+			count++;
 	}
-	return j;
+	return count;
 }
 
 //----------------------------------------------------------------
@@ -1406,12 +1401,6 @@ qboolean SpawnBot(int i)
 }
 
 //----------------------------------------------------------------
-//Spawn Call
-//
-// spawn bots
-//
-//	int i	index of bot list
-//
 // Count the number of active bots and spawn
 // new ones up to the number of waiting bots.
 //----------------------------------------------------------------

@@ -62,42 +62,46 @@ void RestartLevel()
 	hstime = level.time - 10.0;
 	mapvoteactive = false;
 
-	for_each_player(player, i)
+	for (i = 1; i <= maxclients->value; i++)
 	{
-		player->client->resp.score = 0;
-		player->client->resp.frags = 0;
-		player->client->resp.spree = 0;
-		player->client->resp.deaths = 0;
-		player->client->pers.db_hud = true;
-		if(player->client->pers.pl_state == PL_WARMUP)
-			player->client->pers.pl_state = PL_NEEDSPAWN;
-		player->client->resp.startframe = level.newframenum;
-		if (ctf->value)
+		player = g_edicts + i;
+		if (player && player->inuse && !player->bot_client)
 		{
-			if ((!flag1_item || !flag2_item) && ctf->value)
-				CTFInit();
-			if (player->client->pers.inventory[ITEM_INDEX(flag1_item)])
+			player->client->resp.score = 0;
+			player->client->resp.frags = 0;
+			player->client->resp.spree = 0;
+			player->client->resp.deaths = 0;
+			player->client->pers.db_hud = true;
+			if(player->client->pers.pl_state == PL_WARMUP)
+				player->client->pers.pl_state = PL_NEEDSPAWN;
+			player->client->resp.startframe = level.newframenum;
+			if (ctf->value)
 			{
-				dropped = Drop_Item(player, flag1_item);
-				player->client->pers.inventory[ITEM_INDEX(flag1_item)] = 0;
-				my_bprintf(PRINT_HIGH, "%s lost the %s flag!\n",
-						   player->client->pers.netname, CTFTeamName(CTF_TEAM1));
+				if ((!flag1_item || !flag2_item) && ctf->value)
+					CTFInit();
+				if (player->client->pers.inventory[ITEM_INDEX(flag1_item)])
+				{
+					dropped = Drop_Item(player, flag1_item);
+					player->client->pers.inventory[ITEM_INDEX(flag1_item)] = 0;
+					my_bprintf(PRINT_HIGH, "%s lost the %s flag!\n",
+						player->client->pers.netname, CTFTeamName(CTF_TEAM1));
+				}
+				else if (player->client->pers.inventory[ITEM_INDEX(flag2_item)])
+				{
+					dropped = Drop_Item(player, flag2_item);
+					player->client->pers.inventory[ITEM_INDEX(flag2_item)] = 0;
+					my_bprintf(PRINT_HIGH, "%s lost the %s flag!\n",
+						player->client->pers.netname, CTFTeamName(CTF_TEAM2));
+				}
+				if (dropped)
+				{
+					dropped->think = G_FreeEdict;
+					dropped->timestamp = level.time;
+					dropped->nextthink = level.time + FRAMETIME;
+				}
+				//JSW - clear flag carrier var
+				player->hasflag = 0;
 			}
-			else if (player->client->pers.inventory[ITEM_INDEX(flag2_item)])
-			{
-				dropped = Drop_Item(player, flag2_item);
-				player->client->pers.inventory[ITEM_INDEX(flag2_item)] = 0;
-				my_bprintf(PRINT_HIGH, "%s lost the %s flag!\n",
-						   player->client->pers.netname, CTFTeamName(CTF_TEAM2));
-			}
-			if (dropped)
-			{
-				dropped->think = G_FreeEdict;
-				dropped->timestamp = level.time;
-				dropped->nextthink = level.time + FRAMETIME;
-			}
-			//JSW - clear flag carrier var
-			player->hasflag = 0;
 		}
 	}
 }
@@ -205,7 +209,7 @@ void CountDown()
 		{
 			if (seconds_left > 60 && seconds_left < 301)  // five mins down ..
 				safe_bprintf (PRINT_HIGH,
-							  "%d minutes remaining.\n", seconds_left/60);
+				"%d minutes remaining.\n", seconds_left/60);
 		}
 	}
 	else	// final minute, countdown on screen !
@@ -216,52 +220,62 @@ void CountDown()
 			else
 				safe_bprintf (PRINT_HIGH, "FINAL MINUTE !\n");
 		//raven mapvoting
-			else if ((seconds_left == 2) &&
-					 mapvote->value && (maplist->nextmap == -1))
+		else if ((seconds_left == 2) &&
+			mapvote->value && (maplist->nextmap == -1))
+		{
+			safe_bprintf (3, "Use menu to vote for next map!\n");
+			FillMapNames();
+		}
+		else if (seconds_left == 30)
+			safe_bprintf (PRINT_HIGH, "30 seconds left\n");
+		else if (seconds_left == 20)
+			safe_bprintf (PRINT_HIGH, "20 seconds left\n");
+		else if (seconds_left == 11)
+		{
+			if (match_state == STATE_WARMUP)
+				safe_bprintf (PRINT_HIGH, "10 seconds left in Warmup\n");
+			else
 			{
-				safe_bprintf (3, "Use menu to vote for next map!\n");
-				FillMapNames();
-			}
-			else if (seconds_left == 30)
-				safe_bprintf (PRINT_HIGH, "30 seconds left\n");
-			else if (seconds_left == 20)
-				safe_bprintf (PRINT_HIGH, "20 seconds left\n");
-			else if (seconds_left == 11)
-			{
-				if (match_state == STATE_WARMUP)
-					safe_bprintf (PRINT_HIGH, "10 seconds left in Warmup\n");
-				else
-					for_each_player(player, i)
+				for (i = 1; i <= maxclients->value; i++)
 				{
-					gi.sound (player, CHAN_AUTO,
-							  gi.soundindex ("world/10_0.wav"),
-							  1, ATTN_NORM, 0);
+					player = g_edicts + i;
+					if (player && player->inuse && !player->bot_client)
+					{
+						gi.sound (player, CHAN_AUTO,
+							gi.soundindex ("world/10_0.wav"),
+							1, ATTN_NORM, 0);
+					}
 				}
 			}
+		}
 	}
 
 	// do K3WL stuff for the countdown to start.
 	if (match_state == STATE_COUNTDOWN && seconds_left <= 30)
 	{
 		// iterate thru all clients, count down by seconds now.
-		for_each_player(player, i)
+		for (i = 1; i <= maxclients->value; i++)
 		{
-			// show digits on the screen
-			player->client->ps.stats[STAT_COUNTDOWN] = seconds_left;
-
-			// play a sound during countdown phase
-			if (match_state == STATE_COUNTDOWN &&
-				seconds_left < 30 &&
-				seconds_left > 12)
-					gi.sound (player, CHAN_ITEM,
-							  gi.soundindex ("misc/secret.wav"),
-							  1, ATTN_NORM, 0);
-
-			if (match_state == STATE_COUNTDOWN && seconds_left == 10)
+			player = g_edicts + i;
+			if (player && player->inuse && !player->bot_client)
 			{
-				gi.sound (player, CHAN_AUTO,
-						  gi.soundindex ("world/10_0.wav"),
-						  1, ATTN_NORM, 0);
+				// show digits on the screen
+				player->client->ps.stats[STAT_COUNTDOWN] = seconds_left;
+
+				// play a sound during countdown phase
+				if (match_state == STATE_COUNTDOWN &&
+					seconds_left < 30 &&
+					seconds_left > 12)
+					gi.sound (player, CHAN_ITEM,
+					gi.soundindex ("misc/secret.wav"),
+					1, ATTN_NORM, 0);
+
+				if (match_state == STATE_COUNTDOWN && seconds_left == 10)
+				{
+					gi.sound (player, CHAN_AUTO,
+						gi.soundindex ("world/10_0.wav"),
+						1, ATTN_NORM, 0);
+				}
 			}
 		}
 	}
@@ -297,14 +311,17 @@ void CheckState()
 	//start game !
 	if (match_state == STATE_COUNTDOWN && level.time >= match_state_end)
 	{
-		for_each_player(player, i)
+		for (i = 1; i <= maxclients->value; i++)
 		{
-			if(player->client->pers.pl_state == PL_WARMUP)
-				player->client->pers.pl_state = PL_NEEDSPAWN;
+			player = g_edicts + i;
+			if (player && player->inuse && !player->bot_client)
+			{
+				if(player->client->pers.pl_state == PL_WARMUP)
+					player->client->pers.pl_state = PL_NEEDSPAWN;
 
-			player->client->resp.startframe = level.newframenum;
+				player->client->resp.startframe = level.newframenum;
+			}
 		}
-
 		match_state = STATE_PLAYING;
 		level.warmup = false;
 		if(timelimit->value > 0)
@@ -312,10 +329,10 @@ void CheckState()
 		else
 			match_state_end = level.time + 999 * 60;
 
-//		if (developer->value)
-//			gi.dprintf("2 match_state_end = %f, "
-//					   "level.time = %f, votetime = %f\n",
-//					   match_state_end, level.time, votetime);
+		//		if (developer->value)
+		//			gi.dprintf("2 match_state_end = %f, "
+		//					   "level.time = %f, votetime = %f\n",
+		//					   match_state_end, level.time, votetime);
 
 		level.newframenum = 0;
 		level.allowpickup = level.time + 1;
@@ -332,7 +349,7 @@ void CheckState()
 			if(!bot_num->value && use_bots->value)
 				wait_time = level.time + 5;	//spawning
 			kill_time = level.time + 10;	//removing
-											//end bot stuff
+			//end bot stuff
 		}
 	}
 }

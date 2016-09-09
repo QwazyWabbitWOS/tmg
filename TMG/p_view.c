@@ -507,7 +507,6 @@ static void
 		if (remaining == 10 && ((int)quad_notify->value & QUAD_NOTIFY_EXPIRE))
 		{
 			//gi.dprintf("A quad damage has expired!\n");
-			//for_each_player(e, i)
 			for (i = 1; i <= maxclients->value; i++)
 			{
 				if ((e = &g_edicts[i]) && e && e->inuse && !e->bot_client)
@@ -1346,7 +1345,6 @@ void ClientEndServerFrame (edict_t *ent)
 	//		//ERASER
 	//	}
 
-	//for_each_player(e, i)
 	for (i = 1; i <= maxclients->value; i++)
 	{
 		e = g_edicts + i;

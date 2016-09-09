@@ -807,10 +807,14 @@ void G_RunFrame (void)
 					ClientDisconnect(e);
 				}
 			}
-			
-			for_each_player(ent, i)
+
+			for (i = 1; i <= maxclients->value; i++)
 			{
-				stuffcmd(ent, "cmd hscore\n");//display it for all to view!!
+				if ((e = &g_edicts[i]) && e && e->inuse && !e->bot_client)
+				{
+					// display it for all to view!!
+					stuffcmd(ent, "cmd hscore\n");
+				}
 			}
 		}
 		if ((level.time >= level.intermissiontime + 11.0) && (hs_show == true))

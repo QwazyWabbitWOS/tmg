@@ -30,13 +30,13 @@ void CheckState(void);
  */
 void ServerInit (int resetall);
 
-#define for_each_playerbot(JOE_BLOGGS, INDEX) \
-for(INDEX = 1;INDEX <= maxclients->value; INDEX++) \
-	if ((JOE_BLOGGS = &g_edicts[INDEX]) && JOE_BLOGGS && JOE_BLOGGS->inuse)
+//#define for_each_playerbot(JOE_BLOGGS, INDEX) \
+//for(INDEX = 1;INDEX <= maxclients->value; INDEX++) \
+//	if ((JOE_BLOGGS = &g_edicts[INDEX]) && JOE_BLOGGS && JOE_BLOGGS->inuse)
 
-#define for_each_player(JOE_BLOGGS, INDEX) \
-for(INDEX = 1;INDEX <= maxclients->value; INDEX++) \
-	if ((JOE_BLOGGS = &g_edicts[INDEX]) && JOE_BLOGGS && JOE_BLOGGS->inuse && !JOE_BLOGGS->bot_client)
+//#define for_each_player(JOE_BLOGGS, INDEX) \
+//for(INDEX = 1;INDEX <= maxclients->value; INDEX++) \
+//	if ((JOE_BLOGGS = &g_edicts[INDEX]) && JOE_BLOGGS && JOE_BLOGGS->inuse && !JOE_BLOGGS->bot_client)
 
 #define STAT_COUNTDOWN          28
 

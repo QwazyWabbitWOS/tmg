@@ -241,7 +241,7 @@ static void Svcmd_Msg (void)
 	int line = 1;
 	char msg [480], msg1[40], msg2[40], msg3[40], msg4[40], msg5[40];
 	int i, j, k = 0, l = 0, m = 0, n = 0, o;
-	edict_t *e;
+	edict_t *ent;
 
 	if (gi.argc() < 3)
 	{
@@ -255,7 +255,7 @@ static void Svcmd_Msg (void)
 	{
 		switch (line)
 		{
-			case 1:
+		case 1:
 			{
 				if (strlen(msg1) + strlen(gi.argv(i)) > 39)
 				{
@@ -266,7 +266,7 @@ static void Svcmd_Msg (void)
 				j += sprintf(msg1 + j, " %s", gi.argv(i));
 				break;
 			}
-			case 2:
+		case 2:
 			{
 				if (strlen(msg2) + strlen(gi.argv(i)) > 39)
 				{
@@ -277,7 +277,7 @@ static void Svcmd_Msg (void)
 				k += sprintf(msg2 + k, " %s", gi.argv(i));
 				break;
 			}
-			case 3:
+		case 3:
 			{
 				if (strlen(msg3) + strlen(gi.argv(i)) > 39)
 				{
@@ -288,7 +288,7 @@ static void Svcmd_Msg (void)
 				l += sprintf(msg3 + l, " %s", gi.argv(i));
 				break;
 			}
-			case 4:
+		case 4:
 			{
 				if (strlen(msg4) + strlen(gi.argv(i)) > 39)
 				{
@@ -299,30 +299,30 @@ static void Svcmd_Msg (void)
 				m += sprintf(msg4 + m, " %s", gi.argv(i));
 				break;
 			}
-			case 5:
+		case 5:
 			{
 				if (strlen(msg5) + strlen(gi.argv(i)) > 39)
 				{
 					gi.dprintf("Message exceeds max length, "
-							   "message will be truncated.\n");
+						"message will be truncated.\n");
 					line = 6;
 					break;
 				}
 				n += sprintf(msg5 + n, " %s", gi.argv(i));
 				break;
 			}
-			default:
+		default:
 			{
 				break;
 			}
 		}
 	}
 
-	convert_string(msg1, 0, 127, 128, msg1);
-	convert_string(msg2, 0, 127, 128, msg2);
-	convert_string(msg3, 0, 127, 128, msg3);
-	convert_string(msg4, 0, 127, 128, msg4);
-	convert_string(msg5, 0, 127, 128, msg5);
+	highlight_text(msg1, NULL);
+	highlight_text(msg2, NULL);
+	highlight_text(msg3, NULL);
+	highlight_text(msg4, NULL);
+	highlight_text(msg5, NULL);
 
 	o = sprintf(msg, "%s\n", msg1);
 	if (line > 1)
@@ -334,14 +334,17 @@ static void Svcmd_Msg (void)
 	if (line > 4)
 		o += sprintf (msg + o, "%s\n", msg5);
 
-	for_each_player(e, i)
+	for (i = 1; i <= maxclients->value; i++)
 	{
-		safe_centerprintf(e,
-						  "Message from server administrator:\n\n%s", msg);
-		gi.sound (e, CHAN_AUTO,
-				  gi.soundindex ("misc/talk1.wav"), 1, ATTN_NONE, 0);
+		ent = &g_edicts[i];
+		if (ent && ent->inuse && !ent->bot_client)
+		{
+			safe_centerprintf(ent,
+				"Message from server administrator:\n\n%s", msg);
+			gi.sound (ent, CHAN_AUTO,
+				gi.soundindex ("misc/talk1.wav"), 1, ATTN_NONE, 0);
+		}
 	}
-
 }
 
 /*

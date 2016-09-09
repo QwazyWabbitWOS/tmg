@@ -958,15 +958,19 @@ void Cmd_Operators_f (edict_t *ent)
 	edict_t	*player;
 
 	j = 1;
-	for_each_player(player, i)
+	for (i = 1; i <= maxclients->value; i++)
 	{
-		if (player->client->pers.isop)
+		player = g_edicts + i;
+		if (player && player->inuse && !player->bot_client)
 		{
-			safe_cprintf(ent, PRINT_HIGH,
-						 "%d. %s  %d\n",
-						 j, player->client->pers.netname,
-						 player->client->pers.oplevel);
-			j++;
+			if (player->client->pers.isop)
+			{
+				safe_cprintf(ent, PRINT_HIGH,
+					"%d. %s  %d\n",
+					j, player->client->pers.netname,
+					player->client->pers.oplevel);
+				j++;
+			}
 		}
 	}
 }
@@ -1046,9 +1050,13 @@ void MapVoteThink(qboolean passed, qboolean now)
 				maplist->mapname[maplist->currentmapvote],
 				maplist->mapnick[maplist->currentmapvote]);
 
-			for_each_player(player, i)
+			for (i = 1; i <= maxclients->value; i++)
 			{
-				player->client->resp.vote = false;
+				player = g_edicts + i;
+				if (player && player->inuse && !player->bot_client)
+				{
+					player->client->resp.vote = false;
+				}
 			}
 			convert_string(string, 0, 127, 128, string); // white -> green
 			my_bprintf(PRINT_HIGH, string);
@@ -2037,7 +2045,7 @@ void ClientCommand (edict_t *ent)
 			PMenu_Close(ent);
 
 		Spectate (ent, NULL);
-		//CTFChaseCam(ent, NULL);
+		CTFChaseCam(ent, NULL);
 		//player_set_observer (ent, true);
 
 		CheckPlayers();
@@ -2324,11 +2332,15 @@ void ClientCommand (edict_t *ent)
 		if (ent->client->pers.oplevel & OP_LIGHTS)
 		{
 			int i;
-			for_each_player(ent, i)
+			for (i = 1; i <= maxclients->value; i++)
 			{
-				gi.sound (ent, CHAN_AUTO,
-						  gi.soundindex ("world/lite_out.wav"),
-						  1, ATTN_NORM, 0);
+				ent = g_edicts + i;
+				if (ent && ent->inuse && !ent->bot_client)
+				{
+					gi.sound (ent, CHAN_AUTO,
+						gi.soundindex ("world/lite_out.wav"),
+						1, ATTN_NORM, 0);
+				}
 			}
 			if (LIGHTS)
 			{
@@ -2396,11 +2408,15 @@ void ClientCommand (edict_t *ent)
 		if (ent->client->pers.oplevel & OP_LIGHTS)
 		{
 			int i;
-			for_each_player(ent, i)
+			for (i = 1; i <= maxclients->value; i++)
 			{
-				gi.sound (ent, CHAN_AUTO,
-						  gi.soundindex ("world/lite_on3.wav"),
-						  1, ATTN_NORM, 0);
+				ent = g_edicts + i;
+				if (ent && ent->inuse && !ent->bot_client)
+				{
+					gi.sound (ent, CHAN_AUTO,
+						gi.soundindex ("world/lite_on3.wav"),
+						1, ATTN_NORM, 0);
+				}
 			}
 			if (LIGHTS)
 			{

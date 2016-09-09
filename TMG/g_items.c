@@ -138,12 +138,15 @@ void DoRespawn (edict_t *ent)
 	if (Q_stricmp(ent->classname, "item_quad") == 0 && ((int)quad_notify->value & QUAD_NOTIFY_SPAWN))
 	{
 //		gi.dprintf("a quad damage was spawned\n");
-		for_each_player(e, i)
+		for (i = 1; i <= maxclients->value; i++)
 		{
-//			safe_centerprintf(e, "A quad damage has been spawned!\n");
-			gi.sound (e, CHAN_AUTO, gi.soundindex ("items/quadspwn.wav"), 1, ATTN_NONE, 0);
+			e = g_edicts + i;
+			if (e && e->inuse && !e->bot_client)
+			{
+//				safe_centerprintf(e, "A quad damage has been spawned!\n");
+				gi.sound (e, CHAN_AUTO, gi.soundindex ("items/quadspwn.wav"), 1, ATTN_NONE, 0);
+			}
 		}
-
 	}
 
 	if(ent->classname[0] == 'R') return;
@@ -204,20 +207,24 @@ qboolean Pickup_Powerup (edict_t *ent, edict_t *other)
 //		CTFSay_Team_Location(other, q);
 //		gi.dprintf("netname was %s\n", other->client->pers.netname);
 
-		for_each_player(e, i)
+		for (i = 1; i <= maxclients->value; i++)
 		{
-			if (ctf->value)
+			e = g_edicts + i;
+			if (e && e->inuse && !e->bot_client)
 			{
-				if (other->client->resp.ctf_team == CTF_TEAM1)
-					safe_centerprintf(e, "%s (Red Team) got a quad damage!\n", other->client->pers.netname);
-				else if (other->client->resp.ctf_team == CTF_TEAM2)
-					safe_centerprintf(e, "%s (Blue Team) got a quad damage!\n", other->client->pers.netname);
+				if (ctf->value)
+				{
+					if (other->client->resp.ctf_team == CTF_TEAM1)
+						safe_centerprintf(e, "%s (Red Team) got a quad damage!\n", other->client->pers.netname);
+					else if (other->client->resp.ctf_team == CTF_TEAM2)
+						safe_centerprintf(e, "%s (Blue Team) got a quad damage!\n", other->client->pers.netname);
+				}
+				else
+				{
+					safe_centerprintf(e, "%s got a quad damage!\n", other->client->pers.netname);
+				}
+				gi.sound (e, CHAN_AUTO, gi.soundindex ("items/quadtake.wav"), 1, ATTN_NONE, 0);
 			}
-			else
-			{
-				safe_centerprintf(e, "%s got a quad damage!\n", other->client->pers.netname);
-			}
-			gi.sound (e, CHAN_AUTO, gi.soundindex ("items/quadtake.wav"), 1, ATTN_NONE, 0);
 		}
 //		gi.dprintf("a quad was picked up!\n");
 	}
@@ -1291,13 +1298,16 @@ edict_t *Drop_Item (edict_t *ent, gitem_t *item)
 	if (Q_stricmp(dropped->classname, "item_quad") == 0 && ((int)quad_notify->value & QUAD_NOTIFY_DROP))
 	{
 //		gi.dprintf("a quad damage was dropped!\n");
-		for_each_player(e, i)
+		for (i = 1; i <= maxclients->value; i++)
 		{
-			safe_centerprintf(e, "%s lost the quad damage!\n", ent->client->pers.netname);
-			gi.sound (e, CHAN_AUTO, gi.soundindex ("items/quaddrop.wav"), 1, ATTN_NONE, 0);
+			e = g_edicts + i;
+			if (e && e->inuse && !e->bot_client)
+			{
+				safe_centerprintf(e, "%s lost the quad damage!\n", ent->client->pers.netname);
+				gi.sound (e, CHAN_AUTO, gi.soundindex ("items/quaddrop.wav"), 1, ATTN_NONE, 0);
+			}
 		}
 	}
-
 	return dropped;
 }
 

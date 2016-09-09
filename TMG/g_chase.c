@@ -245,15 +245,18 @@ void ChaseRemoveTarget(edict_t *target)
 	edict_t *ent;
 	int i;
 
-	for_each_player(ent, i)
+	for (i = 1; i <= maxclients->value; i++)
 	{
-		// chasing this target ?
-		if (ent->client->chase_target == target)
+		if ((ent = &g_edicts[i]) && ent && ent->inuse && !ent->bot_client)
 		{
-			// turn it off...
-			safe_cprintf(ent, PRINT_HIGH, 
-				"ChaseCam deactivated - target lost!\n");
-			ent->client->chase_target = NULL;
+			// chasing this target ?
+			if (ent->client->chase_target == target)
+			{
+				// turn it off...
+				safe_cprintf(ent, PRINT_HIGH, 
+					"ChaseCam deactivated - target lost!\n");
+				ent->client->chase_target = NULL;
+			}
 		}
 	}
 }
