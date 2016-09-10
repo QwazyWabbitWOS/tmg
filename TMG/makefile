@@ -34,12 +34,6 @@ CFLAGS += -DLINUX
 LIBTOOL = ldd
 endif
 
-# flavors of Linux
-ifeq ($(shell uname),FreeBSD)
-CFLAGS += -DLINUX
-LIBTOOL = ldd
-endif
-
 # OS X wants to be Linux and FreeBSD too.
 ifeq ($(shell uname),Darwin)
 #SVNDEV := -D'SVN_REV="$(shell svnversion -n .)"'
