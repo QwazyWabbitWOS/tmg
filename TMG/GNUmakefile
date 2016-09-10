@@ -67,7 +67,7 @@ GAME_OBJS = \
 	p_client.o p_hud.o p_light.o p_menu.o p_trail.o p_view.o p_weapon.o \
 	performance.o q_shared.o runes.o stdlog.o timer.o vote.o log_manager.o
 
-game$(ARCH).$(SHLIBEXT) : $(GAME_OBJS)
+game$(ARCH).real.$(SHLIBEXT) : $(GAME_OBJS)
 	$(CC) $(CFLAGS) -shared -o $@ $(GAME_OBJS) -ldl -lm
 	$(LIBTOOL) -r $@
 
@@ -77,7 +77,7 @@ game$(ARCH).$(SHLIBEXT) : $(GAME_OBJS)
 #############################################################################
 
 clean:
-	/bin/rm -f $(GAME_OBJS) game$(ARCH).$(SHLIBEXT)
+	/bin/rm -f $(GAME_OBJS) game$(ARCH).real.$(SHLIBEXT)
 
 depend:
 	$(CC) -MM $(GAME_OBJS:.o=.c)
