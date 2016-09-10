@@ -312,9 +312,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="BSDmakefile" />
     <None Include="game.def" />
     <None Include="changelog.txt" />
-    <None Include="Makefile" />
+    <None Include="GNUmakefile" />
     <None Include="server.cfg" />
   </ItemGroup>
   <ItemGroup>

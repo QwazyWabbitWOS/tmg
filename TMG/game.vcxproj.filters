@@ -168,11 +168,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="changelog.txt" />
-    <None Include="Makefile" />
     <None Include="server.cfg" />
     <None Include="game.def">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="BSDmakefile" />
+    <None Include="GNUmakefile" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="anticheat.h">
