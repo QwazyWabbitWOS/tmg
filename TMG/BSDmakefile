@@ -38,7 +38,7 @@ ORIGDIR=Source
 DO_SHLIB_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
 
 .c.o:
-        $(DO_SHLIB_CC)
+	$(DO_SHLIB_CC)
 
 #############################################################################
 # SETUP AND BUILD
@@ -55,7 +55,7 @@ GAME_OBJS = \
         performance.o q_shared.o runes.o stdlog.o timer.o vote.o log_manager.o
 
 game$(ARCH).real.$(SHLIBEXT) : $(GAME_OBJS)
-        $(CC) $(CFLAGS) -shared -o $@ $(GAME_OBJS) -lm
+	$(CC) $(CFLAGS) -shared -o $@ $(GAME_OBJS) -lm
 
 
 #############################################################################
@@ -63,18 +63,18 @@ game$(ARCH).real.$(SHLIBEXT) : $(GAME_OBJS)
 #############################################################################
 
 clean:
-        /bin/rm -f $(GAME_OBJS) game$(ARCH).$(SHLIBEXT)
+	/bin/rm -f $(GAME_OBJS) game$(ARCH).$(SHLIBEXT)
 
 depend:
-        $(CC) -MM $(GAME_OBJS:.o=.c)
+	$(CC) -MM $(GAME_OBJS:.o=.c)
 
 depends:
-        $(CC) $(CFLAGS) -MM *.c > dependencies
+	$(CC) $(CFLAGS) -MM *.c > dependencies
 
 all:
-        make clean
-        make depends
-        make
+	make clean
+	make depends
+	make
 
 -include dependencies
 
