@@ -6,11 +6,8 @@
  Include this header _after_ including g_local.h
  */
 
-//QW// Wrapper not implemented yet
-//
-//#ifndef G_LOCAL_H
-//#include "g_local.h"
-//#endif
+extern float myrand; // Note: Continuous random generation is CPU expensive
+extern float myrandom;
 
 // Bot cvar declarations
 extern	cvar_t  *use_bots;

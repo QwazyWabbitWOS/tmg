@@ -11,9 +11,6 @@
 #include "hud.h"
 #include "botstr.h"
 
-extern float myrand; // Note: Continuous random generation is CPU expensive
-extern float myrandom;
-
 qboolean Get_YenPos(char *Buff, int *curr)
 {
 	int i = *curr + 1;
@@ -59,12 +56,12 @@ void Adjust_Bot_Number (void)
 {
 	edict_t  *ent;
 	int	i;
-	
+
 	//  check if we need to add a bot
 	// for a dm server that wants to be "full"
 	// but allow clients # to dictate bot coming
 	// and going 
-	
+
 	if(match_state != STATE_PLAYING)
 		return;
 	if(level.intermissiontime)
@@ -153,7 +150,7 @@ edict_t *BestScorePlayer(void)
 	return bestplayer;
 }
 
- //==============================================
+//==============================================
 void InsultVictim(edict_t *ent, edict_t *victim)
 {
 
@@ -216,32 +213,37 @@ void InsultVictim(edict_t *ent, edict_t *victim)
 }
 
 //==============================================
-void TauntVictim(edict_t *ent, edict_t *victim) {
+void TauntVictim(edict_t *ent, edict_t *victim)
+{
 	vec3_t vtmp;
 
-	if (!ent->bot_client || ent == victim) return;
+	if (!ent->bot_client || ent == victim)
+		return;
 
-	if (!victim || !victim->client) return;
+	if (!victim || !victim->client)
+		return;
 
-	if (ent->client->taunttime > level.time) return;
+	if (ent->client->taunttime > level.time)
+		return;
 
 	// Taunt only if near victim (don't reset timer)
 	VectorSubtract(ent->s.origin, victim->s.origin, vtmp);
 	if (VectorLength(vtmp) > 250)
 		return;
 
-	switch (rand() % 3) {
-		case 0:
-			ent->s.frame = FRAME_flip01-1;
-			ent->client->anim_end = FRAME_flip12;
-			break;
-		case 1:
-			ent->s.frame = FRAME_salute01-1;
-			ent->client->anim_end = FRAME_salute11;
-			break;
-		case 2:
-			ent->s.frame = FRAME_taunt01-1;
-			ent->client->anim_end = FRAME_taunt17;
+	switch (rand() % 3)
+	{
+	case 0:
+		ent->s.frame = FRAME_flip01-1;
+		ent->client->anim_end = FRAME_flip12;
+		break;
+	case 1:
+		ent->s.frame = FRAME_salute01-1;
+		ent->client->anim_end = FRAME_salute11;
+		break;
+	case 2:
+		ent->s.frame = FRAME_taunt01-1;
+		ent->client->anim_end = FRAME_taunt17;
 	}
 
 	ent->client->taunttime = level.time + 30 + (10*(rand()%6));
@@ -258,12 +260,12 @@ void RandomChat(edict_t *ent)
 		{
 			switch (rand() % 6)
 			{
-				case 0: safe_bprintf(3,"%s: Bring it on Bitch!!!\n", ent->client->pers.netname); break;
-				case 1: safe_bprintf(3,"%s: Defending Base!!\n", ent->client->pers.netname); break;
-				case 2: safe_bprintf(3,"%s: I need help at Base!!!\n", ent->client->pers.netname); break;
-				case 3: safe_bprintf(3,"%s: Hurry up and Cap it !!\n", ent->client->pers.netname); break;
-				case 4: safe_bprintf(3,"%s: TMG Freaking RULEZ\n", ent->client->pers.netname); break;
-				case 5: safe_bprintf(3,"%s: There's a camper at Base!\n", ent->client->pers.netname); break;
+			case 0: safe_bprintf(3,"%s: Bring it on Bitch!!!\n", ent->client->pers.netname); break;
+			case 1: safe_bprintf(3,"%s: Defending Base!!\n", ent->client->pers.netname); break;
+			case 2: safe_bprintf(3,"%s: I need help at Base!!!\n", ent->client->pers.netname); break;
+			case 3: safe_bprintf(3,"%s: Hurry up and Cap it !!\n", ent->client->pers.netname); break;
+			case 4: safe_bprintf(3,"%s: TMG Freaking RULEZ\n", ent->client->pers.netname); break;
+			case 5: safe_bprintf(3,"%s: There's a camper at Base!\n", ent->client->pers.netname); break;
 			}
 		}
 		ent->client->chattime = level.time + 60 + (20 * (rand() % 6 ));
@@ -325,21 +327,21 @@ qboolean InsideWall(edict_t *ent)
 void AdjustAngle(edict_t *ent, vec3_t targaim, float aim)
 {
 
-  VectorSet(ent->s.angles,(Get_pitch(targaim)),(Get_yaw(targaim)),0.0F);
+	VectorSet(ent->s.angles, (Get_pitch(targaim)), (Get_yaw(targaim)),  0.0F);
 
-  ent->s.angles[1] += aim*0.70*(myrandom-0.5);
-  if (ent->s.angles[1] > 180)
-    ent->s.angles[1] -= 360;
-  else
-  if (ent->s.angles[1] < -180)
-    ent->s.angles[1] += 360;
+	ent->s.angles[1] += aim*0.70*(myrandom-0.5);
+	if (ent->s.angles[1] > 180)
+		ent->s.angles[1] -= 360;
+	else
+		if (ent->s.angles[1] < -180)
+			ent->s.angles[1] += 360;
 
-  ent->s.angles[0] += aim*0.70*(myrandom-0.5);
-  if (ent->s.angles[0] > 90)
-    ent->s.angles[0] = 90;
-  else
-  if (ent->s.angles[0] < -90)
-    ent->s.angles[0] = -90;
+	ent->s.angles[0] += aim*0.70*(myrandom-0.5);
+	if (ent->s.angles[0] > 90)
+		ent->s.angles[0] = 90;
+	else
+		if (ent->s.angles[0] < -90)
+			ent->s.angles[0] = -90;
 }
 //RAVEN
 
@@ -348,7 +350,7 @@ void AdjustAngle(edict_t *ent, vec3_t targaim, float aim)
 //----------------------------------------------------------------
 //Load Bot Info
 //
-// Load bot's infomation from 3ZBConfig.cfg
+// Load bot's information from the config file
 //
 //----------------------------------------------------------------
 void Load_BotInfo(void)
@@ -646,89 +648,89 @@ void Bot_Think (edict_t *self)
 	int		i;
 
 	if(!self ||!self->client)
-	return;
-//Dont move if the level is over !!!!
+		return;
+	//Dont move if the level is over !!!!
 	if(match_state != STATE_PLAYING)
 		return;	
 
- // Check if bot stuck in wall..
- if (!((int)level.time % 10))
-    if (InsideWall(self))
-	{
-      Cmd_Kill_f(self); // suicide
-      self->nextthink = level.time + FRAMETIME;
-      return;
-	}
-
-if (self->linkcount != self->monsterinfo.linkcount)
-	{
-//		self->monsterinfo.linkcount = self->linkcount;
-		M_CheckGround (self);
-	}
-
-	if(self->deadflag)
-	{
-		if(self->client->ctf_grapple)
-			CTFPlayerResetGrapple(self);
-		
-
-		if(self->s.modelindex == skullindex || self->s.modelindex == headindex) self->s.frame = 0;
-		else if(self->s.frame < FRAME_crdeath1 && self->s.frame != 0) self->s.frame = FRAME_death308;
-		self->s.modelindex2 = 0;	// remove linked weapon model
-//ZOID
-		self->s.modelindex3 = 0;	// remove linked ctf flag
-//ZOID
-
-		self->client->zc.route_trace = false;
-		if(self->client->respawn_time <= level.time)
+	// Check if bot stuck in wall..
+	if (!((int)level.time % 10))
+		if (InsideWall(self))
 		{
-			if(self->svflags & SVF_MONSTER)
+			Cmd_Kill_f(self); // suicide
+			self->nextthink = level.time + FRAMETIME;
+			return;
+		}
+
+		if (self->linkcount != self->monsterinfo.linkcount)
+		{
+			//		self->monsterinfo.linkcount = self->linkcount;
+			M_CheckGround (self);
+		}
+
+		if(self->deadflag)
+		{
+			if(self->client->ctf_grapple)
+				CTFPlayerResetGrapple(self);
+
+
+			if(self->s.modelindex == skullindex || self->s.modelindex == headindex) self->s.frame = 0;
+			else if(self->s.frame < FRAME_crdeath1 && self->s.frame != 0) self->s.frame = FRAME_death308;
+			self->s.modelindex2 = 0;	// remove linked weapon model
+			//ZOID
+			self->s.modelindex3 = 0;	// remove linked ctf flag
+			//ZOID
+
+			self->client->zc.route_trace = false;
+			if(self->client->respawn_time <= level.time)
 			{
-				self->client->respawn_time = level.time;
-				//QW//added per laulau CopyToBodyQue (self);
-				PutBotInServer(self);
+				if(self->svflags & SVF_MONSTER)
+				{
+					self->client->respawn_time = level.time;
+					//QW// CopyToBodyQue (self);
+					PutBotInServer(self);
+				}
 			}
 		}
-	}
-	else
-	{
+		else
+		{
+			Bots_Move_NORM (self);
+			if(!self->inuse) return;			//removed botself
 
+			//-------------------------------------------
+			// If camping then keep'em at same origin
+			//-------------------------------------------
+			if (self->client->camptime > level.time)
+			{
+				VectorCopy(self->client->lastorigin,self->s.origin);
+			}
 
-		Bots_Move_NORM (self);
-		if(!self->inuse) return;			//removed botself
+			client = self->client;
 
- //-------------------------------------------
-  // If camping then keep'em at same origin
-  //-------------------------------------------
-  if (self->client->camptime > level.time) {
-    VectorCopy(self->client->lastorigin,self->s.origin);
-	}
+			ClientBeginServerFrame (self);
+		}
+		if (self->linkcount != self->monsterinfo.linkcount)
+		{
+			//		self->monsterinfo.linkcount = self->linkcount;
+			M_CheckGround (self);
+		}
 
-		client = self->client;
+		for (i = 1; i <= maxclients->value; i++)
+		{
+			other = g_edicts + i;
+			if (other->inuse && other->client->chase_target == self)
+				UpdateChaseCam(other);
+		}
 
-		ClientBeginServerFrame (self);
-	}
-	if (self->linkcount != self->monsterinfo.linkcount)
-	{
-//		self->monsterinfo.linkcount = self->linkcount;
-		M_CheckGround (self);
-	}
+		if(self->client->resp.shots != 0)
+		{
+			self->client->resp.eff = 100 * self->client->resp.frags / self->client->resp.shots;
+		}
 
-	for (i = 1; i <= maxclients->value; i++) {
-		other = g_edicts + i;
-		if (other->inuse && other->client->chase_target == self)
-			UpdateChaseCam(other);
-	}
-
-	if(self->client->resp.shots != 0)
-	{
-		self->client->resp.eff = 100 * self->client->resp.frags / self->client->resp.shots;
-	}
-
-	M_CatagorizePosition (self);
-	BotEndServerFrame (self);
-	self->nextthink = level.time + FRAMETIME;
-	return;
+		M_CatagorizePosition (self);
+		BotEndServerFrame (self);
+		self->nextthink = level.time + FRAMETIME;
+		return;
 }
 
 //----------------------------------------------------------------
@@ -744,7 +746,7 @@ void InitializeBot (edict_t *ent, int botindex)
 	char		pinfo[200];
 	int			index;
 
-	index = ent-g_edicts-1;
+	index = ent - g_edicts - 1;
 	ent->client = &game.clients[index];
 
 	client = ent->client;
@@ -753,18 +755,14 @@ void InitializeBot (edict_t *ent, int botindex)
 	memset (&client->pers, 0, sizeof(client->pers));
 	memset (&client->resp, 0, sizeof(client->resp));
 
-	//set botindex NO.
 	client->zc.botindex = botindex;
-
 	client->resp.enterframe = level.framenum;
 
-	//set netname model skil and CTF team
 	sprintf(pinfo,"\\rate\\25000\\msg\\1\\fov\\90\\skin\\%s/%s\\name\\%s\\hand\\0",
-			Bot[botindex].model,Bot[botindex].skin,Bot[botindex].netname);
-	//ent->client->resp.ctf_team = Bot[botindex].team; //CTF_TEAM1,CTF_TEAM2
-	
+		Bot[botindex].model, Bot[botindex].skin, Bot[botindex].netname);
+
 	if(ctf->value)
-	BotAssignTeamCtf(ent->client);
+		BotAssignTeamCtf(ent->client);
 
 	ClientUserinfoChanged (ent, pinfo);
 
@@ -772,21 +770,21 @@ void InitializeBot (edict_t *ent, int botindex)
 	client->pers.max_health		= 100;
 
 	if(!voosh->value){
-	client->pers.max_bullets	= 200;
-	client->pers.max_shells		= 100;
-	client->pers.max_rockets	= 50;
-	client->pers.max_grenades	= 50;
-	client->pers.max_cells		= 200;
-	client->pers.max_slugs		= 50;
+		client->pers.max_bullets	= 200;
+		client->pers.max_shells		= 100;
+		client->pers.max_rockets	= 50;
+		client->pers.max_grenades	= 50;
+		client->pers.max_cells		= 200;
+		client->pers.max_slugs		= 50;
 	}
 
 	ent->client->pers.connected = false;
 	gi.dprintf ("%s connected\n", ent->client->pers.netname);
 
 	if(ctf->value)safe_bprintf(PRINT_HIGH, "%s joined the %s team.\n",
-			client->pers.netname, CTFTeamName(ent->client->resp.ctf_team));
+		client->pers.netname, CTFTeamName(ent->client->resp.ctf_team));
 	else 	safe_bprintf (PRINT_HIGH, "%s entered the game\n",
-			client->pers.netname);
+		client->pers.netname);
 }
 
 void PutBotInServer (edict_t *ent)
@@ -805,124 +803,124 @@ void PutBotInServer (edict_t *ent)
 
 	//current weapon
 	client = ent->client;
-	
-//RAV
-//  start weapons & respawn protection
-//	if ((resp_protect->value > 0) && (match_state > STATE_COUNTDOWN)
-//		&& (ent->client->pers.pl_state == PL_PLAYING))
-//	{
-//	client->respawn_framenum = level.framenum + 20;
-//	}
+
+	//RAV
+	//  start weapons & respawn protection
+	//	if ((resp_protect->value > 0) && (match_state > STATE_COUNTDOWN)
+	//		&& (ent->client->pers.pl_state == PL_PLAYING))
+	//	{
+	//	client->respawn_framenum = level.framenum + 20;
+	//	}
 	if ((int)(start_weapons->value) & 1) 
 	{
 		item = FindItem("Shotgun");
 		client->pers.inventory[ITEM_INDEX(item)] = 1;
 		ammo = FindItem (item->ammo);
-//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+		//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
 		if ( dmflag & DF_INFINITE_AMMO )
 			Add_Ammo (ent, ammo, 1000);
 		else
 			Add_Ammo (ent, ammo, ammo->quantity);
 		client->pers.weapon = item;
-    }
+	}
 	if ((int)(start_weapons->value) & 2) 
 	{
 		item = FindItem("Super Shotgun");
 		client->pers.inventory[ITEM_INDEX(item)] = 1;
 		ammo = FindItem (item->ammo);
-//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+		//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
 		if ( dmflag & DF_INFINITE_AMMO )
 			Add_Ammo (ent, ammo, 1000);
 		else
 			Add_Ammo (ent, ammo, ammo->quantity);
 		client->pers.weapon = item;
-    }
+	}
 	if ((int)(start_weapons->value) & 4) 
 	{
 		item = FindItem("Machinegun");
 		client->pers.inventory[ITEM_INDEX(item)] = 1;
 		ammo = FindItem (item->ammo);
-//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+		//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
 		if ( dmflag & DF_INFINITE_AMMO )
 			Add_Ammo (ent, ammo, 1000);
 		else
 			Add_Ammo (ent, ammo, ammo->quantity);
 		client->pers.weapon = item;
-    }
+	}
 	if ((int)(start_weapons->value) & 8) 
 	{
 		item = FindItem("Chaingun");
 		client->pers.inventory[ITEM_INDEX(item)] = 1;
 		ammo = FindItem (item->ammo);
-//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+		//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
 		if ( dmflag & DF_INFINITE_AMMO )
 			Add_Ammo (ent, ammo, 1000);
 		else
 			Add_Ammo (ent, ammo, ammo->quantity);
 		client->pers.weapon = item;
-    }
+	}
 	if ((int)(start_weapons->value) & 16) 
 	{
 		item = FindItem("Grenade Launcher");
 		client->pers.inventory[ITEM_INDEX(item)] = 1;
 		ammo = FindItem (item->ammo);
-//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+		//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
 		if ( dmflag & DF_INFINITE_AMMO )
 			Add_Ammo (ent, ammo, 1000);
 		else
 			Add_Ammo (ent, ammo, ammo->quantity);
 		client->pers.weapon = item;
-    }
+	}
 	if ((int)(start_weapons->value) & 32) 
 	{
 		item = FindItem("Rocket Launcher");
 		client->pers.inventory[ITEM_INDEX(item)] = 1;
 		ammo = FindItem (item->ammo);
-//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+		//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
 		if ( dmflag & DF_INFINITE_AMMO )
 			Add_Ammo (ent, ammo, 1000);
 		else
 			Add_Ammo (ent, ammo, ammo->quantity);
 		client->pers.weapon = item;
-    }
+	}
 	if ((int)(start_weapons->value) & 64) 
 	{
 		item = FindItem("Hyperblaster");
 		client->pers.inventory[ITEM_INDEX(item)] = 1;
 		ammo = FindItem (item->ammo);
-//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+		//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
 		if ( dmflag & DF_INFINITE_AMMO )
 			Add_Ammo (ent, ammo, 1000);
 		else
 			Add_Ammo (ent, ammo, ammo->quantity);
 		client->pers.weapon = item;
-    }
+	}
 	if ((int)(start_weapons->value) & 128) 
 	{
 		item = FindItem("Railgun");
 		client->pers.inventory[ITEM_INDEX(item)] = 1;
 		ammo = FindItem (item->ammo);
-//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+		//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
 		if ( dmflag & DF_INFINITE_AMMO )
 			Add_Ammo (ent, ammo, 1000);
 		else
 			Add_Ammo (ent, ammo, ammo->quantity);
 		client->pers.weapon = item;
-    }
+	}
 	if ((int)(start_weapons->value) & 256) 
 	{
 		item = FindItem("BFG10K");
 		client->pers.inventory[ITEM_INDEX(item)] = 1;
 		ammo = FindItem (item->ammo);
-//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+		//JSW		if ( (int)dmflags->value & DF_INFINITE_AMMO )
 		if ( dmflag & DF_INFINITE_AMMO )
 			Add_Ammo (ent, ammo, 1000);
 		else
 			Add_Ammo (ent, ammo, ammo->quantity);
 		client->pers.weapon = item;
-    }
-// Start Items
-    if ((int)(start_items->value) & 1)
+	}
+	// Start Items
+	if ((int)(start_items->value) & 1)
 	{
 		edict_t *it_ent;
 
@@ -934,7 +932,7 @@ void PutBotInServer (edict_t *ent)
 		if (it_ent->inuse)
 			G_FreeEdict(it_ent);
 	}
-    if ((int)(start_items->value) & 2)
+	if ((int)(start_items->value) & 2)
 	{
 		edict_t *it_ent;
 
@@ -1102,76 +1100,76 @@ void PutBotInServer (edict_t *ent)
 	}
 	//RAILWARZ
 	if (voosh->value)
-    {
-        item = FindItem("Slugs");
-        client->pers.selected_item = ITEM_INDEX(item);
-        client->pers.inventory[client->pers.selected_item] = 1000;
+	{
+		item = FindItem("Slugs");
+		client->pers.selected_item = ITEM_INDEX(item);
+		client->pers.inventory[client->pers.selected_item] = 1000;
 
-        item = FindItem("Railgun");
-        client->pers.selected_item = ITEM_INDEX(item);
-        client->pers.inventory[client->pers.selected_item] = 1;
-        client->pers.weapon = item;
+		item = FindItem("Railgun");
+		client->pers.selected_item = ITEM_INDEX(item);
+		client->pers.inventory[client->pers.selected_item] = 1;
+		client->pers.weapon = item;
 	}
 	else{
-	item = FindItem("Blaster");
-	client->pers.selected_item = ITEM_INDEX(item);
-	client->pers.inventory[client->pers.selected_item] = 1;
-	client->pers.weapon = item;
+		item = FindItem("Blaster");
+		client->pers.selected_item = ITEM_INDEX(item);
+		client->pers.inventory[client->pers.selected_item] = 1;
+		client->pers.weapon = item;
 	}
-/********************************************
-        start  ammo
-********************************************/
+	/********************************************
+	start  ammo
+	********************************************/
 
-if (sa_shells->value)
-    {
-        item = FindItem("Shells");
-        client->pers.selected_item = ITEM_INDEX(item);
-        client->pers.inventory[client->pers.selected_item] = sa_shells->value;
+	if (sa_shells->value)
+	{
+		item = FindItem("Shells");
+		client->pers.selected_item = ITEM_INDEX(item);
+		client->pers.inventory[client->pers.selected_item] = sa_shells->value;
 
-    }
+	}
 
 
-if (sa_bullets->value)
-    {
-        item = FindItem("Bullets");
-        client->pers.selected_item = ITEM_INDEX(item);
-        client->pers.inventory[client->pers.selected_item] = sa_bullets->value;
+	if (sa_bullets->value)
+	{
+		item = FindItem("Bullets");
+		client->pers.selected_item = ITEM_INDEX(item);
+		client->pers.inventory[client->pers.selected_item] = sa_bullets->value;
 
-}
+	}
 
-if (sa_grenades->value)
-    {
-        item = FindItem("Grenades");
-        client->pers.selected_item = ITEM_INDEX(item);
-        client->pers.inventory[client->pers.selected_item] = sa_grenades->value;
+	if (sa_grenades->value)
+	{
+		item = FindItem("Grenades");
+		client->pers.selected_item = ITEM_INDEX(item);
+		client->pers.inventory[client->pers.selected_item] = sa_grenades->value;
 
-    }
+	}
 
-if (sa_rockets->value)
-    {
-        item = FindItem("Rockets");
-        client->pers.selected_item = ITEM_INDEX(item);
-        client->pers.inventory[client->pers.selected_item] = sa_rockets->value;
-      
-    }
+	if (sa_rockets->value)
+	{
+		item = FindItem("Rockets");
+		client->pers.selected_item = ITEM_INDEX(item);
+		client->pers.inventory[client->pers.selected_item] = sa_rockets->value;
 
-if (sa_cells->value)
-    {
-        item = FindItem("Cells");
-        client->pers.selected_item = ITEM_INDEX(item);
-        client->pers.inventory[client->pers.selected_item] = sa_cells->value;
-     }
+	}
 
-if (sa_slugs->value)
-    {
-        item = FindItem("Slugs");
-        client->pers.selected_item = ITEM_INDEX(item);
-        client->pers.inventory[client->pers.selected_item] = sa_slugs->value;
+	if (sa_cells->value)
+	{
+		item = FindItem("Cells");
+		client->pers.selected_item = ITEM_INDEX(item);
+		client->pers.inventory[client->pers.selected_item] = sa_cells->value;
+	}
 
-    }
+	if (sa_slugs->value)
+	{
+		item = FindItem("Slugs");
+		client->pers.selected_item = ITEM_INDEX(item);
+		client->pers.inventory[client->pers.selected_item] = sa_slugs->value;
 
-// End
-	
+	}
+
+	// End
+
 	client->silencer_shots = 0;
 	client->weaponstate = WEAPON_READY;
 	client->newweapon = NULL;
@@ -1190,13 +1188,13 @@ if (sa_slugs->value)
 	zc->botindex = j;
 	zc->routeindex = i;
 
-//ZOID
+	//ZOID
 	client->ctf_grapple = NULL;
 
 	item = FindItem("Grapple");
 	if(ctf->value || use_hook->value)
 		client->pers.inventory[ITEM_INDEX(item)] = 1; //ponpoko
-//ZOID
+	//ZOID
 
 	// clear entity values
 	ent->classname = "player";
@@ -1269,7 +1267,7 @@ if (sa_slugs->value)
 	ent->flags &= ~FL_NO_KNOCKBACK;
 
 	ent->client->anim_priority = ANIM_BASIC;
-//	ent->client->anim_run = true;
+	//	ent->client->anim_run = true;
 	ent->s.frame = FRAME_run1-1;
 	ent->client->anim_end = FRAME_run6;
 	ent->deadflag = DEAD_NO;
@@ -1277,28 +1275,28 @@ if (sa_slugs->value)
 
 
 	ent->client->pers.in_game = true;
-	
+
 	zc->waitin_obj = NULL;
 	zc->first_target = NULL;
 	zc->first_target = NULL;
 	zc->zcstate = STS_IDLE;
 
-/*	if(ent->client->resp.enterframe == level.framenum && !chedit->value)
+	/*	if(ent->client->resp.enterframe == level.framenum && !chedit->value)
 	{
 	/	gi.WriteByte (svc_muzzleflash);
-		gi.WriteShort (ent-g_edicts);
-		gi.WriteByte (MZ_LOGIN);
-		gi.multicast (ent->s.origin, MULTICAST_PVS);
+	gi.WriteShort (ent-g_edicts);
+	gi.WriteByte (MZ_LOGIN);
+	gi.multicast (ent->s.origin, MULTICAST_PVS);
 	}
 	else if(!chedit->value)
 	{
-		gi.WriteByte (svc_muzzleflash);
-		gi.WriteShort (ent-g_edicts);
-		gi.WriteByte (MZ_RESPAWN);
-		gi.multicast (ent->s.origin, MULTICAST_PVS);
+	gi.WriteByte (svc_muzzleflash);
+	gi.WriteShort (ent-g_edicts);
+	gi.WriteByte (MZ_RESPAWN);
+	gi.multicast (ent->s.origin, MULTICAST_PVS);
 	}
 
-*/
+	*/
 	ent->client->pers.pl_state = PL_PLAYING;
 	ent->bot_client = true;
 	gi.linkentity (ent);
@@ -1315,7 +1313,7 @@ if (sa_slugs->value)
 	if(ctf->value)
 	{
 		if(ent->client->hook)
-		abandon_hook_reset(ent->client->hook);
+			abandon_hook_reset(ent->client->hook);
 		CTFPlayerResetGrapple(ent);
 		client->zc.ctfstate = CTFS_OFFENCER;
 	}
@@ -1342,7 +1340,7 @@ qboolean SpawnBot(int i)
 	int			k,j;
 
 	DbgPrintf ("Called %s %s %s %s %d\n", __FUNCTION__, 
-			Bot[i].netname, Bot[i].model, Bot[i].skin, i);
+		Bot[i].netname, Bot[i].model, Bot[i].skin, i);
 
 	if(	Get_NumOfPlayer () >= game.maxclients )
 	{
@@ -1377,7 +1375,7 @@ qboolean SpawnBot(int i)
 		VectorAdd (bot->s.origin, bot->maxs, bot->absmax);
 		bot->client->ps.pmove.pm_flags |= PMF_DUCKED;
 		gi.linkentity (bot);
-//		bot->s.modelindex = 0;
+		//		bot->s.modelindex = 0;
 		bot->bot_client = true;
 		gi.WriteByte (svc_muzzleflash);
 		gi.WriteShort (bot-g_edicts);
@@ -1463,7 +1461,7 @@ void SpawnBotReserving2(int *red,int *blue)
 
 			if(Bot[j].team == 1) *red = *red + 1;
 			else if(Bot[j].team == 2) *blue = *blue + 1;
-//gi.cprintf(NULL,PRINT_HIGH,"team %i\n",Bot[j].team);
+			//gi.cprintf(NULL,PRINT_HIGH,"team %i\n",Bot[j].team);
 			return;
 		}
 	}
@@ -1518,7 +1516,7 @@ void RemoveBot(void)
 
 				if (!level.intermissiontime)
 					gi.bprintf (PRINT_HIGH, "%s disconnected\n", e->client->pers.netname);
-	
+
 				// send effect
 				gi.WriteByte (svc_muzzleflash);
 				gi.WriteShort (e-g_edicts);
@@ -1534,7 +1532,7 @@ void RemoveBot(void)
 					//CTFDeadDropFlag(e);
 					//CTFDeadDropTech(e);
 				}
-				
+
 				gi.linkentity (e);
 
 				e->inuse = false;
@@ -1607,8 +1605,8 @@ static void AirSight_Explode (edict_t *ent)
 	vec3_t		origin;
 	int			mod;
 
-//	if (ent->owner->client && !(ent->owner->svflags & SVF_DEADMONSTER))
-//		PlayerNoise(ent->owner, ent->s.origin, PNOISE_IMPACT);
+	//	if (ent->owner->client && !(ent->owner->svflags & SVF_DEADMONSTER))
+	//		PlayerNoise(ent->owner, ent->s.origin, PNOISE_IMPACT);
 
 	gi.sound (ent, CHAN_AUTO, gi.soundindex("3zb/airexp.wav"), 1, ATTN_NONE, 0);
 
@@ -1635,7 +1633,7 @@ static void AirSight_Explode (edict_t *ent)
 
 void AirSight_Think(edict_t *ent)
 {
-//	gi.sound (ent, CHAN_AUTO, gi.soundindex("medic/medatck1.wav"), 1, ATTN_NORM, 0);
+	//	gi.sound (ent, CHAN_AUTO, gi.soundindex("medic/medatck1.wav"), 1, ATTN_NORM, 0);
 	gi.sound (ent, CHAN_BODY, gi.soundindex("3zb/airloc.wav"), 1, ATTN_NONE, 0);
 
 	ent->dmg = 120 + random() * 60;
@@ -1664,7 +1662,7 @@ void AirStrike_Think(edict_t *ent)
 
 	ent->nextthink = level.time + ent->moveinfo.speed * 0.5 /300;
 	ent->think = G_FreeEdict;
-//	ent->s.modelindex = gi.modelindex ("models/ships/bigviper/tris.md2");
+	//	ent->s.modelindex = gi.modelindex ("models/ships/bigviper/tris.md2");
 
 	VectorCopy(ent->s.origin,point);
 	point[2] = ent->moveinfo.start_angles[2];
@@ -1720,9 +1718,9 @@ void Cmd_AirStrike(edict_t *ent)
 		gi.cprintf(ent,PRINT_HIGH,"can't call Viper.\n");
 		return;
 	}
-/*	if((rs_trace.endpos[2] - ent->s.origin[2]) < 300)
+	/*	if((rs_trace.endpos[2] - ent->s.origin[2]) < 300)
 	{
-		gi.cprintf(ent,PRINT_HIGH,"can't call Viper.\n");
+	gi.cprintf(ent,PRINT_HIGH,"can't call Viper.\n");
 	}*/
 
 	VectorCopy(rs_trace.endpos,strpoint);
@@ -1771,14 +1769,14 @@ void Cmd_AirStrike(edict_t *ent)
 	viper->think = AirStrike_Think;
 	viper->moveinfo.speed = f;
 
-//	viper->s.sound = gi.soundindex ("weapons/rockfly.wav");
+	//	viper->s.sound = gi.soundindex ("weapons/rockfly.wav");
 
 	//	viper->s.effects |= EF_ROTATE | EF_COLOR_SHELL;
-//	viper->s.renderfx |= RF_SHELL_BLUE | RF_SHELL_GREEN;
+	//	viper->s.renderfx |= RF_SHELL_BLUE | RF_SHELL_GREEN;
 	VectorCopy(strpoint,viper->moveinfo.start_angles);	//strikepoint
 
-//	viper->think = Pod_think;
-//	viper->nextthink = level.time + FRAMETIME;
+	//	viper->think = Pod_think;
+	//	viper->nextthink = level.time + FRAMETIME;
 	viper->classname = "viper";
 	viper->s.origin[2] += 16;
 	gi.linkentity (viper);

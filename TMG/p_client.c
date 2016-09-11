@@ -3492,19 +3492,15 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	edict_t	*other;
 	int		i, j, k,l,oldwaterstate;
 	byte	impulse;
-
 	pmove_t	pm;
-	//QW// UNUSED int count=0;
 	vec3_t	min,max,v,vv;
 	float x;
 	trace_t		rs_trace;
-
 
 	static	edict_t	*old_ground;
 	static	qboolean	wasground;
 
 	impulse = ucmd->impulse;
-
 
 	if(impulse == 1)
 		gi.bprintf(PRINT_HIGH,"%f\n",ent->s.origin[2]);
