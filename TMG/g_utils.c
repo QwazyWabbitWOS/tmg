@@ -620,7 +620,6 @@ AddModelSkin
 void AddModelSkin (char *modelfile, char *skinname)
 {
 	FILE	*f, *out;
-	//QW// UNUSED int		count = 0;
 	int		buffer_int;
 	size_t	i;
 	char	filename[256], infilename[256];

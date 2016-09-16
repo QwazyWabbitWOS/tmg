@@ -65,8 +65,8 @@ cvar_t	*bob_pitch;
 cvar_t	*bob_roll;
 
 cvar_t	*sv_cheats;
-cvar_t	*grapple;
-cvar_t	*view_weapons;
+//cvar_t	*grapple;        //QW// UNUSED
+cvar_t	*view_weapons;       // control weapon visibility
 
 //RAV
 cvar_t	*use_hook;
@@ -75,9 +75,9 @@ cvar_t	*hook_pullspeed;     // sets how fast the hook pulls a player
 cvar_t	*hook_sky;           // enables hooking to the sky
 cvar_t	*hook_maxtime;       // sets max time you can stay hooked
 cvar_t	*hook_damage;        // sets damage hook does to other players
-cvar_t	*hook_reset;
-cvar_t  *hook_color;
-cvar_t  *hook_offhand;
+cvar_t	*hook_reset;         //QW// I have no idea why this is a cvar
+cvar_t  *hook_color;         // global selection of hook color in DM
+cvar_t  *hook_offhand;       //QW// UNUSED
 
 
 cvar_t	*game_dir;

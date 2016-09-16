@@ -369,6 +369,8 @@ void hook_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 	vec3_t	dir, normal;
 	short	i;
 
+	self->owner->client->resp.hooks_deployed_count++;
+
 	if ((surf && (surf->flags & SURF_SKY)) && (!hook_sky->value))
 	{
 		abandon_hook_reset(self);
@@ -405,6 +407,9 @@ void hook_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 			_VectorSubtract(self->owner->s.origin, other->s.origin, normal);
 			T_Damage(other, self, self->owner, dir, self->s.origin, normal, 1, 1, 0, MOD_HIT);
 		}
+
+		self->owner->client->resp.hooks_landed_count++;
+
 		// stop moving
 		VectorClear(self->velocity);
 

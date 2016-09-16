@@ -41,7 +41,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.21"
+#define MOD_VERSION "0.2.22"
 #define MOD "TMG_MOD"
 // protocol bytes that can be directly added to messages
 #define	svc_muzzleflash		1
@@ -1321,6 +1321,8 @@ typedef struct client_respawn_s
 	int			menu_time;
 	float		startframe;
 	int			hook_wait;//stop the hook bug
+	unsigned long	hooks_deployed_count;
+	unsigned long	hooks_landed_count;
 
 	//JSW
 	qboolean	bonus;
