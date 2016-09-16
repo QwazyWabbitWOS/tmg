@@ -536,6 +536,7 @@ void sl_LogHookStats(game_import_t *gi, level_locals_t level, edict_t *ent)
 				ent->client->resp.hooks_landed_count,
 				ent->client->resp.hooks_deployed_count,
 				level.time);
+		fflush(StdLogFile);  // It's end of level, flush buffer
 	}
 }
 
