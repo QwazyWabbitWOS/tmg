@@ -5,6 +5,7 @@
 #include "p_client.h"
 #include "runes.h"
 #include "highscore.h"
+#include "stdlog.h"
 
 /*
 ======================================================================
@@ -162,6 +163,14 @@ void BeginIntermission (edict_t *targ)
 
 	if(highscores->value)
 		SaveHighScores();
+
+	//QW// logging of hook stats per player
+	for (i = 0; i < maxclients->value; i++)
+	{
+		ent = g_edicts + 1 + i;
+		if (ent->inuse && !ent->bot_client)
+			sl_LogHookStats(&gi, level, ent);
+	}
 
 	// move all clients to the intermission point
 	for (i=0 ; i<maxclients->value ; i++)

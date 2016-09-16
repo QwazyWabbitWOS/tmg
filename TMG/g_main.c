@@ -300,10 +300,21 @@ void InitGame (void);
 //===================================================================
 void ShutdownGame (void)
 {
+	int i;
+	edict_t	*ent;
 	gi.dprintf ("==== ShutdownGame ====\n");
-//RAV
+
+	//QW// logging of hook stats per player
+	for (i = 0; i < maxclients->value; i++)
+	{
+		ent = g_edicts + 1 + i;
+		if (ent->inuse && !ent->bot_client)
+			sl_LogHookStats(&gi, level, ent);
+	}
+
+	//RAV
 	sl_GameEnd( &gi, level );	// StdLog - Mark Davies
-//
+	//
 	if (mdsoft_map)
 		free(mdsoft_map);
 

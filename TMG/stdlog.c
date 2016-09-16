@@ -27,8 +27,8 @@
  *  LOCAL VARIABLES
  *
  */
-static cvar_t   *logfile    = NULL;
-static cvar_t   *logstyle   = NULL;
+cvar_t   *stdlogfile  = NULL;
+cvar_t   *stdlogstyle = NULL;
 static FILE     *StdLogFile = NULL;
 
 static unsigned int uiLogstyle = 0;
@@ -297,10 +297,10 @@ static void _sl_LogPlayerRename( char *pOldPlayerName,
 
 static int _sl_MaybeOpenFile( game_import_t  *gi )
 {
-    if( NULL == logfile )
-        logfile = gi->cvar( "stdlogfile", "0", 0 );
+    if( NULL == stdlogfile )
+        stdlogfile = gi->cvar( "stdlogfile", "0", 0 );
 
-    if( (NULL != logfile) && (logfile->value != 0) )
+    if( (NULL != stdlogfile) && (stdlogfile->value != 0) )
     {
         if( NULL == StdLogFile )
         {
@@ -325,25 +325,25 @@ static int _sl_MaybeOpenFile( game_import_t  *gi )
 
 static void _sl_MaybeCloseFile( void )
 {
-    if( NULL != logfile )
+    if( NULL != stdlogfile )
     {
         fclose( StdLogFile );
     }
 
     StdLogFile = NULL;
-    logfile    = NULL;
-    logstyle   = NULL;
+    stdlogfile = NULL;
+    stdlogstyle   = NULL;
     uiLogstyle  = 0;
 }
 
 static __inline void _sl_SetStyle( game_import_t  *gi )
 {
-    if( NULL == logstyle )
+    if( NULL == stdlogstyle )
     {
-        logstyle = gi->cvar( "stdlogstyle", "0", 0 );
-        if( logstyle )
+        stdlogstyle = gi->cvar( "stdlogstyle", "0", 0 );
+        if( stdlogstyle )
         {
-            uiLogstyle = (unsigned int)logstyle->value;
+            uiLogstyle = (unsigned int)stdlogstyle->value;
             if( uiLogstyle >= (sizeof(_sl_LogStyles)/sizeof(_sl_LogStyles[0])) )
                 uiLogstyle = 0;
         }
@@ -517,6 +517,28 @@ void sl_LogPlayerRename( game_import_t  *gi,
         _sl_LogStyles[uiLogstyle].pLogPlayerRename( pOldPlayerName, pNewPlayerName, timeInSeconds );
     }
 }
+
+/*
+QwazyWabbit added 09/16/2016.
+This function writes tab-delimited hook stats to the log file.
+For performance reasons, counters are incremented in the hook_think function 
+rather than calling a logging function every time a player launches a hook. 
+Calling this function in BeginIntermission grabs the counter values before
+they're cleared by PutClientInServer on the next level change.
+*/
+void sl_LogHookStats(game_import_t *gi, level_locals_t level, edict_t *ent)
+{
+    if( _sl_MaybeOpenFile( gi ) )
+	{
+        _sl_SetStyle( gi );
+		fprintf(StdLogFile, "%s\tHooks landed\t%ld\tHooks deployed\t%ld\t%.1f\n", 
+				ent->client->pers.netname,
+				ent->client->resp.hooks_landed_count,
+				ent->client->resp.hooks_deployed_count,
+				level.time);
+	}
+}
+
 /* end of file */
 
 

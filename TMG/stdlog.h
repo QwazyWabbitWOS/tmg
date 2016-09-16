@@ -71,6 +71,9 @@ extern void sl_LogPlayerRename( game_import_t  *gi,
                                 char           *pNewPlayerName,
                                 float           timeInSeconds);
 
+extern void sl_LogHookStats( game_import_t  *gi,
+                             level_locals_t  level,
+                             edict_t        *ent );
 
 #endif /* STDLOG_H */
 
