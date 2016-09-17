@@ -473,17 +473,17 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 				if (IsNeutral(self))
 				{
 					message[0] = "killed itself";
-					message[5] = "thought it had one many frags";
+					message[5] = "thought it had one too many frags";
 				} //end if
 				else if (IsFemale(self))
 				{
 					message[0] = "killed herself";
-					message[5] = "thought she had one many frags";
+					message[5] = "thought she had one too many frags";
 				} //end if
 				else
 				{
 					message[0] = "killed himself";
-					message[5] = "thought he had one many frags";
+					message[5] = "thought he had one too many frags";
 				} //end else
 				break;
 			} //end switch
