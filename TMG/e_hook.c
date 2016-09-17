@@ -62,11 +62,15 @@ void hook_laser_think(edict_t *self)
 {
 	vec3_t	forward, right, offset, start;
 
-	// stupid check for NULL pointers ...
-	if (!self->owner || !self->owner->owner || !self->owner->owner->client) 
+	//QW// fix hook bugs, decide when to disconnect hook
+	if (!self->owner || //QW// not sure when these can happen
+		!self->owner->owner || //QW// but leaving them in for now.
+		!self->owner->owner->client ||
+		self->owner->deadflag ||	// if player died //QW//
+		!self->owner->inuse ||	// or disconnected unexpectedly //QW//
+		(self->owner->s.event == EV_PLAYER_TELEPORT) )	// if player goes through teleport
 	{
-		// ok, something's screwy
-		G_FreeEdict(self);		// go away
+		G_FreeEdict(self);
 		return;	
 	}
 
