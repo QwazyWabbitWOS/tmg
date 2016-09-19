@@ -204,7 +204,7 @@ static char *tn_id (edict_t *ent)
 		//no matter what the light situation.  Who cares about dist varying
 
 		//		if (dist <= (float)ent->client->resp.iddist)
-		j += sprintf(stats + j, "xv 0 yb -58 string \"Viewing %s\" ", tr.ent->client->pers.netname );
+		j += sprintf(stats + j, "xv 80 yb -68 string \"Viewing %s\" ", tr.ent->client->pers.netname );
 
 	/*		if ((mindist >= dist) && (dist <= max_hud_dist->value))
 	 JSW			j += sprintf(stats + j, "xv 0 yb -58 string \"%s\" "
