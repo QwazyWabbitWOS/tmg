@@ -909,8 +909,8 @@ SV_Physics_Toss (edict_t *ent)
 	SV_CheckVelocity (ent);
 
 	// add gravity
-	if (ent->movetype != MOVETYPE_FLY
-		&& ent->movetype != MOVETYPE_FLYMISSILE)
+	if (ent->movetype != MOVETYPE_FLY &&
+		ent->movetype != MOVETYPE_FLYMISSILE)
 		SV_AddGravity (ent);
 
 	// move angles
