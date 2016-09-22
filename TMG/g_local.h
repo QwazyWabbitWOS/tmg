@@ -41,8 +41,26 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.22"
+#define MOD_VERSION "0.2.23"
 #define MOD "TMG_MOD"
+
+#ifndef _DEBUG
+#define BUILD	"Release"
+#else
+#define BUILD	"Debug  "
+#endif
+
+static char gamebanner[] = 
+{
+	"|=========================================================|\n"
+	"|                   Welcome to TMG_MOD                    |\n"
+	"|       Version "MOD_VERSION" "BUILD" "__DATE__" "__TIME__"       |\n" //looks weird, prints right
+	"|=========================================================|\n"
+	"| For all game info,features and commands please read the |\n"
+	"| readme file for information about this mod.             |\n"
+	"|=========================================================|\n"
+};
+
 // protocol bytes that can be directly added to messages
 #define	svc_muzzleflash		1
 #define	svc_muzzleflash2	2

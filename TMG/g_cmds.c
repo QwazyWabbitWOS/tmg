@@ -495,6 +495,11 @@ void Cmd_Use_f (edict_t *ent)
 	it->use (ent, it);
 }
 
+void Cmd_Ver_f(edict_t *ent)
+{
+	gi.cprintf(ent, PRINT_HIGH, gamebanner);
+}
+
 
 /*
 ==================
@@ -823,7 +828,10 @@ void Cmd_Kill_f (edict_t *ent)
 
 	//JSW
 	if (nokill->value)
+	{
+		DbgPrintf("nokill is true, can't suicide\n");
 		return;
+	}
 	//end
 	
 	//ZOID
@@ -1964,6 +1972,8 @@ void ClientCommand (edict_t *ent)
 		Cmd_SkinList_f (ent);
 	else if (Q_stricmp (cmd, "putaway") == 0)
 		Cmd_PutAway_f (ent);
+	else if (Q_strcasecmp (cmd, "ver") == 0)
+			Cmd_Ver_f (ent);
 	else if (Q_stricmp (cmd, "wave") == 0)
 		Cmd_Wave_f (ent);
 	
