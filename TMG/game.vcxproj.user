@@ -9,7 +9,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerCommand>c:\quake2\r1q2</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>+set dedicated 1 +set game ctf +set sv_gamedebug 1 +set developer 1 +exec railwarz.cfg</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>+set dedicated 1 +set game ctf +set sv_gamedebug 0 +set developer 0 +exec railwarz.cfg</LocalDebuggerCommandArguments>
     <LocalDebuggerWorkingDirectory>c:\quake2</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
 </Project>

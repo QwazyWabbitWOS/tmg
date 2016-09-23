@@ -320,6 +320,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="anticheat.h" />
+    <ClInclude Include="banner.h" />
     <ClInclude Include="bot.h" />
     <ClInclude Include="botstr.h" />
     <ClInclude Include="e_hook.h" />
