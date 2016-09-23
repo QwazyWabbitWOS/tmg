@@ -15,6 +15,7 @@
 #include "hud.h"
 #include "runes.h"
 #include "maplist.h"
+#include "banner.h"
 
 int LIGHTS = 0;
 void no (edict_t *ent);
