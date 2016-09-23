@@ -377,6 +377,87 @@ char *rav_gettech(edict_t *ent)
 	return ("No Rune");
 }
 
+// ===================================================================
+// Unified HUD initialization by QwazyWabbit
+// ===================================================================
+
+// cursor positioning
+//	xl <value>		x-left side
+//	xr <value>		x-right side
+//	yb <value>		y-bottom
+//	yt <value>		y-top
+//	xv <value>		x-value
+//	yv <value>		y-value
+
+// drawing
+//	statpic <name>
+//	pic <stat>
+//	num <fieldwidth> <stat>
+//	string <stat>
+
+// control
+//	if <stat>
+//	ifeq <stat> <value>
+//	ifbit <stat> <value>
+//	endif
+
+// //QW//
+// In all cases <stat> is the integer representing the status message item
+// to be presented. I've used manifest constants to keep the messages
+// properly enumerated across the game modes and they are defined in 
+// q_shared.h. The code originally had these scattered about in
+// different places but it mostly used magic numbers in the messages and that just
+// made it hard to figure out exactly what was happening. They defined the constants
+// and then didn't use them. Later authors were overlapping them in their
+// mods or pulling in overlapping stat items from other mods and this creates
+// HUD conflicts. ENUM or #DEFINE, then use them. Please.
+
+// Positioning:
+// Position 0,0 is the center of the screen with x going negative to the right.
+// xv, yv is relative to this origin.
+// xl is plus counts from origin left justified.
+// xr is minus counts from origin right justified.
+// yb is minus counts from bottom. (yb -10 is bottom line)
+// yt is plus counts from 0 at top.
+
+/* //QW//
+A standard HUD character (conchar) is 8 screen units wide. The xl and xr origins are with
+respect to the left and right borders. Add/subract 2 units to keep a little space between
+the edge and the chars. For example, the string "FPH" is 3 chars wide, 3 * 8 = 24 units. 
+If using xr, add 2 and negate, giving -26 from the right edge as the start of the 
+string on the screen, "Range" is (-1)(5 * 8 + 2) = -42.
+Using xl, just use an origin of 2 to space a string 2 units from the border so it looks nice.
+*/
+
+// //QW//
+// The big HUD characters for the counters are 16 units wide but 
+// their origin is already offset by 2.
+// They are positioned at 0 on the left and at (n * 16)-2 on the right
+// when n is the number of digits you want to display.
+//
+// Printing big chars on the left is problematic, they are right-justfied inside their
+// block so printing them on the left will gap them from the edge when the value doesn't
+// fill the full range of digits. Negative signs will probably be clipped if you don't
+// allow an extra space for them. 
+// You should layout for signed values on the right side or midline where negative
+// values aren't a problem. 
+// Layout for unsigned on the left if you don't mind having right-justfied 
+// blocks there. Allow space only for the number of digits you expect to
+// display to keep the HUD packet as small as possible.
+
+// I think I first saw an integrated HUD as a function in the CTC mod.
+// I took it a little further by integrating the game modes and collecting
+// the stat constants in one place.  
+
+/* //QW//
+Big HUD chars are 24 units tall and conchars are 8 for a total of 32 plus
+vertical spacing of 3 units to make it 35 units for a per-line increment
+on the big chars. I use a 25 unit vertical offset for the conchars label
+below it. This seems to give a nice uniform leading between lines.
+*/
+
+// ===================================================================
+
 char *tn_showHud (edict_t *ent)
 {
 	static char layout[1300];
