@@ -420,7 +420,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 			Com_sprintf(string, sizeof(string),
 				"xv  0 yv -100 cstring2 \"%s\" "
 				"xv  0 yv  -90 cstring2 \"MAP: %s - %s\" "
-				"xv  0 yv  -80 cstring2 \"%s %s\" "
+				"xv  0 yv  -70 cstring2 \"%s %s\" "
 				"xv 20 yv  -60 string2 \"Longest\" "
 				"xv -130 yv  -50 string2 \"Kills Ping FPH Time Spree Name \" ",
 				//	"xv -136 yv  -40 string \"-   -   -   -   -   -   -   -   -\" ",
