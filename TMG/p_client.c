@@ -466,6 +466,8 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 				message[6] = "tried to BFG-jump unsuccesfully";
 				break;
 			default:
+				DbgPrintf("%s %s has MOD %d %f %f %f\n", __func__, self->client->pers.netname, mod,
+					self->s.origin[0], self->s.origin[1], self->s.origin[2]);
 				message[1] = "commited suicide";
 				message[2] = "went the way of the dodo";
 				message[3] = "thought 'kill' was a funny console command";
@@ -1496,6 +1498,8 @@ edict_t *SelectRandomDeathmatchSpawnPoint (void)
 			selection++;
 	} while(selection--);
 
+	DbgPrintf("9999 %s returning %s \nat %f %f %f\n", __func__, spot->classname,
+		spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
 	return spot;
 }
 
@@ -1511,6 +1515,7 @@ edict_t *SelectFarthestDeathmatchSpawnPoint (void)
 	float  bestdistance, bestplayerdistance;
 	edict_t  *spot;
 
+	DbgPrintf("%s\n", __FUNCTION__);
 
 	spot = NULL;
 	bestspot = NULL;
@@ -1523,11 +1528,14 @@ edict_t *SelectFarthestDeathmatchSpawnPoint (void)
 		{
 			bestspot = spot;
 			bestdistance = bestplayerdistance;
+
 		}
 	}
 
 	if (bestspot)
 	{
+		DbgPrintf("Bestspot %s returning %s \nat %f %f %f\n", __func__, bestspot->classname,
+			bestspot->s.origin[0], bestspot->s.origin[1], bestspot->s.origin[2]); 
 		return bestspot;
 	}
 
@@ -1535,6 +1543,9 @@ edict_t *SelectFarthestDeathmatchSpawnPoint (void)
 	// we have no choice to turn one into a telefrag meltdown
 
 	spot = G_Find (NULL, FOFS(classname), "info_player_deathmatch");
+
+	DbgPrintf("Telefrag %s returning %s \nat %f %f %f\n", __func__, spot->classname,
+		spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
 
 	return spot;
 }
@@ -1579,15 +1590,28 @@ edict_t *SpawnNearFlag (edict_t *ent)
 	// we have no choice to turn one into a telefrag meltdown
 	spot = G_Find (NULL, FOFS(classname), teamspawn);
 
+	DbgPrintf("8888 %s returning %s for %s\nat %f %f %f\n", __func__, 
+		spot->classname, ent->client->pers.netname,
+		spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
+
 	return spot;
 }
 
 edict_t *SelectDeathmatchSpawnPoint (void)
 {
+	edict_t *spot;
+	
+	DbgPrintf("%s\n", __FUNCTION__);
 	if ( (int)(dmflags->value) & DF_SPAWN_FARTHEST)
-		return SelectFarthestDeathmatchSpawnPoint ();
+	{
+		spot = SelectFarthestDeathmatchSpawnPoint ();
+		return spot;
+	}
 	else
-		return SelectRandomDeathmatchSpawnPoint ();
+	{
+		spot = SelectRandomDeathmatchSpawnPoint ();
+		return spot;
+	}
 }
 
 
@@ -1639,14 +1663,16 @@ qboolean SelectSpawnPointRAV (edict_t *ent, vec3_t origin, vec3_t angles)
 {
   edict_t  *spot = NULL;
 
- //ZOID
+  DbgPrintf("%s\n", __FUNCTION__);
+
+		//ZOID
 		if (ctf->value && ent->client->kill) //JSW
 			spot = SpawnNearFlag(ent);
 		else if (!ctf->value)
 			spot = SelectDeathmatchSpawnPoint ();
 		else
 			spot = SelectCTFSpawnPoint(ent);
-//ZOID
+		//ZOID
     
  
 		
@@ -1703,6 +1729,7 @@ void	SelectSpawnPoint (edict_t *ent, vec3_t origin, vec3_t angles)
 {
 	edict_t	*spot = NULL;
 
+	DbgPrintf("%s %s\n", __FUNCTION__, ent->client->pers.netname);
 	if (deathmatch->value)
 //ZOID
 		if (ctf->value)
@@ -1879,8 +1906,6 @@ void PutClientInServer (edict_t *ent)
 	client_persistent_t	saved;
 	client_respawn_t	resp;
 	
-	//DbgPrintf("%s entered time: %.1f\n", __func__, level.time);
-
 	// find a spawn point
 	// do it before setting health back up, so farthest
 	// ranging doesn't count this client
@@ -2339,6 +2364,8 @@ void PutClientInServer (edict_t *ent)
 	ent->client->hudtime = level.framenum + 3;
 	ent->client->checkframe = level.framenum+40;
 	ent->client->checkpingtime = level.time + 25;
+
+	DbgPrintf("%s entered time: %.1f\n", __func__, level.time);
 
 	//JSW
 	ent->client->kill = 0;	//Clear kill

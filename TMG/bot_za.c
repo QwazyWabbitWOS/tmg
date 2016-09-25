@@ -3,6 +3,7 @@
 #include "g_items.h"
 #include "m_player.h"
 #include "p_client.h"
+#include "g_cmds.h"
 #include "bot.h"
 #include "botstr.h"
 
@@ -2293,13 +2294,33 @@ void Bots_Move_NORM (edict_t *ent)
 	myrandom=random();
 	//--------------------------------------------------------------------------------------
 
-
+	/*	
+	The original bot modules were in a cascade dll
+	so the usual client commands were not available
+	to the bots. Since this is now inside the game
+	so I'm using a kill command here to see if we 
+	get better results on the spawn-death bug. 
+	This is temporary unless proven beneficial. QW
+	*/
 
 	//Solid Check
-	i = gi.pointcontents (ent->s.origin);
-	if(i & CONTENTS_SOLID)
-		T_Damage (ent, ent, ent, ent->s.origin, ent->s.origin, ent->s.origin, 100, 1, 0, MOD_CRUSH);
+	if (gi.pointcontents (ent->s.origin) & CONTENTS_SOLID)
+	{
+		ent->nextthink = level.time + FRAMETIME;
+		DbgPrintf("%s %s %s at %f %f %f\n", __func__, ent->client->pers.netname, "Position",
+			ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
+		Cmd_Kill_f(ent); // silent suicide
+		return;
+	}
 
+	//QW// Old way...
+	//i = gi.pointcontents (ent->s.origin);
+	//if(i & CONTENTS_SOLID)
+	//{
+	//	T_Damage (ent, ent, ent, ent->s.origin, ent->s.origin, ent->s.origin, 100, 1, 0, MOD_CRUSH);
+	//	DbgPrintf("%s %s %s at %f %f %f\n", __func__, ent->client->pers.netname, "MOD_CRUSH",
+	//				ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
+	//}
 
 	if(VectorCompare(ent->s.origin,ent->s.old_origin))
 	{
@@ -2310,7 +2331,8 @@ void Bots_Move_NORM (edict_t *ent)
 //			rs_trace = gi.trace(ent->s.origin,ent->mins,ent->maxs,v,ent,MASK_BOTGROUND);		
 			v[2] -= 1.0;
 			rs_trace = gi.trace(ent->s.origin,ent->mins,ent->maxs,v,ent,MASK_BOTSOLIDX);
-			if(!rs_trace.allsolid && !rs_trace.startsolid) ent->groundentity = rs_trace.ent;
+			if(!rs_trace.allsolid && !rs_trace.startsolid) 
+				ent->groundentity = rs_trace.ent;
 		}
 	}
 	

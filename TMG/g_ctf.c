@@ -583,12 +583,28 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 	float	range, range1, range2;
 	char	*cname;
 
+	DbgPrintf("%s %s\n", __FUNCTION__, ent->client->pers.netname);
+
 	if (ent->client->resp.ctf_state != CTF_STATE_START)
 	{
 		if ( (int)(dmflags->value) & DF_SPAWN_FARTHEST)
-			return SelectFarthestDeathmatchSpawnPoint ();
+		{	
+			edict_t *farspot;
+			farspot = SelectFarthestDeathmatchSpawnPoint ();
+			DbgPrintf("1 %s returning %s for %s\n at %f %f %f\n", __func__, 
+				farspot->classname, ent->client->pers.netname,
+				farspot->s.origin[0], farspot->s.origin[1], farspot->s.origin[2]); 
+			return farspot;
+		}
 		else
-			return SelectRandomDeathmatchSpawnPoint ();
+		{
+			edict_t *randspot;
+			randspot = SelectRandomDeathmatchSpawnPoint ();
+			DbgPrintf("2 %s returning %s for %s\nat %f %f %f\n", __func__, 
+				randspot->classname, ent->client->pers.netname,
+				randspot->s.origin[0], randspot->s.origin[1], randspot->s.origin[2]); 
+			return randspot;
+		}
 	}
 
 	ent->client->resp.ctf_state = CTF_STATE_PLAYING;
@@ -602,6 +618,7 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 		cname = "info_player_team2";
 		break;
 	default:
+		DbgPrintf("3 %s default case.\n", __FUNCTION__);
 		return SelectRandomDeathmatchSpawnPoint();
 	}
 
@@ -626,7 +643,10 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 	}
 
 	if (!count)
+	{
+		DbgPrintf("4 %s no spots in range\n", __FUNCTION__);
 		return SelectRandomDeathmatchSpawnPoint();
+	}
 
 	if (count <= 2)
 	{
@@ -637,6 +657,7 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 
 	selection = rand() % count;
 	spot = NULL;
+	DbgPrintf("5 %s count= %d\n", __FUNCTION__, count);
 
 	do
 	{
@@ -645,6 +666,9 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 			selection++;
 	} while(selection--);
 
+	DbgPrintf("6 %s returning %s for %s\nat %f %f %f\n", __func__, 
+		spot->classname, ent->client->pers.netname,
+		spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
 	return spot;
 }
 
@@ -2367,16 +2391,17 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 	}
 
 	//if on the hook drop it also
-	if (ent->client->hook || ent->client->ctf_grapple)
-	{
-		my_bprintf(PRINT_HIGH, "%s is trying to spam the server with HOOKS\n"
-			"and was disconnected from this server\n",
-			ent->client->pers.netname);
-		stuffcmd(ent, "disconnect;error \"You have been disconnected for "
-			"trying to die or switch teams while hooking, which will crash "
-			"the server. Multiple attempts at this will result in a ban.\"");
-		return;
-	}
+	//if (ent->client->hook || ent->client->ctf_grapple)
+	//{
+	//	my_bprintf(PRINT_HIGH, "%s is trying to spam the server with HOOKS\n"
+	//		"and was disconnected from this server\n",
+	//		ent->client->pers.netname);
+	//	stuffcmd(ent, "disconnect;error \"You have been disconnected for "
+	//		"trying to die or switch teams while hooking, which will crash "
+	//		"the server. Multiple attempts at this will result in a ban.\"");
+	//	return;
+	//}
+
 	ent->client->resp.score = 0;
 	CheckPlayers();
 	my_bprintf(PRINT_HIGH, "%s changed to the %s team. "
@@ -2387,17 +2412,18 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 	ent->client->resp.spectator = 0;
 	//skin change is allowed here
 	ent->client->skintime = level.time -1;
+
 	// if hook should be dropped, just return
-	if (ent->client->hook || ent->client->ctf_grapple)
-	{
-		my_bprintf(PRINT_HIGH, "%s is trying to spam the server with HOOKS\n"
-			"and was disconnected from the server\n", 
-			ent->client->pers.netname);
-		stuffcmd(ent, "disconnect;error \"You have been disconnected for "
-			"trying to die or switch teams while hooking, which will crash "
-			"the server. Multiple attempts at this will result in a ban.\"");
-		return;
-	}
+	//if (ent->client->hook || ent->client->ctf_grapple)
+	//{
+	//	my_bprintf(PRINT_HIGH, "%s is trying to spam the server with HOOKS\n"
+	//		"and was disconnected from the server\n", 
+	//		ent->client->pers.netname);
+	//	stuffcmd(ent, "disconnect;error \"You have been disconnected for "
+	//		"trying to die or switch teams while hooking, which will crash "
+	//		"the server. Multiple attempts at this will result in a ban.\"");
+	//	return;
+	//}
 
 	// don't even bother waiting for death frames
 	ent->deadflag = DEAD_DEAD;

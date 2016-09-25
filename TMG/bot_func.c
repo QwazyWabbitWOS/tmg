@@ -301,25 +301,37 @@ qboolean InsideWall(edict_t *ent)
 	torigin[0] += 10.0;
 	torigin[1] += 10.0;
 	if (gi.pointcontents(torigin) & CONTENTS_SOLID)
+	{
+		DbgPrintf("1 %s %s\n", ent->client->pers.netname, __FUNCTION__);
 		return true;
+	}
 
 	VectorCopy(ent->s.origin, torigin);
 	torigin[0] += 10.0;
 	torigin[1] -= 10.0;
 	if (gi.pointcontents(torigin) & CONTENTS_SOLID)
+	{
+		DbgPrintf("2 %s %s\n", ent->client->pers.netname, __FUNCTION__);
 		return true;
+	}
 
 	VectorCopy(ent->s.origin, torigin);
 	torigin[0] -= 10.0;
 	torigin[1] += 10.0;
 	if (gi.pointcontents(torigin) & CONTENTS_SOLID)
+	{
+		DbgPrintf("3 %s %s\n", ent->client->pers.netname, __FUNCTION__);
 		return true;
+	}
 
 	VectorCopy(ent->s.origin, torigin);
 	torigin[0] -= 10.0;
 	torigin[1] -= 10.0;
 	if (gi.pointcontents(torigin) & CONTENTS_SOLID)
+	{
+		DbgPrintf("4 %s %s\n", ent->client->pers.netname, __FUNCTION__);
 		return true;
+	}
 
 	return false;
 }
@@ -657,6 +669,9 @@ void Bot_Think (edict_t *self)
 	if (!((int)level.time % 10))
 		if (InsideWall(self))
 		{
+			DbgPrintf("7777 %s spawned inside wall: %f %f %f\n", 
+				self->client->pers.netname,
+				self->s.origin[0], self->s.origin[1], self->s.origin[2]); 
 			Cmd_Kill_f(self); // suicide
 			self->nextthink = level.time + FRAMETIME;
 			return;
@@ -687,7 +702,7 @@ void Bot_Think (edict_t *self)
 				if(self->svflags & SVF_MONSTER)
 				{
 					self->client->respawn_time = level.time;
-					//QW// CopyToBodyQue (self);
+					CopyToBodyQue (self);
 					PutBotInServer(self);
 				}
 			}
@@ -695,15 +710,16 @@ void Bot_Think (edict_t *self)
 		else
 		{
 			Bots_Move_NORM (self);
-			if(!self->inuse) return;			//removed botself
+			if(!self->inuse) //QW// This never traps. This it needed?
+				return;			//removed botself
 
 			//-------------------------------------------
 			// If camping then keep'em at same origin
 			//-------------------------------------------
-			if (self->client->camptime > level.time)
-			{
-				VectorCopy(self->client->lastorigin,self->s.origin);
-			}
+			//if (self->client->camptime > level.time)
+			//{
+			//	VectorCopy(self->client->lastorigin,self->s.origin);
+			//}
 
 			client = self->client;
 
@@ -803,6 +819,7 @@ void PutBotInServer (edict_t *ent)
 
 	//current weapon
 	client = ent->client;
+	DbgPrintf("%s %s\n", __FUNCTION__, client->pers.netname);
 
 	//RAV
 	//  start weapons & respawn protection
@@ -1240,6 +1257,7 @@ void PutBotInServer (edict_t *ent)
 	ent->s.renderfx = 0;
 	ent->s.effects = 0;
 
+	ent->s.event = EV_OTHER_TELEPORT;	//prevent lerping
 	SelectSpawnPoint (ent, spawn_origin, spawn_angles);
 	VectorCopy (spawn_origin, ent->s.origin);
 	VectorCopy (spawn_angles, ent->s.angles);
@@ -1323,6 +1341,7 @@ void PutBotInServer (edict_t *ent)
 
 	gi.linkentity (ent);
 	G_TouchTriggers (ent);
+	BotEndServerFrame(ent);
 }
 
 //----------------------------------------------------------------
@@ -1338,9 +1357,6 @@ qboolean SpawnBot(int i)
 {
 	edict_t		*bot,*ent;
 	int			k,j;
-
-	DbgPrintf ("Called %s %s %s %s %d\n", __FUNCTION__, 
-		Bot[i].netname, Bot[i].model, Bot[i].skin, i);
 
 	if(	Get_NumOfPlayer () >= game.maxclients )
 	{
