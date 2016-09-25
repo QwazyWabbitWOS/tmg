@@ -827,13 +827,11 @@ void Cmd_Kill_f (edict_t *ent)
 	if (!G_ClientInGame(ent))
 		return;
 
-	//JSW
-	if (nokill->value)
+	if (nokill->value && !ent->bot_client) // if nokill, only bots can suicide
 	{
-		DbgPrintf("nokill is true, can't suicide\n");
+		gi.cprintf(ent, PRINT_CHAT, "nokill is set, players can't suicide\n");
 		return;
 	}
-	//end
 	
 	//ZOID
 	if (ent->solid == SOLID_NOT)
@@ -844,17 +842,17 @@ void Cmd_Kill_f (edict_t *ent)
 		return;
 	
 	//Hook bug fix  (duncan alerted)
-	if (ent->client->hook || ent->client->ctf_grapple)
-	{
-		my_bprintf(PRINT_HIGH, "%s is trying to spam the server with HOOKS\n"
-			"and was disconnected from the server\n",
-			ent->client->pers.netname);
-		stuffcmd(ent, "disconnect;error \"You have been disconnected for "
-			"trying to die or switch teams while hooking, "
-			"which will crash the server. "
-			"Multiple attempts at this will result in a ban.\"");
-		return;
-	}
+	//if (ent->client->hook || ent->client->ctf_grapple)
+	//{
+	//	my_bprintf(PRINT_HIGH, "%s is trying to spam the server with HOOKS\n"
+	//		"and was disconnected from the server\n",
+	//		ent->client->pers.netname);
+	//	stuffcmd(ent, "disconnect;error \"You have been disconnected for "
+	//		"trying to die or switch teams while hooking, "
+	//		"which will crash the server. "
+	//		"Multiple attempts at this will result in a ban.\"");
+	//	return;
+	//}
 
 	if ((int)punish_suicide->value & PS_FORCESPEC)
 	{
