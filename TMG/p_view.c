@@ -1778,8 +1778,6 @@ void BotEndServerFrame (edict_t *ent)
 	//
 	if (level.intermissiontime)
 	{
-		// FIXME: add view drifting here?
-//		current_client->ps.blend[3] = 0;
 		current_client->ps.fov = 90;
 		G_SetStats (ent);
 		return;
@@ -1787,22 +1785,9 @@ void BotEndServerFrame (edict_t *ent)
 
 	AngleVectors (ent->client->v_angle, forward, right, up);
 
-
-
 	// burn from lava, etc
 	B_WorldEffects (ent);
 
-	//
-	// set model angles from view angles so other things in
-	// the world can tell which direction you are looking
-	//
-/*	if (ent->client->v_angle[PITCH] > 180)
-		ent->s.angles[PITCH] = (-360 + ent->client->v_angle[PITCH])/3;
-	else
-		ent->s.angles[PITCH] = ent->client->v_angle[PITCH]/3;
-	ent->s.angles[YAW] = ent->client->v_angle[YAW];
-	ent->s.angles[ROLL] = 0SV_CalcRoll (ent->s.angles, ent->velocity)*4;
-*/
 	ent->s.angles[ROLL] = 0;
 	//
 	// calculate speed and cycle to be used for
@@ -1851,18 +1836,8 @@ void BotEndServerFrame (edict_t *ent)
 
 	// determine the gun offsets
 	SV_CalcGunOffset (ent);
-
-	// determine the full screen color blend
-	// must be after viewoffset, so eye contents can be
-	// accurately determined
-	// FIXME: with client prediction, the contents
-	// should be determined by the client
-//	SV_CalcBlend (ent);
-
 	G_SetClientEvent (ent);
-
 	G_SetClientEffects (ent);
-
 	G_SetClientSound (ent);
 
 	}
@@ -1877,7 +1852,8 @@ void BotEndServerFrame (edict_t *ent)
 		}
 		else ent->s.frame = 0;
 	}	
-	else G_SetClientFrame (ent);
+	else 
+		G_SetClientFrame (ent);
 
 	VectorCopy (ent->velocity, ent->client->oldvelocity);
 //	VectorCopy (ent->client->ps.viewangles, ent->client->oldviewangles);
@@ -1886,16 +1862,5 @@ void BotEndServerFrame (edict_t *ent)
 	VectorClear (ent->client->kick_origin);
 	VectorClear (ent->client->kick_angles);
 
-	// if the scoreboard is up, update it
-/*	if (ent->client->showscores && !(level.framenum & 31) )
-	{
-//ZOID
-		if (ent->client->menu) {
-			PMenu_Update(ent);
-		} else
-//ZOID
-			DeathmatchScoreboardMessage (ent, ent->enemy);
-		gi.unicast (ent, false);
-	}*/
 }
 
