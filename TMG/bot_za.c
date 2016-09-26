@@ -2298,7 +2298,7 @@ void Bots_Move_NORM (edict_t *ent)
 	The original bot modules were in a cascade dll
 	so the usual client commands were not available
 	to the bots. Since this is now inside the game
-	so I'm using a kill command here to see if we 
+	I'm using a kill command here to see if we 
 	get better results on the spawn-death bug. 
 	This is temporary unless proven beneficial. QW
 	*/
@@ -2309,7 +2309,7 @@ void Bots_Move_NORM (edict_t *ent)
 		ent->nextthink = level.time + FRAMETIME;
 		DbgPrintf("%s %s %s at %f %f %f\n", __func__, ent->client->pers.netname, "Position",
 			ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
-		Cmd_Kill_f(ent); // silent suicide
+		Cmd_Kill_f(ent); // silent suicide mod=23
 		return;
 	}
 

@@ -710,7 +710,7 @@ void Bot_Think (edict_t *self)
 		else
 		{
 			Bots_Move_NORM (self);
-			if(!self->inuse) //QW// This never traps. This it needed?
+			if(!self->inuse) //QW// This never traps. Is it needed?
 				return;			//removed botself
 
 			//-------------------------------------------
