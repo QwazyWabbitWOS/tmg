@@ -1,7 +1,6 @@
 ### What is this repository for? ###
 
 * This is TMG for Quake II, Railwarz CTF with Zigbot support.
-* Version 2.22
 
 ### How do I get set up? ###
 
