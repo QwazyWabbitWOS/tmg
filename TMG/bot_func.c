@@ -16,7 +16,7 @@ qboolean Get_YenPos(char *Buff, int *curr)
 	int i = *curr + 1;
 	while(1)
 	{
-		if(Buff[i] == '\0' || Buff[i] == '\n')
+		if(Buff[i] == '\0' || Buff[i] == '\n' || Buff[i] == '\r')
 		{
 			*curr = i;
 			return true;
@@ -494,7 +494,7 @@ MESS_NOTFOUND:
 				break;
 			if(Buff[0] == '[')
 				break;
-			if(Buff[0] == '\n' || Buff[0] == '#')
+			if(Buff[0] == '\n' || Buff[0] == '\r' || Buff[0] == '#')
 			{
 				i--;
 				continue;
