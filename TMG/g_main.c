@@ -286,6 +286,7 @@ cvar_t	*vote_timeout;
 cvar_t	*vote_percentage;
 cvar_t	*cfgdir;
 cvar_t	*modversion;
+cvar_t	*doors_stay_open;
 //end
 
 //

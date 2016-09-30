@@ -908,7 +908,10 @@ DOORS
 
 /*QUAKED func_door (0 .5 .8) ? START_OPEN x CRUSHER NOMONSTER ANIMATED TOGGLE ANIMATED_FAST
 TOGGLE		wait in both the start and end states for a trigger event.
-START_OPEN	the door to moves to its destination when spawned, and operate in reverse.  It is used to temporarily or permanently close off an area when triggered (not useful for touch or takedamage doors).
+START_OPEN	the door to moves to its destination when spawned 
+            and operate in reverse.  
+            It is used to temporarily or permanently close off an area 
+			when triggered (not useful for touch or takedamage doors).
 NOMONSTER	monsters will not trigger this door
 
 "message"	is printed when the door is touched if it is a trigger door and it hasn't been fired yet
@@ -1279,6 +1282,11 @@ void SP_func_door (edict_t *ent)
 
 	if (!ent->wait)
 		ent->wait = 3;
+	
+	//QW// doors stay open after trigger
+	if (doors_stay_open->value)
+		ent->wait = -1;
+
 	if (!st.lip)
 		st.lip = 8;
 	if (!ent->dmg)

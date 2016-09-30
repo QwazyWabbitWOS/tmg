@@ -41,7 +41,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.24"
+#define MOD_VERSION "0.2.25"
 #define MOD "TMG_MOD"
 
 #ifndef _DEBUG
@@ -811,6 +811,7 @@ extern	cvar_t	*vote_percentage;
 extern	cvar_t	*vote_timeout;
 extern	cvar_t	*cfgdir;
 extern	cvar_t	*modversion;
+extern	cvar_t	*doors_stay_open;
 
 //JSW - Punish Suicide Flags
 #define	PS_RESETSCORE	1

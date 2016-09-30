@@ -458,6 +458,7 @@ void InitGame (void)
 	vote_percentage = gi.cvar ("vote_percentage", "67", 0);
 
 	cfgdir = gi.cvar ("cfgdir", "cfg", CVAR_NOSET);
+	doors_stay_open = gi.cvar("doors_stay_open", "0", 0);
 
 	modversion = gi.cvar ("modversion", MOD_VERSION, CVAR_SERVERINFO | CVAR_NOSET);
 
