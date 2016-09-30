@@ -21,6 +21,7 @@ void Cmd_God_f (edict_t *ent);
 void Cmd_Notarget_f (edict_t *ent);
 void Cmd_Noclip_f (edict_t *ent);
 void Cmd_Use_f (edict_t *ent);
+void Cmd_Ver_f(edict_t *ent);
 void Cmd_Drop_f (edict_t *ent);
 void Cmd_Inven_f (edict_t *ent);
 void Cmd_InvUse_f (edict_t *ent);
