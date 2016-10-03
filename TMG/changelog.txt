@@ -52,7 +52,7 @@ Completed
 3. Same with bug in lockteams on the admin menu.
 4. Make highscores available anytime via a console cmd.
 21. Kill/Death counter. I did this once already but think it needs done again.
-
+26. no_hum CVAR, make it global.
 
 Not Completed
 1. Ignore command for player chat, so you can lock out seeing chat from certain players.
@@ -76,7 +76,6 @@ Not Completed
 23. This one goes way back: bonus for evening teams. Keep your score, get a bonus, whatever. It's been on my mind since the beginning but I've never actually worked on it.
 24. Hook gravity CVAR, everyone knows how that went over, so I'll make it a CVAR and let you play with it.
 25. In the ops file, add the name and IP of the person who promoted or demoted an op. There is some other reworking that needs to be done here as well.
-26. no_hum CVAR, make it global.
 27. Various bugs and security issues, which I won't describe here for obvious reasons. 
 28. Private chat function, so players can send messages to specific people and set up a group of people to send chat to.
 29. Option for ricochet slugs.

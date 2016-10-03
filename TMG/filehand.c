@@ -8,13 +8,10 @@
 
 qboolean lessGeneral(char line[IP_LENGTH], char comp[IP_LENGTH])
 {
-
 	if (strcspn (line, "*") > strcspn(comp, "*"))
-	{
-		return (true);
-	}
+		return true;
 	else
-		return (false);
+		return false;
 }
 
 int checkAllowed (char *userinfo)
@@ -115,9 +112,9 @@ char *NameAndIp (edict_t *ent)
 int IPMatch (char *clientIP, char *maskIP)
 {
 	int match;
-    qboolean OK, psd;
+	qboolean OK, psd;
 	char *cp, *mp, *chop;
-    
+
 	OK = true;
 	psd = false;
 	match = 1;
@@ -136,7 +133,7 @@ int IPMatch (char *clientIP, char *maskIP)
 	}
 
 	// Name
-    while (OK && !psd)
+	while (OK && !psd)
 	{
 		if (strchr("*", *mp)) // asterisk; go to '@'
 		{
@@ -144,7 +141,8 @@ int IPMatch (char *clientIP, char *maskIP)
 			while ((!strchr("@", *cp)) && (!strchr("\0", *cp)) && (!strchr("\n", *cp))) cp++;
 			if (strchr("\n", *mp)) OK=false;
 		} 
-		if (OK) {
+		if (OK) 
+		{
 			if (strchr("@", *cp)) 
 			{
 				psd=true;
@@ -164,14 +162,16 @@ int IPMatch (char *clientIP, char *maskIP)
 	}
 
 	// IP
-    while (OK) {
+	while (OK) 
+	{
 		if (strchr("*", *mp)) // asterisk; go to '@' or next '.'
 		{
 			while ((!strchr(".", *mp)) && (!strchr("\0", *mp)) && (!strchr("\n", *mp))) mp++;
 			while ((!strchr(".", *cp)) && (!strchr("\0", *cp)) && (!strchr("\n", *cp))) cp++;
 			if (strchr("\n", *mp)) OK=false;
 		} 
-		if (OK) {
+		if (OK) 
+		{
 			if ((*cp != *mp) && (!strchr ("?", *mp))) { match=0; /*safe_bprintf(PRINT_HIGH,"(%c <> %c)\n",*cp, *mp);*/ }
 			cp++;
 			mp++;
@@ -180,7 +180,7 @@ int IPMatch (char *clientIP, char *maskIP)
 			if (match!=1) OK=false;
 		}
 	}
-  	return (match); // 1 if IP's match, otherwise 0.	
+	return (match); // 1 if IP's match, otherwise 0.	
 }
 
 qboolean entryInFile (char *filename, char ip[IP_LENGTH])
@@ -235,21 +235,21 @@ int CheckOpFile (edict_t *ent, char ip[IP_LENGTH], qboolean returnindex)
 					a = 1;
 					for (result = strtok(line," \t\n");result != NULL; result = strtok(NULL," \t\n"))
 					{
-						//gi.dprintf("result is .%s.\n", result);
+						DbgPrintf("%s result is .%s.\n", __func__, result);
 						if (a == 1)
 						{
 							strcpy(oplist[i].entry, result);
-							//gi.dprintf("%d oplist entry added for %s\n", i, oplist[i].entry);
+							DbgPrintf("%d oplist entry added for %s\n", i, oplist[i].entry);
 						}
 						else if (a == 2 && atoi(result))
 						{
 							oplist[i].level = atoi(result);
-							//gi.dprintf("%d oplist level added for %d\n", i, oplist[i].level);
+							DbgPrintf("%d oplist level added for %d\n", i, oplist[i].level);
 						}
 						else if (a == 3)
 						{
 							strcpy(oplist[i].namepass, result);
-							//gi.dprintf("%d oplist namepass added for %s\n", i, oplist[i].namepass);
+							DbgPrintf("%d oplist namepass added for %s\n", i, oplist[i].namepass);
 						}
 	
 						if (IPMatch(ip, oplist[i].entry))
@@ -270,8 +270,8 @@ int CheckOpFile (edict_t *ent, char ip[IP_LENGTH], qboolean returnindex)
 					}
 					if (ent != NULL)
 					{
-						//gi.dprintf("pass in file is %s, namepass is %s, strlen of namepass is %d, strlen is %d in file\n",
-						//	oplist[i].namepass, ent->client->pers.namepass, strlen(ent->client->pers.namepass), strlen(oplist[i].namepass));
+						DbgPrintf("pass in file is %s, namepass is %s, strlen of namepass is %d, strlen is %d in file\n",
+							oplist[i].namepass, ent->client->pers.namepass, strlen(ent->client->pers.namepass), strlen(oplist[i].namepass));
 					}
 					i++;
 					entriesinopfile = i;
@@ -280,12 +280,12 @@ int CheckOpFile (edict_t *ent, char ip[IP_LENGTH], qboolean returnindex)
 			else
 				result = NULL;
 		}while (result != NULL);
+
 		fclose (opfile);
 		if (ent == NULL)
 		{
 			if (inFile == true)
 			{
-
 				if (returnindex == true)
 					return flagged;
 				else
@@ -311,7 +311,8 @@ int CheckOpFile (edict_t *ent, char ip[IP_LENGTH], qboolean returnindex)
 		gi.dprintf("%d entries in user_o.txt\n", entriesinopfile);
 		for (i = 0; i < entriesinopfile+1; i++)
 		{
-			gi.dprintf("Entry #%d: [%s] Level: [%d] Password: [%s] Flagged: [%d]\nFlagged = %d\n", i+1, oplist[i].entry, oplist[i].level, oplist[i].namepass, oplist[i].flagged, flagged);
+			gi.dprintf("Entry #%d: [%s] Level: [%d] Password: [%s] Flagged: [%d]\nFlagged = %d\n", 
+				i+1, oplist[i].entry, oplist[i].level, oplist[i].namepass, oplist[i].flagged, flagged);
 		}
 	}
 	if (flagged < 0)
@@ -324,7 +325,9 @@ int CheckOpFile (edict_t *ent, char ip[IP_LENGTH], qboolean returnindex)
 		strcpy(ent->client->pers.namepass, oplist[flagged].namepass);
 	}
 	if (developer->value && flagged != -1)
-		gi.dprintf ("Player %s matches entry %s, level = %d\n", ent->client->pers.netname, oplist[flagged].entry, oplist[flagged].level);
+		gi.dprintf ("Player %s matches entry %s, level = %d\n", 
+			ent->client->pers.netname, oplist[flagged].entry, oplist[flagged].level);
+
 	return flagged;
 }
 
@@ -499,17 +502,17 @@ qboolean ModifyOpLevel (int entry, int newlevel)
 	return true;
 }
 
+/* Add operator access level for named user @ IP address
+   if user_o.txt file doesn't exist, create it.
+*/
 int AddOperator (char entry[IP_LENGTH], int level, char pass[16])
 {
 	FILE *opfile;
 	char line[IP_LENGTH];
 
-	if (CheckOpFile(NULL, entry, false))
-		return 2; 
-
-	if ((opfile = tn_open("user_o.txt", "a")))
+	if ((opfile = tn_open("user_o.txt", "a+")))
 	{
-		sprintf (line, "\n%s\t%d\t%s", entry, level, pass);
+		sprintf (line, "%s\t%d\t%s\n", entry, level, pass);
 		fputs(line, opfile);
 		fclose(opfile);
 		CheckOpFile(NULL, "*@*.*.*.*", false);
@@ -546,8 +549,7 @@ void sv_ban_ip (edict_t *ent)
 {
 	char banned[IP_LENGTH];
 
-//JSW	if ((ent==NULL) || (ent->client->pers.isop == 1))
-	if ((ent==NULL) || (ent->client->pers.oplevel & OP_BAN))
+	if ((ent == NULL) || (ent->client->pers.oplevel & OP_BAN))
 	{
 		if (ent==NULL)
 			strcpy (banned, gi.argv(2));
@@ -601,9 +603,9 @@ void ShowFile(edict_t *ent, char *filename)
 	}
 
 	if (ent == NULL)
-		gi.dprintf("\n\n------------------------------\n\nEnd of %s\n\n", filename);
+		gi.dprintf("\n------------------------------\n\nEnd of %s\n\n", filename);
 	else
-		gi.cprintf(ent, PRINT_HIGH, "\n\n------------------------------\n\nEnd of %s\n\n", filename);
+		gi.cprintf(ent, PRINT_HIGH, "\n------------------------------\n\nEnd of %s\n\n", filename);
 	fclose(file);
 }
 

@@ -2437,8 +2437,8 @@ CTFScoreboardMessage
 */
 void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 {
-	char	entry[1024];
-	char	string[1400];
+	char	entry[MAX_MSGLEN];
+	char	string[MAX_MSGLEN];
 	int		len = 0;
 	int		i, j, k, n;
 	int		sorted[2][MAX_CLIENTS];
@@ -2448,7 +2448,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 	gclient_t	*cl;
 	edict_t		*cl_ent;
 	int team;
-	int maxsize = 1400;
+	int maxsize = MAX_MSGLEN;
 
 	if (DEBUG_HSCORES) 
 		DbgPrintf("%s entered\n", __func__);
@@ -2550,7 +2550,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 				cl_ent = g_edicts + 1 + sorted[0][i];
 				if (newscore->value)
 				{
-					sprintf(entry+strlen(entry),
+					sprintf(entry + strlen(entry),
 						"xv -80 %s \"%3d %3d %-12.12s C:%2d\" ",
 						(cl_ent == ent) ? "string2" : "string",
 						cl->resp.score, 
@@ -2562,8 +2562,8 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 				}
 				else
 				{
-					// use ctf template
-					sprintf(entry+strlen(entry),
+					// use old ctf scoreboard
+					sprintf(entry + strlen(entry),
 						"ctf 0 %d %d %d %d ",
 						42 + i * 8,
 						sorted[0][i],
@@ -2591,7 +2591,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 				cl_ent = g_edicts + 1 + sorted[1][i];
 				if (newscore->value)
 				{
-					sprintf(entry+strlen(entry),
+					sprintf(entry + strlen(entry),
 						"xv 160 %s \"%3d %3d %-12.12s C:%2d\" ",
 						(cl_ent == ent) ? "string2" : "string",
 						cl->resp.score, 
@@ -2605,7 +2605,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 				else
 				{
 					// use ctf template
-					sprintf(entry+strlen(entry),
+					sprintf(entry + strlen(entry),
 						"ctf 160 %d %d %d %d ",
 						42 + i * 8,
 						sorted[1][i],
@@ -2616,6 +2616,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 								"xv 216 yv %d picn sbfctf1 ",
 								42 + i * 8);
 				}
+				
 				if (maxsize - len > strlen(entry))
 				{
 					strcat(string, entry);
@@ -2654,7 +2655,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 				}
 
 				// use ctf template for spectators to save string space
-				sprintf(entry+strlen(entry), "ctf %d %d %d %d %d ",
+				sprintf(entry + strlen(entry), "ctf %d %d %d %d %d ",
 					(n & 1) ? 160 : 0, // x
 					j, // y
 					i, // client index
@@ -2684,12 +2685,15 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 					42 + (last[1]+1)*8, total[1] - last[1] - 1);
 	}
 
-	if (strlen(string) > maxsize - 30) // this should never happen
+	len = strlen(string);
+	if (len > maxsize - 10) // this should never happen
 	{
-		DbgPrintf("Scoreboard size: %d %.1f\n", strlen(string), level.time);
-		gi.dprintf("Warning: scoreboard string neared or exceeded max length\n"
-				   "Dump:\n%s\n---\n", string);
+		DbgPrintf("Scoreboard size: %d %.1f\n", len, level.time);
+		gi.dprintf("Warning: scoreboard string length %d neared or exceeded max length %d\n"
+				   "Dump:\n%s\n---\n", len, maxsize, string);
 	}
+
+	DbgPrintf("%d: %s\n", len, string);
 	gi.WriteByte (svc_layout);
 	gi.WriteString (string);
 }
@@ -4519,7 +4523,7 @@ void VoteChangeMap(edict_t *ent, pmenu_t *p)
 		ent->client->resp.vote = true;
 		PMenu_Open(ent, noworlatermenu, -1,
 				   sizeof(noworlatermenu) / sizeof(pmenu_t),
-				   true, false);
+				   true, true);
 	}
 	else
 	{
@@ -4575,7 +4579,7 @@ void VoteMap3(edict_t *ent, pmenu_t *p)
 	VoteMapNames3();
 	PMenu_Open(ent, votemapmenu3, -1,
 			   sizeof(votemapmenu3) / sizeof(pmenu_t),
-			   true, false);
+			   true, true);
 }
 
 void VoteMapNames2(void)
@@ -4635,7 +4639,7 @@ void VoteMap2(edict_t *ent, pmenu_t *p)
 	VoteMapNames2();
 	PMenu_Open(ent, votemapmenu2,
 			   -1, sizeof(votemapmenu2) / sizeof(pmenu_t),
-			   true, false);
+			   true, true);
 }
 
 void VoteMapNames(void)
@@ -4700,14 +4704,14 @@ void VoteMap(edict_t *ent, pmenu_t *p)
 		yesnomenu[1].text = string;
 		PMenu_Open(ent, yesnomenu,
 				   -1, sizeof(yesnomenu) / sizeof(pmenu_t),
-				   true, false);
+				   true, true);
 	}
 	else
 	{
 		VoteMapNames();
 		PMenu_Open(ent, votemapmenu,
 				   -1, sizeof(votemapmenu) / sizeof(pmenu_t),
-				   true, false);
+				   true, true);
 	}
 }
 
@@ -4807,7 +4811,7 @@ void OpPlayer(edict_t *ent, pmenu_t *p)
 	List_Op(ent);
 	PMenu_Open(ent, promotemenu,
 			   -1, sizeof(promotemenu) / sizeof(pmenu_t),
-			   true, false);
+			   true, true);
 }
 
 void OpMe(edict_t *ent, pmenu_t *p)
@@ -4911,7 +4915,7 @@ void SwitchPlayer(edict_t *ent, pmenu_t *p)
 	List_Switch(ent);
 	PMenu_Open(ent, switchmenu,
 			   -1, sizeof(switchmenu) / sizeof(pmenu_t),
-			   true, false);
+			   true, true);
 }
 
 void SwitchMe(edict_t *ent, pmenu_t *p)
@@ -5013,7 +5017,7 @@ void SpecPlayer(edict_t *ent, pmenu_t *p)
 	List_Spec(ent);
 	PMenu_Open(ent, specmenu,
 			   -1, sizeof(specmenu) / sizeof(pmenu_t),
-			   true, false);
+			   true, true);
 }
 
 void List_UnSilence(edict_t *ent)
@@ -5050,11 +5054,12 @@ void List_UnSilence(edict_t *ent)
 
 void UnSilencePlayer(edict_t *ent, pmenu_t *p)
 {
-	if (ent->client->menu) PMenu_Close(ent);
+	if (ent->client->menu) 
+		PMenu_Close(ent);
 	List_UnSilence(ent);
 	PMenu_Open(ent, unsilencemenu,
 			   -1, sizeof(unsilencemenu) / sizeof(pmenu_t),
-			   true, false);
+			   true, true);
 }
 
 
@@ -5110,7 +5115,7 @@ void SilencePlayer(edict_t *ent, pmenu_t *p)
 	List_Silence(ent);
 	PMenu_Open(ent, silencemenu,
 			   -1, sizeof(silencemenu) / sizeof(pmenu_t),
-			   true, false);
+			   true, true);
 }
 
 void SilenceMe(edict_t *ent, pmenu_t *p)
@@ -5182,7 +5187,7 @@ void LightsMenu(edict_t *ent, pmenu_t *p)
 	if (ent->client->menu) PMenu_Close(ent);
 	PMenu_Open(ent, lightsmenu,
 			   -1, sizeof(lightsmenu) / sizeof(pmenu_t),
-			   true, false);
+			   true, true);
 }
 
 void PlayerMenu(edict_t *ent, pmenu_t *p)
@@ -5193,7 +5198,7 @@ void PlayerMenu(edict_t *ent, pmenu_t *p)
 		PMenu_Close(ent);
 	PMenu_Open(ent, opmenuP,
 			   -1, sizeof(opmenuP) / sizeof(pmenu_t),
-			   true, false);
+			   true, true);
 }
 
 //Player lister
@@ -5232,11 +5237,13 @@ void List_KickBan(edict_t *ent)
 
 void KicknBanPlayer(edict_t *ent, pmenu_t *p)
 {
-	if (ent->client->menu) PMenu_Close(ent);
+	if (ent->client->menu) 
+		PMenu_Close(ent);
+	
 	List_KickBan(ent);
 	PMenu_Open(ent, kicknbanmenu,
 			   -1, sizeof(kicknbanmenu) / sizeof(pmenu_t),
-			   true, false);
+			   true, true);
 }
 
 void KicknBanMe(edict_t *ent, pmenu_t *p)
@@ -5307,11 +5314,13 @@ void List_Ban(edict_t *ent)
 
 void BanPlayer(edict_t *ent, pmenu_t *p)
 {
-	if (ent->client->menu) PMenu_Close(ent);
+	if (ent->client->menu) 
+		PMenu_Close(ent);
+
 	List_Ban(ent);
 	PMenu_Open(ent, banmenu,
 			   -1, sizeof(banmenu) / sizeof(pmenu_t),
-			   true, false);
+			   true, true);
 }
 
 
@@ -5374,7 +5383,7 @@ void OpMap3(edict_t *ent, pmenu_t *p)
 	OpMapNames3();
 	PMenu_Open(ent, opmapmenu3,
 			   -1, sizeof(opmapmenu3) / sizeof(pmenu_t),
-			   true, false);
+			   true, true);
 }
 
 void OpMapNames2(void)
@@ -5434,7 +5443,7 @@ void OpMap2(edict_t *ent, pmenu_t *p)
 	OpMapNames2();
 	PMenu_Open(ent, opmapmenu2,
 			   -1, sizeof(opmapmenu2) / sizeof(pmenu_t),
-			   true, false);
+			   true, true);
 }
 
 void OpMapNames(void)
@@ -5486,7 +5495,7 @@ void OpMap(edict_t *ent, pmenu_t *p)
 	OpMapNames();
 	PMenu_Open(ent, opmapmenu,
 			   -1, sizeof(opmapmenu) / sizeof(pmenu_t),
-			   true, false);
+			   true, true);
 }
 
 void KickMe(edict_t *ent, pmenu_t *p)
@@ -5541,7 +5550,7 @@ void KickPlayer(edict_t *ent, pmenu_t *p)
 	List_Kick(ent);
 	PMenu_Open(ent, kickmenu,
 			   -1, sizeof(kickmenu) / sizeof(pmenu_t),
-			   true, false);
+			   true, true);
 }
 
 //JSW
@@ -5715,7 +5724,7 @@ void ListPlayers(edict_t *ent, pmenu_t *p)
 	List_Players(ent);
 	PMenu_Open(ent, playerlistmenu,
 			   -1, sizeof(playerlistmenu) / sizeof(pmenu_t),
-			   true, false);
+			   true, true);
 }
 
 void OPMenu(edict_t *ent, pmenu_t *p)
@@ -5732,7 +5741,7 @@ void OPMenu(edict_t *ent, pmenu_t *p)
 	if(ent->client->pers.isop == 1)
 		PMenu_Open(ent, opmenu,
 				   -1, sizeof(opmenu) / sizeof(pmenu_t),
-				   true, false);
+				   true, true);
 }
 
 void FillMapNames(void)
@@ -5821,7 +5830,7 @@ void MapVote(edict_t *ent)
 		PMenu_Close(ent);
 	PMenu_Open(ent, tmgmapvote,
 			   -1, sizeof(tmgmapvote) / sizeof(pmenu_t),
-			   true, false);
+			   true, true);
 }
 
 
@@ -5982,7 +5991,9 @@ int CTFUpdateJoinMenu(edict_t *ent)
 //RAV
 void OpenJoinMenu(edict_t *ent)
 {
-	PMenu_Open(ent, joindm, 0, sizeof(joindm) / sizeof(pmenu_t), true, true);
+	PMenu_Open(ent, joindm, 0, 
+		sizeof(joindm) / sizeof(pmenu_t), 
+		true, true);
 }
 //
 

@@ -964,6 +964,7 @@ void Cmd_Operators_f (edict_t *ent)
 	int		i, j;
 	edict_t	*player;
 
+	safe_cprintf(ent, PRINT_HIGH, "\n");
 	j = 1;
 	for (i = 1; i <= maxclients->value; i++)
 	{
@@ -980,6 +981,7 @@ void Cmd_Operators_f (edict_t *ent)
 			}
 		}
 	}
+	safe_cprintf(ent, PRINT_HIGH, "\n");
 }
 
 void MapVoteThink(qboolean passed, qboolean now)
@@ -2189,7 +2191,6 @@ void ClientCommand (edict_t *ent)
 	//ADMIN options
 	else if (Q_stricmp (cmd, "m_map") == 0)
 	{
-		//if (ent->client->pers.isop == 1 || ent->client->pers.ismop == 1)
 		if (ent->client->pers.oplevel & OP_CHANGEMAP)
 		{
 			cmd = gi.argv(1);
@@ -2201,7 +2202,6 @@ void ClientCommand (edict_t *ent)
 	}
 	else if (Q_stricmp (cmd, "m_status") == 0)
 	{
-		//if (ent->client->pers.isop == 1 || ent->client->pers.ismop == 1)
 		if (ent->client->pers.oplevel & OP_STATUS)
 		{
 			sprintf(buffer,
@@ -2213,7 +2213,6 @@ void ClientCommand (edict_t *ent)
 	}
 	else if (Q_stricmp (cmd, "m_kick") == 0)
 	{
-//		if (ent->client->pers.isop == 1 || ent->client->pers.ismop == 1)
 		if (ent->client->pers.oplevel & OP_KICK)
 		{
 			cmd = gi.argv(1);
@@ -2226,7 +2225,6 @@ void ClientCommand (edict_t *ent)
 	//JSW
 	else if (Q_stricmp (cmd, "lockteams") == 0)
 	{
-//		if (ent->client->pers.isop ==1 || ent->client->pers.ismop ==1)
 		if (ent->client->pers.oplevel & OP_LOCKTEAMS)
 		{
 			locked_teams = true;
@@ -2237,7 +2235,6 @@ void ClientCommand (edict_t *ent)
 	}
 	else if (Q_stricmp (cmd, "unlockteams") == 0)
 	{
-//		if (ent->client->pers.isop ==1 || ent->client->pers.ismop ==1)
 		if (ent->client->pers.oplevel & OP_LOCKTEAMS)
 		{
 			locked_teams = false;
@@ -2248,7 +2245,6 @@ void ClientCommand (edict_t *ent)
 	}
 	else if (Q_stricmp (cmd, "showopfile") == 0)
 	{
-//		if (ent->client->pers.isop ==1)
 		if (ent->client->pers.oplevel & OP_ADDOP)
 			ShowFile(ent, "user_o.txt");
 		else
@@ -2256,7 +2252,6 @@ void ClientCommand (edict_t *ent)
 	}
 	else if (Q_stricmp (cmd, "showbannedfile") == 0)
 	{
-//		if (ent->client->pers.isop ==1)
 		if (ent->client->pers.oplevel & OP_BAN)
 			ShowFile (NULL, "ip_banned.txt");
 		else
@@ -2264,7 +2259,6 @@ void ClientCommand (edict_t *ent)
 	}
 	else if (Q_stricmp (cmd, "ban") == 0)
 	{
-//		if (ent->client->pers.isop ==1)
 		if (ent->client->pers.oplevel & OP_BAN)
 			sv_ban_ip(ent);
 		else
@@ -2272,7 +2266,6 @@ void ClientCommand (edict_t *ent)
 	}
 	else if (Q_stricmp (cmd, "restart") == 0)
 	{
-//		if (ent->client->pers.isop ==1 || ent->client->pers.ismop ==1)
 		if (ent->client->pers.oplevel & OP_RESTART)
 			OpRestart(ent, NULL);
 		else
@@ -2305,7 +2298,8 @@ void ClientCommand (edict_t *ent)
 		else
 			NoAccess(ent);
 	}
-	else if (Q_stricmp(cmd, "addop") == 0)
+	else if (Q_stricmp(cmd, "addop") == 0 ||
+			 Q_stricmp(cmd, "opadd") == 0)
 	{
 		int level;
 		char pass[16];
@@ -2337,7 +2331,6 @@ void ClientCommand (edict_t *ent)
 	//end
 	else if(Q_stricmp (cmd, "lightsoff") == 0  && lights_out->value == 1)
 	{
-//		if (ent->client->pers.isop==1)
 		if (ent->client->pers.oplevel & OP_LIGHTS)
 		{
 			int i;
@@ -2413,7 +2406,6 @@ void ClientCommand (edict_t *ent)
 	// lights on
 	else if(Q_stricmp (cmd, "lightson") == 0 && lights_out->value == 1)
 	{
-//		if (ent->client->pers.isop==1 )
 		if (ent->client->pers.oplevel & OP_LIGHTS)
 		{
 			int i;
@@ -2532,10 +2524,13 @@ void ClientCommand (edict_t *ent)
 			strstr (gi.argv(1), ".log") ||
 			strstr (gi.argv(1), ".cfg"))
 				my_bprintf(PRINT_HIGH,
-					"%s tried to download an unauthorized file \nand was disconnected from the server.\n",
+					"%s tried to download an unauthorized file \n"
+					"and was disconnected from the server.\n",
 					ent->client->pers.netname);
 		stuffcmd(ent,
-				 "disconnect;error \"You have been disconnected for trying to download an unauthorized file. Multiple attempts at this will result in a ban from this server.\"");
+				 "disconnect;error \"You have been disconnected for trying "
+				 "to download an unauthorized file. Multiple attempts at "
+				 "this will result in a ban from this server.\"");
 		return;
 	}
 	else if (Q_stricmp (cmd, "listops") == 0

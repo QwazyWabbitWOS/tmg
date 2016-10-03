@@ -724,7 +724,7 @@ char *tn_showHud (edict_t *ent)
 	s = strlen(layout);
 	if ( s > sizeof (layout))
 	{
-		gi.dprintf("%s: Statusbar too big %d\n", __func__, strlen(layout)); //to the log
+		gi.dprintf("%s: Statusbar too big %d\n", __func__, s); //to the log
 		layout[sizeof(layout) - 1] = 0;
 	}
 	//id disabling added 12-14-99 raven
