@@ -522,13 +522,11 @@ int AddOperator (char entry[IP_LENGTH], int level, char pass[16])
 	return 1;
 }
 
-void addEntry (char *filename, char ip[IP_LENGTH])
+/// Add IP of client to the file if he's not
+/// already in it. If file doesn't exist, create one.
+void AddEntry (char *filename, char ip[IP_LENGTH])
 {
 	FILE *ipfile;
-	
-
-	//need to check to find the file first ! 
-
 	
 	// First, check to see that client isn't already in the file
 	if (entryInFile (filename, ip))
@@ -537,12 +535,11 @@ void addEntry (char *filename, char ip[IP_LENGTH])
 	// add user to file
 	strcat (ip, "\n");
 
-	if ((ipfile = tn_open(filename, "a")))
+	if ((ipfile = tn_open(filename, "a+")))
 	{
 		fputs(ip, ipfile);
 		fclose (ipfile);
 	}
-	return;
 }
 
 void sv_ban_ip (edict_t *ent)
@@ -560,7 +557,7 @@ void sv_ban_ip (edict_t *ent)
 		{
 			safe_cprintf (ent, PRINT_HIGH, "%s is banned.\n", banned);
 			gi.dprintf ("%s is banned.\n", banned);
-			addEntry ("ip_banned.txt", banned);
+			AddEntry ("ip_banned.txt", banned);
 		}
 		else
 		{

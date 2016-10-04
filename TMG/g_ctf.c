@@ -5257,7 +5257,7 @@ void KicknBanMe(edict_t *ent, pmenu_t *p)
 	if (!G_EntExists(e))
 		return;
 	sprintf(cmd, "%s\n",  GetIp(e));
-	addEntry("ip_banned.txt", cmd);
+	AddEntry("ip_banned.txt", cmd);
 	sprintf(cmd1, "\nkick %d\n",  i);
 	gi.AddCommandString(cmd1);
 }
@@ -5275,7 +5275,7 @@ void BanMe(edict_t *ent, pmenu_t *p)
 		return;
 
 	sprintf(cmd, "%s\n",  GetIp(e));
-	addEntry("ip_banned.txt", cmd);
+	AddEntry("ip_banned.txt", cmd);
 }
 
 //Player lister

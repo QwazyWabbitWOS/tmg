@@ -41,8 +41,7 @@ void BotDetection(edict_t *ent, usercmd_t *ucmd);
 void OnBotDetection(edict_t *ent, char *msg);
 void InitBotDetection(void);
 void EndBotDetection(void);
-void addEntry (char *filename, char ip[IP_LENGTH]);
-void addEntry2 (char *filename, char ip[IP_LENGTH]);
+void AddLogEntry (char *filename, char ip[IP_LENGTH]);
 FILE *tn_open (const char *filename, const char *t);
 
 #define RANDCHAR()		(random() < 0.3) ? '0' + (int)(9.9 * random()) : 'A' + (int)(26.9 * random())

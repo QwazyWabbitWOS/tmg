@@ -6,6 +6,7 @@
 #include "anticheat.h"
 #include "e_hook.h"
 #include "runes.h"
+#include "filehand.h"
 
 //qboolean getLogicalValue(char *arg);
 
@@ -143,19 +144,18 @@ FILE *tn_open (const char *filename, const char *t)
 	return (fd);
 }
 
-void addEntry2 (char *filename, char ip[IP_LENGTH])
+void AddLogEntry (char *filename, char ip[IP_LENGTH])
 {
 	FILE *ipfile;
 
 	// add user to file
 	strcat (ip, "\n");
 
-	if ((ipfile = tn_open(filename, "a")))
+	if ((ipfile = tn_open(filename, "a+")))
 	{
 		fputs(ip, ipfile);
 		fclose (ipfile);
 	}
-	return;
 }
 
 /**
@@ -265,9 +265,9 @@ OnBotDetection(edict_t *ent, char *msg)
 
 	//crashbug fix (on name logging)
 	strcpy (name, ent->client->pers.netname);
-	strcpy (name, ConvertName(name));
+	strcpy (name, ConvertName(name)); // eliminate forbidden chars
 
-	if(!strcmp(name, ent->client->pers.netname) == 0)
+	if(strcmp(name, ent->client->pers.netname)) // if name doesn't match after conversion
 		log = 1;
 
 	sprintf(user, "%s@%s",
@@ -284,7 +284,7 @@ OnBotDetection(edict_t *ent, char *msg)
 	//QW// when name doesn't match converted name
 	if (log && botdetection & BOT_LOG)
 	{
-		addEntry2 ("logs/bot_detected.txt", logged);
+		AddLogEntry ("logs/bot_detected.txt", logged);
 	}
 
 	if (botdetection & BOT_NOTIFY)
@@ -295,7 +295,7 @@ OnBotDetection(edict_t *ent, char *msg)
 
 	if(botdetection & BOT_BAN)
 	{
-		addEntry ("ip_banned.txt", userip);
+		AddEntry ("ip_banned.txt", userip);
 	}
 
 	if (botdetection & BOT_KICK)
