@@ -2507,84 +2507,43 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 		// add the clients in sorted order
 		*string = 0;
 
-		// team plates with total scores, red and blue teams
-		if (newscore->value)
-		{
-			sprintf(string, "if 24 xv -32 yv 8 pic 24 endif "
-				"xv 0 yv 28 string \"%4d/%-3d\" "
-				"xv 56 yv 12 num 2 18 "
-				"if 25 xv 208 yv 8 pic 25 endif "
-				"xv 240 yv 28 string \"%4d/%-3d\" "
-				"xv 296 yv 12 num 2 20 ", 
-				totalscore[0], total[0],
-				totalscore[1], total[1]);
-		}
-		else
-		{
-			sprintf(string, "if 24 xv 8 yv 8 pic 24 endif "
-				"xv 40 yv 28 string \"%4d/%-3d\" "
-				"xv 98 yv 12 num 2 18 "
-				"if 25 xv 168 yv 8 pic 25 endif "
-				"xv 200 yv 28 string \"%4d/%-3d\" "
-				"xv 256 yv 12 num 2 20 ",
-				totalscore[0], total[0],
-				totalscore[1], total[1]);
-		}		
+		// Red & blue team plates with total scores and caps
+		sprintf(string, 
+			"if 24 xv 8 yv 8 pic 24 endif "		// 24 = red plate
+			"xv 40 yv 28 string \"%4d/%-3d\" "	// total score/total players red
+			"xv 98 yv 12 num 2 18 "				// 18 = total caps red
+			"if 25 xv 168 yv 8 pic 25 endif "	// 25 = blue plate
+			"xv 200 yv 28 string \"%4d/%-3d\" "	// total score/total players blue
+			"xv 256 yv 12 num 2 20 ",			// 20 = total caps blue
+			totalscore[0], total[0],
+			totalscore[1], total[1]);
 
 		len = strlen(string);
 
-		for (i=0 ; i<16 ; i++)
+		// only the top 16 players or less from each team
+		for (i = 0; i < 16; i++)
 		{
 			if (i >= total[0] && i >= total[1])
 				break; // we're done
 
-			if (newscore->value)
-			{
-				// set up y
-				sprintf(entry, "yv %d ", 42 + i * 8);
-				if (maxsize - len > strlen(entry))
-				{
-					strcat(string, entry);
-					len = strlen(string);
-				}
-			}
-			else
-			{
-				*entry = 0;
-			}
+			*entry = 0;
 
 			// left side player list
 			if (i < total[0])
 			{
 				cl = &game.clients[sorted[0][i]];
 				cl_ent = g_edicts + 1 + sorted[0][i];
-				if (newscore->value)
-				{
-					sprintf(entry + strlen(entry),
-						"xv -80 %s \"%3d %3d %-12.12s C:%2d\" ",
-						(cl_ent == ent) ? "string2" : "string",
-						cl->resp.score, 
-						(cl->ping > 999) ? 999 : cl->ping, 
-						cl->pers.netname,
-						cl->resp.captures);
-					if (cl_ent->client->pers.inventory[ITEM_INDEX(flag2_item)])
-						strcat(entry, "xv -24 picn sbfctf2 ");
-				}
-				else
-				{
-					// use old ctf scoreboard
-					sprintf(entry + strlen(entry),
-						"ctf 0 %d %d %d %d ",
-						42 + i * 8,
-						sorted[0][i],
-						cl->resp.score,
-						cl->ping);
+				sprintf(entry + strlen(entry),
+					"ctf 0 %d %d %d %d ",
+					42 + i * 8,
+					sorted[0][i],
+					cl->resp.score,
+					cl->ping);
 
-					if (cl_ent->client->pers.inventory[ITEM_INDEX(flag2_item)])
-						sprintf(entry + strlen(entry),
-								"xv 56 yv %d picn sbfctf2 ",
-								42 + i * 8);
-				}
+				if (cl_ent->client->pers.inventory[ITEM_INDEX(flag2_item)])
+					sprintf(entry + strlen(entry),
+					"xv 56 yv %d picn sbfctf2 ",
+					42 + i * 8);
 
 				if (maxsize - len > strlen(entry))
 				{
@@ -2594,39 +2553,25 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 				}
 			}
 
+			*entry = 0;
+
 			// right side player list
 			if (i < total[1])
 			{
 				cl = &game.clients[sorted[1][i]];
 				cl_ent = g_edicts + 1 + sorted[1][i];
-				if (newscore->value)
-				{
+				// use ctf template
+				sprintf(entry + strlen(entry),
+					"ctf 160 %d %d %d %d ",
+					42 + i * 8,
+					sorted[1][i],
+					cl->resp.score,
+					cl->ping);
+				if (cl_ent->client->pers.inventory[ITEM_INDEX(flag1_item)])
 					sprintf(entry + strlen(entry),
-						"xv 160 %s \"%3d %3d %-12.12s C:%2d\" ",
-						(cl_ent == ent) ? "string2" : "string",
-						cl->resp.score, 
-						(cl->ping > 999) ? 999 : cl->ping, 
-						cl->pers.netname,
-						cl->resp.captures);
+					"xv 216 yv %d picn sbfctf1 ",
+					42 + i * 8);
 
-					if (cl_ent->client->pers.inventory[ITEM_INDEX(flag1_item)])
-						strcat(entry, "xv 216 picn sbfctf1 ");
-				}
-				else
-				{
-					// use ctf template
-					sprintf(entry + strlen(entry),
-						"ctf 160 %d %d %d %d ",
-						42 + i * 8,
-						sorted[1][i],
-						cl->resp.score,
-						cl->ping);
-					if (cl_ent->client->pers.inventory[ITEM_INDEX(flag1_item)])
-						sprintf(entry + strlen(entry),
-								"xv 216 yv %d picn sbfctf1 ",
-								42 + i * 8);
-				}
-				
 				if (maxsize - len > strlen(entry))
 				{
 					strcat(string, entry);
@@ -2686,13 +2631,13 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 
 		if (total[0] - last[0] > 1) // couldn't fit everyone
 			sprintf(string + strlen(string),
-					"xv 8 yv %d string \"..and %d more\" ",
-					42 + (last[0]+1)*8, total[0] - last[0] - 1);
+			"xv 8 yv %d string \"..and %d more\" ",
+			42 + (last[0]+1)*8, total[0] - last[0] - 1);
 
 		if (total[1] - last[1] > 1) // couldn't fit everyone
 			sprintf(string + strlen(string),
-					"xv 168 yv %d string \"..and %d more\" ",
-					42 + (last[1]+1)*8, total[1] - last[1] - 1);
+			"xv 168 yv %d string \"..and %d more\" ",
+			42 + (last[1]+1)*8, total[1] - last[1] - 1);
 	}
 
 	len = strlen(string);
@@ -2700,7 +2645,221 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 	{
 		DbgPrintf("Scoreboard size: %d %.1f\n", len, level.time);
 		gi.dprintf("Warning: scoreboard string length %d neared or exceeded max length %d\n"
-				   "Dump:\n%s\n---\n", len, maxsize, string);
+			"Dump:\n%s\n---\n", len, maxsize, string);
+	}
+
+	DbgPrintf("%d: %s\n", len, string);
+	gi.WriteByte (svc_layout);
+	gi.WriteString (string);
+}
+
+void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
+{
+	char	entry[MAX_MSGLEN];
+	char	string[MAX_MSGLEN];
+	int		len = 0;
+	int		i, j, k, n;
+	int		sorted[2][MAX_CLIENTS];
+	int		sortedscores[2][MAX_CLIENTS];
+	int		score, total[2], totalscore[2];
+	int		last[2];
+	gclient_t	*cl;
+	edict_t		*cl_ent;
+	int team;
+	int maxsize = MAX_MSGLEN;
+
+	if (DEBUG_HSCORES) 
+		DbgPrintf("%s entered\n", __func__);
+
+	if (highscores->value && ent->client->showhighscores)
+	{
+		LoadHighScores(); // the message is fully formed
+		strcpy(string, hscores);
+	}
+	else
+	{
+		// sort the clients by team and score
+		total[0] = total[1] = 0;
+		last[0] = last[1] = 0;
+		totalscore[0] = totalscore[1] = 0;
+		for (i = 0; i < game.maxclients; i++)
+		{
+			cl_ent = g_edicts + 1 + i;
+			if (!cl_ent->inuse)
+				continue;
+			if (game.clients[i].resp.ctf_team == CTF_TEAM1)
+				team = 0;
+			else if (game.clients[i].resp.ctf_team == CTF_TEAM2)
+				team = 1;
+			else
+				continue; // unknown team?
+
+			score = game.clients[i].resp.score;
+			for (j=0 ; j<total[team] ; j++)
+			{
+				if (score > sortedscores[team][j])
+					break;
+			}
+			for (k=total[team] ; k>j ; k--)
+			{
+				sorted[team][k] = sorted[team][k-1];
+				sortedscores[team][k] = sortedscores[team][k-1];
+			}
+			sorted[team][j] = i;
+			sortedscores[team][j] = score;
+			totalscore[team] += score;
+			total[team]++;
+		}
+
+		// print level name and exit rules
+		// add the clients in sorted order
+		*string = 0;
+
+		// Red & blue team plates with total scores and caps
+		sprintf(string, 
+			"if 24 xv -32 yv 8 pic 24 endif "	// 24 = red plate
+			"xv 0 yv 28 string \"%4d/%-3d\" "	// total score/total players red
+			"xv 56 yv 12 num 2 18 "				// 18 = total caps red
+			"if 25 xv 208 yv 8 pic 25 endif "	// 25 = blue plate
+			"xv 240 yv 28 string \"%4d/%-3d\" "	// total score/total players blue
+			"xv 296 yv 12 num 2 20 ", 			// 20 = total caps blue
+			totalscore[0], total[0],
+			totalscore[1], total[1]);
+
+		len = strlen(string);
+
+		// only the top 6 players on each team
+		for (i = 0; i < 6; i++)
+		{
+			if (i >= total[0] && i >= total[1])
+				break; // we're done
+
+			// set up y
+			sprintf(entry, "yv %d ", 42 + i * 8);
+			if (maxsize - len > strlen(entry))
+			{
+				strcat(string, entry);
+				len = strlen(string);
+			}
+
+			*entry = 0;
+
+			// left side player list
+			if (i < total[0])
+			{
+				cl = &game.clients[sorted[0][i]];
+				cl_ent = g_edicts + 1 + sorted[0][i];
+				sprintf(entry + strlen(entry),
+					"xv -80 %s \"%3d %3d %-12.12s %2d\" ",
+					(cl_ent == ent) ? "string2" : "string",
+					cl->resp.score, 
+					(cl->ping > 999) ? 999 : cl->ping, 
+					cl->pers.netname,
+					cl->resp.captures);
+
+				if (cl_ent->client->pers.inventory[ITEM_INDEX(flag2_item)])
+					strcat(entry, "xv -24 picn sbfctf2 ");
+
+				if (maxsize - len > strlen(entry))
+				{
+					strcat(string, entry);
+					len = strlen(string);
+					last[0] = i;
+				}
+			}
+
+			*entry = 0;
+
+			// right side player list
+			if (i < total[1])
+			{
+				cl = &game.clients[sorted[1][i]];
+				cl_ent = g_edicts + 1 + sorted[1][i];
+				sprintf(entry + strlen(entry),
+					"xv 160 %s \"%3d %3d %-12.12s %2d\" ",
+					(cl_ent == ent) ? "string2" : "string",
+					cl->resp.score, 
+					(cl->ping > 999) ? 999 : cl->ping, 
+					cl->pers.netname,
+					cl->resp.captures);
+
+				if (cl_ent->client->pers.inventory[ITEM_INDEX(flag1_item)])
+					strcat(entry, "xv 216 picn sbfctf1 ");
+
+				if (maxsize - len > strlen(entry))
+				{
+					strcat(string, entry);
+					len = strlen(string);
+					last[1] = i;
+				}
+			}
+		}
+
+		// list spectators if we have enough room
+		if (last[0] > last[1])
+			j = last[0];
+		else
+			j = last[1];
+
+		j = (j + 2) * 8 + 42;
+		k = n = 0;
+		if (maxsize - len > 50)
+		{
+			for (i = 0; i < maxclients->value; i++)
+			{
+				cl_ent = g_edicts + 1 + i;
+				cl = &game.clients[i];
+				if (!cl_ent->inuse ||
+					cl_ent->solid != SOLID_NOT ||
+					cl_ent->client->resp.ctf_team != CTF_NOTEAM)
+					continue;
+
+				if (!k)
+				{
+					k = 1;
+					sprintf(entry, "xv 0 yv %d string2 \"Spectators\" ", j);
+					strcat(string, entry);
+					len = strlen(string);
+					j += 8;
+				}
+
+				// use ctf template for spectators to save string space
+				sprintf(entry + strlen(entry), "ctf %d %d %d %d %d ",
+					(n & 1) ? 160 : 0, // x
+					j, // y
+					i, // client index
+					cl->resp.score,
+					cl->ping > 999 ? 999 : cl->ping);
+
+				if (maxsize - len > strlen(entry))
+				{
+					strcat(string, entry);
+					len = strlen(string);
+				}
+
+				if (n & 1)
+					j += 8;
+				n++;
+			}
+		}
+
+		if (total[0] - last[0] > 1) // couldn't fit everyone
+			sprintf(string + strlen(string),
+			"xv 8 yv %d string \"..and %d more\" ",
+			42 + (last[0]+1)*8, total[0] - last[0] - 1);
+
+		if (total[1] - last[1] > 1) // couldn't fit everyone
+			sprintf(string + strlen(string),
+			"xv 168 yv %d string \"..and %d more\" ",
+			42 + (last[1]+1)*8, total[1] - last[1] - 1);
+	}
+
+	len = strlen(string);
+	if (len > maxsize - 10) // this should never happen
+	{
+		DbgPrintf("Scoreboard size: %d %.1f\n", len, level.time);
+		gi.dprintf("Warning: scoreboard string length %d neared or exceeded max length %d\n"
+			"Dump:\n%s\n---\n", len, maxsize, string);
 	}
 
 	DbgPrintf("%d: %s\n", len, string);

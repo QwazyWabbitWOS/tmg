@@ -139,6 +139,7 @@ void CTFCalcScores(void);
 void SetCTFStats(edict_t *ent);
 void CTFDeadDropFlag(edict_t *self);
 void CTFScoreboardMessage (edict_t *ent, edict_t *killer);
+void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer);
 void CTFTeam_f (edict_t *ent, int desired_team);
 void CTFID_f (edict_t *ent);
 void CTFSay_Team_Location(edict_t *who, char *buf);

@@ -386,7 +386,10 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 		ent->client->hudtime = level.framenum + 8;
 		if (ctf->value)
 		{
-			CTFScoreboardMessage (ent, killer);
+			if (newscore->value)
+				CTFScoreboardMessageNew (ent, killer);
+			else
+				CTFScoreboardMessage (ent, killer);
 			return;
 		}
 		
