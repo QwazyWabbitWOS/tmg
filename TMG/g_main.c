@@ -306,11 +306,14 @@ void ShutdownGame (void)
 	gi.dprintf ("==== ShutdownGame ====\n");
 
 	//QW// logging of hook stats per player
-	for (i = 0; i < maxclients->value; i++)
+	if (g_edicts != NULL) // in case we bomb before they're allocated
 	{
-		ent = g_edicts + 1 + i;
-		if (ent->inuse && !ent->bot_client)
-			sl_LogHookStats(&gi, level, ent);
+		for (i = 0; i < maxclients->value; i++)
+		{
+			ent = g_edicts + 1 + i;
+			if (ent->inuse && !ent->bot_client)
+				sl_LogHookStats(&gi, level, ent);
+		}
 	}
 
 	//RAV
