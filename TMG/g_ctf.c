@@ -424,7 +424,6 @@ static qboolean loc_CanSee (edict_t *targ, edict_t *inflictor)
 /*--------------------------------------------------------------------------*/
 gitem_t *flag1_item;
 gitem_t *flag2_item;
-void botGetFlag(edict_t *ent);
 
 void CTFInit(void)
 {
@@ -583,7 +582,8 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 	float	range, range1, range2;
 	char	*cname;
 
-	DbgPrintf("%s %s\n", __FUNCTION__, ent->client->pers.netname);
+	if(debug_spawn->value)
+		DbgPrintf("%s %s\n", __FUNCTION__, ent->client->pers.netname);
 
 	if (ent->client->resp.ctf_state != CTF_STATE_START)
 	{
@@ -591,18 +591,24 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 		{	
 			edict_t *farspot;
 			farspot = SelectFarthestDeathmatchSpawnPoint ();
-			DbgPrintf("1 %s returning %s for %s\n at %f %f %f\n", __func__, 
-				farspot->classname, ent->client->pers.netname,
-				farspot->s.origin[0], farspot->s.origin[1], farspot->s.origin[2]); 
+			if(debug_spawn->value)
+				DbgPrintf("1 %s returning %s for %s\n at %f %f %f\n", __func__, 
+					farspot->classname, ent->client->pers.netname,
+					farspot->s.origin[0], 
+					farspot->s.origin[1], 
+					farspot->s.origin[2]); 
 			return farspot;
 		}
 		else
 		{
 			edict_t *randspot;
 			randspot = SelectRandomDeathmatchSpawnPoint ();
-			DbgPrintf("2 %s returning %s for %s\nat %f %f %f\n", __func__, 
-				randspot->classname, ent->client->pers.netname,
-				randspot->s.origin[0], randspot->s.origin[1], randspot->s.origin[2]); 
+			if(debug_spawn->value)
+				DbgPrintf("2 %s returning %s for %s\nat %f %f %f\n", __func__, 
+					randspot->classname, ent->client->pers.netname,
+					randspot->s.origin[0], 
+					randspot->s.origin[1], 
+					randspot->s.origin[2]); 
 			return randspot;
 		}
 	}
@@ -618,7 +624,8 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 		cname = "info_player_team2";
 		break;
 	default:
-		DbgPrintf("3 %s default case.\n", __FUNCTION__);
+		if(debug_spawn->value)
+			DbgPrintf("3 %s default case.\n", __FUNCTION__);
 		return SelectRandomDeathmatchSpawnPoint();
 	}
 
@@ -644,7 +651,8 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 
 	if (!count)
 	{
-		DbgPrintf("4 %s no spots in range\n", __FUNCTION__);
+		if(debug_spawn->value)
+			DbgPrintf("4 %s no spots in range\n", __FUNCTION__);
 		return SelectRandomDeathmatchSpawnPoint();
 	}
 
@@ -657,7 +665,8 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 
 	selection = rand() % count;
 	spot = NULL;
-	DbgPrintf("5 %s count= %d\n", __FUNCTION__, count);
+	if(debug_spawn->value)
+		DbgPrintf("5 %s count= %d\n", __FUNCTION__, count);
 
 	do
 	{
@@ -666,9 +675,10 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 			selection++;
 	} while(selection--);
 
-	DbgPrintf("6 %s returning %s for %s\nat %f %f %f\n", __func__, 
-		spot->classname, ent->client->pers.netname,
-		spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
+	if(debug_spawn->value)
+		DbgPrintf("6 %s returning %s for %s\nat %f %f %f\n", __func__, 
+			spot->classname, ent->client->pers.netname,
+			spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
 	return spot;
 }
 
@@ -2452,7 +2462,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 
 	if (DEBUG_HSCORES) 
 		DbgPrintf("%s entered\n", __func__);
-	
+
 	if (highscores->value && ent->client->showhighscores)
 	{
 		LoadHighScores(); // the message is fully formed
@@ -2475,7 +2485,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 				team = 1;
 			else
 				continue; // unknown team?
-			
+
 			score = game.clients[i].resp.score;
 			for (j=0 ; j<total[team] ; j++)
 			{
