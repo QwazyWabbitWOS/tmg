@@ -935,7 +935,7 @@ typedef enum
 
 
 // entity_state_t->event values
-// ertity events are for effects that take place relative
+// entity events are for effects that take place relative
 // to an existing entities origin.  Very network efficient.
 // All muzzle flashes really should be converted to events...
 typedef enum
