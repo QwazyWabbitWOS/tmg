@@ -96,11 +96,11 @@ void InitAnticheat(void)
 
 	if(!lan->value)
 	{
-		//if server_ip is not set   stop the server !!
-		strcat(serverip,server_ip->string);
-		if (strcmp (serverip, "\0")==0)
-			gi.error ("You must server_ip value ie: set server_ip 216.112.2.12:27910");
-		strcat(reconnect_address,server_ip->string);
+		//if server_ip is not set, stop the server
+		strcat(serverip, server_ip->string);
+		if (strcmp (serverip, "") == 0)
+			gi.error ("You must set server_ip, e.g.: set server_ip 216.112.2.12:27910");
+		strcat(reconnect_address, server_ip->string);
 	}
 
 	q2a_strcpy(moddir, game_dir->string);
