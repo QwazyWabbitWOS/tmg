@@ -585,7 +585,7 @@ typedef struct
 #define EF_YELLOWSHELL      0x08000000
 //
 // player_state_t->refdef flags
-#define	RDF_UNDERWATER		1		// warp the screen as apropriate
+#define	RDF_UNDERWATER		1		// warp the screen as appropriate
 #define RDF_NOWORLDMODEL	2		// used for player configuration screen
 
 //
@@ -935,7 +935,7 @@ typedef enum
 
 
 // entity_state_t->event values
-// ertity events are for effects that take place reletive
+// ertity events are for effects that take place relative
 // to an existing entities origin.  Very network efficient.
 // All muzzle flashes really should be converted to events...
 typedef enum
@@ -981,7 +981,7 @@ typedef struct entity_state_s
 
 // player_state_t is the information needed in addition to pmove_state_t
 // to rendered a view.  There will only be 10 player_state_t sent each second,
-// but the number of pmove_state_t changes will be reletive to client
+// but the number of pmove_state_t changes will be relative to client
 // frame rates
 typedef struct
 {
