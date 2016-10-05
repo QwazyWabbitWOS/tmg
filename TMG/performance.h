@@ -26,6 +26,5 @@ Turn these on to debug areas of interest.
 #define DEBUG_HSCORES 0
 #define DEBUG_HUD 0
 #define DEBUG_PHYSICS 0
-#define DEBUG_SPAWN 0
 
 #endif /* PERFORMANCE_H */

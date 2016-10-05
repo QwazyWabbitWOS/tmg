@@ -255,6 +255,11 @@ cvar_t	*grapple_speed;
 cvar_t	*grapple_pullspeed;
 cvar_t	*grapple_damage;
 
+/* Debugging options */
+cvar_t	*debug_spawn;
+cvar_t	*debug_botspawn;
+cvar_t	*debug_ops;
+
 /*
 cvar_t	*allow_lasermines;
 cvar_t	*allow_energy_lasers;

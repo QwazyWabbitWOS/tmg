@@ -235,21 +235,25 @@ int CheckOpFile (edict_t *ent, char ip[IP_LENGTH], qboolean returnindex)
 					a = 1;
 					for (result = strtok(line," \t\n");result != NULL; result = strtok(NULL," \t\n"))
 					{
-						DbgPrintf("%s result is .%s.\n", __func__, result);
+						if (debug_ops->value)
+							DbgPrintf("%s result is .%s.\n", __func__, result);
 						if (a == 1)
 						{
 							strcpy(oplist[i].entry, result);
+						if (debug_ops->value)
 							DbgPrintf("%d oplist entry added for %s\n", i, oplist[i].entry);
 						}
 						else if (a == 2 && atoi(result))
 						{
 							oplist[i].level = atoi(result);
-							DbgPrintf("%d oplist level added for %d\n", i, oplist[i].level);
+							if (debug_ops->value)
+								DbgPrintf("%d oplist level added for %d\n", i, oplist[i].level);
 						}
 						else if (a == 3)
 						{
 							strcpy(oplist[i].namepass, result);
-							DbgPrintf("%d oplist namepass added for %s\n", i, oplist[i].namepass);
+							if (debug_ops->value)
+								DbgPrintf("%d oplist namepass added for %s\n", i, oplist[i].namepass);
 						}
 	
 						if (IPMatch(ip, oplist[i].entry))
@@ -270,8 +274,13 @@ int CheckOpFile (edict_t *ent, char ip[IP_LENGTH], qboolean returnindex)
 					}
 					if (ent != NULL)
 					{
-						DbgPrintf("pass in file is %s, namepass is %s, strlen of namepass is %d, strlen is %d in file\n",
-							oplist[i].namepass, ent->client->pers.namepass, strlen(ent->client->pers.namepass), strlen(oplist[i].namepass));
+						if (debug_ops->value)
+							DbgPrintf("pass in file is %s, namepass is %s, "
+								"strlen of namepass is %d, "
+								"strlen is %d in file\n",
+								oplist[i].namepass, ent->client->pers.namepass,
+								strlen(ent->client->pers.namepass),
+								strlen(oplist[i].namepass));
 					}
 					i++;
 					entriesinopfile = i;

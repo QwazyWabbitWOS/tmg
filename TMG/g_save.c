@@ -420,6 +420,11 @@ void InitGame (void)
 	log_connect = gi.cvar ("log_connect", "1", 0);
 	log_chat = gi.cvar ("log_chat", "0", 0);
 
+	// set these for debugging output
+	debug_spawn = gi.cvar ("debug_spawn", "0", 0);
+	debug_botspawn = gi.cvar ("debug_botspawn", "0", 0);
+	debug_ops = gi.cvar ("debug_ops", "0", 0);
+
 	/*
 	 allow_lasermines = gi.cvar ("allow_lasermines", "0", CVAR_LATCH);
 	 allow_energy_lasers = gi.cvar ("allow_energy_lasers", "1", CVAR_SERVERINFO);

@@ -1498,8 +1498,9 @@ edict_t *SelectRandomDeathmatchSpawnPoint (void)
 			selection++;
 	} while(selection--);
 
-	DbgPrintf("9999 %s returning %s \nat %f %f %f\n", __func__, spot->classname,
-		spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
+	if(debug_spawn->value)
+		DbgPrintf("9999 %s returning %s \nat %f %f %f\n", __func__, spot->classname,
+			spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
 	return spot;
 }
 
@@ -1729,7 +1730,9 @@ void	SelectSpawnPoint (edict_t *ent, vec3_t origin, vec3_t angles)
 {
 	edict_t	*spot = NULL;
 
-	DbgPrintf("%s %s\n", __FUNCTION__, ent->client->pers.netname);
+	if(debug_spawn->value)
+		DbgPrintf("%s %s\n", __FUNCTION__, ent->client->pers.netname);
+
 	if (deathmatch->value)
 //ZOID
 		if (ctf->value)

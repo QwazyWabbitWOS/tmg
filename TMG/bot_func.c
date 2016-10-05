@@ -819,7 +819,8 @@ void PutBotInServer (edict_t *ent)
 
 	//current weapon
 	client = ent->client;
-	DbgPrintf("%s %s\n", __FUNCTION__, client->pers.netname);
+	if(debug_botspawn->value)
+		DbgPrintf("%s %s\n", __FUNCTION__, client->pers.netname);
 
 	//RAV
 	//  start weapons & respawn protection
@@ -1668,6 +1669,7 @@ void AirSight_Think(edict_t *ent)
 	ent->nextthink = level.time + FRAMETIME * 6;
 	gi.linkentity (ent);
 }
+
 void AirStrike_Think(edict_t *ent)
 {
 	int	i,j;

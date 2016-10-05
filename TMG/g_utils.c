@@ -432,8 +432,9 @@ edict_t *G_Spawn (void)
 	
 	G_InitEdict (e);
 
-	//DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
-	//__FUNCTION__, e->movetype, e->inuse, e->classname, level.time);
+	if(debug_spawn->value)
+		DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
+			__FUNCTION__, e->movetype, e->inuse, e->classname, level.time);
 
 	return e;
 }
@@ -455,8 +456,9 @@ void G_FreeEdict (edict_t *ed)
 		return;
 	}
 	
-	//DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
-	//	__FUNCTION__, ed->movetype, ed->inuse, ed->classname, level.time);
+	if(debug_spawn->value)
+		DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
+			__func__, ed->movetype, ed->inuse, ed->classname, level.time);
 
 	memset (ed, 0, sizeof(*ed));
 	ed->classname = "freed";
@@ -510,8 +512,8 @@ void	G_TouchSolids (edict_t *ent)
 	int			i, num;
 	edict_t		*touch[MAX_EDICTS], *hit;
 
-	num = gi.BoxEdicts (ent->absmin, ent->absmax, touch
-		, MAX_EDICTS, AREA_SOLID);
+	num = gi.BoxEdicts (ent->absmin, ent->absmax, touch,
+		MAX_EDICTS, AREA_SOLID);
 
 	// be careful, it is possible to have an entity in this
 	// list removed before we get to it (killtriggered)

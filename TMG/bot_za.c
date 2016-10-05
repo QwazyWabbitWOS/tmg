@@ -2307,8 +2307,11 @@ void Bots_Move_NORM (edict_t *ent)
 	if (gi.pointcontents (ent->s.origin) & CONTENTS_SOLID)
 	{
 		ent->nextthink = level.time + FRAMETIME;
-		DbgPrintf("%s %s %s at %f %f %f\n", __func__, ent->client->pers.netname, "Position",
-			ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
+		if(debug_botspawn->value)
+			DbgPrintf("%s %s %s at %f %f %f\n", __func__, 
+				ent->client->pers.netname, "Position",
+				ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
+		
 		Cmd_Kill_f(ent); // silent suicide mod=23
 		return;
 	}
@@ -2317,9 +2320,12 @@ void Bots_Move_NORM (edict_t *ent)
 	//i = gi.pointcontents (ent->s.origin);
 	//if(i & CONTENTS_SOLID)
 	//{
-	//	T_Damage (ent, ent, ent, ent->s.origin, ent->s.origin, ent->s.origin, 100, 1, 0, MOD_CRUSH);
-	//	DbgPrintf("%s %s %s at %f %f %f\n", __func__, ent->client->pers.netname, "MOD_CRUSH",
-	//				ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
+	//	T_Damage (ent, ent, ent, ent->s.origin, 
+	//		ent->s.origin, ent->s.origin, 100, 1, 0, MOD_CRUSH);
+	//	if(debug_botspawn->value)
+	//		DbgPrintf("%s %s %s at %f %f %f\n", __func__, 
+	//		ent->client->pers.netname, "MOD_CRUSH",
+	//		ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
 	//}
 
 	if(VectorCompare(ent->s.origin,ent->s.old_origin))

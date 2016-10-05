@@ -785,6 +785,12 @@ extern  cvar_t  *log_chat;
 extern	cvar_t	*grapple_speed;
 extern	cvar_t	*grapple_pullspeed;
 extern	cvar_t	*grapple_damage;
+
+/* Debugging options */
+extern	cvar_t	*debug_spawn;
+extern	cvar_t	*debug_botspawn;
+extern	cvar_t	*debug_ops;
+
 /*extern	cvar_t	*allow_lasermines;
 extern	cvar_t	*allow_energy_lasers;
 extern cvar_t	*energylaser_time;
