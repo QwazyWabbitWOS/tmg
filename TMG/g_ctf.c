@@ -2451,6 +2451,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 	char	string[MAX_MSGLEN];
 	int		len = 0;
 	int		i, j, k, n;
+	int		trap = 0;
 	int		sorted[2][MAX_CLIENTS];
 	int		sortedscores[2][MAX_CLIENTS];
 	int		score, total[2], totalscore[2];
@@ -2600,11 +2601,10 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 					cl_ent->client->resp.ctf_team != CTF_NOTEAM)
 					continue;
 
-				if (!k)
+				if (trap == 0)
 				{
-					k = 1;
+					trap = 1;
 					sprintf(entry, "xv 0 yv %d string2 \"Spectators\" ", j);
-					strcat(string, entry);
 					len = strlen(string);
 					j += 8;
 				}
@@ -2621,6 +2621,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 				{
 					strcat(string, entry);
 					len = strlen(string);
+					*entry = 0;
 				}
 
 				if (n & 1)
@@ -2643,12 +2644,11 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 	len = strlen(string);
 	if (len > maxsize - 10) // this should never happen
 	{
-		DbgPrintf("Scoreboard size: %d %.1f\n", len, level.time);
 		gi.dprintf("Warning: scoreboard string length %d neared or exceeded max length %d\n"
 			"Dump:\n%s\n---\n", len, maxsize, string);
 	}
 
-	DbgPrintf("%d: %s\n", len, string);
+	//DbgPrintf("%d: %s\n", len, string);
 	gi.WriteByte (svc_layout);
 	gi.WriteString (string);
 }
@@ -2659,6 +2659,7 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 	char	string[MAX_MSGLEN];
 	int		len = 0;
 	int		i, j, k, n;
+	int		trap = 0;
 	int		sorted[2][MAX_CLIENTS];
 	int		sortedscores[2][MAX_CLIENTS];
 	int		score, total[2], totalscore[2];
@@ -2695,12 +2696,12 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 				continue; // unknown team?
 
 			score = game.clients[i].resp.score;
-			for (j=0 ; j<total[team] ; j++)
+			for (j = 0; j < total[team]; j++)
 			{
 				if (score > sortedscores[team][j])
 					break;
 			}
-			for (k=total[team] ; k>j ; k--)
+			for (k = total[team]; k > j; k--)
 			{
 				sorted[team][k] = sorted[team][k-1];
 				sortedscores[team][k] = sortedscores[team][k-1];
@@ -2801,7 +2802,7 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 		else
 			j = last[1];
 
-		j = (j + 2) * 8 + 42;
+		j = (j + 3) * 8 + 42;
 		k = n = 0;
 		if (maxsize - len > 50)
 		{
@@ -2814,16 +2815,15 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 					cl_ent->client->resp.ctf_team != CTF_NOTEAM)
 					continue;
 
-				if (!k)
+				if (trap == 0)	// write this only once per message
 				{
-					k = 1;
+					trap = 1;
 					sprintf(entry, "xv 0 yv %d string2 \"Spectators\" ", j);
-					strcat(string, entry);
 					len = strlen(string);
 					j += 8;
 				}
 
-				// use ctf template for spectators to save string space
+				// use ctf template for spectators, save space
 				sprintf(entry + strlen(entry), "ctf %d %d %d %d %d ",
 					(n & 1) ? 160 : 0, // x
 					j, // y
@@ -2835,6 +2835,7 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 				{
 					strcat(string, entry);
 					len = strlen(string);
+					*entry = 0;
 				}
 
 				if (n & 1)
@@ -2850,19 +2851,18 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 
 		if (total[1] - last[1] > 1) // couldn't fit everyone
 			sprintf(string + strlen(string),
-			"xv 168 yv %d string \"..and %d more\" ",
+			"xv 248 yv %d string \"..and %d more\" ",
 			42 + (last[1]+1)*8, total[1] - last[1] - 1);
 	}
 
 	len = strlen(string);
 	if (len > maxsize - 10) // this should never happen
 	{
-		DbgPrintf("Scoreboard size: %d %.1f\n", len, level.time);
 		gi.dprintf("Warning: scoreboard string length %d neared or exceeded max length %d\n"
 			"Dump:\n%s\n---\n", len, maxsize, string);
 	}
 
-	DbgPrintf("%d: %s\n", len, string);
+	//DbgPrintf("%d: %s\n", len, string);
 	gi.WriteByte (svc_layout);
 	gi.WriteString (string);
 }
