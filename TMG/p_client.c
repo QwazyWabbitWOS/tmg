@@ -3223,7 +3223,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 						q2a_strcpy(proxyinfo[client].port, GetPort(ent,Info_ValueForKey(userinfo, "ip")));
 						//if port is the same //not a bot //if differant bust me !!!
 						if(strcmp(proxyinfo[client].firstport,proxyinfo[client].port) == 0
-							&& (!strcmp(proxyinfo[client].firstport,"") == 0))
+							&& (!(strcmp(proxyinfo[client].firstport,"") == 0)))
 						{
 							//reset the detection port
 							q2a_strcpy(proxyinfo[client].firstport,"");
@@ -3233,7 +3233,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 						{
 							//BOT
 							//reset the detection port
-							if(!strcmp(proxyinfo[client].firstport,"") == 0)
+							if(!(strcmp(proxyinfo[client].firstport,"") == 0))
 								ent->bust_time = level.time +rndnum(30,69);
 							q2a_strcpy(proxyinfo[client].firstport,"");
 						}
@@ -4198,7 +4198,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	//if(!chedit->value) //use old hook for normal usage
 	//{
 	if (ent->client->buttons & BUTTON_USE
-		&& !ent->deadflag && !client->ps.pmove.pm_type == PM_SPECTATOR)			
+		&& !ent->deadflag && !(client->ps.pmove.pm_type == PM_SPECTATOR))			
 	{
 		abandon_hook_fire (ent);//FIRE HOOK 
 	}
