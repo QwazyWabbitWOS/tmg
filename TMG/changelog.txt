@@ -45,7 +45,7 @@ Bumped game version to 2.12.
 Added efficiency stats to HUD in player and chase modes.
 Eff. is displayed as percentage and also as ratio of frags/shots fired.
 Fixed match countdown timer format so it's always double digits.
-
+Added flag_bonus and flag_return_time cvars.
 
 Completed
 2. Player name on freecam was fixed, but I may have to fix it again so it's still on the list.
