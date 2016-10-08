@@ -202,12 +202,14 @@ cvar_t  *lag_ping;
 cvar_t  *cap_point;
 cvar_t  *cap_team;
 cvar_t  *recover_flag;
+cvar_t  *flag_bonus;
 cvar_t  *frag_carrier;
 cvar_t  *carrier_save;
 cvar_t  *carrier_protect;
 cvar_t  *flag_defend;
 cvar_t  *flag_assist;
 cvar_t  *frag_carrier_assist;
+cvar_t  *flag_return_time;
 //
 cvar_t  *show_time;
 cvar_t  *show_carrier;

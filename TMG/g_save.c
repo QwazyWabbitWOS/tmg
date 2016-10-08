@@ -380,12 +380,14 @@ void InitGame (void)
 	cap_point = gi.cvar ("cap_point", "15", CVAR_LATCH);
 	cap_team = gi.cvar ("cap_team", "10", CVAR_LATCH);
 	recover_flag = gi.cvar ("recover_flag", "1", CVAR_LATCH);
+	flag_bonus	= gi.cvar ("flag_bonus", "0", CVAR_LATCH);
 	frag_carrier = gi.cvar ("frag_carrier", "2", CVAR_LATCH);
 	carrier_save = gi.cvar ("carrier_save", "2", CVAR_LATCH);
 	carrier_protect = gi.cvar ("carrier_protect", "1", CVAR_LATCH);
 	flag_defend = gi.cvar ("flag_defend", "1", CVAR_LATCH);
 	flag_assist = gi.cvar ("flag_assist", "1", CVAR_LATCH);
 	frag_carrier_assist = gi.cvar ("frag_carrier_assist", "2", CVAR_LATCH);
+	flag_return_time = gi.cvar ("flag_return_time", "30", CVAR_LATCH);
 
 	// HUD control
 	show_time = gi.cvar ("server_time", "0", 0);

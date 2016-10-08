@@ -733,12 +733,14 @@ extern  cvar_t  *lag_ping;
 extern  cvar_t  *cap_point;
 extern  cvar_t  *cap_team;
 extern  cvar_t  *recover_flag;
+extern  cvar_t  *flag_bonus;
 extern  cvar_t  *frag_carrier;
 extern  cvar_t  *carrier_save;
 extern  cvar_t  *carrier_protect;
 extern  cvar_t  *flag_defend;
 extern  cvar_t  *flag_assist;
 extern  cvar_t  *frag_carrier_assist;
+extern  cvar_t  *flag_return_time;
 
 //
 extern  cvar_t  *show_time;

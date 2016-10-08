@@ -54,9 +54,9 @@ extern cvar_t *ctf_deathscores;
 #define CTF_CAPTURE_BONUS		cap_point->value // 15	// what you get for capture
 #define CTF_TEAM_BONUS			cap_team->value //10	// what your team gets for capture
 #define CTF_RECOVERY_BONUS		recover_flag->value //1	// what you get for recovery
-#define CTF_FLAG_BONUS			0	// what you get for picking up enemy flag
+#define CTF_FLAG_BONUS			flag_bonus->value	// what you get for picking up enemy flag
 #define CTF_FRAG_CARRIER_BONUS	frag_carrier->value //2	// what you get for fragging enemy flag carrier
-#define CTF_FLAG_RETURN_TIME	40	// seconds until auto return
+#define CTF_FLAG_RETURN_TIME	flag_return_time->value	// seconds until auto return
 
 #define CTF_CARRIER_DANGER_PROTECT_BONUS	carrier_save->value //2	// bonus for fraggin someone who has recently hurt your flag carrier
 #define CTF_CARRIER_PROTECT_BONUS			carrier_protect->value //1	// bonus for fraggin someone while either you or your target are near your flag carrier
