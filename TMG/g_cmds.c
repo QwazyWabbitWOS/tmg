@@ -1489,7 +1489,8 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 		{
 			//JSW	if(ent->client->pers.isop==1)
 			if(ent->client->pers.isop)//level != OP_NAMEPASS && ent->client->pers.oplevel != 0)
-				sprintf(text2, "<OP_RED> %s", text);
+				//sprintf(text2, "<OP_RED> %s", text);
+				sprintf(text2, "<RED> %s", text);
 			else
 				sprintf(text2, "<RED> %s", text);
 		}
@@ -1497,14 +1498,16 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 		{
 			//JSW	if(ent->client->pers.isop==1)
 			if(ent->client->pers.isop)//oplevel != OP_NAMEPASS && ent->client->pers.oplevel != 0)
-				sprintf(text2, "<OP_BLUE> %s", text);
+				//sprintf(text2, "<OP_BLUE> %s", text);
+				sprintf(text2, "<BLUE> %s", text);
 			else
 				sprintf(text2, "<BLUE> %s", text);
 		}
 		else if (ent->client->pers.pl_state == PL_SPECTATOR)
 		{
 			if(ent->client->pers.oplevel != OP_NAMEPASS && ent->client->pers.oplevel != 0)
-				sprintf(text2, "<OP_SPEC> %s", text);
+				//sprintf(text2, "<OP_SPEC> %s", text);
+				sprintf(text2, "<SPEC> %s", text);
 			else
 				sprintf(text2, "<SPEC> %s", text);
 		}
@@ -1521,7 +1524,8 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 		if (ent->client->pers.pl_state == PL_SPECTATOR)
 		{
 			if(ent->client->pers.oplevel != OP_NAMEPASS && ent->client->pers.oplevel != 0)
-				sprintf(text2, "<OP_SPEC> %s", text);
+				//sprintf(text2, "<OP_SPEC> %s", text);
+				sprintf(text2, "<SPEC> %s", text);
 			else
 				sprintf(text2, "<SPEC> %s", text);
 		}
