@@ -63,7 +63,6 @@ static char *strstri(char *str1, char *str2)
 */
 static char *StrStrSpanNoCase(char *pszString, char *pszSubstring)
 {
-	//QW// Unused char *cp = (char *) pszString;
 	char *s1, *s2;
 
 	// Is the substring just an empty string?  Then we have a match.
@@ -134,16 +133,18 @@ static char *StrStrSpanNoCase(char *pszString, char *pszSubstring)
 static char *fgets_endws(char *pszBuffer, int nSize, FILE *pStream)
 {
 	char *psz;
+
 	char *pszReturn = fgets( pszBuffer, nSize, pStream);
 
 	if ( pszReturn == NULL)
-		return NULL;
+		return NULL; // error or EOF
 
 	// Iterate through the buffer and strip EOL characters.
 	for ( psz = pszBuffer + strlen( pszBuffer); psz != pszBuffer; psz--)
 	{
-		if ( *psz == '\r' || *psz == '\n' || *psz == ' ' ||
-			  *psz == '\t' || *psz == '\0')
+		if ( *psz == '\r' || *psz == '\n' || 
+			 *psz == ' '  || *psz == '\t' || 
+			 *psz == '\0')
 		{
 			*psz = '\0';
 		}

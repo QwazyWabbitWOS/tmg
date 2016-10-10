@@ -210,7 +210,6 @@ int CheckOpFile (edict_t *ent, char ip[IP_LENGTH], qboolean returnindex)
 	FILE *opfile;
 	char line[IP_LENGTH];
 	qboolean inFile;
-	//QW// UNUSED char seps[]= " \t\n";
 	int i = 0, flagged = -1;
 	int a;
 	char *result = NULL;
@@ -320,8 +319,10 @@ int CheckOpFile (edict_t *ent, char ip[IP_LENGTH], qboolean returnindex)
 		gi.dprintf("%d entries in user_o.txt\n", entriesinopfile);
 		for (i = 0; i < entriesinopfile+1; i++)
 		{
-			gi.dprintf("Entry #%d: [%s] Level: [%d] Password: [%s] Flagged: [%d]\nFlagged = %d\n", 
-				i+1, oplist[i].entry, oplist[i].level, oplist[i].namepass, oplist[i].flagged, flagged);
+			gi.dprintf("Entry #%d: [%s] Level: [%d] "
+				"Password: [%s] Flagged: [%d]\nFlagged = %d\n", 
+				i+1, oplist[i].entry, oplist[i].level, 
+				oplist[i].namepass, oplist[i].flagged, flagged);
 		}
 	}
 	if (flagged < 0)
@@ -335,7 +336,8 @@ int CheckOpFile (edict_t *ent, char ip[IP_LENGTH], qboolean returnindex)
 	}
 	if (developer->value && flagged != -1)
 		gi.dprintf ("Player %s matches entry %s, level = %d\n", 
-			ent->client->pers.netname, oplist[flagged].entry, oplist[flagged].level);
+			ent->client->pers.netname, 
+			oplist[flagged].entry, oplist[flagged].level);
 
 	return flagged;
 }
@@ -395,12 +397,10 @@ qboolean CheckNameProtect (char name[IP_LENGTH], char namepass[IP_LENGTH])
 	FILE *opfile;
 	char line[IP_LENGTH];
 	qboolean inFile;
-	//QW// UNUSED char seps[]= " \t\n";
 	int i = 0;
 	int a;
 	char *result = NULL;
 	qboolean namepassMatches;
-	//	char lowername[IP_LENGTH];
 
 	inFile = false;
 	namepassMatches = false;

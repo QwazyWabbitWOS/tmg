@@ -691,32 +691,16 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 				message[4] = "'saw the light' from";
 				break;
 			case MOD_HANDGRENADE:
-/*				if (allow_lasermines->value)
-				{
-					message[0] = "inspected";
-					message2[0] = "'s lasermine";
-				}
-				else
-				{
-*/					message[0] = "caught";
-					message2[0] = "'s handgrenade";
-					message[1] = "should watch more carefully for handgrenades from";
-					message[2] = "caught";
-					message2[2] = "'s handgrenade in the head";
-					message[3] = "tried to headbutt the handgrenade of";
-//				}
+				message[0] = "caught";
+				message2[0] = "'s handgrenade";
+				message[1] = "should watch more carefully for handgrenades from";
+				message[2] = "caught";
+				message2[2] = "'s handgrenade in the head";
+				message[3] = "tried to headbutt the handgrenade of";
 				break;
 			case MOD_HG_SPLASH:
-/*				if (allow_lasermines->value)
-				{
-					message[0] = "broke";
-					message2[0] = "'s beam";
-				}
-				else
-				{
-*/					message[0] = "didn't see";
-					message2[0] = "'s handgrenade";
-//				}
+				message[0] = "didn't see";
+				message2[0] = "'s handgrenade";
 				break;
 			case MOD_HELD_GRENADE:
 				message[0] = "feels";
@@ -728,23 +712,20 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 				message[1] = "is less telefrag aware than";
 				message[2] = "should appreciate scotty more like";
 				break;
-//			case MOD_GRAPPLE:
-//				message[0]= "was fried alive by";
-//				message2[0] = "'s laser hook";//raven laser hook addition
-//				break;
-				//ZOID
 			case MOD_GRAPPLE:
 				message[0] = "was caught by";
 				message2[0] = "'s grapple";
 				break;
-				//ZOID
 		}
+
 		if (message[0])
 		{
 			for (i = 0; i < 16; i++)
 			{
-				if (!message[i]) break;
-			} //end for
+				if (!message[i]) 
+					break;
+			}
+
 			i = (random()-0.01) * (float) i;
 			safe_bprintf (PRINT_MEDIUM,"%s %s %s%s\n", self->client->pers.netname, message[i], attacker->client->pers.netname, message2[i]);
 			//BOTS
@@ -910,9 +891,9 @@ void LookAtKiller (edict_t *self, edict_t *inflictor, edict_t *attacker)
 {
 	vec3_t		dir;
 
-// Make sure ent exists!
-  if (!G_EntExists(self)) return;
-
+	// Make sure ent exists!
+	if (!G_EntExists(self)) 
+		return;
 
 	if (attacker && attacker != world && attacker != self)
 	{
@@ -931,29 +912,19 @@ void LookAtKiller (edict_t *self, edict_t *inflictor, edict_t *attacker)
 	self->client->killer_yaw = 180/M_PI*atan2(dir[1], dir[0]);
 }
 
-/*
-==================
-player_die1
-==================
-*/
-//RAV
-//QW// fast die, no gibs, no death frames.
-static void player_die1 (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+// Fast die, no gibs, no death frames.
+static void player_die_fast (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	// if no-one died, then exit..
 	if (!G_EntExists(self))
 		return;
 
-
-	//ZOID
 	if(ctf->value)
 	{
 		CTFPlayerResetGrapple(self);
 		CTFDeadDropFlag(self);
 		CTFDeadDropTech(self);
 	}
-	//ZOID
-	//RAV
 
 	// drop the rune if we have one
 	runes_drop(self);
@@ -969,10 +940,8 @@ static void player_die1 (edict_t *self, edict_t *inflictor, edict_t *attacker, i
 	self->takedamage = DAMAGE_YES;
 	self->movetype = MOVETYPE_TOSS;
 
-	self->s.modelindex2 = 0;  // remove linked weapon model
-	//ZOID
+	self->s.modelindex2 = 0;	// remove linked weapon model
 	self->s.modelindex3 = 0;	// remove linked ctf flag
-	//ZOID
 
 	self->s.angles[0] = 0;
 	self->s.angles[2] = 0;
@@ -1138,8 +1107,6 @@ void InitClientPersistant (gclient_t *client)
 {
 	gitem_t		*item;
 
-//RAV
-	//JSW	int op,mop,plstate,mapvoted;
 	int op;
 	int plstate, mapvoted, oplevel;
 	char namepass[16];
@@ -1148,12 +1115,10 @@ void InitClientPersistant (gclient_t *client)
 	int	motd_seen;
 	char userip[24], namecg[18], skinn[24];
 
-	//JSW
+	// Save certain current player state variables
 	op = client->pers.isop; 
-	//mop = client->pers.ismop;
 	oplevel = client->pers.oplevel;
 	strcpy(namepass, client->pers.namepass);
-	//end
 	plstate = client->pers.pl_state;
 	motd = client->pers.motd;
 	motd_seen = client->pers.motd_seen;
@@ -1162,18 +1127,15 @@ void InitClientPersistant (gclient_t *client)
 	strcpy (namecg,client->pers.name_change);
 	strcpy (skinn,client->pers.skin_change);
 	mapvoted = client->pers.vote_times;
-	//
 
+	// Zero this region
 	memset (&client->pers, 0, sizeof(client->pers));
 
-	//RAV
+	// Restore the saved state
 	client->pers.pl_state = plstate;
-	//JSW
 	client->pers.isop = op;
-	//client->pers.ismop = mop;
 	client->pers.oplevel = oplevel;
 	strcpy(client->pers.namepass, namepass);
-	//end
 	client->pers.motd = motd;
 	client->pers.motd_seen = motd_seen;
 	client->pers.in_game = ig;
@@ -1181,8 +1143,6 @@ void InitClientPersistant (gclient_t *client)
 	strcpy (client->pers.name_change, namecg);
 	strcpy (client->pers.skin_change, skinn);
 	client->pers.vote_times = mapvoted;
-
-	//RAV
 
 	if (voosh->value)
     {
@@ -1252,17 +1212,13 @@ void InitClientPersistant (gclient_t *client)
 		}
 	}
 	client->pers.weapon = item;
-//ZOID
 	client->pers.lastweapon = item;
-//ZOID
 
 	item = FindItem("Grapple");
 
 	if (use_grapple->value)
 	{
-//ZOID
 		client->pers.inventory[ITEM_INDEX(item)] = 1;
-//ZOID
 	}
 	else
 	{
@@ -1282,18 +1238,13 @@ void InitClientPersistant (gclient_t *client)
 	client->pers.connected = true;
 }
 
-qboolean is_bot=false;
 void InitClientResp (gclient_t *client)
 {
-//ZOID
 	int ctf_team = client->resp.ctf_team;
-//ZOID
-	//JSW
 	int iddst = client->resp.iddist;
-	//end
 
 	memset (&client->resp, 0, sizeof(client->resp));
-//ZOID
+
 	if(clear_teams->value)
 	{
 		client->resp.ctf_team = CTF_NOTEAM;
@@ -1301,19 +1252,14 @@ void InitClientResp (gclient_t *client)
 	}
 	else
 		client->resp.ctf_team = ctf_team;
-	//JSW
-	client->resp.iddist = iddst;
-//ZOID
-	client->resp.enterframe = level.framenum;
-//RAV
-	client->resp.startframe = level.newframenum;
 
+	client->resp.iddist = iddst;
+	client->resp.enterframe = level.framenum;
+	client->resp.startframe = level.newframenum;
 	client->resp.coop_respawn = client->pers;
 
-//ZOID
 	if (ctf->value && (client->resp.ctf_team < CTF_TEAM1))
 		CTFAssignTeam(client);
-//ZOID
 }
 
 /*
@@ -1347,8 +1293,8 @@ void SaveClientData (void)
 void FetchClientEntData (edict_t *ent)
 {
 	// Make sure ent exists!
-	if (!G_EntExists(ent)) return;
-
+	if (!G_EntExists(ent)) 
+		return;
 
 	ent->health = ent->client->pers.health;
 	ent->max_health = ent->client->pers.max_health;
@@ -3034,19 +2980,16 @@ loadgames will.
 qboolean ClientConnect (edict_t *ent, char *userinfo)
 {
 	char	*value, *namecheck;
-	//RAV
 	char *s;
     int client;
     qboolean ret;
 	qboolean passed = false;
-	//
-	//JSW
+	qboolean is_bot = false;
 	char *name;
 	char *ip;
 	char player[30];
 	int i;
 	qboolean emptyname;
-	//end
 	
 	if (!ent->client)
 	{
@@ -3265,7 +3208,6 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	ent->client->pers.pl_state = PL_SPECTATOR; //spec
 	//JSW
 	ent->client->pers.isop = 0; //not an admin yet
-//	ent->client->pers.ismop = 0; //not an admin yet
 	ent->client->pers.oplevel = 0;
 	//end
 	ent->client->pers.motd = true;
@@ -4282,7 +4224,6 @@ void Spec_Check (edict_t *ent)
 
 	int kick;
 	
-//JSW	if(ent->client->pers.isop ||ent->client->pers.ismop)
 	if (ent->client->pers.oplevel & OP_SPEC)
 		return;
 	
@@ -4587,7 +4528,7 @@ void ClientBeginServerFrame (edict_t *ent)
 			// don't even bother waiting for death frames
 			ent->client->pers.pl_state = PL_PLAYING;
 			ent->deadflag = DEAD_DEAD;
-			player_die1 (ent, ent, ent, 100000, vec3_origin);
+			player_die_fast (ent, ent, ent, 100000, vec3_origin);
 			if(ctf->value)
 				ent->client->resp.ctf_state = CTF_STATE_START;
 			respawn(ent, true);

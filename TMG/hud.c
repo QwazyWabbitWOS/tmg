@@ -696,7 +696,7 @@ char *tn_showHud (edict_t *ent)
 			j += sprintf (layout+j, "xl 2 yb -10 string2 \"%s %s\" ", MOD, MOD_VERSION);
 
 			//JSW
-			if (ent->client->pers.isop == 1)
+			if (ent->client->pers.oplevel)
 				j += sprintf (layout+j, "xl 2 yb -20 string2 \"Operator Level %d\" ", ent->client->pers.oplevel);
 
 			if(show_time->value)

@@ -971,7 +971,7 @@ void Cmd_Operators_f (edict_t *ent)
 		player = g_edicts + i;
 		if (player && player->inuse && !player->bot_client)
 		{
-			if (player->client->pers.isop)
+			if (player->client->pers.oplevel)
 			{
 				safe_cprintf(ent, PRINT_HIGH,
 					"%d. %s  %d\n",
@@ -1134,7 +1134,7 @@ void Cmd_MapVote (edict_t *ent)
 
 // server side skinlist command to allow users to get
 // skins list from server when using clients like r1q2 that
-// kill the skins command. //QW//
+// kill the skins command. //QW added//
 void Cmd_SkinList_f(edict_t *ent)
 {
 	int		i;
@@ -1254,7 +1254,7 @@ void Say_Op(edict_t *who, char *msg)
 		cl_ent = g_edicts + 1 + i;
 		if (!cl_ent->inuse)
 			continue;
-		//if (cl_ent->client->pers.isop || cl_ent->client->pers.ismop)
+
 		if (cl_ent->client->pers.oplevel & OP_SAY)
 		{
 			if (!cl_ent->bot_client)
@@ -1442,7 +1442,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 			other = g_edicts + 1 + i;
 			if (!other->inuse)
 				continue;
-			//if (other->client->pers.isop || other->client->pers.ismop)
+
 			if (other->client->pers.oplevel & OP_SAY)
 			{
 				if (!other->bot_client)
@@ -1487,8 +1487,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 		//end
 		else if ((ctf->value) && (ent->client->resp.ctf_team == CTF_TEAM1))
 		{
-			//JSW	if(ent->client->pers.isop==1)
-			if(ent->client->pers.isop)//level != OP_NAMEPASS && ent->client->pers.oplevel != 0)
+			if(ent->client->pers.oplevel)
 				//sprintf(text2, "<OP_RED> %s", text);
 				sprintf(text2, "<RED> %s", text);
 			else
@@ -1496,8 +1495,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 		}
 		else if ((ctf->value) && (ent->client->resp.ctf_team == CTF_TEAM2))
 		{
-			//JSW	if(ent->client->pers.isop==1)
-			if(ent->client->pers.isop)//oplevel != OP_NAMEPASS && ent->client->pers.oplevel != 0)
+			if(ent->client->pers.oplevel)
 				//sprintf(text2, "<OP_BLUE> %s", text);
 				sprintf(text2, "<BLUE> %s", text);
 			else
@@ -1513,7 +1511,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 		}
 		else
 		{
-			if(ent->client->pers.isop)
+			if(ent->client->pers.oplevel)
 				sprintf(text2, "<OP> %s", text);
 			else
 				sprintf(text2, "%s", text);
@@ -1531,7 +1529,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 		}
 		else
 		{
-			if(ent->client->pers.isop)
+			if(ent->client->pers.oplevel)
 				sprintf(text2, "<OP> %s", text);
 			else
 				sprintf(text2, "%s", text);
@@ -1813,7 +1811,6 @@ void ClientCommand (edict_t *ent)
 	//JSW
 	if (Q_stricmp (cmd, "sayop") == 0 || Q_stricmp (cmd, "opsay") == 0)
 	{
-		//if (ent->client->pers.isop ==1 || ent->client->pers.ismop ==1)
 		if (ent->client->pers.oplevel & OP_SAY)
 			Say_Op (ent, gi.args());
 		else
@@ -1823,7 +1820,6 @@ void ClientCommand (edict_t *ent)
 
 	if (Q_stricmp (cmd, "op_chat") == 0 || Q_stricmp (cmd, "opchat") == 0)
 	{
-		//if (ent->client->pers.isop ==1 || ent->client->pers.ismop ==1)
 		if (ent->client->pers.oplevel & OP_SAY)
 		{
 			if (ent->client->pers.saytype != 1)
@@ -1845,7 +1841,7 @@ void ClientCommand (edict_t *ent)
 /* FIXMEJSW: need to rewrite the command
 	if (Q_stricmp (cmd, "opbroadcast") == 0)
 	{
-		if (ent->client->pers.isop ==1)
+		if (ent->client->pers.oplevel)
 		{
 			ent->client->pers.saytype = 2;
 			stuffcmd (ent, "echo \"Op Broadcast enabled\";messagemode");
@@ -1858,7 +1854,6 @@ void ClientCommand (edict_t *ent)
 
 	if (Q_stricmp (cmd, "rconmode") == 0)
 	{
-		//if (ent->client->pers.isop ==1 || ent->client->pers.ismop ==1)
 		if (ent->client->pers.oplevel & OP_RCON)
 		{
 			if (ent->client->pers.saytype != 3)
@@ -1892,7 +1887,6 @@ void ClientCommand (edict_t *ent)
 
 	if (Q_stricmp (cmd, "lockserver") == 0)
 	{
-		//if (ent->client->pers.isop ==1 || ent->client->pers.ismop == 1)
 		if (ent->client->pers.oplevel & OP_LOCKSERVER)
 		{
 			my_bprintf(PRINT_CHAT,
@@ -1906,7 +1900,6 @@ void ClientCommand (edict_t *ent)
 
 	if (Q_stricmp (cmd, "unlockserver") == 0)
 	{
-		//if (ent->client->pers.isop ==1 || ent->client->pers.ismop == 1)
 		if (ent->client->pers.oplevel & OP_LOCKSERVER)
 		{
 			my_bprintf(PRINT_CHAT, "Server was unlocked by %s\n", ent->client->pers.netname);
@@ -2649,7 +2642,7 @@ void ClientCommand (edict_t *ent)
 	}
 	else if (Q_stricmp (cmd, "permissions") == 0)
 	{
-		if (ent->client->pers.isop)
+		if (ent->client->pers.oplevel)
 		{
 			safe_cprintf(ent,
 						 PRINT_HIGH,

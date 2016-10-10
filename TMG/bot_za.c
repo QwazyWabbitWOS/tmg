@@ -915,10 +915,7 @@ int Bot_moveT ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom)
 	float		tracelimit;
 	qboolean	moveok;
 	int			contents;
-
 	int			tcontents;
-
-
 
 	tcontents =/* MASK_BOTSOLID*/MASK_BOTSOLIDX;//MASK_PLAYERSOLID /*| CONTENTS_TRANSLUCENT*/;  //???[?U?[?ɂ͐G???Ȃ?
 //	if(!ent->waterlevel) tcontents |= CONTENTS_WATER;

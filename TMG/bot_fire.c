@@ -1037,7 +1037,6 @@ void Combat_LevelX(edict_t *ent, int foundedenemy, int enewep,
 	edict_t		*target;
 	int			mywep,k;
 	vec3_t		v;
-	//QW// UNUSED qboolean	mod = false;
 
 	client = ent->client;
 	zc = &client->zc;
@@ -1091,12 +1090,9 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 	float		f;
 	gclient_t	*client;
 	zgcl_t		*zc;
-
 	edict_t		*target;
 	int			mywep,i,j,k;
 	vec3_t		v,vv,v1,v2;
-	//QW// UNUSED qboolean	mod = false;
-
 	trace_t		rs_trace;
 
 	client = ent->client;

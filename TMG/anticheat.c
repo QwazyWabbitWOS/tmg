@@ -267,8 +267,8 @@ OnBotDetection(edict_t *ent, char *msg)
 	strcpy (name, ent->client->pers.netname);
 	strcpy (name, ConvertName(name)); // eliminate forbidden chars
 
-	if(strcmp(name, ent->client->pers.netname)) // if name doesn't match after conversion
-		log = 1;
+	if(strcmp(name, ent->client->pers.netname))
+		log = 1; // if name doesn't match after conversion
 
 	sprintf(user, "%s@%s",
 			ent->client->pers.netname,
@@ -281,7 +281,7 @@ OnBotDetection(edict_t *ent, char *msg)
 			Info_ValueForKey (ent->client->pers.userinfo, "ip"),
 			msg, sys_time, sys_date);
 
-	//QW// when name doesn't match converted name
+	// When name doesn't match converted name
 	if (log && botdetection & BOT_LOG)
 	{
 		AddLogEntry ("logs/bot_detected.txt", logged);

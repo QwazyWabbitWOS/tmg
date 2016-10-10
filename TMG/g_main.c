@@ -65,7 +65,6 @@ cvar_t	*bob_pitch;
 cvar_t	*bob_roll;
 
 cvar_t	*sv_cheats;
-//cvar_t	*grapple;        //QW// UNUSED
 cvar_t	*view_weapons;       // control weapon visibility
 
 //RAV

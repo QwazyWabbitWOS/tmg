@@ -4956,7 +4956,7 @@ void List_Op(edict_t *ent)
 			continue;
 		sprintf(menustring[pos],"%d. %s", pos, e->client->pers.netname);
 		promotemenu[pos].text = menustring[pos];
-		if(e->client->pers.isop ==1)
+		if(e->client->pers.oplevel)
 			promotemenu[pos].SelectFunc = NULL;
 		else
 			promotemenu[pos].SelectFunc = OpMe;
@@ -5049,6 +5049,7 @@ void List_Switch(edict_t *ent)
 		e = g_edicts + 1 + i;
 		if (!G_EntExists(e))
 			continue;
+
 		if(e->client->resp.ctf_team < 1)
 			sprintf(menustring[pos],"%d. %s <SPEC>", pos, e->client->pers.netname);
 		else
@@ -5059,7 +5060,7 @@ void List_Switch(edict_t *ent)
 				sprintf(menustring[pos],"%d. %s <Red>", pos, e->client->pers.netname);
 		}
 		switchmenu[pos].text = menustring[pos];
-		//		if(e->client->resp.ctf_team < 1 || e->client->pers.isop ==1)
+
 		if(e->client->resp.ctf_team < 1 || e->client->pers.oplevel & OP_PROTECTED)
 			switchmenu[pos].SelectFunc = NULL;
 		else
@@ -5385,7 +5386,7 @@ void List_KickBan(edict_t *ent)
 			continue;
 		sprintf(menustring[pos],"%d. %s", pos, e->client->pers.netname);
 		kicknbanmenu[pos].text = menustring[pos];
-		//		if(e->client->pers.isop ==1)
+
 		if(e->client->pers.oplevel & OP_BAN)
 			kicknbanmenu[pos].SelectFunc = NULL;
 		else
@@ -5462,7 +5463,7 @@ void List_Ban(edict_t *ent)
 			continue;
 		sprintf(menustring[pos],"%d. %s", pos, e->client->pers.netname);
 		banmenu[pos].text = menustring[pos];
-		//		if(e->client->pers.isop ==1)
+
 		if(e->client->pers.oplevel & OP_BAN)
 			banmenu[pos].SelectFunc = NULL;
 		else
@@ -5694,7 +5695,7 @@ void List_Kick(edict_t *ent)
 			continue;
 		sprintf(menustring[pos],"%d. %s", pos, e->client->pers.netname);
 		kickmenu[pos].text = menustring[pos];
-		//		if(e->client->pers.isop ==1)
+
 		if(e->client->pers.oplevel & OP_KICK)
 			kickmenu[pos].SelectFunc = NULL;
 		else
@@ -5898,7 +5899,6 @@ void ListPlayers(edict_t *ent, pmenu_t *p)
 
 void OPMenu(edict_t *ent, pmenu_t *p)
 {
-	//JSW	if((ent->client->pers.isop !=1)&&(ent->client->pers.ismop !=1))
 	if(ent->client->pers.oplevel == 0)
 		return;
 
@@ -5907,7 +5907,7 @@ void OPMenu(edict_t *ent, pmenu_t *p)
 
 	UpdateOpMenu(ent);
 
-	if(ent->client->pers.isop == 1)
+	if(ent->client->pers.oplevel)
 		PMenu_Open(ent, opmenu,
 				   -1, sizeof(opmenu) / sizeof(pmenu_t),
 				   true, true);
@@ -5981,15 +5981,6 @@ void FillMapNames(void)
 				maplist->mapname[l], maplist->mapnick[l],
 				maplist->mapname[m], maplist->mapnick[m]);
 
-	//Clear the rest of the menu
-	//	while (pos < 38)
-	//	{
-	//		tmgmapvote[pos].text = "";
-	//		tmgmapvote[pos].SelectFunc = NULL;
-	//		tmgmapvote[pos].arg = 0;
-	//		++pos;
-	//	}
-
 	mapvotefilled = true;
 }
 
@@ -6044,7 +6035,7 @@ int CTFUpdateJoinMenu(edict_t *ent)
 	static char team2players[32];
 	int num1, num2, i;
 
-	if (ent->client->pers.isop)
+	if (ent->client->pers.oplevel)
 	{
 		joinmenu[10].text = "Op Menu";
 		joinmenu[10].SelectFunc = OPMenu;
