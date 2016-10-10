@@ -2649,7 +2649,6 @@ void ClientCommand (edict_t *ent)
 	}
 	else if (Q_stricmp (cmd, "permissions") == 0)
 	{
-		//char *commands;// = "You have the following permissions: ";
 		if (ent->client->pers.isop)
 		{
 			safe_cprintf(ent,

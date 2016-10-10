@@ -832,18 +832,22 @@ extern	cvar_t	*doors_stay_open;
 #define	OP_SAY				2
 #define	OP_SWITCH			4
 #define	OP_CHANGEMAP		8
+
 #define	OP_LOCKTEAMS		16
 #define	OP_RESTART			32
 #define	OP_KICK				64
 #define	OP_STATUS			128
+
 #define	OP_SILENCE			256
 #define	OP_LOCKSERVER		512
 #define	OP_LISTEN			1024
 #define	OP_SHOWBANNEDFILE	2048
+
 #define	OP_BAN				4096
 #define	OP_LIGHTS			8192
 #define	OP_PROTECTED		16384
 #define	OP_ADDOP			32768
+
 #define OP_MODOP			65536
 #define	OP_RCON				131072
 #define OP_NAMEPASS			262144

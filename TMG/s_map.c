@@ -199,7 +199,7 @@ edict_t *mdsoft_NextMap( void )
 			/* Choose map */
 			{
 				int i;
-				int point = (mdsoft_map_last+1) % mdsoft_map_size;
+				int point = (mdsoft_map_last) % mdsoft_map_size;
 				int map_sought = point;
 
 				count = 0;
@@ -291,7 +291,8 @@ edict_t *mdsoft_NextMap( void )
 
 			if(map_debug->value)
 			{
-				DbgPrintf ("MAP CHANGE: Selected = %d \n", mdsoft_map_last);
+				DbgPrintf ("MAP CHANGE: Selected = %d %s\n", 
+					mdsoft_map_last, &mdsoft_map[mdsoft_map_last].aFile[0]);
 				gi.bprintf (PRINT_HIGH, "MAP CHANGE: %d ", mdsoft_map_last );
 				gi.bprintf (PRINT_HIGH, &mdsoft_map[mdsoft_map_last].aFile[0] );
 				gi.bprintf (PRINT_HIGH, " [min = %d, max = %d, players = %d]\n",
