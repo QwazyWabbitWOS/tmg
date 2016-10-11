@@ -2358,7 +2358,7 @@ void ClientBeginDeathmatch (edict_t *ent)
 	//jsw
 	CheckPlayers();
 	name = ent->client->pers.netname;
-	convert_string(name, 0, 127, 128, name);
+	highlight_text(name, name);
 	if (ctf->value)
 		sprintf (text, "%s entered the game (%d red, %d blue, %d spectators)\n", name, ctfgame.players1, ctfgame.players2, ctfgame.specs);
 	else
@@ -2598,7 +2598,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	//end
 
 	//JSW - Make all player names all white, remove any green text
-	convert_string(s, 128, 255, -128, s); // green -> white
+	white_text(s, s);
 	//end
 	strncpy (ent->client->pers.netname, s, sizeof(ent->client->pers.netname)-1);
 
@@ -3262,7 +3262,7 @@ void ClientDisconnect (edict_t *ent)
 	sl_LogPlayerDisconnect( &gi, level, ent );	// StdLog - Mark Davies
 	
 	name = ent->client->pers.netname;
-	convert_string(name, 0, 127, 128, name);
+	highlight_text(name, name);
 	
 	if ( ent->flashlight )
 	{	

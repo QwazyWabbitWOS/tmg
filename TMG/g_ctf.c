@@ -6007,7 +6007,7 @@ void PickMap(edict_t *ent, pmenu_t *p)
 		maplist->votes[i]++;
 		ent->client->pers.HasVoted = true;
 		name = ent->client->pers.netname;
-		convert_string(name, 0, 127, 128, name);
+		highlight_text(name, name);
 		sprintf (text,
 				 "%s voted for %s \"%s\"\n",
 				 name,

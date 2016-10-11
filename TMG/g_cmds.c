@@ -1043,7 +1043,7 @@ void MapVoteThink(qboolean passed, qboolean now)
 					maplist->mapname[maplist->currentmapvote],
 					maplist->mapnick[maplist->currentmapvote]);
 			}
-			convert_string(string, 0, 127, 128, string); // white -> green
+			highlight_text(string, string); // white -> green
 			my_bprintf(PRINT_HIGH, string);
 			mapvoteactive = true;
 			mapvotetime = level.time + vote_timeout->value;
@@ -1067,7 +1067,7 @@ void MapVoteThink(qboolean passed, qboolean now)
 					player->client->resp.vote = false;
 				}
 			}
-			convert_string(string, 0, 127, 128, string); // white -> green
+			highlight_text(string, string);
 			my_bprintf(PRINT_HIGH, string);
 			mapvoteactive = false;
 			//			gi.dprintf ("E. map to be voted on is %s\n",
@@ -1455,7 +1455,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 /*	FIXMEJSW: redo this to use multiple lines, like sv msg, write it's own function
 	if (ent->client->pers.saytype == 2)
 	{
-		convert_string(text, 0, 127, 128, text); // white -> green
+		highlight_text(text, text);
 		for (i = 0; i < maxclients->value; i++)
 		{
 			other = g_edicts + 1 + i;

@@ -684,7 +684,8 @@ void LogChat (char *text)
 		}
 		return;
 	}
-	convert_string(entry, 128, 255, -128, entry);  //make white text
+
+	white_text(entry, entry);
 	sprintf(entry, "%s [%s] %s", sys_date, sys_time, text);
 	
 

@@ -910,7 +910,7 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 	if(j == 2)
 	{
 		sprintf(string, "%s got a double rail!!\n", self->client->pers.netname);
-		convert_string(string, 0, 127, 128, string); // white -> green
+		highlight_text(string, string);
 		my_bprintf(PRINT_HIGH, string);
 		if (extrasounds->value)
 		{
@@ -949,7 +949,7 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 			sprintf(string, "%s got a quadruple rail!!\n", self->client->pers.netname);
 		else
 			sprintf(string, "%s railed %d people!!\n", self->client->pers.netname, j);
-		convert_string(string, 0, 127, 128, string); // white -> green
+		highlight_text(string, string);
 		my_bprintf(PRINT_HIGH, string);
 		if (extrasounds->value)
 		{

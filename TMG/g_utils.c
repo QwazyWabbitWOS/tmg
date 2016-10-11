@@ -730,7 +730,7 @@ void my_bprintf (int printlevel, char *fmt, ...)
 
 	if (dedicated->value)
 	{
-		convert_string(bigbuffer, 128, 255, -128, bigbuffer2); // green -> white
+		white_text(bigbuffer, bigbuffer2); // green -> white
 		gi.dprintf ("%s", bigbuffer2);
 		//safe_cprintf(NULL, printlevel, bigbuffer);
 	}
