@@ -1107,7 +1107,6 @@ void InitClientPersistant (gclient_t *client)
 {
 	gitem_t		*item;
 
-	int op;
 	int plstate, mapvoted, oplevel;
 	char namepass[16];
 	//
@@ -1116,7 +1115,6 @@ void InitClientPersistant (gclient_t *client)
 	char userip[24], namecg[18], skinn[24];
 
 	// Save certain current player state variables
-	op = client->pers.isop; 
 	oplevel = client->pers.oplevel;
 	strcpy(namepass, client->pers.namepass);
 	plstate = client->pers.pl_state;
@@ -1133,7 +1131,6 @@ void InitClientPersistant (gclient_t *client)
 
 	// Restore the saved state
 	client->pers.pl_state = plstate;
-	client->pers.isop = op;
 	client->pers.oplevel = oplevel;
 	strcpy(client->pers.namepass, namepass);
 	client->pers.motd = motd;

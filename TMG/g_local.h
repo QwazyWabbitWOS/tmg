@@ -1278,7 +1278,6 @@ typedef struct client_persistent_s
 
 	// See pl_state_n
 	int	pl_state;	// playing 1, spec 0, warmup 2, need spawned 3, cheat bot 5
-	int	isop;		//operators
 	qboolean	motd;	// show client the motd
 	int			motd_seen;
 	qboolean	db_hud;

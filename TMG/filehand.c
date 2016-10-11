@@ -219,8 +219,6 @@ int CheckOpFile (edict_t *ent, char ip[IP_LENGTH], qboolean returnindex)
 	inFile = false;
 	namepassMatches = false;
 	firsttime = true;
-	if (ent)
-		ent->client->pers.isop = 0;
 
 	if ((opfile = tn_open("user_o.txt", "r")))
 	{
@@ -264,8 +262,6 @@ int CheckOpFile (edict_t *ent, char ip[IP_LENGTH], qboolean returnindex)
 									inFile = true;
 									oplist[i].flagged = true;
 									flagged = i;
-									if (oplist[i].level - OP_NAMEPASS != 0)
-										ent->client->pers.isop = 1;
 								}
 							}
 						}
@@ -434,15 +430,22 @@ qboolean CheckNameProtect (char name[IP_LENGTH], char namepass[IP_LENGTH])
 						{
 							strcpy(oplist[i].namepass, result);
 						}
-						//gi.dprintf("stristr returned: %s\n", stristr(oplist[i].entry, name));
+
 						if (stricmp(oplist[i].name, name) == 0 && (oplist[i].level & OP_NAMEPASS))
 						{
 							inFile = true;
-							//gi.dprintf("name .%s. matched entry .%s. and is in file.\nStricmp returns value %d, namepass in oplist is .%s., client pass is .%s.\n", name, oplist[i].name, stricmp(oplist[i].namepass, namepass), oplist[i].namepass, namepass);
+							if (debug_ops->value)
+								DbgPrintf("name .%s. matched entry .%s. "
+									"and is in file.\n"
+									"Stricmp returns value %d, "
+									"namepass in oplist is .%s., "
+									"client pass is .%s.\n", name, 
+									oplist[i].name, 
+									stricmp(oplist[i].namepass, namepass), 
+									oplist[i].namepass, namepass);
 							if (strnicmp(oplist[i].namepass, namepass, strlen(namepass)) == 0)
 							{
 								namepassMatches = true;
-								//gi.dprintf("namepass provided .%s. matches name pass in file .%s.\n", namepass, oplist[i].namepass);
 							}
 						}
 						a++;
