@@ -3204,7 +3204,6 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	//RAV
 	ent->client->pers.pl_state = PL_SPECTATOR; //spec
 	//JSW
-	ent->client->pers.isop = 0; //not an admin yet
 	ent->client->pers.oplevel = 0;
 	//end
 	ent->client->pers.motd = true;
