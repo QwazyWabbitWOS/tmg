@@ -4000,7 +4000,30 @@ void CTFShowScores(edict_t *ent, pmenu_t *p)
 	DeathmatchScoreboard (ent);
 }
 
+static
+void restartthismap(void)
+{
+	char command[80];
 
+	strcpy (command, "gamemap ");
+	strcat (command, level.mapname);
+	gi.AddCommandString (command);
+	return;
+}
+
+void BotsOn(edict_t *ent, pmenu_t *menu)
+{
+	PMenu_Close(ent);
+	gi.cvar_set("use_bots", "1");
+	restartthismap();
+}
+
+void BotsOff(edict_t *ent, pmenu_t *menu)
+{
+	PMenu_Close(ent);
+	gi.cvar_set("use_bots", "0");
+	restartthismap();
+}
 
 void LightsOn(edict_t *ent, pmenu_t *menu)
 {
@@ -4633,6 +4656,16 @@ pmenu_t lightsmenu[] = {
 	{ "Lights OFF",			PMENU_ALIGN_LEFT, 0, LightsOff },
 };
 
+pmenu_t botsmenu[] = {
+	{ "*Bots Menu:",		PMENU_ALIGN_CENTER, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ "Bots ON",			PMENU_ALIGN_LEFT, 0, BotsOn },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ "Bots OFF",			PMENU_ALIGN_LEFT, 0, BotsOff },
+};
+
 pmenu_t opmenu[] = {
 	{ "**TMG_MOD",			PMENU_ALIGN_CENTER,  0,  NULL },
 	{ "*Operator Menu",		PMENU_ALIGN_CENTER,  0,  NULL },
@@ -5131,8 +5164,10 @@ void SpecMe(edict_t *ent, pmenu_t *p)
 	i = p->arg;
 	e = g_edicts + 1 + i;
 	PMenu_Close(ent);
+	
 	if (!G_EntExists(e))
 		return;
+	
 	if (e->bot_client)
 	{
 		safe_cprintf (ent, PRINT_CHAT,
@@ -5357,6 +5392,14 @@ void LightsMenu(edict_t *ent, pmenu_t *p)
 	if (ent->client->menu) PMenu_Close(ent);
 	PMenu_Open(ent, lightsmenu,
 			   -1, sizeof(lightsmenu) / sizeof(pmenu_t),
+			   true, true);
+}
+
+void BotsMenu(edict_t *ent, pmenu_t *p)
+{
+	if (ent->client->menu) PMenu_Close(ent);
+	PMenu_Open(ent, botsmenu,
+			   -1, sizeof(botsmenu) / sizeof(pmenu_t),
 			   true, true);
 }
 
@@ -5742,6 +5785,8 @@ void UpdateOpMenu(edict_t *ent)
 		strcat (str, "Change Map\t");
 	if (ent->client->pers.oplevel & OP_LIGHTS)
 		strcat (str, "Lights Control\t");
+	if (ent->client->pers.oplevel & OP_PLAYERCONTROL)
+		strcat (str, "Bots Control\t");
 	if (ent->client->pers.oplevel & OP_LOCKTEAMS)
 	{
 		if (locked_teams)
@@ -5779,6 +5824,8 @@ void UpdateOpMenu(edict_t *ent)
 			opmenu[pos].SelectFunc = OpMap;
 		else if (Q_stricmp(opmenu[pos].text, "Lights Control") == 0)
 			opmenu[pos].SelectFunc = LightsMenu;
+		else if (Q_stricmp(opmenu[pos].text, "Bots Control") == 0)
+			opmenu[pos].SelectFunc = BotsMenu;
 		else if (Q_stricmp(opmenu[pos].text, lock_unlock) == 0)
 			opmenu[pos].SelectFunc = OpLock;
 		else if (Q_stricmp(opmenu[pos].text, "Lock Server") == 0)
