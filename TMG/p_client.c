@@ -1042,15 +1042,17 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 	// clear inventory
 	memset(self->client->pers.inventory, 0, sizeof(self->client->pers.inventory));
 
-	// no gibs if railserver
+	// minimal gibs if railserver
 	if (self->health < -40 || voosh->value)
 	{	// gib
+		gi.sound (self, CHAN_BODY, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
 		for (n = 0; n < 3; n++)
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
-		//ThrowClientHead (self, damage);
-		gi.setmodel(self, "");
+
+		// An empty name here caused GAME WARNING in SV_FindIndex
+		// so throw another gib model instead.
+		gi.setmodel(self, "models/objects/gibs/sm_meat/tris.md2");
 		self->takedamage = DAMAGE_NO;
-		gi.sound (self, CHAN_BODY, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
 	}
 	else
 	{	// normal death
