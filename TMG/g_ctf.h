@@ -206,7 +206,7 @@ void VoteMap2(edict_t *ent, pmenu_t *p);
 void VoteMapNames(void);
 void VoteMap(edict_t *ent, pmenu_t *p);
 
-// OP level
+// OP level commands
 char *GetIpOp(edict_t *ent);
 void List_Op(edict_t *ent);
 void OpPlayer(edict_t *ent, pmenu_t *p);
@@ -223,6 +223,9 @@ void OpMapNames2(void);
 void OpMap2(edict_t *ent, pmenu_t *p);
 void OpMapNames(void);
 
+void OpBotsOn(edict_t *ent, pmenu_t *menu);
+void OpBotsOff(edict_t *ent, pmenu_t *menu);
+void BotsMenu(edict_t *ent, pmenu_t *p);
 
 void SpecMe(edict_t *ent, pmenu_t *p);
 void List_Spec(edict_t *ent);

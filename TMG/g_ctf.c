@@ -4011,14 +4011,14 @@ void restartthismap(void)
 	return;
 }
 
-void BotsOn(edict_t *ent, pmenu_t *menu)
+void OpBotsOn(edict_t *ent, pmenu_t *menu)
 {
 	PMenu_Close(ent);
 	gi.cvar_set("use_bots", "1");
 	restartthismap();
 }
 
-void BotsOff(edict_t *ent, pmenu_t *menu)
+void OpBotsOff(edict_t *ent, pmenu_t *menu)
 {
 	PMenu_Close(ent);
 	gi.cvar_set("use_bots", "0");
@@ -4660,10 +4660,10 @@ pmenu_t botsmenu[] = {
 	{ "*Bots Menu:",		PMENU_ALIGN_CENTER, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
-	{ "Bots ON",			PMENU_ALIGN_LEFT, 0, BotsOn },
+	{ "Bots ON",			PMENU_ALIGN_LEFT, 0, OpBotsOn },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
-	{ "Bots OFF",			PMENU_ALIGN_LEFT, 0, BotsOff },
+	{ "Bots OFF",			PMENU_ALIGN_LEFT, 0, OpBotsOff },
 };
 
 pmenu_t opmenu[] = {
