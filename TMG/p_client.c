@@ -4468,14 +4468,14 @@ void ClientBeginServerFrame (edict_t *ent)
 	//	ent->client->overflowed = false;
 
 	//Check For Cheaters
-	if (!ent->bot_client)
-		stuffcmd(ent, "mm_fps $cl_maxfps\n");//max fps
-	if(ent->client->checkframe == level.framenum && !ent->bot_client)
-	{
-		//stuffcmd(ent, "mm_fps $cl_maxfps\n");//max fps
-		stuffcmd(ent, "mm_ts $timescale\n");//timescale hack
-		ent->client->checkframe = level.framenum+40;
-	}
+	//if (!ent->bot_client)
+	//	stuffcmd(ent, "mm_fps $cl_maxfps\n");//max fps
+	//if(ent->client->checkframe == level.framenum && !ent->bot_client)
+	//{
+	//	//stuffcmd(ent, "mm_fps $cl_maxfps\n");//max fps
+	//	stuffcmd(ent, "mm_ts $timescale\n");//timescale hack
+	//	ent->client->checkframe = level.framenum+40;
+	//}
 	
 	//RAV	anti camper mod
 	if (camper_check->value && ent->client->check_camping && !ent->bot_client)
