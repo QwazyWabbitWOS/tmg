@@ -1051,7 +1051,8 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 
 		// An empty name here caused GAME WARNING in SV_FindIndex
 		// so throw another gib model instead.
-		gi.setmodel(self, "models/objects/gibs/sm_meat/tris.md2");
+		//gi.setmodel(self, "models/objects/gibs/sm_meat/tris.md2");
+		//gi.setmodel(self, "");
 		self->takedamage = DAMAGE_NO;
 	}
 	else
