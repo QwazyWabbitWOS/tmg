@@ -56,9 +56,11 @@ edict_t *GetBotFlag2(void)
 
 qboolean ChkTFlg( void )
 {
-	if(bot_team_flag1 != NULL
-		&& bot_team_flag2 != NULL) return true;
-	else return false;
+	if(bot_team_flag1 != NULL &&
+		bot_team_flag2 != NULL)
+		return true;
+	else 
+		return false;
 }
 
 void SpawnItem4 (edict_t *ent, gitem_t *item)
@@ -84,87 +86,120 @@ void SpawnItem4 (edict_t *ent, gitem_t *item)
 
 qboolean Bot_trace (edict_t *ent,edict_t *other)
 {
-		trace_t		rs_trace;
-		vec3_t	ttx;
-		vec3_t	tty;
+	trace_t		rs_trace;
+	vec3_t	ttx;
+	vec3_t	tty;
 
-		VectorCopy (ent->s.origin,ttx);
-		VectorCopy (other->s.origin,tty);
-		if(ent->maxs[2] >=32)
+	VectorCopy (ent->s.origin,ttx);
+	VectorCopy (other->s.origin,tty);
+	if (ent->maxs[2] >= 32)
+	{
+		if (tty[2] > ttx[2])
 		{
-			if(tty[2] > ttx[2] ) tty[2] += 16;
-//			else if(ttx[2] > tty[2] > 100 ) tty[2] += 32;
-			ttx[2] += 30;
+			tty[2] += 16;
 		}
-		else
-		{
-			ttx[2] -= 12;
-		}
+		//else if(ttx[2] > tty[2] > 100 )
+		//	tty[2] += 32;
+		ttx[2] += 30;
+	}
+	else
+	{
+		ttx[2] -= 12;
+	}
 
-		rs_trace = gi.trace (ttx, NULL, NULL, tty, ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME /*| CONTENTS_TRANSLUCENT*/);
-		if(rs_trace.fraction == 1.0 && !rs_trace.allsolid && !rs_trace.startsolid) return true;
-		if( ent->maxs[2] < 32 ) return false;
+	rs_trace = gi.trace (ttx, NULL, NULL, tty, ent, 
+		CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | 
+		CONTENTS_SLIME /*| CONTENTS_TRANSLUCENT*/);
+	if (rs_trace.fraction == 1.0 && !rs_trace.allsolid && 
+		!rs_trace.startsolid) 
+	{
+		return true;
+	}
+	if (ent->maxs[2] < 32) 
+	{
+		return false;
+	}
 
-		if(other->classname[6] == 'F'
-			|| other->classname[0] == 'w')
-		{}
-		else if(other->classname[0]=='i')
-		{
-			if(other->classname[5]=='q'
+	if(other->classname[6] == 'F'
+		|| other->classname[0] == 'w')
+	{}
+	else if(other->classname[0]=='i')
+	{
+		if(other->classname[5]=='q'
 			|| other->classname[5]=='f'
 			|| other->classname[5]=='t'
 			|| other->classname[5]=='i'
 			|| other->classname[5]=='h'
 			|| other->classname[5]=='a'){}
-			else return false;
-		}
-		else return false;
-
-		if(rs_trace.ent != NULL)
-		{
-			if(rs_trace.ent->classname[0] == 'f'
-				&& rs_trace.ent->classname[5] == 'd'
-				&& rs_trace.ent->targetname == NULL) return true;
-		}
-
-		if(ent->s.origin[2] < other->s.origin[2]
-			|| ent->s.origin[2]-24 >  other->s.origin[2]) return false;
-
-		ttx[2] -= 36;
-		rs_trace = gi.trace (ttx, NULL, NULL, other->s.origin, ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME /*|CONTENTS_TRANSLUCENT*/);
-		if(rs_trace.fraction == 1.0 && !rs_trace.allsolid && !rs_trace.startsolid) return true;
+		else 
+			return false;
+	}
+	else 
 		return false;
+
+	if(rs_trace.ent != NULL)
+	{
+		if(rs_trace.ent->classname[0] == 'f'
+			&& rs_trace.ent->classname[5] == 'd'
+			&& rs_trace.ent->targetname == NULL)
+			return true;
+	}
+
+	if(ent->s.origin[2] < other->s.origin[2] ||
+		ent->s.origin[2]-24 >  other->s.origin[2]) 
+		return false;
+
+	ttx[2] -= 36;
+	rs_trace = gi.trace (ttx, NULL, NULL, other->s.origin, ent, 
+		CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | 
+		CONTENTS_SLIME /*|CONTENTS_TRANSLUCENT*/);
+	if(rs_trace.fraction == 1.0 && 
+		!rs_trace.allsolid && !rs_trace.startsolid)
+	{
+		return true;
+	}
+	return false;
 }
 
 
 qboolean Bot_traceX (edict_t *ent,edict_t *other)
 {
-		trace_t		rs_trace;
-		vec3_t	ttx,tty;
-		VectorCopy (ent->s.origin,ttx);
-		VectorCopy (other->s.origin,tty);
-		ttx[2] += 16;
-		tty[2] += 16;
+	trace_t		rs_trace;
+	vec3_t	ttx,tty;
+	VectorCopy (ent->s.origin,ttx);
+	VectorCopy (other->s.origin,tty);
+	ttx[2] += 16;
+	tty[2] += 16;
 
-		rs_trace = gi.trace (ttx, NULL, NULL, tty, ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
-		if(rs_trace.fraction == 1.0 ) return true;
-		return false;
+	rs_trace = gi.trace (ttx, NULL, NULL, tty, ent, 
+		CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
+	if(rs_trace.fraction == 1.0 ) 
+		return true;
+	return false;
 }
 
 qboolean Bot_traceY (edict_t *ent,edict_t *other)
 {
-		trace_t		rs_trace;
-		vec3_t	ttx,tty;
-		VectorCopy (ent->s.origin,ttx);
-		VectorCopy (other->s.origin,tty);
-		if(ent->maxs[2] >=32) ttx[2] += 24;
-		else ttx[2] -= 12;
+	trace_t		rs_trace;
+	vec3_t	ttx,tty;
+	VectorCopy (ent->s.origin,ttx);
+	VectorCopy (other->s.origin,tty);
+	if (ent->maxs[2] >= 32)
+	{
+		ttx[2] += 24;
+	}
+	else
+	{
+		ttx[2] -= 12;
+	}
 
-		tty[2] += 16;
+	tty[2] += 16;
 
-		rs_trace = gi.trace (ttx, NULL, NULL, tty, ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
-		if(rs_trace.fraction == 1.0 ) return true;
-		return false;
+	rs_trace = gi.trace (ttx, NULL, NULL, tty, ent, 
+		CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
+	if(rs_trace.fraction == 1.0 )
+		return true;
+	return false;
 }
 
 //
@@ -173,15 +208,17 @@ qboolean Bot_traceY (edict_t *ent,edict_t *other)
 
 qboolean Bot_trace2 (edict_t *ent,vec3_t ttz)
 {
-		trace_t		rs_trace;
-		vec3_t	ttx;
-		VectorCopy (ent->s.origin,ttx);
-		if(ent->maxs[2] >=32) ttx[2] += 24;
-		else ttx[2] -= 12;
+	trace_t		rs_trace;
+	vec3_t	ttx;
+	VectorCopy (ent->s.origin,ttx);
+	if(ent->maxs[2] >=32) ttx[2] += 24;
+	else ttx[2] -= 12;
 
-		rs_trace = gi.trace (ttx, NULL, NULL, ttz, ent, CONTENTS_SOLID | CONTENTS_LAVA | CONTENTS_SLIME /*| CONTENTS_TRANSLUCENT*/);
-		if(rs_trace.fraction != 1.0 ) return false;
-		return true;
+	rs_trace = gi.trace (ttx, NULL, NULL, ttz, ent, 
+		CONTENTS_SOLID | CONTENTS_LAVA | CONTENTS_SLIME);
+	if(rs_trace.fraction != 1.0 )
+		return false;
+	return true;
 }
 
 //
@@ -201,11 +238,14 @@ qboolean Bot_traceS (edict_t *ent,edict_t *other)
 	start[2] += ent->viewheight - 8;
 	end[2] += other->viewheight - 8;
 
-	if(Bot[ent->client->zc.botindex].param[BOP_NOSTHRWATER]) goto WATERMODE;
+	if(Bot[ent->client->zc.botindex].param[BOP_NOSTHRWATER]) 
+		goto WATERMODE;
 
-	rs_trace = gi.trace (start, NULL, NULL, end, ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
+	rs_trace = gi.trace (start, NULL, NULL, end, ent, 
+		CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
 
-	if(rs_trace.fraction != 1.0 ) return false;
+	if(rs_trace.fraction != 1.0 )
+		return false;
 	return true;
 
 WATERMODE:
@@ -213,21 +253,28 @@ WATERMODE:
 
 	if((mycont & CONTENTS_WATER) && !other->waterlevel)
 	{
-		rs_trace = gi.trace (end, NULL, NULL, start, ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME | CONTENTS_WATER);
+		rs_trace = gi.trace (end, NULL, NULL, start, ent, 
+			CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | 
+			CONTENTS_SLIME | CONTENTS_WATER);
 		if(rs_trace.surface)
 		{
-			if(rs_trace.surface->flags & SURF_WARP) return false;
+			if(rs_trace.surface->flags & SURF_WARP)
+				return false;
 		}
-		rs_trace = gi.trace (start, NULL, NULL, end, ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
-		if(rs_trace.fraction != 1.0 ) return false;
+		rs_trace = gi.trace (start, NULL, NULL, end, ent, 
+			CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
+		if(rs_trace.fraction != 1.0 )
+			return false;
 		return true;
 	}
 	else if((mycont & CONTENTS_WATER) && other->waterlevel)
 	{
 		VectorCopy(other->s.origin,end);
 		end[2] -= 16;
-		rs_trace = gi.trace (start, NULL, NULL, end, ent, CONTENTS_SOLID | CONTENTS_WINDOW );
-		if(rs_trace.fraction != 1.0 ) return false;
+		rs_trace = gi.trace (start, NULL, NULL, end, ent, 
+			CONTENTS_SOLID | CONTENTS_WINDOW );
+		if(rs_trace.fraction != 1.0 )
+			return false;
 		return true;
 	}
 
@@ -235,56 +282,67 @@ WATERMODE:
 	{
 		VectorCopy(other->s.origin,end);
 		end[2] += 32;
-		rs_trace = gi.trace (start, NULL, NULL, end, ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_WATER);
+		rs_trace = gi.trace (start, NULL, NULL, end, ent,
+			CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_WATER);
 		if(rs_trace.surface)
 		{
-			if(rs_trace.surface->flags & SURF_WARP) return false;
+			if(rs_trace.surface->flags & SURF_WARP) 
+			{
+				return false;
+			}
 		}
-//		if(rs_trace.fraction != 1.0 ) return false;
-//		return true;
+		//		if(rs_trace.fraction != 1.0 ) return false;
+		//		return true;
 	}
 
-	rs_trace = gi.trace (start, NULL, NULL, end, ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
-	if(rs_trace.fraction != 1.0 ) return false;
+	rs_trace = gi.trace (start, NULL, NULL, end, ent, 
+		CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
+	if(rs_trace.fraction != 1.0 )
+	{ 
+		return false;
+	}
 	return true;
 }
 
 float Get_yaw (vec3_t vec)
 {
-		vec3_t		out;
-		double		yaw;
+	vec3_t		out;
+	double		yaw;
 
-		VectorCopy(vec,out);
-		out[2] = 0;
-		VectorNormalize2 (out, out);
+	VectorCopy(vec,out);
+	out[2] = 0;
+	VectorNormalize2 (out, out);
 
-		yaw = acos((double) out[0]);
+	yaw = acos((double) out[0]);
 	//	yaw = (float) yaw;
-		yaw = yaw / M_PI * 180;
+	yaw = yaw / M_PI * 180;
 
-		if(asin((double) out[1]) < 0 ) yaw *= -1;
-
-		return (float)yaw;
+	if (asin((double) out[1]) < 0) {
+		yaw *= -1;
+	}
+	return (float)yaw;
 }
 
 float Get_pitch (vec3_t vec)
 {
-		vec3_t		out;
-		float		pitch;
+	vec3_t		out;
+	float		pitch;
 
-		VectorNormalize2 (vec, out);
+	VectorNormalize2 (vec, out);
 
-		pitch = acos((double) out[2]);
+	pitch = acos((double) out[2]);
 	//	yaw = (float) yaw;
-		pitch = ((float)pitch) / M_PI * 180;
+	pitch = ((float)pitch) / M_PI * 180;
 
-//		if(asin((double) out[0]) < 0 ) pitch *= -1;
+	 //if(asin((double) out[0]) < 0 ) 
+		// pitch *= -1;
 
-		pitch -= 90;
-		if(pitch < -180) 
+	pitch -= 90;
+	if (pitch < -180) {
 		pitch += 360;
+	}
 
-		return pitch;
+	return pitch;
 }
 
 float Get_vec_yaw (vec3_t vec,float yaw)
@@ -293,10 +351,16 @@ float Get_vec_yaw (vec3_t vec,float yaw)
 
 	vecsyaw = Get_yaw (vec);
 
-	if(vecsyaw > yaw) vecsyaw -= yaw;
-	else vecsyaw = yaw - vecsyaw;
+	if (vecsyaw > yaw) {
+		vecsyaw -= yaw;
+	}
+	else {
+		vecsyaw = yaw - vecsyaw;
+	}
 
-	if(vecsyaw > 180 ) vecsyaw = 360 - vecsyaw;
+	if (vecsyaw > 180) {
+		vecsyaw = 360 - vecsyaw;
+	}
 
 	return vecsyaw;
 }
@@ -308,8 +372,12 @@ float Get_vec_yaw2 (vec3_t vec,float yaw)
 	vecsyaw = Get_yaw (vec);
 
 	vecsyaw -= yaw;
-	if(vecsyaw > 180 ) vecsyaw -= 360;
-	else if(vecsyaw < -180 ) vecsyaw += 360;
+	if (vecsyaw > 180) {
+		vecsyaw -= 360;
+	}
+	else if (vecsyaw < -180) {
+		vecsyaw += 360;
+	}
 
 	return vecsyaw;
 }

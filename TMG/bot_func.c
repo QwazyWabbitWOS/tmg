@@ -71,20 +71,23 @@ void Adjust_Bot_Number (void)
 	if(!bot_num->value && use_bots->value && !chedit->value)
 	{
 		//ADD A BOT !!
-		if ((wait_time <= level.time) && (rav_getnumclients() < (maxclients->value - bot_free_clients->value )))
+		if ((wait_time <= level.time) && 
+			(rav_getnumclients() < (maxclients->value - bot_free_clients->value )))
 		{
 			gi.AddCommandString ("sv spb 1");
 			wait_time = level.time + 3;
 		}
 		//REMOVE A BOT !!  lowest on frags first
-		if ((GetNumBots() > 0) && (rav_getnumclients() > (maxclients->value - bot_free_clients->value )) &&
+		if ((GetNumBots() > 0) && 
+			(rav_getnumclients() > (maxclients->value - bot_free_clients->value )) &&
 			(kill_time <= level.time))
 		{
 			// drop a bot to free a client spot
 			for (i=1; i<=maxclients->value; i++)
 			{
 				ent = &g_edicts[i];
-				if ((ent && !ent->bot_client) || (rav_getnumclients() <= (maxclients->value - bot_free_clients->value )))
+				if ((ent && !ent->bot_client) || 
+					(rav_getnumclients() <= (maxclients->value - bot_free_clients->value )))
 					continue;
 				//disconnect bot
 				ClientDisconnect(ent);
@@ -113,8 +116,12 @@ void BotAssignTeamCtf(gclient_t *who)
 
 		switch (player->client->resp.ctf_team)
 		{
-		case CTF_TEAM1: team1count++; break;
-		case CTF_TEAM2: team2count++; break;
+		case CTF_TEAM1: 
+			team1count++;
+			break;
+		case CTF_TEAM2: 
+			team2count++;
+			break;
 		}
 	}
 	if (team1count < team2count) 
@@ -123,7 +130,8 @@ void BotAssignTeamCtf(gclient_t *who)
 		who->resp.ctf_team = CTF_TEAM2;
 	else if (rand() & 1) 
 		who->resp.ctf_team = CTF_TEAM1;
-	else who->resp.ctf_team = CTF_TEAM2;
+	else 
+		who->resp.ctf_team = CTF_TEAM2;
 }
 
 //=======================================================
@@ -134,7 +142,8 @@ void BotAssignTeamCtf(gclient_t *who)
 edict_t *BestScorePlayer(void)
 {
 	edict_t *bestplayer = NULL;
-	int i, bestscore = -999;
+	int i;
+	int bestscore = -999;
 	edict_t *ent;
 
 	for(i = 0; i < game.maxclients; i++)
@@ -154,11 +163,14 @@ edict_t *BestScorePlayer(void)
 void InsultVictim(edict_t *ent, edict_t *victim)
 {
 
-	if (!ent->bot_client) return;
+	if (!ent->bot_client)
+		return;
 
-	if (!victim || !victim->client) return;
+	if (!victim || !victim->client)
+		return;
 
-	if (ent->client->insulttime > level.time) return;
+	if (ent->client->insulttime > level.time)
+		return;
 
 	// if bot just killed self then...
 	if (victim == ent)
@@ -278,9 +290,11 @@ void CheckCampSite(edict_t *other)
 	//set up next check
 	other->client->nextcamp = level.time + (int) bot_camptime->value;;
 
-	if (other->client->quad_framenum > level.framenum) return;
+	if (other->client->quad_framenum > level.framenum)
+		return;
 
-	if (other->client->camptime >= level.time) return;
+	if (other->client->camptime >= level.time)
+		return;
 
 	if (! (other->groundentity) || other->client->ctf_grapple)
 		return; // camp 30% of time
@@ -494,6 +508,7 @@ MESS_NOTFOUND:
 				break;
 			if(Buff[0] == '[')
 				break;
+			
 			if(Buff[0] == '\n' || Buff[0] == '\r' || Buff[0] == '#')
 			{
 				i--;
@@ -571,7 +586,8 @@ MESS_NOTFOUND:
 					Buff[k] = 0;
 					Bot[i].spflg = atoi(&Buff[j]);
 					//gi.dprintf("%i %s\n",Bot[i].spflg,&Buff[j]);
-					if(Bot[i].spflg == BOT_SPRESERVED && autospawn->value && !chedit->value)
+					if(Bot[i].spflg == BOT_SPRESERVED && 
+						autospawn->value && !chedit->value)
 						SpawnWaitingBots++; 
 					else 
 						Bot[i].spflg = BOT_SPAWNNOT;
@@ -636,7 +652,8 @@ edict_t *Get_NewClient (void)
 		client = &game.clients[i - 1];
 		// the first couple seconds of server time can involve a lot of
 		// freeing and allocating, so relax the replacement policy
-		if (!e->inuse && !client->pers.connected && ( e->freetime < 2 || level.time - e->freetime > 0.5 ) )
+		if (!e->inuse && !client->pers.connected && 
+			( e->freetime < 2 || level.time - e->freetime > 0.5 ) )
 		{
 			G_InitEdict (e);
 			return e;
@@ -797,10 +814,12 @@ void InitializeBot (edict_t *ent, int botindex)
 	ent->client->pers.connected = false;
 	gi.dprintf ("%s connected\n", ent->client->pers.netname);
 
-	if(ctf->value)safe_bprintf(PRINT_HIGH, "%s joined the %s team.\n",
-		client->pers.netname, CTFTeamName(ent->client->resp.ctf_team));
-	else 	safe_bprintf (PRINT_HIGH, "%s entered the game\n",
-		client->pers.netname);
+	if(ctf->value)
+		safe_bprintf(PRINT_HIGH, "%s joined the %s team.\n",
+			client->pers.netname, CTFTeamName(ent->client->resp.ctf_team));
+	else 	
+		safe_bprintf (PRINT_HIGH, "%s entered the game\n", 
+			client->pers.netname);
 }
 
 void PutBotInServer (edict_t *ent)
@@ -1321,12 +1340,15 @@ void PutBotInServer (edict_t *ent)
 	gi.linkentity (ent);
 	VectorAdd (spawn_origin, ent->mins, ent->absmin);
 	VectorAdd (spawn_origin, ent->maxs, ent->absmax);
-	entcount = gi.BoxEdicts (ent->absmin, ent->absmax, touch, MAX_EDICTS, AREA_SOLID);
+	entcount = gi.BoxEdicts (ent->absmin, ent->absmax, 
+		touch, MAX_EDICTS, AREA_SOLID);
 	while (entcount-- > 0)
 	{
 		if(Q_stricmp (touch[entcount]->classname, "player") == 0)
 			if(touch[entcount] != ent)
-				T_Damage (touch[entcount], ent, ent, vec3_origin, touch[entcount]->s.origin, vec3_origin, 100000, 0, DAMAGE_NO_PROTECTION, MOD_TELEFRAG);
+				T_Damage (touch[entcount], ent, ent, 
+				vec3_origin, touch[entcount]->s.origin, 
+				vec3_origin, 100000, 0, DAMAGE_NO_PROTECTION, MOD_TELEFRAG);
 	}
 
 	if(ctf->value)
@@ -1452,7 +1474,8 @@ void SpawnBotReserving(void)
 			return;
 		}
 	}
-	gi.cprintf (NULL, PRINT_HIGH, "Maximum bots (%i) spawned: Unable to spawn bot\n",MAXBOTS);
+	gi.cprintf (NULL, PRINT_HIGH, 
+		"Maximum bots (%i) spawned: Unable to spawn bot\n", MAXBOTS);
 }
 //----------------------------------------------------------------
 //Spawn Bot Reserving 2
@@ -1519,20 +1542,25 @@ void RemoveBot(void)
 	e = &g_edicts[(int)maxclients->value];
 	for ( i = maxclients->value ; i >= 1  ; i--, e--)
 	{
-		if(!e->inuse) continue;
+		if(!e->inuse) 
+			continue;
 		client = /*e->client;*/&game.clients[i - 1];
-		if(client == NULL) continue;
+		if(client == NULL) 
+			continue;
 		// the first couple seconds of server time can involve a lot of
 		// freeing and allocating, so relax the replacement policy
 		if (!client->pers.connected && (e->svflags & SVF_MONSTER))
 		{
 			if(client->zc.botindex == botindex)
 			{
-				if(Bot[botindex].spflg != BOT_NEXTLEVEL) Bot[botindex].spflg = BOT_SPAWNNOT;
-				else Bot[botindex].spflg = BOT_SPRESERVED;
+				if(Bot[botindex].spflg != BOT_NEXTLEVEL) 
+					Bot[botindex].spflg = BOT_SPAWNNOT;
+				else 
+					Bot[botindex].spflg = BOT_SPRESERVED;
 
 				if (!level.intermissiontime)
-					gi.bprintf (PRINT_HIGH, "%s disconnected\n", e->client->pers.netname);
+					gi.bprintf (PRINT_HIGH, "%s disconnected\n", 
+								e->client->pers.netname);
 
 				// send effect
 				gi.WriteByte (svc_muzzleflash);
@@ -1689,13 +1717,17 @@ void AirStrike_Think(edict_t *ent)
 	for ( i = 1 ; i <= maxclients->value; i++)
 	{
 		target =  &g_edicts[i];
-		if(!target->inuse || target->deadflag || target == ent->owner) continue;
+		if(!target->inuse || target->deadflag || target == ent->owner) 
+			continue;
 
 		if( target->classname[0] == 'p')
 		{
 			if(!ctf->value || (ctf->value && ent->owner->client->resp.ctf_team != target->client->resp.ctf_team))
 			{
-				rs_trace = gi.trace (point,NULL,NULL,target->s.origin,ent, CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
+				rs_trace = gi.trace (point, NULL, NULL,
+					target->s.origin, ent, 
+					CONTENTS_SOLID | CONTENTS_WINDOW |
+					CONTENTS_LAVA | CONTENTS_SLIME);
 
 				if(rs_trace.fraction == 1.0)
 				{

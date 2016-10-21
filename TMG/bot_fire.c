@@ -5,8 +5,7 @@
 #include "bot.h"
 #include "botstr.h"
 
-static
-void Get_AimAngle(edict_t *ent,float aim,float dist,int weapon)
+static void Get_AimAngle(edict_t *ent, float aim, float dist, int weapon)
 {
 	edict_t *target;
 	vec3_t	targaim,v;
@@ -16,252 +15,252 @@ void Get_AimAngle(edict_t *ent,float aim,float dist,int weapon)
 
 	switch(weapon)
 	{
-		case WEAP_SHOTGUN:
-		case WEAP_SUPERSHOTGUN:
-		case WEAP_RAILGUN:
-			if(target != ent->client->zc.last_target)
+	case WEAP_SHOTGUN:
+	case WEAP_SUPERSHOTGUN:
+	case WEAP_RAILGUN:
+		if(target != ent->client->zc.last_target)
+		{
+			if(target->bot_client)
 			{
-				if(target->bot_client)
-				{
-					VectorSubtract(target->s.old_origin,
-								   target->s.origin, targaim);
-				}
-				else 
-				{
-					VectorCopy(target->velocity, targaim);
-					VectorInverse (targaim);
-				}
-				VectorNormalize(targaim);
-				VectorMA(target->s.origin,
-						 random() * aim * AIMING_POSGAP * random(),
-						 targaim, targaim);
+				VectorSubtract(target->s.old_origin,
+					target->s.origin, targaim);
 			}
-			else
+			else 
 			{
-				VectorSubtract(ent->client->zc.last_pos,
-							   target->s.origin, targaim);
-//				VectorScale (targaim, vec_t scale, vec3_t out)
-				VectorMA(target->s.origin,aim *
-						 /* VectorLength(targaim) * */
-						 random(), targaim, targaim);
+				VectorCopy(target->velocity, targaim);
+				VectorInverse (targaim);
 			}
-			VectorSubtract(targaim, ent->s.origin, targaim);
-			
-			ent->s.angles[YAW] = Get_yaw(targaim);
-			ent->s.angles[PITCH] = Get_pitch(targaim);
+			VectorNormalize(targaim);
+			VectorMA(target->s.origin,
+				random() * aim * AIMING_POSGAP * random(),
+				targaim, targaim);
+		}
+		else
+		{
+			VectorSubtract(ent->client->zc.last_pos,
+				target->s.origin, targaim);
+			//VectorScale (targaim, vec_t scale, vec3_t out)
+			VectorMA(target->s.origin,aim *
+				/* VectorLength(targaim) * */
+				random(), targaim, targaim);
+		}
 
-			ent->s.angles[YAW] +=
-				aim * AIMING_ANGLEGAP_S * (random() - 0.5) *2;
-			if(ent->s.angles[YAW] > 180)
-				ent->s.angles[YAW] -= 360;
-			else if(ent->s.angles[YAW] < -180)
-				ent->s.angles[YAW] += 360;
+		VectorSubtract(targaim, ent->s.origin, targaim);
 
-			ent->s.angles[PITCH] +=
-				(aim * AIMING_ANGLEGAP_S * (random() - 0.5) * 2);
+		ent->s.angles[YAW] = Get_yaw(targaim);
+		ent->s.angles[PITCH] = Get_pitch(targaim);
 
-			if(ent->s.angles[PITCH] > 90)
-				ent->s.angles[PITCH] = 90;
-			else if(ent->s.angles[PITCH] < -90)
-				ent->s.angles[PITCH] = -90;
+		ent->s.angles[YAW] +=
+			aim * AIMING_ANGLEGAP_S * (random() - 0.5) *2;
+		if(ent->s.angles[YAW] > 180)
+			ent->s.angles[YAW] -= 360;
+		else if(ent->s.angles[YAW] < -180)
+			ent->s.angles[YAW] += 360;
 
-			break;
+		ent->s.angles[PITCH] +=
+			(aim * AIMING_ANGLEGAP_S * (random() - 0.5) * 2);
 
-		case WEAP_MACHINEGUN:
-		case WEAP_CHAINGUN:
-			if(target != ent->client->zc.last_target)
+		if(ent->s.angles[PITCH] > 90)
+			ent->s.angles[PITCH] = 90;
+		else if(ent->s.angles[PITCH] < -90)
+			ent->s.angles[PITCH] = -90;
+
+		break;
+
+	case WEAP_MACHINEGUN:
+	case WEAP_CHAINGUN:
+		if(target != ent->client->zc.last_target)
+		{
+			if(target->bot_client)
 			{
-				if(target->bot_client)
-				{
-					VectorSubtract(target->s.old_origin,
-								   target->s.origin, targaim);
-				}
-				else 
-				{
-					VectorCopy(target->velocity, targaim);
-					VectorInverse (targaim);
-				}
-				VectorNormalize(targaim);
-				VectorMA(target->s.origin,
-						 random() * aim * AIMING_POSGAP,
-						 targaim, targaim);
+				VectorSubtract(target->s.old_origin,
+					target->s.origin, targaim);
 			}
-			else
+			else 
 			{
-				VectorSubtract(ent->client->zc.last_pos,
-							   target->s.origin,targaim);
-				VectorMA(target->s.origin,
-						 random() * aim
-						 /** VectorLength(targaim)*/,
-						 targaim, targaim);
+				VectorCopy(target->velocity, targaim);
+				VectorInverse (targaim);
 			}
-			VectorSubtract(targaim,ent->s.origin,targaim);
+			VectorNormalize(targaim);
+			VectorMA(target->s.origin,
+				random() * aim * AIMING_POSGAP,
+				targaim, targaim);
+		}
+		else
+		{
+			VectorSubtract(ent->client->zc.last_pos,
+				target->s.origin,targaim);
+			VectorMA(target->s.origin,
+				random() * aim
+				/** VectorLength(targaim)*/,
+				targaim, targaim);
+		}
+		VectorSubtract(targaim,ent->s.origin,targaim);
 
-			ent->s.angles[YAW] = Get_yaw(targaim);
-			ent->s.angles[PITCH] = Get_pitch(targaim);
+		ent->s.angles[YAW] = Get_yaw(targaim);
+		ent->s.angles[PITCH] = Get_pitch(targaim);
 
-			ent->s.angles[YAW] +=
-				aim * AIMING_ANGLEGAP_M * (random() - 0.5) *2;
+		ent->s.angles[YAW] +=
+			aim * AIMING_ANGLEGAP_M * (random() - 0.5) *2;
 
-			if(ent->s.angles[YAW] > 180)
-				ent->s.angles[YAW] -= 360;
-			else if(ent->s.angles[YAW] < -180)
-				ent->s.angles[YAW] += 360;
+		if(ent->s.angles[YAW] > 180)
+			ent->s.angles[YAW] -= 360;
+		else if(ent->s.angles[YAW] < -180)
+			ent->s.angles[YAW] += 360;
 
-			ent->s.angles[PITCH] +=
-				(aim * AIMING_ANGLEGAP_M * (random() - 0.5) * 2);
+		ent->s.angles[PITCH] +=
+			(aim * AIMING_ANGLEGAP_M * (random() - 0.5) * 2);
 
-			if(ent->s.angles[PITCH] > 90)
-				ent->s.angles[PITCH] = 90;
-			else if(ent->s.angles[PITCH] < -90)
-				ent->s.angles[PITCH] = -90;
+		if(ent->s.angles[PITCH] > 90)
+			ent->s.angles[PITCH] = 90;
+		else if(ent->s.angles[PITCH] < -90)
+			ent->s.angles[PITCH] = -90;
 
-			break;
+		break;
 
-		case WEAP_BLASTER:			
-		case WEAP_GRENADES:
-		case WEAP_GRENADELAUNCHER:
-		case WEAP_ROCKETLAUNCHER:
-			if(target != ent->client->zc.last_target)
-			{
-				if(target->bot_client)
-				{
-					VectorSubtract(target->s.origin,
-								   target->s.old_origin, targaim);
-				}
-				else 
-				{
-					VectorCopy(target->velocity, targaim);
-					targaim[0] *= 32;
-					targaim[1] *= 32;
-					targaim[2] *= 32;
-				}
-				VectorNormalize(targaim);
-				VectorMA(target->s.origin,
-						 (11 - aim) * dist/25,
-						 targaim, targaim);
-			}
-			else
+	case WEAP_BLASTER:			
+	case WEAP_GRENADES:
+	case WEAP_GRENADELAUNCHER:
+	case WEAP_ROCKETLAUNCHER:
+		if(target != ent->client->zc.last_target)
+		{
+			if(target->bot_client)
 			{
 				VectorSubtract(target->s.origin,
-							   ent->client->zc.last_pos, targaim);
-				targaim[2] /= 2;
-				VectorMA(target->s.origin,
-						 -aim * random() + dist/75,
-						 targaim, targaim);
+					target->s.old_origin, targaim);
 			}
-			rs_trace = gi.trace(target->s.origin, NULL, NULL,
-								targaim, target, MASK_SHOT);
-			VectorCopy(rs_trace.endpos, targaim);
-
-			if(weapon == WEAP_GRENADELAUNCHER
-				|| weapon == WEAP_ROCKETLAUNCHER)
-						{
-				if(targaim[2] < (ent->s.origin[2] + JumpMax))
-				{
-					targaim[2] -= 24;
-
-					VectorCopy(ent->s.origin, v);
-					v[2] += ent->viewheight - 8;
-					rs_trace = gi.trace(v, NULL, NULL,
-										targaim, ent, MASK_SHOT);
-					if(rs_trace.fraction != 1.0)
-						targaim[2] += 24;
-				}
-				else if(targaim[2] > (ent->s.origin[2] + JumpMax))
-					targaim[2] += 5;
-			}
-
-			VectorSubtract(targaim,ent->s.origin,targaim);
-
-			ent->s.angles[YAW] = Get_yaw(targaim);
-			ent->s.angles[PITCH] = Get_pitch(targaim);
-
-			ent->s.angles[YAW] +=
-				aim * AIMING_ANGLEGAP_M * (random() - 0.5) *2;
-			if(ent->s.angles[YAW] > 180)
-				ent->s.angles[YAW] -= 360;
-			else if(ent->s.angles[YAW] < -180)
-				ent->s.angles[YAW] += 360;
-
-			ent->s.angles[PITCH] +=
-				(aim * AIMING_ANGLEGAP_M * (random() - 0.5) * 2);
-			if(ent->s.angles[PITCH] > 90)
-				ent->s.angles[PITCH] = 90;
-			else if(ent->s.angles[PITCH] < -90)
-				ent->s.angles[PITCH] = -90;
-			break;
-
-		case WEAP_HYPERBLASTER:
-			if(target != ent->client->zc.last_target)
+			else 
 			{
-				if(target->bot_client)
-				{
-					VectorSubtract(target->s.origin,
-								   target->s.old_origin,targaim);
-				}
-				else 
-				{
-					VectorCopy(target->velocity,targaim);
-					targaim[0] *= 32;
-					targaim[1] *= 32;
-					targaim[2] *= 32;
-				}
-				VectorNormalize(targaim);
-				VectorMA(target->s.origin,
-						 (11 - aim) * dist/100,targaim,targaim);
+				VectorCopy(target->velocity, targaim);
+				targaim[0] *= 32;
+				targaim[1] *= 32;
+				targaim[2] *= 32;
 			}
-			else
+			VectorNormalize(targaim);
+			VectorMA(target->s.origin,
+				(11 - aim) * dist/25,
+				targaim, targaim);
+		}
+		else
+		{
+			VectorSubtract(target->s.origin,
+				ent->client->zc.last_pos, targaim);
+			targaim[2] /= 2;
+			VectorMA(target->s.origin,
+				-aim * random() + dist/75,
+				targaim, targaim);
+		}
+		rs_trace = gi.trace(target->s.origin, NULL, NULL,
+			targaim, target, MASK_SHOT);
+		VectorCopy(rs_trace.endpos, targaim);
+
+		if(weapon == WEAP_GRENADELAUNCHER
+			|| weapon == WEAP_ROCKETLAUNCHER)
+		{
+			if(targaim[2] < (ent->s.origin[2] + JumpMax))
+			{
+				targaim[2] -= 24;
+
+				VectorCopy(ent->s.origin, v);
+				v[2] += ent->viewheight - 8;
+				rs_trace = gi.trace(v, NULL, NULL,
+					targaim, ent, MASK_SHOT);
+				if(rs_trace.fraction != 1.0)
+					targaim[2] += 24;
+			}
+			else if(targaim[2] > (ent->s.origin[2] + JumpMax))
+				targaim[2] += 5;
+		}
+
+		VectorSubtract(targaim,ent->s.origin,targaim);
+
+		ent->s.angles[YAW] = Get_yaw(targaim);
+		ent->s.angles[PITCH] = Get_pitch(targaim);
+
+		ent->s.angles[YAW] +=
+			aim * AIMING_ANGLEGAP_M * (random() - 0.5) *2;
+		if(ent->s.angles[YAW] > 180)
+			ent->s.angles[YAW] -= 360;
+		else if(ent->s.angles[YAW] < -180)
+			ent->s.angles[YAW] += 360;
+
+		ent->s.angles[PITCH] +=
+			(aim * AIMING_ANGLEGAP_M * (random() - 0.5) * 2);
+		if(ent->s.angles[PITCH] > 90)
+			ent->s.angles[PITCH] = 90;
+		else if(ent->s.angles[PITCH] < -90)
+			ent->s.angles[PITCH] = -90;
+		break;
+
+	case WEAP_HYPERBLASTER:
+		if(target != ent->client->zc.last_target)
+		{
+			if(target->bot_client)
 			{
 				VectorSubtract(target->s.origin,
-							   ent->client->zc.last_pos,targaim);
-				targaim[2] /= 2;
-				VectorMA(target->s.origin,
-						 - aim + dist/115,targaim,targaim);
+					target->s.old_origin,targaim);
 			}
-			rs_trace = gi.trace(target->s.origin,NULL,NULL,
-								targaim,target,MASK_SHOT);
-			VectorCopy(rs_trace.endpos,targaim);
+			else 
+			{
+				VectorCopy(target->velocity,targaim);
+				targaim[0] *= 32;
+				targaim[1] *= 32;
+				targaim[2] *= 32;
+			}
+			VectorNormalize(targaim);
+			VectorMA(target->s.origin,
+				(11 - aim) * dist/100,targaim,targaim);
+		}
+		else
+		{
+			VectorSubtract(target->s.origin,
+				ent->client->zc.last_pos,targaim);
+			targaim[2] /= 2;
+			VectorMA(target->s.origin,
+				- aim + dist/115,targaim,targaim);
+		}
+		rs_trace = gi.trace(target->s.origin,NULL,NULL,
+			targaim,target,MASK_SHOT);
+		VectorCopy(rs_trace.endpos,targaim);
 
-			VectorSubtract(targaim,ent->s.origin,targaim);
+		VectorSubtract(targaim,ent->s.origin,targaim);
 
-			ent->s.angles[YAW] = Get_yaw(targaim);
-			ent->s.angles[PITCH] = Get_pitch(targaim);
+		ent->s.angles[YAW] = Get_yaw(targaim);
+		ent->s.angles[PITCH] = Get_pitch(targaim);
 
-			ent->s.angles[YAW] +=
-				aim * AIMING_ANGLEGAP_M * (random() - 0.5) *2;
-			if(ent->s.angles[YAW] > 180)
-				ent->s.angles[YAW] -= 360;
-			else if(ent->s.angles[YAW] < -180)
-				ent->s.angles[YAW] += 360;
+		ent->s.angles[YAW] +=
+			aim * AIMING_ANGLEGAP_M * (random() - 0.5) *2;
+		if(ent->s.angles[YAW] > 180)
+			ent->s.angles[YAW] -= 360;
+		else if(ent->s.angles[YAW] < -180)
+			ent->s.angles[YAW] += 360;
 
-			ent->s.angles[PITCH] +=
-				(aim * AIMING_ANGLEGAP_M * (random() - 0.5) * 2);
-			if(ent->s.angles[PITCH] > 90)
-				ent->s.angles[PITCH] = 90;
-			else if(ent->s.angles[PITCH] < -90)
-				ent->s.angles[PITCH] = -90;
-			break;
+		ent->s.angles[PITCH] +=
+			(aim * AIMING_ANGLEGAP_M * (random() - 0.5) * 2);
+		if(ent->s.angles[PITCH] > 90)
+			ent->s.angles[PITCH] = 90;
+		else if(ent->s.angles[PITCH] < -90)
+			ent->s.angles[PITCH] = -90;
+		break;
 
-		case WEAP_BFG:
-			VectorCopy(ent->client->zc.vtemp,targaim);
-			VectorSubtract(targaim,ent->s.origin,targaim);
+	case WEAP_BFG:
+		VectorCopy(ent->client->zc.vtemp,targaim);
+		VectorSubtract(targaim,ent->s.origin,targaim);
 
-			ent->s.angles[YAW] = Get_yaw(targaim);
-			ent->s.angles[PITCH] = Get_pitch(targaim);
-			break;
+		ent->s.angles[YAW] = Get_yaw(targaim);
+		ent->s.angles[PITCH] = Get_pitch(targaim);
+		break;
 
-		default:
-			break;
+	default:
+		break;
 	}
 }
 
 /**
- Decide if player can use weapon, set weaponstate appropriately.
- Returns: true if ready, 2 if not. Why 2?
- */
-static
-int CanUsewep(edict_t *ent,int weapon)
+Decide if player can use weapon, set weaponstate appropriately.
+Returns: true if ready, 2 if not. Why 2?
+*/
+static int CanUsewep(edict_t *ent, int weapon)
 {
 	gitem_t *item;
 	gclient_t	*client;
@@ -274,238 +273,247 @@ int CanUsewep(edict_t *ent,int weapon)
 
 	switch(weapon)
 	{
-		case WEAP_BLASTER:
-			if(voosh->value)
-			{
-				item = Fdi_RAILGUN;//FindItem("Blaster");
-				if(client->pers.inventory[ITEM_INDEX(item)])
-				{
-					if(mywep == WEAP_RAILGUN
-					   || client->weaponstate == WEAPON_READY)
-					{
-						item->use(ent,item);
-						if(client->weaponstate == WEAPON_READY)
-							return true;
-						else return 2;
-					}
-				}
-			}
-			else
-			{
-				item = Fdi_BLASTER;//FindItem("Blaster");
-				if(client->pers.inventory[ITEM_INDEX(item)])
-				{
-					if(mywep == WEAP_BLASTER
-					   || client->weaponstate == WEAPON_READY)
-					{
-						item->use(ent,item);
-						if(client->weaponstate == WEAPON_READY)
-							return true;
-						else return 2;
-					}
-				}
-			}
-			break;
-
-		case WEAP_SHOTGUN:
-			item = Fdi_SHOTGUN;//FindItem("Shotgun");
-			ammoindex = ITEM_INDEX(Fdi_SHELLS/*FindItem("Shells")*/);
-			if(client->pers.inventory[ITEM_INDEX(item)]
-			   && client->pers.inventory[ammoindex] > 0)
-			{
-				if(mywep == WEAP_SHOTGUN
-				   || client->weaponstate == WEAPON_READY)
-				{
-					item->use(ent,item);
-					if(client->weaponstate == WEAPON_READY)
-						return true;
-					else return 2;
-				}
-			}
-			break;
-
-		case WEAP_SUPERSHOTGUN:
-			item = Fdi_SUPERSHOTGUN;//FindItem("Super Shotgun");
-			ammoindex = ITEM_INDEX(Fdi_SHELLS/*FindItem("Shells")*/);
-
-			if(client->pers.inventory[ITEM_INDEX(item)]
-			   && client->pers.inventory[ammoindex] > 1)
-			{
-				if(mywep == WEAP_SUPERSHOTGUN
-				   || client->weaponstate == WEAPON_READY)
-				{
-					item->use(ent,item);
-					if(client->weaponstate == WEAPON_READY)
-						return true;
-					else return 2;
-				}
-			}
-			break;
-
-		case WEAP_MACHINEGUN:
-			item = Fdi_MACHINEGUN;//FindItem("Machinegun");
-			ammoindex = ITEM_INDEX(Fdi_BULLETS/*FindItem("Bullets")*/);
-
-			if(client->pers.inventory[ITEM_INDEX(item)]
-			   && client->pers.inventory[ammoindex] > 0)
-			{
-				if(client->pers.weapon != item) item->use(ent,item);
-
-				if(mywep == WEAP_MACHINEGUN
-				   || client->weaponstate == WEAPON_READY
-				   || client->weaponstate == WEAPON_FIRING)
-				{
-					//if(client->pers.weapon == item) return true;
-					//else {item->use(ent,item); return 2;}
-					if(client->weaponstate == WEAPON_READY
-					   || client->weaponstate == WEAPON_FIRING)
-						return true;
-					else return 2;
-				}
-			}
-			break;
-
-		case WEAP_CHAINGUN:
-			item = FindItem("Chaingun");
-			ammoindex = ITEM_INDEX(Fdi_BULLETS/*FindItem("Bullets")*/);
-
-			if(client->pers.inventory[ITEM_INDEX(item)]
-			   && client->pers.inventory[ammoindex] > 0)
-			{
-				if(mywep == WEAP_CHAINGUN
-				   || client->weaponstate == WEAPON_READY)
-				{
-					item->use(ent,item);
-					if(client->weaponstate == WEAPON_READY
-					   || client->weaponstate == WEAPON_FIRING)
-						return true;
-					else return 2;
-				}
-			}
-			break;
-
-		case WEAP_GRENADES:
-			item = Fdi_GRENADES;//FindItem("Grenades");
-			ammoindex = ITEM_INDEX(Fdi_GRENADES/*FindItem("Grenades")*/);
-
-			if(client->pers.inventory[ammoindex] > 0)
-			{
-				if(mywep == WEAP_GRENADES
-				   || client->weaponstate == WEAPON_READY)
-				{
-					item->use(ent,item);
-					if(client->weaponstate == WEAPON_READY)
-						return true;
-					else return 2;
-				}
-			}
-			break;
-
-		case WEAP_GRENADELAUNCHER:
-			item = Fdi_GRENADELAUNCHER;//FindItem("Grenade Launcher");
-			ammoindex = ITEM_INDEX(Fdi_GRENADES/*FindItem("Grenades")*/);
-
-			if(	client->pers.inventory[ITEM_INDEX(item)]
-			   && client->pers.inventory[ammoindex] > 0)
-			{
-				if(mywep == WEAP_GRENADELAUNCHER
-				   || client->weaponstate == WEAPON_READY)
-				{
-					item->use(ent,item);
-					if(client->weaponstate == WEAPON_READY)
-						return true;
-					else return 2;
-				}
-			}
-			break;
-
-		case WEAP_ROCKETLAUNCHER:
-			item = Fdi_ROCKETLAUNCHER;//FindItem("Rocket Launcher");
-			ammoindex = ITEM_INDEX(Fdi_ROCKETS/*FindItem("Rockets")*/);
-
-			if(client->pers.inventory[ITEM_INDEX(item)]
-			   && client->pers.inventory[ammoindex] > 0)
-			{
-				if(mywep == WEAP_ROCKETLAUNCHER
-				   || client->weaponstate == WEAPON_READY)
-				{
-					item->use(ent,item);
-					if(client->weaponstate == WEAPON_READY)
-						return true;
-					else return 2;
-				}
-			}
-			break;
-
-		case WEAP_HYPERBLASTER:
-			item = Fdi_HYPERBLASTER;//FindItem("HyperBlaster");
-			ammoindex = ITEM_INDEX(Fdi_CELLS/*FindItem("Cells")*/);
-
-			if(client->pers.inventory[ITEM_INDEX(item)]
-			   && client->pers.inventory[ammoindex] > 0)
-			{
-				if(mywep == WEAP_HYPERBLASTER
-				   || client->weaponstate == WEAPON_READY)
-				{
-					item->use(ent,item);
-					if(client->weaponstate == WEAPON_READY
-					   || client->weaponstate == WEAPON_FIRING)
-						return true;
-					else return 2;
-				}
-			}
-			break;
-
-		case WEAP_RAILGUN:
-			item = Fdi_RAILGUN;//FindItem("Railgun");
-			ammoindex = ITEM_INDEX(Fdi_SLUGS/*FindItem("Slugs")*/);
-
-			if(client->pers.inventory[ITEM_INDEX(item)]
-			   && client->pers.inventory[ammoindex] > 0)
+	case WEAP_BLASTER:
+		if(voosh->value)
+		{
+			item = Fdi_RAILGUN;//FindItem("Blaster");
+			if(client->pers.inventory[ITEM_INDEX(item)])
 			{
 				if(mywep == WEAP_RAILGUN
-				   || client->weaponstate == WEAPON_READY)
+					|| client->weaponstate == WEAPON_READY)
 				{
 					item->use(ent,item);
 					if(client->weaponstate == WEAPON_READY)
 						return true;
-					else return 2;
+					else 
+						return 2;
 				}
 			}
-			break;
-
-		case WEAP_BFG:
-			item = Fdi_BFG;//FindItem("BFG10K");
-			ammoindex = ITEM_INDEX(Fdi_CELLS/*FindItem("Cells")*/);
-
-			if( client->pers.inventory[ITEM_INDEX(item)]
-			   && client->pers.inventory[ammoindex] >= 50)
-			{
-				if(mywep == WEAP_BFG
-				   || client->weaponstate == WEAPON_READY)
-				{
-					item->use(ent,item);
-					if(client->weaponstate == WEAPON_READY)
-						return true;
-					else return 2;
-				}
-			}
-			break;
-
-		default:	//case WEAP_BLASTER:
-			item = Fdi_BLASTER;//FindItem("Blaster");
+		}
+		else
+		{
+			item = Fdi_BLASTER;
 			if(client->pers.inventory[ITEM_INDEX(item)])
 			{
 				if(mywep == WEAP_BLASTER
-				   || client->weaponstate == WEAPON_READY)
+					|| client->weaponstate == WEAPON_READY)
 				{
 					item->use(ent,item);
 					if(client->weaponstate == WEAPON_READY)
 						return true;
-					else return 2;
+					else 
+						return 2;
 				}
 			}
-			break;
+		}
+		break;
+
+	case WEAP_SHOTGUN:
+		item = Fdi_SHOTGUN;
+		ammoindex = ITEM_INDEX(Fdi_SHELLS);
+		if(client->pers.inventory[ITEM_INDEX(item)]
+		&& client->pers.inventory[ammoindex] > 0)
+		{
+			if(mywep == WEAP_SHOTGUN
+				|| client->weaponstate == WEAPON_READY)
+			{
+				item->use(ent,item);
+				if(client->weaponstate == WEAPON_READY)
+					return true;
+				else 
+					return 2;
+			}
+		}
+		break;
+
+	case WEAP_SUPERSHOTGUN:
+		item = Fdi_SUPERSHOTGUN;
+		ammoindex = ITEM_INDEX(Fdi_SHELLS);
+
+		if(client->pers.inventory[ITEM_INDEX(item)]
+		&& client->pers.inventory[ammoindex] > 1)
+		{
+			if(mywep == WEAP_SUPERSHOTGUN
+				|| client->weaponstate == WEAPON_READY)
+			{
+				item->use(ent,item);
+				if(client->weaponstate == WEAPON_READY)
+					return true;
+				else 
+					return 2;
+			}
+		}
+		break;
+
+	case WEAP_MACHINEGUN:
+		item = Fdi_MACHINEGUN;
+		ammoindex = ITEM_INDEX(Fdi_BULLETS);
+
+		if(client->pers.inventory[ITEM_INDEX(item)]
+		&& client->pers.inventory[ammoindex] > 0)
+		{
+			if(client->pers.weapon != item) item->use(ent,item);
+
+			if(mywep == WEAP_MACHINEGUN
+				|| client->weaponstate == WEAPON_READY
+				|| client->weaponstate == WEAPON_FIRING)
+			{
+				if(client->weaponstate == WEAPON_READY
+					|| client->weaponstate == WEAPON_FIRING)
+					return true;
+				else 
+					return 2;
+			}
+		}
+		break;
+
+	case WEAP_CHAINGUN:
+		item = FindItem("Chaingun");
+		ammoindex = ITEM_INDEX(Fdi_BULLETS);
+
+		if(client->pers.inventory[ITEM_INDEX(item)]
+		&& client->pers.inventory[ammoindex] > 0)
+		{
+			if(mywep == WEAP_CHAINGUN
+				|| client->weaponstate == WEAPON_READY)
+			{
+				item->use(ent,item);
+				if(client->weaponstate == WEAPON_READY
+					|| client->weaponstate == WEAPON_FIRING)
+					return true;
+				else 
+					return 2;
+			}
+		}
+		break;
+
+	case WEAP_GRENADES:
+		item = Fdi_GRENADES;
+		ammoindex = ITEM_INDEX(Fdi_GRENADES);
+
+		if(client->pers.inventory[ammoindex] > 0)
+		{
+			if(mywep == WEAP_GRENADES
+				|| client->weaponstate == WEAPON_READY)
+			{
+				item->use(ent,item);
+				if(client->weaponstate == WEAPON_READY)
+					return true;
+				else 
+					return 2;
+			}
+		}
+		break;
+
+	case WEAP_GRENADELAUNCHER:
+		item = Fdi_GRENADELAUNCHER;
+		ammoindex = ITEM_INDEX(Fdi_GRENADES);
+
+		if(	client->pers.inventory[ITEM_INDEX(item)]
+		&& client->pers.inventory[ammoindex] > 0)
+		{
+			if(mywep == WEAP_GRENADELAUNCHER
+				|| client->weaponstate == WEAPON_READY)
+			{
+				item->use(ent,item);
+				if(client->weaponstate == WEAPON_READY)
+					return true;
+				else 
+					return 2;
+			}
+		}
+		break;
+
+	case WEAP_ROCKETLAUNCHER:
+		item = Fdi_ROCKETLAUNCHER;
+		ammoindex = ITEM_INDEX(Fdi_ROCKETS);
+
+		if(client->pers.inventory[ITEM_INDEX(item)]
+		&& client->pers.inventory[ammoindex] > 0)
+		{
+			if(mywep == WEAP_ROCKETLAUNCHER
+				|| client->weaponstate == WEAPON_READY)
+			{
+				item->use(ent,item);
+				if(client->weaponstate == WEAPON_READY)
+					return true;
+				else 
+					return 2;
+			}
+		}
+		break;
+
+	case WEAP_HYPERBLASTER:
+		item = Fdi_HYPERBLASTER;
+		ammoindex = ITEM_INDEX(Fdi_CELLS);
+
+		if(client->pers.inventory[ITEM_INDEX(item)]
+		&& client->pers.inventory[ammoindex] > 0)
+		{
+			if(mywep == WEAP_HYPERBLASTER
+				|| client->weaponstate == WEAPON_READY)
+			{
+				item->use(ent,item);
+				if(client->weaponstate == WEAPON_READY
+					|| client->weaponstate == WEAPON_FIRING)
+					return true;
+				else 
+					return 2;
+			}
+		}
+		break;
+
+	case WEAP_RAILGUN:
+		item = Fdi_RAILGUN;
+		ammoindex = ITEM_INDEX(Fdi_SLUGS);
+
+		if(client->pers.inventory[ITEM_INDEX(item)]
+		&& client->pers.inventory[ammoindex] > 0)
+		{
+			if(mywep == WEAP_RAILGUN
+				|| client->weaponstate == WEAPON_READY)
+			{
+				item->use(ent,item);
+				if(client->weaponstate == WEAPON_READY)
+					return true;
+				else 
+					return 2;
+			}
+		}
+		break;
+
+	case WEAP_BFG:
+		item = Fdi_BFG;
+		ammoindex = ITEM_INDEX(Fdi_CELLS);
+
+		if( client->pers.inventory[ITEM_INDEX(item)]
+		&& client->pers.inventory[ammoindex] >= 50)
+		{
+			if(mywep == WEAP_BFG
+				|| client->weaponstate == WEAPON_READY)
+			{
+				item->use(ent,item);
+				if(client->weaponstate == WEAPON_READY)
+					return true;
+				else return 2;
+			}
+		}
+		break;
+
+	default:	//case WEAP_BLASTER:
+		item = Fdi_BLASTER;//FindItem("Blaster");
+		if(client->pers.inventory[ITEM_INDEX(item)])
+		{
+			if(mywep == WEAP_BLASTER
+				|| client->weaponstate == WEAPON_READY)
+			{
+				item->use(ent,item);
+				if(client->weaponstate == WEAPON_READY)
+					return true;
+				else return 2;
+			}
+		}
+		break;
 	}
 	return false;
 }
@@ -515,13 +523,8 @@ int CanUsewep(edict_t *ent,int weapon)
 //	Use BFG
 
 //------------------------------------------------------------
-static
-qboolean B_UseBfg(edict_t *ent,
-				  edict_t *target,
-				  int enewep,
-				  float aim,
-				  float distance,
-				  int skill)
+static qboolean B_UseBfg(edict_t *ent, edict_t *target,
+	int enewep, float aim, float distance, int skill)
 {
 	int k;
 	int mywep;
@@ -535,7 +538,7 @@ qboolean B_UseBfg(edict_t *ent,
 	{
 		mywep = Get_KindWeapon(client->pers.weapon);
 
-		Get_AimAngle(ent,aim,distance,mywep);
+		Get_AimAngle(ent, aim, distance, mywep);
 
 		if(trace_priority < TRP_ANGLEKEEP)
 			trace_priority = TRP_ANGLEKEEP;
@@ -554,11 +557,11 @@ qboolean B_UseBfg(edict_t *ent,
 				return true;
 			}
 		}
-		
+
 		else if((FFlg[skill] & FIRE_EXPAVOID)
-				&& distance < 300
-				/*&& random() < 0.5 */
-				&& Bot_traceS(ent,target))
+			&& distance < 300
+			/*&& random() < 0.5 */
+			&& Bot_traceS(ent,target))
 		{
 			if(ent->groundentity || zc->waterstate)
 			{
@@ -581,7 +584,7 @@ qboolean B_UseBfg(edict_t *ent,
 		}
 
 		else if((FFlg[skill] & FIRE_EXPAVOID)
-				&& Bot_traceS(ent,target))
+			&& Bot_traceS(ent,target))
 		{
 			if(k /*&& random() < 0.8*/)
 			{
@@ -600,13 +603,8 @@ qboolean B_UseBfg(edict_t *ent,
 //	Use Hyper Blaster
 
 //------------------------------------------------------------
-static
-qboolean B_UseHyperBlaster(edict_t *ent,
-						   edict_t *target,
-						   int enewep,
-						   float aim,
-						   float distance,
-						   int skill)
+static qboolean B_UseHyperBlaster(edict_t *ent, edict_t *target,
+	int enewep, float aim, float distance, int skill)
 {
 	int k;
 	int mywep;
@@ -616,7 +614,7 @@ qboolean B_UseHyperBlaster(edict_t *ent,
 	client = ent->client;
 	zc = &client->zc;
 
-	if((k = CanUsewep(ent,WEAP_HYPERBLASTER)))
+	if((k = CanUsewep(ent, WEAP_HYPERBLASTER)))
 	{
 		mywep = Get_KindWeapon(client->pers.weapon);
 		Get_AimAngle(ent, aim, distance, mywep);
@@ -634,13 +632,8 @@ qboolean B_UseHyperBlaster(edict_t *ent,
 //	Use Rocket
 
 //------------------------------------------------------------
-static
-qboolean B_UseRocket(edict_t *ent,
-					 edict_t *target,
-					 int enewep,
-					 float aim,
-					 float distance,
-					 int skill)
+static qboolean B_UseRocket(edict_t *ent, edict_t *target,
+	int enewep, float aim, float distance, int skill)
 {
 	int k;
 	int mywep;
@@ -695,8 +688,8 @@ qboolean B_UseRocket(edict_t *ent,
 
 					ent->velocity[2] += VEL_BOT_JUMP;
 					gi.sound(ent, CHAN_VOICE,
-							 gi.soundindex("*jump1.wav"),
-							 1, ATTN_NORM, 0);
+						gi.soundindex("*jump1.wav"),
+						1, ATTN_NORM, 0);
 					PlayerNoise(ent, ent->s.origin, PNOISE_SELF);	//pon
 					Set_BotAnim(ent,ANIM_JUMP,FRAME_jump1-1,FRAME_jump6);
 					trace_priority = TRP_ALLKEEP;
@@ -707,8 +700,8 @@ qboolean B_UseRocket(edict_t *ent,
 			}
 		}
 		else if((FFlg[skill] & FIRE_EXPAVOID)
-		&& distance < 300 && random() < 0.5 
-		&& Bot_traceS(ent,target))
+			&& distance < 300 && random() < 0.5 
+			&& Bot_traceS(ent,target))
 		{
 			if(ent->groundentity || zc->waterstate)
 			{
@@ -726,21 +719,13 @@ qboolean B_UseRocket(edict_t *ent,
 }
 
 
-
-
-
 //------------------------------------------------------------
 
 //	Use Railgun
 
 //------------------------------------------------------------
-static
-qboolean B_UseRailgun(edict_t *ent,
-					  edict_t *target,
-					  int enewep,
-					  float aim,
-					  float distance,
-					  int skill)
+static qboolean B_UseRailgun(edict_t *ent, edict_t *target,
+	int enewep,	float aim, float distance, int skill)
 {
 	int k, mywep;
 	zgcl_t		*zc;
@@ -766,13 +751,8 @@ qboolean B_UseRailgun(edict_t *ent,
 //	Use Grenade Launcher
 
 //------------------------------------------------------------
-static
-qboolean B_UseGrenadeLauncher(edict_t *ent,
-							  edict_t *target,
-							  int enewep,
-							  float aim,
-							  float distance,
-							  int skill)
+static qboolean B_UseGrenadeLauncher(edict_t *ent, edict_t *target,
+	int enewep,	float aim, float distance, int skill)
 {
 	int k;
 	int mywep;
@@ -789,8 +769,8 @@ qboolean B_UseGrenadeLauncher(edict_t *ent,
 		Get_AimAngle(ent, aim, distance, mywep);
 
 		if((FFlg[skill] & FIRE_STAYFIRE)
-		   && random() < 0.3
-		   && target->s.origin[2] < ent->s.origin[2])
+			&& random() < 0.3
+			&& target->s.origin[2] < ent->s.origin[2])
 		{
 			if(ent->groundentity || zc->waterstate)
 			{
@@ -805,8 +785,8 @@ qboolean B_UseGrenadeLauncher(edict_t *ent,
 			}
 		}
 		else if((FFlg[skill] & FIRE_EXPAVOID)
-		&& distance < 300 && random() < 0.5 
-		&& Bot_traceS(ent, target))
+			&& distance < 300 && random() < 0.5 
+			&& Bot_traceS(ent, target))
 		{
 			if(ent->groundentity || zc->waterstate)
 			{
@@ -822,7 +802,6 @@ qboolean B_UseGrenadeLauncher(edict_t *ent,
 		return true;
 	}
 	return false;
-
 }
 
 //------------------------------------------------------------
@@ -830,13 +809,8 @@ qboolean B_UseGrenadeLauncher(edict_t *ent,
 //	Use Chain Gun
 
 //------------------------------------------------------------
-static
-qboolean B_UseChainGun(edict_t *ent,
-					   edict_t *target,
-					   int enewep,
-					   float aim,
-					   float distance,
-					   int skill)
+static qboolean B_UseChainGun(edict_t *ent, edict_t *target,
+	int enewep, float aim, float distance, int skill)
 {
 	int k;
 	int mywep;
@@ -864,13 +838,8 @@ qboolean B_UseChainGun(edict_t *ent,
 //	Use Machine Gun
 
 //------------------------------------------------------------
-static
-qboolean B_UseMachineGun(edict_t *ent,
-						 edict_t *target,
-						 int enewep,
-						 float aim,
-						 float distance,
-						 int skill)
+static qboolean B_UseMachineGun(edict_t *ent, edict_t *target,
+	int enewep, float aim, float distance, int skill)
 {
 	int k;
 	int mywep;
@@ -898,13 +867,8 @@ qboolean B_UseMachineGun(edict_t *ent,
 //	Use S-Shotgun
 
 //------------------------------------------------------------
-static
-qboolean B_UseSuperShotgun(edict_t *ent,
-						   edict_t *target,
-						   int enewep,
-						   float aim,
-						   float distance,
-						   int skill)
+static qboolean B_UseSuperShotgun(edict_t *ent, edict_t *target,
+	int enewep, float aim, float distance, int skill)
 {
 	int k;
 	int mywep;
@@ -931,13 +895,8 @@ qboolean B_UseSuperShotgun(edict_t *ent,
 //	Use Shotgun
 
 //------------------------------------------------------------
-static
-qboolean B_UseShotgun(edict_t *ent,
-					  edict_t *target,
-					  int enewep,
-					  float aim,
-					  float distance,
-					  int skill)
+static qboolean B_UseShotgun(edict_t *ent, edict_t *target,
+	int enewep, float aim, float distance, int skill)
 {
 	int k;
 	int mywep;
@@ -964,13 +923,8 @@ qboolean B_UseShotgun(edict_t *ent,
 //	Use Hand Grenade
 
 //------------------------------------------------------------
-static
-qboolean B_UseHandGrenade(edict_t *ent,
-						  edict_t *target,
-						  int enewep,
-						  float aim,
-						  float distance,
-						  int skill)
+static qboolean B_UseHandGrenade(edict_t *ent, edict_t *target,
+	int enewep, float aim, float distance, int skill)
 {
 	int k;
 	int mywep;
@@ -1000,13 +954,8 @@ qboolean B_UseHandGrenade(edict_t *ent,
 //	Use Blaster
 
 //------------------------------------------------------------
-static
-qboolean B_UseBlaster(edict_t *ent,
-					  edict_t *target,
-					  int enewep,
-					  float aim,
-					  float distance,
-					  int skill)
+static qboolean B_UseBlaster(edict_t *ent, edict_t *target,
+	int enewep, float aim, float distance, int skill)
 {
 	int k;
 	int mywep;
@@ -1029,8 +978,8 @@ qboolean B_UseBlaster(edict_t *ent,
 }
 
 //return weapon
-void Combat_LevelX(edict_t *ent, int foundedenemy, int enewep,
-				   float aim, float distance, int skill)
+void Combat_LevelX(edict_t *ent, int foundedenemy, 
+	int enewep, float aim, float distance, int skill)
 {
 	gclient_t	*client;
 	zgcl_t		*zc;
@@ -1046,7 +995,7 @@ void Combat_LevelX(edict_t *ent, int foundedenemy, int enewep,
 	if(zc->battlemode & FIRE_ESTIMATE)
 	{
 		mywep = Get_KindWeapon(client->pers.weapon);
-	
+
 		//Rocket
 		if(distance > 100 || mywep == WEAP_ROCKETLAUNCHER)
 		{
@@ -1056,7 +1005,7 @@ void Combat_LevelX(edict_t *ent, int foundedenemy, int enewep,
 
 		//Grenade Launcher
 		if(distance > 100 && distance < 400
-		   && (target->s.origin[2] - ent->s.origin[2]) < 200)
+			&& (target->s.origin[2] - ent->s.origin[2]) < 200)
 		{
 			if(B_UseGrenadeLauncher(ent, target, enewep, aim, distance, skill))
 				k = true;
@@ -1084,8 +1033,8 @@ void Combat_LevelX(edict_t *ent, int foundedenemy, int enewep,
 }
 
 //return weapon
-void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
-				   float aim, float distance, int skill)
+void Combat_Level0(edict_t *ent, int foundedenemy, 
+	int enewep, float aim, float distance, int skill)
 {
 	float		f;
 	gclient_t	*client;
@@ -1134,7 +1083,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 
 	//dodge=============================
 	if(Bot[ent->client->zc.botindex].param[BOP_DODGE]
-		&& ent->groundentity && !ent->waterlevel)
+	&& ent->groundentity && !ent->waterlevel)
 	{
 		AngleVectors (target->client->v_angle, v, NULL, NULL);
 		VectorScale (v, 300, v);
@@ -1164,10 +1113,10 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 				else
 				{
 					ent->moveinfo.speed = 0.5;
-	
+
 					ent->velocity[2] += VEL_BOT_JUMP;
 					gi.sound(ent, CHAN_VOICE,
-							 gi.soundindex("*jump1.wav"), 1, ATTN_NORM, 0);
+						gi.soundindex("*jump1.wav"), 1, ATTN_NORM, 0);
 					PlayerNoise(ent, ent->s.origin, PNOISE_SELF);	//pon
 					Set_BotAnim(ent,ANIM_JUMP,FRAME_jump1-1,FRAME_jump6);
 				}					
@@ -1195,8 +1144,8 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 			mywep = Get_KindWeapon(client->pers.weapon);
 			Get_AimAngle(ent, aim, distance, mywep);
 			if(target->client->weaponstate == WEAPON_FIRING
-			   && ent->groundentity)
-					ent->client->ps.pmove.pm_flags |= PMF_DUCKED;
+				&& ent->groundentity)
+				ent->client->ps.pmove.pm_flags |= PMF_DUCKED;
 
 			trace_priority = TRP_ALLKEEP;
 			return;
@@ -1216,7 +1165,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 			aim *= 0.95;
 			Get_AimAngle(ent, aim, distance, mywep);
 			if(target->client->weaponstate == WEAPON_FIRING
-			   && ent->groundentity)
+				&& ent->groundentity)
 			{
 				if(mywep == WEAP_BFG)
 				{
@@ -1230,7 +1179,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 			if(Bot_traceS(ent, target)
 				|| mywep == WEAP_BFG 
 				|| mywep == WEAP_GRENADELAUNCHER)
-					client->buttons |= BUTTON_ATTACK;
+				client->buttons |= BUTTON_ATTACK;
 			return;
 		}
 		zc->battlemode = 0;
@@ -1246,7 +1195,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 			aim *= 0.95;
 			Get_AimAngle(ent,aim,distance,mywep);
 			if(target->client->weaponstate == WEAPON_FIRING
-			   && ent->groundentity)
+				&& ent->groundentity)
 			{
 				if(mywep == WEAP_BFG)
 				{
@@ -1292,7 +1241,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 			if(Bot_traceS(ent,target) 
 				|| mywep == WEAP_BFG 
 				|| mywep == WEAP_GRENADELAUNCHER)
-					client->buttons |= BUTTON_ATTACK;
+				client->buttons |= BUTTON_ATTACK;
 			return;
 		}
 		zc->battlemode = 0;
@@ -1303,26 +1252,27 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 		if(--zc->battlecount > 0)
 		{
 			mywep = Get_KindWeapon(client->pers.weapon);
-			if(1/*mywep == WEAP_BFG*/)
+			if(1) /*mywep == WEAP_BFG*/
 				CanUsewep(ent, WEAP_BFG);
 			aim *= 0.95;
 			Get_AimAngle(ent,aim,distance,mywep);
 			if(target->client->weaponstate == WEAPON_FIRING
-			   && ent->groundentity)
+				&& ent->groundentity)
 			{
-				if(/* DISABLES CODE */ (1)/*mywep == WEAP_BFG*/)
+				if((1)) /*mywep == WEAP_BFG*/
 				{
 					if(target->s.origin[2] > ent->s.origin[2])
 						client->ps.pmove.pm_flags |= PMF_DUCKED;
 				}
-				else client->ps.pmove.pm_flags |= PMF_DUCKED;
+				else 
+					client->ps.pmove.pm_flags |= PMF_DUCKED;
 			}
 			trace_priority = TRP_ANGLEKEEP;
 
 			if(Bot_traceS(ent,target) 
 				|| mywep == WEAP_BFG 
 				|| mywep == WEAP_GRENADELAUNCHER)
-					client->buttons |= BUTTON_ATTACK;
+				client->buttons |= BUTTON_ATTACK;
 			return;
 		}
 		zc->battlemode = 0;
@@ -1337,7 +1287,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 			aim *= 0.95;
 			Get_AimAngle(ent,aim,distance,mywep);
 			if(target->client->weaponstate == WEAPON_FIRING &&
-			   ent->groundentity)
+				ent->groundentity)
 			{
 				if(mywep == WEAP_BFG)
 				{
@@ -1347,7 +1297,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 				else client->ps.pmove.pm_flags |= PMF_DUCKED;
 			}
 			trace_priority = TRP_ANGLEKEEP;
-//			trace_priority = TRP_ALLKEEP;
+			//			trace_priority = TRP_ALLKEEP;
 			if(Bot_traceS(ent,target) 
 				|| mywep == WEAP_BFG 
 				|| mywep == WEAP_GRENADELAUNCHER) client->buttons |= BUTTON_ATTACK;
@@ -1369,7 +1319,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 			if((target->client->weaponstate == WEAPON_FIRING
 				&& ent->groundentity)
 				|| (zc->zcstate & STS_WAITSMASK2))
-					ent->client->ps.pmove.pm_flags |= PMF_DUCKED;
+				ent->client->ps.pmove.pm_flags |= PMF_DUCKED;
 
 			client->buttons |= BUTTON_ATTACK;
 			trace_priority = TRP_ANGLEKEEP;
@@ -1381,8 +1331,8 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 			Get_AimAngle(ent,aim,distance,mywep);
 
 			if(target->client->weaponstate == WEAPON_FIRING
-			   && ent->groundentity)
-					ent->client->ps.pmove.pm_flags |= PMF_DUCKED;
+				&& ent->groundentity)
+				ent->client->ps.pmove.pm_flags |= PMF_DUCKED;
 
 			if(ent->client->weaponstate == WEAPON_READY )
 				client->buttons |= BUTTON_ATTACK;
@@ -1395,8 +1345,8 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 	mywep = Get_KindWeapon(client->pers.weapon);
 
 	if(!(zc->battlemode & FIRE_SHIFT)
-	   && skill > (random() * skill)
-	   /*&& distance < 250*/
+		&& skill > (random() * skill)
+		/*&& distance < 250*/
 		&& (30 * random()) < Bot[zc->botindex].param[BOP_OFFENCE])
 	{
 		k = false;
@@ -1429,7 +1379,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 			{
 				f = -(f + 360);
 			}
-	
+
 			if(f <= -160)
 			{
 
@@ -1447,7 +1397,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 	if((FFlg[skill] & FIRE_AVOIDINV)
 		&& target->client->invincible_framenum > level.framenum)
 	{
-//		mywep = Get_KindWeapon(client->pers.weapon);
+		// mywep = Get_KindWeapon(client->pers.weapon);
 		Get_AimAngle(ent,aim,distance,mywep);
 		trace_priority = TRP_MOVEKEEP;
 		zc->moveyaw = ent->s.angles[YAW] + 180;
@@ -1523,9 +1473,9 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 	}
 
 	if((FFlg[skill] & FIRE_REFUGE)
-	   && zc->battlemode == 0
-	   && zc->route_trace
-	   && zc->routeindex > 1 )
+		&& zc->battlemode == 0
+		&& zc->route_trace
+		&& zc->routeindex > 1 )
 	{
 		j = false;
 		if(enewep >= WEAP_CHAINGUN && enewep != WEAP_GRENADES)
@@ -1538,7 +1488,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 		{
 			mywep = Get_KindWeapon(client->pers.weapon);
 			if(mywep == WEAP_GRENADELAUNCHER
-			   || mywep == WEAP_ROCKETLAUNCHER)
+				|| mywep == WEAP_ROCKETLAUNCHER)
 			{
 				zc->battlemode |= FIRE_REFUGE;
 				zc->battlecount = 8 + (int)(10 * random());
@@ -1562,11 +1512,11 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 		if(B_UseBfg(ent, target, enewep, aim, distance, skill))
 			goto FIRED;
 	}
-	
+
 	for(i = 0;i < 3;i++)
 	{
 		mywep = Get_KindWeapon(client->pers.weapon);
-		
+
 		if(i == 0 && zc->secwep_selected)
 			continue;
 
@@ -1603,87 +1553,87 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 
 		switch(Bot[zc->botindex].param[BOP_PRIWEP + j])
 		{
-			case WEAP_RAILGUN:
+		case WEAP_RAILGUN:
 
 			if(distance > 1 || voosh->value)
 			{
 				if(B_UseRailgun(ent, target, enewep, aim, distance, skill)
-				   || voosh->value) //QW// FIXME: redundant
+					|| voosh->value) //QW// FIXME: redundant
 					goto FIRED;
 			}
 			break;
 
 
-			case WEAP_BFG:
-				if(distance > 100)
-				{
-					if(B_UseBfg(ent,target,enewep,aim,distance,skill))
-						goto FIRED;
-				}
-				break;
-			case WEAP_HYPERBLASTER:
-				if(distance < 1200)
-				{
-					if(B_UseHyperBlaster(ent,target,enewep,aim,distance,skill))
-						goto FIRED;
-				}
-				break;
-		
-			case WEAP_ROCKETLAUNCHER:
-				if(distance > 100 && distance < 1200
+		case WEAP_BFG:
+			if(distance > 100)
+			{
+				if(B_UseBfg(ent,target,enewep,aim,distance,skill))
+					goto FIRED;
+			}
+			break;
+		case WEAP_HYPERBLASTER:
+			if(distance < 1200)
+			{
+				if(B_UseHyperBlaster(ent,target,enewep,aim,distance,skill))
+					goto FIRED;
+			}
+			break;
+
+		case WEAP_ROCKETLAUNCHER:
+			if(distance > 100 && distance < 1200
 				/*|| mywep == WEAP_ROCKETLAUNCHER*/)
-				{
-					if(B_UseRocket(ent,target,enewep,aim,distance,skill))
-						goto FIRED;
-				}
-				break;
-		
-			case WEAP_GRENADELAUNCHER:
-				if(distance > 100 && distance < 400
-				   && (target->s.origin[2] - ent->s.origin[2]) < 200)
-				{
-					if(B_UseGrenadeLauncher(ent,target,enewep,aim,distance,skill))
-						goto FIRED;
-				}
-				break;
-			case WEAP_CHAINGUN:
-			case WEAP_MACHINEGUN:
-				if(distance < 1200)
-				{
-					if(B_UseChainGun(ent,target,enewep,aim,distance,skill))
-						goto FIRED;
-				}
-				if(distance < 1200)
-				{
-					if(B_UseMachineGun(ent,target,enewep,aim,distance,skill))
-						goto FIRED;
-				}
-				break;
-			case WEAP_SUPERSHOTGUN:
-			case WEAP_SHOTGUN:
-				if(distance < 1200)
-				{
-					if(B_UseSuperShotgun(ent,target,enewep,aim,distance,skill))
-						goto FIRED;
-				}
-				if(distance < 1200)
-				{
-					if(B_UseShotgun(ent,target,enewep,aim,distance,skill))
-						goto FIRED;
-				}
-			case WEAP_GRENADES:
-				if(distance < 1200)
-				{
-					if(B_UseHandGrenade(ent,target,enewep,aim,distance,skill))
-						goto FIRED;
-				}
-				break;
-			default:
-				break;
+			{
+				if(B_UseRocket(ent,target,enewep,aim,distance,skill))
+					goto FIRED;
+			}
+			break;
+
+		case WEAP_GRENADELAUNCHER:
+			if(distance > 100 && distance < 400
+				&& (target->s.origin[2] - ent->s.origin[2]) < 200)
+			{
+				if(B_UseGrenadeLauncher(ent,target,enewep,aim,distance,skill))
+					goto FIRED;
+			}
+			break;
+		case WEAP_CHAINGUN:
+		case WEAP_MACHINEGUN:
+			if(distance < 1200)
+			{
+				if(B_UseChainGun(ent,target,enewep,aim,distance,skill))
+					goto FIRED;
+			}
+			if(distance < 1200)
+			{
+				if(B_UseMachineGun(ent,target,enewep,aim,distance,skill))
+					goto FIRED;
+			}
+			break;
+		case WEAP_SUPERSHOTGUN:
+		case WEAP_SHOTGUN:
+			if(distance < 1200)
+			{
+				if(B_UseSuperShotgun(ent,target,enewep,aim,distance,skill))
+					goto FIRED;
+			}
+			if(distance < 1200)
+			{
+				if(B_UseShotgun(ent,target,enewep,aim,distance,skill))
+					goto FIRED;
+			}
+		case WEAP_GRENADES:
+			if(distance < 1200)
+			{
+				if(B_UseHandGrenade(ent,target,enewep,aim,distance,skill))
+					goto FIRED;
+			}
+			break;
+		default:
+			break;
 		}
 	}
 
-	
+
 	zc->secwep_selected = 0;
 	//BFG
 	if(distance > 200)
@@ -1701,7 +1651,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 
 	//Rocket
 	if((distance > 100 && distance < 1200)
-	/*|| mywep == WEAP_ROCKETLAUNCHER*/)
+		/*|| mywep == WEAP_ROCKETLAUNCHER*/)
 	{
 		if(B_UseRocket(ent,target,enewep,aim,distance,skill))
 			goto FIRED;
@@ -1713,10 +1663,10 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 		if(B_UseRailgun(ent,target,enewep,aim,distance,skill)||voosh->value)
 			goto FIRED;
 	}
-	
+
 	//Grenade Launcher
 	if(distance > 100 && distance < 400
-	   && (target->s.origin[2] - ent->s.origin[2]) < 200)
+		&& (target->s.origin[2] - ent->s.origin[2]) < 200)
 	{
 		if(B_UseGrenadeLauncher(ent,target,enewep,aim,distance,skill))
 			goto FIRED;
@@ -1742,7 +1692,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 		if(B_UseSuperShotgun(ent,target,enewep,aim,distance,skill))
 			goto FIRED;
 	}
-	
+
 	if((FFlg[skill] & FIRE_IGNORE)
 		&& distance > 400 && ent->groundentity
 		&& !(zc->zcstate & STS_WAITSMASK))
@@ -1781,7 +1731,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy, int enewep,
 FIRED:
 	if(zc->secwep_selected == 2)
 		zc->secwep_selected = 1;
-	
+
 	if(zc->battlemode == FIRE_CHIKEN)
 	{
 		if(--zc->battlesubcnt > 0  && ent->groundentity && ent->waterlevel < 2)
@@ -1865,7 +1815,7 @@ void UsePrimaryWeapon(edict_t *ent)
 void UpdateExplIndex(edict_t* ent)
 {
 	int	i;
-	qboolean	mod = false;
+	qboolean mod = false;
 
 	for(i = 0;i < MAX_EXPLINDEX;i++)
 	{
