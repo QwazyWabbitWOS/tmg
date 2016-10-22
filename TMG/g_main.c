@@ -834,7 +834,7 @@ void G_RunFrame (void)
 				if ((e = &g_edicts[i]) && e && e->inuse && !e->bot_client)
 				{
 					// display it for all to view!!
-					stuffcmd(ent, "cmd hscore\n");
+					stuffcmd(e, "cmd hscore\n");
 				}
 			}
 		}
