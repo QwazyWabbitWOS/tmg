@@ -225,6 +225,11 @@ void OpMapNames(void);
 
 void OpBotsOn(edict_t *ent, pmenu_t *menu);
 void OpBotsOff(edict_t *ent, pmenu_t *menu);
+void OpBotsChatOn (edict_t *ent, pmenu_t *menu);
+void OpBotsChatOff (edict_t *ent, pmenu_t *menu);
+void OpBotsInsultOn (edict_t *ent, pmenu_t *menu);
+void OpBotsInsultOff (edict_t *ent, pmenu_t *menu);
+
 void BotsMenu(edict_t *ent, pmenu_t *p);
 
 void SpecMe(edict_t *ent, pmenu_t *p);

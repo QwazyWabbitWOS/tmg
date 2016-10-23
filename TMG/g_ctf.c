@@ -4025,6 +4025,30 @@ void OpBotsOff(edict_t *ent, pmenu_t *menu)
 	restartthismap();
 }
 
+void OpBotsChatOn (edict_t *ent, pmenu_t *menu)
+{
+	PMenu_Close(ent);
+	gi.cvar_set("bot_chat", "1");
+}
+
+void OpBotsChatOff (edict_t *ent, pmenu_t *menu)
+{
+	PMenu_Close(ent);
+	gi.cvar_set("bot_chat", "0");
+}
+
+void OpBotsInsultOn (edict_t *ent, pmenu_t *menu)
+{
+	PMenu_Close(ent);
+	gi.cvar_set("bot_insult", "1");
+}
+
+void OpBotsInsultOff (edict_t *ent, pmenu_t *menu)
+{
+	PMenu_Close(ent);
+	gi.cvar_set("bot_insult", "0");
+}
+
 void LightsOn(edict_t *ent, pmenu_t *menu)
 {
 	PMenu_Close(ent);
@@ -4659,11 +4683,16 @@ pmenu_t lightsmenu[] = {
 pmenu_t botsmenu[] = {
 	{ "*Bots Menu:",		PMENU_ALIGN_CENTER, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
-	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ "Bots ON",			PMENU_ALIGN_LEFT, 0, OpBotsOn },
-	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
-	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ "Bots OFF",			PMENU_ALIGN_LEFT, 0, OpBotsOff },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ "Bots Chat ON",		PMENU_ALIGN_LEFT, 0, OpBotsChatOn },
+	{ "Bots Chat OFF",		PMENU_ALIGN_LEFT, 0, OpBotsChatOff },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ "Bots Insult ON",		PMENU_ALIGN_LEFT, 0, OpBotsInsultOn },
+	{ "Bots Insult OFF",	PMENU_ALIGN_LEFT, 0, OpBotsInsultOff },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 };
 
 pmenu_t opmenu[] = {
