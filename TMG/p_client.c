@@ -2562,34 +2562,24 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 		FilterText(s);
 	//
 
-	//RAV
-	//no name checker 
-	if(strstr ("",s)) //QW// || strlen(s) < 1)
-	{
-		stuffcmd (ent, va("name ImARetard\n"));
-		s = "ImARetard\0";
-		return;
-	}
-
-	emptyname = true;
+	// catch an all-spaces name
 	for (i = 0; i < strlen(s); i++)
 	{
 		if (s[i] != ' ')
 		{
 			emptyname = false;
+			break;
 		}
 		else
 			emptyname = true;
 	}
 
-	if(strstr ("",s) || emptyname == true)
+	// fix empty or blank names
+	if(strcmp ("", s) == 0 || emptyname)
 	{
-		stuffcmd (ent, va("name ImARetard\n"));
-		s = "ImARetard";
-		//stuffcmd (ent, va("disconnect\n"));
+		stuffcmd (ent, va("name ImARetard\n")); // force client name change
 		return;
 	}
-	//end
 
 	//JSW - Make all player names all white, remove any green text
 	white_text(s, s);
