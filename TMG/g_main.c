@@ -703,13 +703,11 @@ void G_RunFrame (void)
 	if (level.framenum % 10 == 0)
 	{
 		if (Log_CheckLocalMidnight())
-		{
 			Log_RenameConsoleLog();
-		}
 	}
 
 	level.framenum++;
-	level.time = level.framenum*FRAMETIME;
+	level.time = level.framenum * FRAMETIME;
 	level.newframenum++;
 
 //	gi.dprintf ("L. map to be voted on is %s %s\n", maplist->mapname[maplist->currentmapvote]);
