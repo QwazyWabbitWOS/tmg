@@ -2532,7 +2532,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	int		playernum;
 	int rate, delta;//RAV
 	char player[40];
-	qboolean emptyname;
+	qboolean emptyname = 0;
 	int i;
 	char	*namepass;
 
