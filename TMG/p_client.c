@@ -2536,15 +2536,6 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	int i;
 	char	*namepass;
 
-	//QW// disabled this until I can figure out why it's broken.
-	//if (strcmp(ent->client->pers.netname, "") == 0)
-	//{
-	//	gi.dprintf ("no netname\n");
-	//	return;
-	//}
-	// ... and why it's here...
-	//QW// this seems to be premature, has netname been set yet?
-
 	// check for malformed or illegal info strings
 	if (!Info_Validate(userinfo))
 	{
