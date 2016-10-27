@@ -6,6 +6,7 @@
 #define CTF_VSTRING(x) CTF_VSTRING2(x)
 #define CTF_STRING_VERSION  CTF_VSTRING(CTF_VERSION)
 
+/* STAT_* 0 through 16 are defined in q_shared.h */
 #define STAT_CTF_TEAM1_PIC			17
 #define STAT_CTF_TEAM1_CAPS			18
 #define STAT_CTF_TEAM2_PIC			19
@@ -16,7 +17,9 @@
 #define STAT_CTF_TEAM1_HEADER		24
 #define STAT_CTF_TEAM2_HEADER		25
 #define STAT_CTF_TECH				26
+
 //#define STAT_CTF_ID_VIEW			27
+
 #define STAT_CTF_RED_FLAG_CARRIER   29
 #define STAT_CTF_BLUE_FLAG_CARRIER  30
 
