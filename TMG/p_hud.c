@@ -395,19 +395,19 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 		
 		// sort the clients by team and score
 		total = 0;
-		for (i=0 ; i < game.maxclients ; i++)
+		for (i = 0; i < game.maxclients; i++)
 		{
 			cl_ent = g_edicts + 1 + i;
 			if ((!cl_ent->inuse) ||(cl_ent->client->resp.spectator)
 				||(!cl_ent->client->pers.pl_state))
 				continue;
 			score = game.clients[i].resp.score;
-			for (j=0 ; j<total ; j++)
+			for (j = 0; j < total; j++)
 			{
 				if (score > sortedscores[j])
 					break;
 			}
-			for (k=total ; k>j ; k--)
+			for (k = total; k > j; k--)
 			{
 				sorted[k] = sorted[k-1];
 				sortedscores[k] = sortedscores[k-1];
@@ -421,17 +421,16 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 		// add the clients in sorted order
 		{
 			Com_sprintf(string, sizeof(string),
-				"xv  0 yv -100 cstring2 \"%s\" "
-				"xv  0 yv  -90 cstring2 \"MAP: %s - %s\" "
+				//"xv  0 yv -100 cstring2 \"%s\" "
+				"xv  0 yv  -90 cstring2 \"MAP: %s\" "
 				"xv  0 yv  -70 cstring2 \"%s %s\" "
 				"xv 20 yv  -60 string2 \"Longest\" "
 				"xv -130 yv  -50 string2 \"Kills Ping FPH Time Spree Name \" ",
-				//	"xv -136 yv  -40 string \"-   -   -   -   -   -   -   -   -\" ",
-				hostname->string, level.mapname, level.level_name, MOD, MOD_VERSION);
+				/*hostname->string,*/ level.mapname, MOD, MOD_VERSION);
 		}
 		
 		len = strlen(string);
-		for (i=0 ; i<20 ; i++) //only allow 12 per board !!!
+		for (i = 0; i < 12; i++) //only allow 12 per board !!!
 		{
 			if (i >= total)
 				break; // we're done
@@ -479,10 +478,10 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 					continue;
 				Com_sprintf(entry, sizeof(entry),
 					"xv 185 yv %i %s \"%-13.12s\" "
-					"xv 280 yv %i %s \"< %s >\" ",
+					"xv 280 yv %i %s \"<%s>\" ",
 					j,(cl_ent == ent) ? "string2" : "string", cl->pers.netname,
 					j,(cl_ent == ent) ? "string2" : "string",
-					(cl_ent->client->chase_target != NULL) ? cl_ent->client->chase_target->client->pers.netname : "OBSERVER");
+					(cl_ent->client->chase_target != NULL) ? cl_ent->client->chase_target->client->pers.netname : "SPEC");
 				if (maxsize - len > strlen(entry))
 				{
 					strcat(string, entry);
