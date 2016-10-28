@@ -41,7 +41,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.27"
+#define MOD_VERSION "0.2.28"
 #define MOD "TMG_MOD"
 
 #ifndef _DEBUG
@@ -1324,7 +1324,6 @@ typedef struct client_respawn_s
 	vec3_t		cmd_angles;			// angles sent over in the last command
 	int			game_helpchanged;
 	int			helpchanged;
-//RAV
 	int			frags;      // kills by weapons fire
 	int			captures;   // flag capture count 
 	int			shots;      // shots fired
@@ -1340,7 +1339,6 @@ typedef struct client_respawn_s
 	unsigned long	hooks_deployed_count;
 	unsigned long	hooks_landed_count;
 
-	//JSW
 	qboolean	bonus;
 	qboolean	hasrcon;
 	int	iddist;
@@ -1349,10 +1347,7 @@ typedef struct client_respawn_s
 	int spree;
 	int bigspree;
 	qboolean vote;
-	//end
-
-//
-
+	int	locationactive;
 } client_respawn_t;
 
 //========================================================================================

@@ -876,6 +876,21 @@ void Cmd_Kill_f (edict_t *ent)
 	respawn (ent,false);
 }
 
+void Cmd_Location_f(edict_t *ent)
+{
+	
+	if (ent->client->resp.locationactive == 0)
+	{
+		ent->client->resp.locationactive = 1;
+		gi.cprintf(ent,PRINT_HIGH, "Location Activated\n");
+	}
+	else if (ent->client->resp.locationactive == 1)
+	{
+		ent->client->resp.locationactive = 0;
+		gi.cprintf(ent,PRINT_HIGH, "Location Deactivated\n");
+	}
+}
+
 /*
 =================
 Cmd_PutAway_f
@@ -1909,7 +1924,13 @@ void ClientCommand (edict_t *ent)
 			NoAccess(ent);
 		return;
 	}
-	//end
+	//end JSW
+
+	if (Q_strcasecmp (cmd, "location") == 0)
+	{	
+		Cmd_Location_f(ent);
+		return;
+	}
 
 	if (Q_stricmp (cmd, "score") == 0)
 	{
@@ -1926,8 +1947,10 @@ void ClientCommand (edict_t *ent)
 		Cmd_Help_f (ent);
 		return;
 	}
+
 	if (level.intermissiontime)
 		return;
+
 	if (Q_stricmp (cmd, "use") == 0)
 		Cmd_Use_f (ent);
 	else if (Q_stricmp (cmd, "drop") == 0)
