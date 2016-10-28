@@ -2400,18 +2400,6 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 		ent->flashlight = NULL;
 	}
 
-	//if on the hook drop it also
-	//if (ent->client->hook || ent->client->ctf_grapple)
-	//{
-	//	my_bprintf(PRINT_HIGH, "%s is trying to spam the server with HOOKS\n"
-	//		"and was disconnected from this server\n",
-	//		ent->client->pers.netname);
-	//	stuffcmd(ent, "disconnect;error \"You have been disconnected for "
-	//		"trying to die or switch teams while hooking, which will crash "
-	//		"the server. Multiple attempts at this will result in a ban.\"");
-	//	return;
-	//}
-
 	ent->client->resp.score = 0;
 	CheckPlayers();
 	my_bprintf(PRINT_HIGH, "%s changed to the %s team. "
@@ -2421,23 +2409,11 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 	ent->client->pers.pl_state = PL_PLAYING;
 	ent->client->resp.spectator = 0;
 	//skin change is allowed here
-	ent->client->skintime = level.time -1;
-
-	// if hook should be dropped, just return
-	//if (ent->client->hook || ent->client->ctf_grapple)
-	//{
-	//	my_bprintf(PRINT_HIGH, "%s is trying to spam the server with HOOKS\n"
-	//		"and was disconnected from the server\n", 
-	//		ent->client->pers.netname);
-	//	stuffcmd(ent, "disconnect;error \"You have been disconnected for "
-	//		"trying to die or switch teams while hooking, which will crash "
-	//		"the server. Multiple attempts at this will result in a ban.\"");
-	//	return;
-	//}
+	ent->client->skintime = level.time - 1;
 
 	// don't even bother waiting for death frames
 	ent->deadflag = DEAD_DEAD;
-	respawn (ent,false);
+	respawn (ent, false);
 }
 
 /*

@@ -850,8 +850,8 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 	int			mask;
 	qboolean	water;
 	float		dist;
-	float		inc=128;
-	int			j=0;
+	float		inc = 128;
+	int			j = 0;
 	int			k;
 	char		string[1024];
 
@@ -876,7 +876,7 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 		else
 		{
 			if (((tr.ent->svflags & SVF_MONSTER) || (tr.ent->client)) && 
-				((tr.ent->health >0)&& (tr.ent->takedamage)))//looping bug fixed
+				((tr.ent->health > 0) && (tr.ent->takedamage)))//looping bug fixed
 				ignore = tr.ent;
 			else
 			{
@@ -888,7 +888,7 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 			if ((tr.ent != self) && (tr.ent->takedamage))
 			{
 				T_Damage (tr.ent, self, self, aimdir, tr.endpos, tr.plane.normal, damage, kick, 0, MOD_RAILGUN);
-				if (!OnSameTeam(self, tr.ent)) //ClientTeam(self) != ClientTeam(tr.ent))
+				if (!OnSameTeam(self, tr.ent))
 					j++;
 			}
 		}
