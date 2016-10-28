@@ -34,6 +34,7 @@ void Cmd_InvDrop_f (edict_t *ent);
 /** Player suicide */
 void Cmd_Kill_f (edict_t *ent);
 
+void Cmd_Location_f(edict_t *ent);
 void Cmd_PutAway_f (edict_t *ent);
 int PlayerSort (void const *a, void const *b);
 void Cmd_Players_f (edict_t *ent);
