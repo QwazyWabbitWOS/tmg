@@ -850,7 +850,7 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 	int			mask;
 	qboolean	water;
 	float		dist;
-	float		inc = 128;
+	float		inc = 256;
 	int			j = 0;
 	int			k;
 	char		string[1024];
@@ -864,7 +864,8 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 	ignore = self;
 	water = false;
 	mask = MASK_SHOT|CONTENTS_SLIME|CONTENTS_LAVA;
-	while (ignore || (dist < 2048))
+
+	while (ignore || (dist < 8192))
 	{
 		tr = gi.trace (from, NULL, NULL, end, ignore, mask);
 
