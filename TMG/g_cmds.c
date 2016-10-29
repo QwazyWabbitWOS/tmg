@@ -1513,9 +1513,9 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 		}
 		else
 		{
-			if(ent->client->pers.oplevel)
-				sprintf(text2, "<OP> %s", text);
-			else
+			//if(ent->client->pers.oplevel)
+			//	sprintf(text2, "<OP> %s", text);
+			//else
 				sprintf(text2, "%s", text);
 		}
 	}
@@ -1531,9 +1531,9 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 		}
 		else
 		{
-			if(ent->client->pers.oplevel)
-				sprintf(text2, "<OP> %s", text);
-			else
+			//if(ent->client->pers.oplevel)
+			//	sprintf(text2, "<OP> %s", text);
+			//else
 				sprintf(text2, "%s", text);
 		}
 	}
