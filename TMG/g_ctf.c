@@ -20,6 +20,8 @@
 cvar_t *dropflag_delay;
 cvar_t *newscore;
 cvar_t *ctf_deathscores;
+cvar_t *ctf_cfg_file;
+cvar_t *ffa_cfg_file;
 
 char menustring[24][64];
 
@@ -3987,42 +3989,49 @@ void restartthismap(void)
 	return;
 }
 
-void OpBotsOn(edict_t *ent, pmenu_t *menu)
+void OpBotToggle(edict_t *ent, pmenu_t *menu)
 {
 	PMenu_Close(ent);
-	gi.cvar_set("use_bots", "1");
+	if(use_bots->value == 0)
+		gi.cvar_set("use_bots", "1");
+	else
+		gi.cvar_set("use_bots", "0");
+
 	restartthismap();
 }
 
-void OpBotsOff(edict_t *ent, pmenu_t *menu)
+void OpBotChatToggle (edict_t *ent, pmenu_t *menu)
 {
 	PMenu_Close(ent);
-	gi.cvar_set("use_bots", "0");
-	restartthismap();
+	if(bot_chat->value == 0)
+		gi.cvar_set("bot_chat", "1");
+	else
+		gi.cvar_set("bot_chat", "0");
 }
 
-void OpBotsChatOn (edict_t *ent, pmenu_t *menu)
+void OpBotInsultToggle (edict_t *ent, pmenu_t *menu)
 {
 	PMenu_Close(ent);
-	gi.cvar_set("bot_chat", "1");
+	if(bot_insult->value == 0)
+		gi.cvar_set("bot_insult", "1");
+	else
+		gi.cvar_set("bot_insult", "0");
 }
 
-void OpBotsChatOff (edict_t *ent, pmenu_t *menu)
+void OpExecFFAConfig (edict_t *ent, pmenu_t *menu)
 {
+	char buffer[100];
 	PMenu_Close(ent);
-	gi.cvar_set("bot_chat", "0");
+	sprintf(buffer, "\nexec %s\n", ffa_cfg_file->string);
+	gi.AddCommandString(buffer);
 }
 
-void OpBotsInsultOn (edict_t *ent, pmenu_t *menu)
+void OpExecCTFConfig (edict_t *ent, pmenu_t *menu)
 {
+	char buffer[100];
 	PMenu_Close(ent);
-	gi.cvar_set("bot_insult", "1");
-}
-
-void OpBotsInsultOff (edict_t *ent, pmenu_t *menu)
-{
-	PMenu_Close(ent);
-	gi.cvar_set("bot_insult", "0");
+	sprintf(buffer, "\nexec %s\n", ctf_cfg_file->string);
+	gi.AddCommandString(buffer);
 }
 
 void LightsOn(edict_t *ent, pmenu_t *menu)
@@ -4657,23 +4666,27 @@ pmenu_t lightsmenu[] = {
 };
 
 pmenu_t botsmenu[] = {
+	{ "**TMG_MOD",			PMENU_ALIGN_CENTER,  0,  NULL },
 	{ "*Bots Menu:",		PMENU_ALIGN_CENTER, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
-	{ "Bots ON",			PMENU_ALIGN_LEFT, 0, OpBotsOn },
-	{ "Bots OFF",			PMENU_ALIGN_LEFT, 0, OpBotsOff },
-	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
-	{ "Bots Chat ON",		PMENU_ALIGN_LEFT, 0, OpBotsChatOn },
-	{ "Bots Chat OFF",		PMENU_ALIGN_LEFT, 0, OpBotsChatOff },
-	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
-	{ "Bots Insult ON",		PMENU_ALIGN_LEFT, 0, OpBotsInsultOn },
-	{ "Bots Insult OFF",	PMENU_ALIGN_LEFT, 0, OpBotsInsultOff },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ "*(TAB to Return)",	PMENU_ALIGN_LEFT,  0,  NULL },
 };
 
 pmenu_t opmenu[] = {
 	{ "**TMG_MOD",			PMENU_ALIGN_CENTER,  0,  NULL },
 	{ "*Operator Menu",		PMENU_ALIGN_CENTER,  0,  NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
@@ -5402,7 +5415,11 @@ void LightsMenu(edict_t *ent, pmenu_t *p)
 
 void BotsMenu(edict_t *ent, pmenu_t *p)
 {
-	if (ent->client->menu) PMenu_Close(ent);
+	if (ent->client->menu) 
+		PMenu_Close(ent);
+	
+	UpdateBotMenu(ent);
+
 	PMenu_Open(ent, botsmenu,
 			   -1, sizeof(botsmenu) / sizeof(pmenu_t),
 			   true, true);
@@ -5771,19 +5788,105 @@ void KickPlayer(edict_t *ent, pmenu_t *p)
 			   true, true);
 }
 
+void UpdateBotMenu(edict_t *ent)
+{
+	char bots_on_off[20];
+	char bot_chat_on_off[25];
+	char bot_insult_on_off[25];
+	int	pos;
+	int	startpos = 2;
+	int	entries = 1;
+	char str[256];
+	char seps[]= "\t";
+	char *token;
+
+	// Initialize the search strings per current state
+	if (use_bots->value)
+		strcpy(bots_on_off, "Toggle Bots OFF");
+	else
+		strcpy(bots_on_off, "Toggle Bots ON");
+
+	if (bot_chat->value)
+		strcpy(bot_chat_on_off, "Toggle Bot Chat OFF");
+	else
+		strcpy(bot_chat_on_off, "Toggle Bot Chat ON");
+
+	if (bot_insult->value)
+		strcpy(bot_insult_on_off, "Toggle Bot Insult OFF");
+	else
+		strcpy(bot_insult_on_off, "Toggle Bot Insult ON");
+
+	// Initialize the menu elements per current state
+	strcpy(str, "");
+	if (use_bots->value)
+		strcat(str, "Toggle Bots OFF\t");
+	else
+		strcat(str, "Toggle Bots ON\t");
+
+	if (bot_chat->value)
+		strcat(str, "Toggle Bot Chat OFF\t");
+	else
+		strcat(str, "Toggle Bot Chat ON\t");
+
+	if (bot_insult->value)
+		strcat(str, "Toggle Bot Insult OFF\t");
+	else
+		strcat(str, "Toggle Bot Insult ON\t");
+
+	token = strtok (str, seps);
+	pos = startpos;
+	while (token != NULL)
+	{
+		sprintf(menustring[pos], "%s", token);
+		token = strtok (NULL, seps);
+		entries++;
+		pos++;
+	}
+
+	// Initialize the function pointers of the active elements
+	for (pos = startpos; pos < entries + 1; pos++)
+	{
+		botsmenu[pos].text = menustring[pos];
+		if (Q_stricmp(botsmenu[pos].text, bots_on_off) == 0)
+			botsmenu[pos].SelectFunc = OpBotToggle;
+		else if (Q_stricmp(botsmenu[pos].text, bot_chat_on_off) == 0)
+			botsmenu[pos].SelectFunc = OpBotChatToggle;
+		else if (Q_stricmp(botsmenu[pos].text, bot_insult_on_off) == 0)
+			botsmenu[pos].SelectFunc = OpBotInsultToggle;
+		else
+			botsmenu[pos].SelectFunc = NULL;
+	}
+
+	// Clear the rest of the menu
+	while (pos < 9)
+	{
+		botsmenu[pos].text = NULL;
+		botsmenu[pos].SelectFunc = NULL;
+		++pos;
+	}
+}
+
 //JSW
 void UpdateOpMenu(edict_t *ent)
 {
-	char lock_unlock[20];
-	int pos, startpos = 2, entries = 1;
+	char team_lock_unlock[20];
+	char server_lock_unlock[20];
+	int	pos;
+	int	startpos = 2;
+	int	entries = 1;
 	char str[256];
 	char seps[]= "\t";
 	char *token;
 
 	if (locked_teams)
-		strcpy(lock_unlock, "Unlock Teams");
+		strcpy(team_lock_unlock, "Unlock Teams");
 	else
-		strcpy(lock_unlock, "Lock Teams");
+		strcpy(team_lock_unlock, "Lock Teams");
+
+	if (serverlocked)
+		strcpy(server_lock_unlock, "Unlock Server");
+	else
+		strcpy(server_lock_unlock, "Lock Server");
 
 	strcpy(str, "");
 	if (ent->client->pers.oplevel & OP_CHANGEMAP)
@@ -5791,7 +5894,7 @@ void UpdateOpMenu(edict_t *ent)
 	if (ent->client->pers.oplevel & OP_LIGHTS)
 		strcat (str, "Lights Control\t");
 	if (ent->client->pers.oplevel & OP_PLAYERCONTROL)
-		strcat (str, "Bots Control\t");
+		strcat (str, "Bot Control\t");
 	if (ent->client->pers.oplevel & OP_LOCKTEAMS)
 	{
 		if (locked_teams)
@@ -5800,9 +5903,21 @@ void UpdateOpMenu(edict_t *ent)
 			strcat (str, "Lock Teams\t");
 	}
 	if (ent->client->pers.oplevel & OP_LOCKSERVER)
-		strcat (str, "Lock Server\t");
+	{
+		if (serverlocked)
+			strcat (str, "Unlock Server\t");
+		else
+			strcat (str, "Lock Server\t");
+	}
+
 	if (ent->client->pers.oplevel & OP_RESTART)
 		strcat (str, "Restart Level\t");
+
+	if (ent->client->pers.oplevel & OP_CHANGEMAP)
+		strcat (str, "Exec FFA Configuration\t");
+
+	if (ent->client->pers.oplevel & OP_CHANGEMAP)
+		strcat (str, "Exec CTF Configuration\t");
 
 	if (ent->client->pers.oplevel & OP_PLAYERCONTROL)
 	{
@@ -5822,21 +5937,25 @@ void UpdateOpMenu(edict_t *ent)
 		pos++;
 	}
 
-	for (pos = startpos; pos < entries+1; pos++)
+	for (pos = startpos; pos < entries + 1; pos++)
 	{
 		opmenu[pos].text = menustring[pos];
 		if (Q_stricmp(opmenu[pos].text, "Change Map") == 0)
 			opmenu[pos].SelectFunc = OpMap;
 		else if (Q_stricmp(opmenu[pos].text, "Lights Control") == 0)
 			opmenu[pos].SelectFunc = LightsMenu;
-		else if (Q_stricmp(opmenu[pos].text, "Bots Control") == 0)
+		else if (Q_stricmp(opmenu[pos].text, "Bot Control") == 0)
 			opmenu[pos].SelectFunc = BotsMenu;
-		else if (Q_stricmp(opmenu[pos].text, lock_unlock) == 0)
+		else if (Q_stricmp(opmenu[pos].text, team_lock_unlock) == 0)
 			opmenu[pos].SelectFunc = OpLock;
-		else if (Q_stricmp(opmenu[pos].text, "Lock Server") == 0)
+		else if (Q_stricmp(opmenu[pos].text, server_lock_unlock) == 0)
 			opmenu[pos].SelectFunc = OpLockServer;
 		else if (Q_stricmp(opmenu[pos].text, "Restart Level") == 0)
 			opmenu[pos].SelectFunc = OpRestart;
+		else if (Q_stricmp(opmenu[pos].text, "Exec FFA Configuration") == 0)
+			opmenu[pos].SelectFunc = OpExecFFAConfig;
+		else if (Q_stricmp(opmenu[pos].text, "Exec CTF Configuration") == 0)
+			opmenu[pos].SelectFunc = OpExecCTFConfig;
 		else
 			opmenu[pos].SelectFunc = NULL;
 	}

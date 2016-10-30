@@ -427,6 +427,9 @@ void InitGame (void)
 	debug_botspawn = gi.cvar ("debug_botspawn", "0", 0);
 	debug_ops = gi.cvar ("debug_ops", "0", 0);
 
+	ffa_cfg_file = gi.cvar ("ffa_cfgfile", "ffa.cfg", 0);
+	ctf_cfg_file = gi.cvar ("ctf_cfgfile", "railwarz.cfg", 0);
+
 	/*
 	 allow_lasermines = gi.cvar ("allow_lasermines", "0", CVAR_LATCH);
 	 allow_energy_lasers = gi.cvar ("allow_energy_lasers", "1", CVAR_SERVERINFO);

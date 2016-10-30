@@ -41,7 +41,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.28"
+#define MOD_VERSION "0.2.29"
 #define MOD "TMG_MOD"
 
 #ifndef _DEBUG
@@ -792,6 +792,10 @@ extern	cvar_t	*grapple_damage;
 extern	cvar_t	*debug_spawn;
 extern	cvar_t	*debug_botspawn;
 extern	cvar_t	*debug_ops;
+
+/* ops can select server configurations */
+extern	cvar_t *ctf_cfg_file;
+extern	cvar_t *ffa_cfg_file;
 
 /*extern	cvar_t	*allow_lasermines;
 extern	cvar_t	*allow_energy_lasers;

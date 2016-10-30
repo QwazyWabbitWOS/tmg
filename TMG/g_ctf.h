@@ -226,12 +226,9 @@ void OpMapNames2(void);
 void OpMap2(edict_t *ent, pmenu_t *p);
 void OpMapNames(void);
 
-void OpBotsOn(edict_t *ent, pmenu_t *menu);
-void OpBotsOff(edict_t *ent, pmenu_t *menu);
-void OpBotsChatOn (edict_t *ent, pmenu_t *menu);
-void OpBotsChatOff (edict_t *ent, pmenu_t *menu);
-void OpBotsInsultOn (edict_t *ent, pmenu_t *menu);
-void OpBotsInsultOff (edict_t *ent, pmenu_t *menu);
+void OpBotToggle(edict_t *ent, pmenu_t *menu);
+void OpBotChatToggle (edict_t *ent, pmenu_t *menu);
+void OpBotInsultToggle (edict_t *ent, pmenu_t *menu);
 
 void BotsMenu(edict_t *ent, pmenu_t *p);
 
@@ -278,6 +275,7 @@ void SwitchPlayer(edict_t *ent, pmenu_t *p);
 //JSW void MOpMe(edict_t *ent, pmenu_t *p);
 //JSW
 void UpdateOpMenu(edict_t *ent);
+void UpdateBotMenu(edict_t *ent);
 void UpdatePlayerMenu(edict_t *ent);
 char *GetIp(edict_t *ent);
 void SpawnExtra(vec3_t position, char *classname);
