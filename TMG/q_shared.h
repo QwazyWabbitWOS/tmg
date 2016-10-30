@@ -6,11 +6,11 @@
 
 #ifdef _WIN32
 // unknown pragmas are SUPPOSED to be ignored, but....
-#pragma warning(disable : 4244)     // MIPS (unsafe type conversion)
-#pragma warning(disable : 4136)     // X86 (conversion between different floating-point types)
-#pragma warning(disable : 4051)     // ALPHA (type conversion; possible loss of data)
+#pragma warning(disable : 4244)     // MIPS
+#pragma warning(disable : 4136)     // X86
+#pragma warning(disable : 4051)     // ALPHA
 
-//#pragma warning(disable : 4018)     // signed/unsigned mismatch
+#pragma warning(disable : 4018)     // signed/unsigned mismatch
 #pragma warning(disable : 4305)		// truncation from const double to float
 #pragma warning(disable : 4996)		// unsafe functions
 #pragma warning(disable : 4100)		// unreferenced formal parameter

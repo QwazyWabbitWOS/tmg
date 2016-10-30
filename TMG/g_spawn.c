@@ -899,7 +899,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	edict_t		*ent;
 	int			inhibit;
 	char		*com_token;
-	size_t		i;
+	int			i;
 	float		skill_level;
 
 	int			laser = 0;
@@ -930,7 +930,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	//RAV
 
 	// set client fields on player ents
-	for (i = 0; i < game.maxclients; i++)
+	for (i=0 ; i<game.maxclients ; i++)
 		g_edicts[i+1].client = game.clients + i;
 
 	//RAV

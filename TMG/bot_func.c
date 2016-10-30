@@ -40,7 +40,7 @@ qboolean Get_YenPos(char *Buff, int *curr)
 
 int GetNumBots(void)
 {
-	size_t i;
+	int i;
 	int botCount = 0;
 
 	for (i = 1; i <= game.maxclients; i++)
@@ -142,7 +142,7 @@ void BotAssignTeamCtf(gclient_t *who)
 edict_t *BestScorePlayer(void)
 {
 	edict_t *bestplayer = NULL;
-	size_t i;
+	int i;
 	int bestscore = -999;
 	edict_t *ent;
 
@@ -618,7 +618,7 @@ BOTLIST_NOTFOUND:
 //
 //----------------------------------------------------------------
 
-unsigned Get_NumOfPlayer (void) //Bots plus players
+int Get_NumOfPlayer (void) //Bots plus players
 {
 	int i;
 	edict_t *ent;
@@ -1378,10 +1378,10 @@ void PutBotInServer (edict_t *ent)
 
 qboolean SpawnBot(int i)
 {
-	edict_t	*bot,*ent;
-	size_t	k, j;
+	edict_t		*bot,*ent;
+	int			k,j;
 
-	if(	Get_NumOfPlayer() >= game.maxclients )
+	if(	Get_NumOfPlayer () >= game.maxclients )
 	{
 		gi.cprintf (NULL,PRINT_HIGH,"Can't add bots\n");
 		return false;
@@ -1396,7 +1396,7 @@ qboolean SpawnBot(int i)
 	j = targetindex;
 	if(chedit->value)
 	{
-		for(k = CurrentIndex - 1; k > 0; k--)
+		for(k = CurrentIndex - 1;k > 0 ;k--)
 		{
 			if(Route[k].index == 0) break;
 

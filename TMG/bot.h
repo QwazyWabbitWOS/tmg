@@ -111,7 +111,7 @@ extern void TauntVictim(edict_t *ent, edict_t *victim);
 extern void RandomChat(edict_t *ent);
 extern qboolean InsideWall(edict_t *ent);
 extern void AdjustAngle(edict_t *ent, vec3_t targaim, float aim);
-extern unsigned Get_NumOfPlayer (void);
+extern int Get_NumOfPlayer (void);
 extern edict_t *Get_NewClient (void);
 extern void InitializeBot (edict_t *ent, int botindex);
 extern void AirSight_Think(edict_t *ent);

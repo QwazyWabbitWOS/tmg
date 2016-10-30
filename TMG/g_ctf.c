@@ -2427,21 +2427,17 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 {
 	char	entry[MAX_MSGLEN];
 	char	string[MAX_MSGLEN];
-	size_t	len = 0;
-	size_t	i;
-	size_t	j, k;
-	int		n;
+	int		len = 0;
+	int		i, j, k, n;
 	int		trap = 0;
 	int		sorted[2][MAX_CLIENTS];
 	int		sortedscores[2][MAX_CLIENTS];
-	int		score;
-	size_t	total[2];
-	int		totalscore[2];
+	int		score, total[2], totalscore[2];
 	int		last[2];
 	gclient_t	*cl;
 	edict_t		*cl_ent;
 	int team;
-	size_t	maxsize = MAX_MSGLEN;
+	int maxsize = MAX_MSGLEN;
 
 	if (DEBUG_HSCORES) 
 		DbgPrintf("%s entered\n", __func__);
@@ -2639,19 +2635,17 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 {
 	char	entry[MAX_MSGLEN];
 	char	string[MAX_MSGLEN];
-	size_t	len = 0;
-	size_t	i, j;
-	size_t	k, n;
+	int		len = 0;
+	int		i, j, k, n;
 	int		trap = 0;
 	int		sorted[2][MAX_CLIENTS];
 	int		sortedscores[2][MAX_CLIENTS];
-	int		score;
-	size_t	total[2], totalscore[2];
+	int		score, total[2], totalscore[2];
 	int		last[2];
 	gclient_t	*cl;
 	edict_t		*cl_ent;
 	int team;
-	size_t	maxsize = MAX_MSGLEN;
+	int maxsize = MAX_MSGLEN;
 
 	if (DEBUG_HSCORES) 
 		DbgPrintf("%s entered\n", __func__);

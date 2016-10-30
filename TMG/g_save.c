@@ -738,7 +738,7 @@ last save position.
 void WriteGame (char *filename, qboolean autosave)
 {
 	FILE	*f;
-	size_t	i;
+	int		i;
 	char	str[16];
 
 	if (!autosave)
@@ -756,7 +756,7 @@ void WriteGame (char *filename, qboolean autosave)
 	fwrite (&game, sizeof(game), 1, f);
 	game.autosaved = false;
 
-	for (i = 0; i < game.maxclients; i++)
+	for (i=0 ; i<game.maxclients ; i++)
 		WriteClient (f, &game.clients[i]);
 
 	fclose (f);
@@ -765,7 +765,7 @@ void WriteGame (char *filename, qboolean autosave)
 void ReadGame (char *filename)
 {
 	FILE	*f;
-	size_t	i;
+	int		i;
 	char	str[16];
 	size_t	count;
 
@@ -787,7 +787,7 @@ void ReadGame (char *filename)
 
 	count = fread (&game, sizeof(game), 1, f);
 	game.clients = gi.TagMalloc (game.maxclients * sizeof(game.clients[0]), TAG_GAME);
-	for (i = 0; i < game.maxclients; i++)
+	for (i=0 ; i<game.maxclients ; i++)
 		ReadClient (f, &game.clients[i]);
 
 	fclose (f);

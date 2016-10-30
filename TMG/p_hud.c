@@ -355,17 +355,16 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 	char	entry[512];	// Temporary string store
 	char	string[MAX_MSGLEN]; // The scoreboard message
 	size_t	len;
-	size_t	i;
+	int		i;
 	size_t	j, k, p;
 	int		sorted[MAX_CLIENTS];
 	int		sortedscores[MAX_CLIENTS];
-	int		score;
-	unsigned int total;
+	int		score, total;
 	int		last = 0;
 	gclient_t	*cl;
-	edict_t	*cl_ent;
-	size_t	maxsize = 1024;
-	size_t	slen;
+	edict_t		*cl_ent;
+	int maxsize = MAX_MSGLEN;
+	size_t	stringlength;
 
 	// Highscores
 	FILE    *hs_file;	// the highscore file for this map
@@ -378,7 +377,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 	//end
 
 	string[0] = 0;
-	slen = strlen(string);
+	stringlength = strlen(string);
 
 	if(ent->client->overflowed)
 		return;
@@ -508,19 +507,19 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 						"xv 2 yv %i string \"%s\"",
 						i * 8 + 24, line);
 					j = strlen(entry);
-					if (slen + j > 1400)
+					if (stringlength + j > 1400)
 						break;
-					strcpy (string + slen, entry);
-					slen += j;
+					strcpy (string + stringlength, entry);
+					stringlength += j;
 					i++;
 				}
 
 				fclose(hs_file);
 				j = strlen(entry);
-				if (slen + j < 1400)
+				if (stringlength + j < 1400)
 				{
-					strcpy (string + slen, entry);
-					slen += j;
+					strcpy (string + stringlength, entry);
+					stringlength += j;
 				}
 			}
 		}
@@ -531,20 +530,16 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 	else if (ent->client->pers.db_hud || ent->client->pers.motd == true)
 	{
 		string[0] = 0;
-		slen = strlen(string);
+		stringlength = strlen(string);
 		Com_sprintf (entry, sizeof(entry), tn_showHud(ent));
 		j = strlen(entry);
-		if (!(slen + j > 1400))
+		if (!(stringlength + j > 1400))
 		{
-			strcpy (string + slen, entry);
+			strcpy (string + stringlength, entry);
 			gi.WriteByte (svc_layout);
 			gi.WriteString (string);
 		}
 	}
-
-	if (strlen(string) > maxsize)
-		DbgPrintf("ERROR: Message length too long! %s\n", __FUNCTION__);
-
 	//DbgPrintf("Length: %d %s\n", strlen(string), string);
 }
 

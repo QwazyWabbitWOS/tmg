@@ -1280,8 +1280,10 @@ Cmd_Say_f
 */
 void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 {
-	unsigned j;
-	int	i;
+	int		j;
+	//DB
+	int		i;
+	//DB
 	edict_t	*other;
 	char	*p;
 	char	text[2048];
@@ -1551,6 +1553,8 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 			gi.dprintf("(^^^^filtered^^^^filtered^^^^filtered^^^^)\n");
 	}
 	//DB
+
+
 	
 	for (j = 1; j <= game.maxclients; j++)
 	{
