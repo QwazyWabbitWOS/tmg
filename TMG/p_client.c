@@ -1274,12 +1274,12 @@ edicts are wiped.
 */
 void SaveClientData (void)
 {
-	int		i;
+	size_t	i;
 	edict_t	*ent;
 
-	for (i=0 ; i<game.maxclients ; i++)
+	for (i = 0; i < game.maxclients; i++)
 	{
-		ent = &g_edicts[1+i];
+		ent = &g_edicts[1 + i];
 		if (!ent->inuse)
 			continue;
 		game.clients[i].pers.health = ent->health;
@@ -2536,10 +2536,10 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 {
 	char	*s, *value;
 	int		playernum;
-	int rate, delta;//RAV
-	char player[40];
+	int		rate, delta;//RAV
+	char	player[40];
 	qboolean emptyname = 0;
-	int i;
+	size_t	i;
 	char	*namepass;
 
 	// check for malformed or illegal info strings
@@ -2975,7 +2975,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	char *name;
 	char *ip;
 	char player[30];
-	int i;
+	size_t	i;
 	qboolean emptyname;
 	
 	if (!ent->client)

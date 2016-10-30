@@ -162,7 +162,7 @@ int rav_getFPM(gclient_t* cl)
 int rav_getnumclients()
 {
 	int rCount = 0;
-	int i;
+	size_t	i;
 
 	for (i = 1; i <= game.maxclients; i++)
 	{
@@ -298,13 +298,15 @@ int rav_time(void)
 
 static int rav_getrank(edict_t *ent)
 {
-	int total,i,j,k,score;
+	size_t	total, i;
+	size_t	j, k;
+	int	score;
 	edict_t *cl_ent;
 	int		sorted[MAX_CLIENTS];
 	int		sortedscores[MAX_CLIENTS];
 
 	total = 0;
-	for (i=0; i < game.maxclients; i++)
+	for (i = 0; i < game.maxclients; i++)
 	{
 		cl_ent = g_edicts + 1 + i;
 		if (!cl_ent->inuse)// || cl_ent->client->pers.spectator ||
@@ -312,12 +314,12 @@ static int rav_getrank(edict_t *ent)
 			continue;
 
 		score = game.clients[i].resp.score;
-		for (j=0 ; j<total ; j++)
+		for (j = 0; j < total; j++)
 		{
 			if (score > sortedscores[j])
 				break;
 		}
-		for (k=total ; k>j ; k--)
+		for (k = total; k > j; k--)
 		{
 			sorted[k] = sorted[k-1];
 			sortedscores[k] = sortedscores[k-1];
@@ -326,13 +328,12 @@ static int rav_getrank(edict_t *ent)
 		sortedscores[j] = score;
 		total++;
 	}
-	for (i=0 ; i<total ; i++)
+	for (i = 0; i < total; i++)
 	{
 		cl_ent = g_edicts + 1 + sorted[i];
 		if (cl_ent == ent)
 		{
-			return  i+1;
-
+			return  i + 1;
 		}
 	}
 	return 0;

@@ -166,7 +166,7 @@ char *ConvertName(char *name)
 	// Note: escapes needed for \ and "
 	char *forbidden = "~!@#$%^&*()=|?,.<>[]{}:;/-";
 
-	int i, j;
+	size_t i, j;
 
 	for(i = 0; i < strlen(forbidden); i++)
 	{
@@ -190,7 +190,7 @@ char *ConvertName(char *name)
  */
 char *ConvertNameA(char *name)
 {
-	int i;
+	size_t i;
 
 	for(i = 0; i < strlen(name); i++ )
 	{

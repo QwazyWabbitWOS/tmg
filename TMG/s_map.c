@@ -198,7 +198,7 @@ edict_t *mdsoft_NextMap( void )
 
 			/* Choose map */
 			{
-				int i;
+				size_t	i;
 				int point = (mdsoft_map_last) % mdsoft_map_size;
 				int map_sought = point;
 
@@ -252,7 +252,7 @@ edict_t *mdsoft_NextMap( void )
 					/* Clear visited flags */
 					if(map_once->value)
 					{
-						int i;
+						size_t	i;	// local index
 
 						if(map_debug->value)
 							gi.bprintf(PRINT_HIGH, "Clearing Visited flags\n" );
