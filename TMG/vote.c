@@ -81,9 +81,8 @@ void ClearMapList(void)
 // Choose the next map in the list, or use voting system
 int MaplistNextMap(edict_t *ent)
 {
-	int votemap;
+	int votemap = 0;
 	int i = 0;
-	//	int j;
 	size_t end = 0;
 
 	DumpMapVotes();
