@@ -18,9 +18,9 @@ INTERMISSION
 void MoveClientToIntermission (edict_t *ent)
 {
 	gclient_t	*client;
-//RAV
+	//RAV
 	char song[80];
-//
+	//
 	client = ent->client;
 
 	if (deathmatch->value || coop->value)
@@ -60,7 +60,7 @@ void MoveClientToIntermission (edict_t *ent)
 		DeathmatchScoreboardMessage (ent, NULL);
 		gi.unicast (ent, true);
 	}
-//RAV
+	//RAV
 	if(wavs->value && !ent->bot_client)
 	{
 		Com_sprintf(song, sizeof(song), songtoplay->string);
@@ -352,8 +352,8 @@ void BeginIntermission (edict_t *targ)
 
 void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 {
-	char	entry[1400];
-	char	string[1400];
+	char	entry[512];	// Temporary string store
+	char	string[MAX_MSGLEN]; // The scoreboard message
 	size_t	len;
 	int		i;
 	size_t	j, k, p;
@@ -363,23 +363,25 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 	int		last = 0;
 	gclient_t	*cl;
 	edict_t		*cl_ent;
-	int maxsize = 1400;
+	int maxsize = MAX_MSGLEN;
 	size_t	stringlength;
-	
-	//Highscores
+
+	// Highscores
 	FILE    *hs_file;	// the highscore file for this map
 	char    filename[MAX_QPATH];
 	char    line[80];
-	
+
 	p =  sprintf(filename, "./");
 	p += sprintf(filename + p, "%s/%s", game_dir->string, cfgdir->string);
 	p += sprintf(filename + p, "/hs/%s_hs.txt", level.mapname);
 	//end
-	
+
 	string[0] = 0;
 	stringlength = strlen(string);
+
 	if(ent->client->overflowed)
 		return;
+
 	if (ent->client->showscores)
 	{
 		//force a hud update
@@ -392,21 +394,24 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 				CTFScoreboardMessage (ent, killer);
 			return;
 		}
-		
+
 		// sort the clients by team and score
 		total = 0;
 		for (i = 0; i < game.maxclients; i++)
 		{
 			cl_ent = g_edicts + 1 + i;
-			if ((!cl_ent->inuse) ||(cl_ent->client->resp.spectator)
-				||(!cl_ent->client->pers.pl_state))
+			if ((!cl_ent->inuse) || 
+				(cl_ent->client->resp.spectator) ||
+				(!cl_ent->client->pers.pl_state))
 				continue;
+
 			score = game.clients[i].resp.score;
 			for (j = 0; j < total; j++)
 			{
 				if (score > sortedscores[j])
 					break;
 			}
+
 			for (k = total; k > j; k--)
 			{
 				sorted[k] = sorted[k-1];
@@ -416,44 +421,37 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 			sortedscores[j] = score;
 			total++;
 		}
-		
-		// print level name and exit rules
-		// add the clients in sorted order
-		{
-			Com_sprintf(string, sizeof(string),
-				//"xv  0 yv -100 cstring2 \"%s\" "
-				"xv  0 yv  -90 cstring2 \"MAP: %s\" "
-				"xv  0 yv  -70 cstring2 \"%s %s\" "
-				"xv 20 yv  -60 string2 \"Longest\" "
-				"xv -130 yv  -50 string2 \"Kills Ping FPH Time Spree Name \" ",
-				/*hostname->string,*/ level.mapname, MOD, MOD_VERSION);
-		}
-		
+
+		// print level name & header
+		Com_sprintf(string, sizeof(string),
+			//"xv 0 yv -100 cstring2 \"%s\" "
+			"xv 0 yv -90 cstring2 \"MAP: %s\" "
+			"xv 0 yv -70 cstring2 \"%s %s\" "
+			//"xv 20 yv -60 string2 \"Longest\" "
+			"xv -130 yv -50 string2 \"Kills Ping FPH Time Spree Name \"",
+			/*hostname->string,*/ level.mapname, MOD, MOD_VERSION);
+
 		len = strlen(string);
+
+		// add the clients in sorted order
 		for (i = 0; i < 12; i++) //only allow 12 per board !!!
 		{
 			if (i >= total)
 				break; // we're done
-			// set up y
-			sprintf(entry, "yv %d ", -30 + i * 8);
-			if (maxsize - len > strlen(entry))
-			{
-				strcat(string, entry);
-				len = strlen(string);
-			}
-			
-			// top team
+
 			if (i < total)
 			{
 				cl = &game.clients[sorted[i]];
 				cl_ent = g_edicts + 1 + sorted[i];
-				sprintf(entry+strlen(entry),
-					"xv -125 %s \"%3d  %3d  %3d %3d %3d   %-13.13s\" ",
+				sprintf(entry, "yv %d ", -30 + i * 8);
+				sprintf(entry + strlen(entry),
+					"xv -125 %s \"%3d  %3d  %3d %3d %3d    %s\"",
 					(cl_ent == ent) ? "string2" : "string",
 					cl->resp.score,
-					(cl->ping > 999) ? 999 : cl->ping,  rav_getFPH (cl), (level.framenum - cl->resp.enterframe)/600,
+					(cl->ping > 999) ? 999 : cl->ping,  rav_getFPH (cl), 
+					(level.framenum - cl->resp.enterframe) / 600,
 					cl->resp.bigspree, cl->pers.netname);
-				
+
 				if (maxsize - len > strlen(entry))
 				{
 					strcat(string, entry);
@@ -462,42 +460,43 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 				}
 			}
 		}
-		
-		//set up the next i setting *raven
-		sprintf(entry, "yv %d ", 140 + i * 8);//sets a space between the scores
+
+		// Show how many didn't fit
+		if (total - last > 1)
+			sprintf(string + strlen(string), 
+			"xv 108 yv %d string2 \"& %d more\" ",
+			-30 + (last + 1) * 8, total - last - 1);
+
 		// put in spectators if we have enough room
-		j = 40; //set up positioning
+		j = -30; // set up yv position for spectator list
 		if (maxsize - len > 50)
 		{
 			for (i = 0; i < maxclients->value; i++)
 			{
 				cl_ent = g_edicts + 1 + i;
 				cl = &game.clients[i];
-				if ((!cl_ent->inuse)||(!cl_ent->client->resp.spectator)
-					|| (cl_ent->client->pers.pl_state != PL_SPECTATOR))
-					continue;
-				Com_sprintf(entry, sizeof(entry),
-					"xv 185 yv %i %s \"%-13.12s\" "
-					"xv 280 yv %i %s \"<%s>\" ",
-					j,(cl_ent == ent) ? "string2" : "string", cl->pers.netname,
-					j,(cl_ent == ent) ? "string2" : "string",
-					(cl_ent->client->chase_target != NULL) ? cl_ent->client->chase_target->client->pers.netname : "SPEC");
-				if (maxsize - len > strlen(entry))
+				if (cl_ent->inuse && cl_ent->client->pers.pl_state == PL_SPECTATOR)
 				{
-					strcat(string, entry);
-					len = strlen(string);
+					Com_sprintf(entry, sizeof(entry),
+						"xv 195 yv %d %s \"%s\" " // spectator name
+						"xv 290 yv %d %s \"<%s>\" ", // who he's chasing
+						j, (cl_ent == ent) ? "string2" : "string", cl->pers.netname,
+						j, (cl_ent == ent) ? "string2" : "string",
+						(cl_ent->client->chase_target != NULL) ? 
+						cl_ent->client->chase_target->client->pers.netname : "S");
+
+					if (maxsize - len > strlen(entry))
+					{
+						strcat(string, entry);
+						len = strlen(string);
+					}
+					j += 8;
 				}
-				j += 8;
 			}
 		}
-		
-		//add in # that didnt fit !
-		if (total - last > 1) // couldn't fit everyone
-			sprintf(string + strlen(string), "xv 8 yv %d string2 \"..and %d more\" ",
-			42 + (last+1)*16, total - last - 1);
-		
+
 		//DB Highscores
-		else if (ent->client->showhighscores)
+		if (ent->client->showhighscores)
 		{
 			if ((hs_file = fopen(filename, "r")))
 			{
@@ -505,8 +504,8 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 				while ( fgets(line, 80, hs_file) )
 				{
 					Com_sprintf (entry, sizeof(entry),
-						"xv 2 yv %i string \"%s\" ",
-						i*8 + 24, line);
+						"xv 2 yv %i string \"%s\"",
+						i * 8 + 24, line);
 					j = strlen(entry);
 					if (stringlength + j > 1400)
 						break;
@@ -541,11 +540,12 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 			gi.WriteString (string);
 		}
 	}
+	//DbgPrintf("Length: %d %s\n", strlen(string), string);
 }
 
 void DeathmatchScoreboard (edict_t *ent)
 {
- // Make sure ent exists!
+	// Make sure ent exists!
 	if (!G_EntExists(ent))
 		return;
 
@@ -555,11 +555,11 @@ void DeathmatchScoreboard (edict_t *ent)
 
 
 /* 
- Interlocked with Cmd_HighScore_f.
- Toggle scoreboard on/off on command.
- If highscores is up, change to scoreboard
- but toggle off if commanded again.
- */
+Interlocked with Cmd_HighScore_f.
+Toggle scoreboard on/off on command.
+If highscores is up, change to scoreboard
+but toggle off if commanded again.
+*/
 void Cmd_Score_f (edict_t *ent)
 {
 	ent->client->showinventory = false;
@@ -597,11 +597,11 @@ void Cmd_Score_f (edict_t *ent)
 }
 
 /* 
- Interlocked with Cmd_Score_f.
- Toggle highscores on/off on command.
- If scoreboard is up, change to highscores
- but toggle off if commanded again.
- */
+Interlocked with Cmd_Score_f.
+Toggle highscores on/off on command.
+If scoreboard is up, change to highscores
+but toggle off if commanded again.
+*/
 void Cmd_HighScore_f (edict_t *ent)
 {
 	ent->client->showinventory = false;
@@ -617,10 +617,10 @@ void Cmd_HighScore_f (edict_t *ent)
 	// do not update twice prevent netchan bug, overflows
 	if (ent->client->resp.menu_time == level.framenum)
 		return; 
-	
+
 	ent->client->resp.menu_time = level.framenum + 1;
 	//
-	
+
 	if (ent->client->menu)
 		PMenu_Close(ent);
 
@@ -729,71 +729,71 @@ void G_SetStats (edict_t *ent)
 	int			power_armor_type;
 	int i;//RAV
 
-  // Make sure ent exists!
-  if (!G_EntExists(ent)) return;
+	// Make sure ent exists!
+	if (!G_EntExists(ent)) return;
 
-  //raven gzspace bug chase	
-//if(ent->display == 0)
- // return;
+	//raven gzspace bug chase	
+	//if(ent->display == 0)
+	// return;
 
 	//
 	// health
 	//
-  if(!voosh->value)
-  {
-	ent->client->ps.stats[STAT_HEALTH_ICON] = level.pic_health;
-	ent->client->ps.stats[STAT_HEALTH] = ent->health;
-  
+	if(!voosh->value)
+	{
+		ent->client->ps.stats[STAT_HEALTH_ICON] = level.pic_health;
+		ent->client->ps.stats[STAT_HEALTH] = ent->health;
 
-	//
-	// ammo
-	//
-	if (!ent->client->ammo_index /* || !ent->client->pers.inventory[ent->client->ammo_index] */)
-	{
-		ent->client->ps.stats[STAT_AMMO_ICON] = 0;
-		ent->client->ps.stats[STAT_AMMO] = 0;
-	}
-	else
-	{
-		item = &itemlist[ent->client->ammo_index];
-		ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex (item->icon);
-		ent->client->ps.stats[STAT_AMMO] = ent->client->pers.inventory[ent->client->ammo_index];
-	}
-	
-	//
-	// armor
-	//
-	power_armor_type = PowerArmorType (ent);
-	if (power_armor_type)
-	{
-		cells = ent->client->pers.inventory[ITEM_INDEX(FindItem ("cells"))];
-		if (cells == 0)
-		{	// ran out of cells for power armor
-			ent->flags &= ~FL_POWER_ARMOR;
-			gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/power2.wav"), 1, ATTN_NORM, 0);
-			power_armor_type = 0;;
+
+		//
+		// ammo
+		//
+		if (!ent->client->ammo_index /* || !ent->client->pers.inventory[ent->client->ammo_index] */)
+		{
+			ent->client->ps.stats[STAT_AMMO_ICON] = 0;
+			ent->client->ps.stats[STAT_AMMO] = 0;
+		}
+		else
+		{
+			item = &itemlist[ent->client->ammo_index];
+			ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex (item->icon);
+			ent->client->ps.stats[STAT_AMMO] = ent->client->pers.inventory[ent->client->ammo_index];
+		}
+
+		//
+		// armor
+		//
+		power_armor_type = PowerArmorType (ent);
+		if (power_armor_type)
+		{
+			cells = ent->client->pers.inventory[ITEM_INDEX(FindItem ("cells"))];
+			if (cells == 0)
+			{	// ran out of cells for power armor
+				ent->flags &= ~FL_POWER_ARMOR;
+				gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/power2.wav"), 1, ATTN_NORM, 0);
+				power_armor_type = 0;;
+			}
+		}
+
+		index = ArmorIndex (ent);
+
+		if (power_armor_type && (!index || (level.framenum & 8) ) )
+		{	// flash between power armor and other armor icon
+			ent->client->ps.stats[STAT_ARMOR_ICON] = gi.imageindex ("i_powershield");
+			ent->client->ps.stats[STAT_ARMOR] = cells;
+		}
+		else if (index)
+		{
+			item = GetItemByIndex (index);
+			ent->client->ps.stats[STAT_ARMOR_ICON] = gi.imageindex (item->icon);
+			ent->client->ps.stats[STAT_ARMOR] = ent->client->pers.inventory[index];
+		}
+		else
+		{
+			ent->client->ps.stats[STAT_ARMOR_ICON] = 0;
+			ent->client->ps.stats[STAT_ARMOR] = 0;
 		}
 	}
-
-	index = ArmorIndex (ent);
-
-	if (power_armor_type && (!index || (level.framenum & 8) ) )
-	{	// flash between power armor and other armor icon
-		ent->client->ps.stats[STAT_ARMOR_ICON] = gi.imageindex ("i_powershield");
-		ent->client->ps.stats[STAT_ARMOR] = cells;
-	}
-	else if (index)
-	{
-		item = GetItemByIndex (index);
-		ent->client->ps.stats[STAT_ARMOR_ICON] = gi.imageindex (item->icon);
-		ent->client->ps.stats[STAT_ARMOR] = ent->client->pers.inventory[index];
-	}
-	else
-	{
-		ent->client->ps.stats[STAT_ARMOR_ICON] = 0;
-		ent->client->ps.stats[STAT_ARMOR] = 0;
-	}
-  }
 	//
 	// pickup message
 	//
@@ -816,14 +816,14 @@ void G_SetStats (edict_t *ent)
 		ent->client->ps.stats[STAT_TIMER_ICON] = gi.imageindex ("p_invulnerability");
 		ent->client->ps.stats[STAT_TIMER] = (ent->client->invincible_framenum - level.framenum)/10;
 	}
-//RAV
+	//RAV
 	//respawn protection
-    else if (ent->client->respawn_framenum > level.framenum)
+	else if (ent->client->respawn_framenum > level.framenum)
 	{
 		ent->client->ps.stats[STAT_TIMER_ICON] = gi.imageindex ("p_invulnerability");
 		ent->client->ps.stats[STAT_TIMER] = (ent->client->respawn_framenum - level.framenum)/10;
 	}
-//
+	//
 	else if (ent->client->enviro_framenum > level.framenum)
 	{
 		ent->client->ps.stats[STAT_TIMER_ICON] = gi.imageindex ("p_envirosuit");
@@ -901,11 +901,11 @@ void G_SetStats (edict_t *ent)
 	else
 		ent->client->ps.stats[STAT_HELPICON] = 0;
 
-//	gi.dprintf("pers.weapon is %s\n", ent->client->pers.weapon->classname);
+	//	gi.dprintf("pers.weapon is %s\n", ent->client->pers.weapon->classname);
 
-//ZOID
+	//ZOID
 	if (ctf->value)
 		SetCTFStats(ent);
-//ZOID
+	//ZOID
 }
 
