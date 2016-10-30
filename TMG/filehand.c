@@ -213,12 +213,7 @@ int CheckOpFile (edict_t *ent, char ip[IP_LENGTH], qboolean returnindex)
 	int i = 0, flagged = -1;
 	int a;
 	char *result = NULL;
-	qboolean firsttime;
-	qboolean namepassMatches;
-
 	inFile = false;
-	namepassMatches = false;
-	firsttime = true;
 
 	if ((opfile = tn_open("user_o.txt", "r")))
 	{
