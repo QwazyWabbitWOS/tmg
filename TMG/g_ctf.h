@@ -225,6 +225,8 @@ void OpMap3(edict_t *ent, pmenu_t *p);
 void OpMapNames2(void);
 void OpMap2(edict_t *ent, pmenu_t *p);
 void OpMapNames(void);
+void OpExecFFAConfig (edict_t *ent, pmenu_t *menu);
+void OpExecCTFConfig (edict_t *ent, pmenu_t *menu);
 
 void OpBotToggle(edict_t *ent, pmenu_t *menu);
 void OpBotChatToggle (edict_t *ent, pmenu_t *menu);
