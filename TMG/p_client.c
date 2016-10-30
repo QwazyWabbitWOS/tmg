@@ -1462,7 +1462,8 @@ edict_t *SelectFarthestDeathmatchSpawnPoint (void)
 	float  bestdistance, bestplayerdistance;
 	edict_t  *spot;
 
-	DbgPrintf("%s\n", __FUNCTION__);
+	if(debug_spawn->value)
+		DbgPrintf("%s\n", __FUNCTION__);
 
 	spot = NULL;
 	bestspot = NULL;
@@ -1481,8 +1482,9 @@ edict_t *SelectFarthestDeathmatchSpawnPoint (void)
 
 	if (bestspot)
 	{
-		DbgPrintf("Bestspot %s returning %s \nat %f %f %f\n", __func__, bestspot->classname,
-			bestspot->s.origin[0], bestspot->s.origin[1], bestspot->s.origin[2]); 
+		if(debug_spawn->value)
+			DbgPrintf("Bestspot %s returning %s \nat %f %f %f\n", __func__, bestspot->classname,
+				bestspot->s.origin[0], bestspot->s.origin[1], bestspot->s.origin[2]); 
 		return bestspot;
 	}
 
@@ -1491,8 +1493,9 @@ edict_t *SelectFarthestDeathmatchSpawnPoint (void)
 
 	spot = G_Find (NULL, FOFS(classname), "info_player_deathmatch");
 
-	DbgPrintf("Telefrag %s returning %s \nat %f %f %f\n", __func__, spot->classname,
-		spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
+	if(debug_spawn->value)
+		DbgPrintf("Telefrag %s returning %s \nat %f %f %f\n", __func__, spot->classname,
+			spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
 
 	return spot;
 }
@@ -1537,9 +1540,10 @@ edict_t *SpawnNearFlag (edict_t *ent)
 	// we have no choice to turn one into a telefrag meltdown
 	spot = G_Find (NULL, FOFS(classname), teamspawn);
 
-	DbgPrintf("8888 %s returning %s for %s\nat %f %f %f\n", __func__, 
-		spot->classname, ent->client->pers.netname,
-		spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
+	if(debug_spawn->value)	
+		DbgPrintf("8888 %s returning %s for %s\nat %f %f %f\n", __func__, 
+			spot->classname, ent->client->pers.netname,
+			spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
 
 	return spot;
 }
@@ -1548,7 +1552,9 @@ edict_t *SelectDeathmatchSpawnPoint (void)
 {
 	edict_t *spot;
 	
-	DbgPrintf("%s\n", __FUNCTION__);
+	if(debug_spawn->value)
+		DbgPrintf("%s\n", __FUNCTION__);
+	
 	if ( (int)(dmflags->value) & DF_SPAWN_FARTHEST)
 	{
 		spot = SelectFarthestDeathmatchSpawnPoint ();
@@ -1593,8 +1599,6 @@ edict_t *SelectCoopSpawnPoint (edict_t *ent)
 				return spot;		// this is it
 		}
 	}
-
-
 	return spot;
 }
 
@@ -1610,7 +1614,8 @@ qboolean SelectSpawnPointRAV (edict_t *ent, vec3_t origin, vec3_t angles)
 {
   edict_t  *spot = NULL;
 
-  DbgPrintf("%s\n", __FUNCTION__);
+	if(debug_spawn->value)
+		DbgPrintf("%s\n", __FUNCTION__);
 
 		//ZOID
 		if (ctf->value && ent->client->kill) //JSW
@@ -1624,8 +1629,8 @@ qboolean SelectSpawnPointRAV (edict_t *ent, vec3_t origin, vec3_t angles)
  
 		
 		// find a single player start spot
-	if(!spot) {
-
+	if(!spot) 
+	{
 		//warning!!!
 		gi.dprintf("Warning: failed to find deathmatch spawn point\n");
 
@@ -1640,7 +1645,8 @@ qboolean SelectSpawnPointRAV (edict_t *ent, vec3_t origin, vec3_t angles)
 				break;
 		}
 
-		if(!spot) {
+		if(!spot) 
+		{
 			if(!game.spawnpoint[0]) {	// there wasn't a spawnpoint without a target, so use any
 				spot = G_Find(spot, FOFS(classname), "info_player_start");
 			}
