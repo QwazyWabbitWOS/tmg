@@ -479,7 +479,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 				{
 					Com_sprintf(entry, sizeof(entry),
 						"xv 195 yv %d %s \"%s\" " // spectator name
-						"xv 290 yv %d %s   \"<%s>\" ", // who he's chasing
+						"xv 300 yv %d %s \"<%s>\" ", // who he's chasing
 						j, (cl_ent == ent) ? "string2" : "string", cl->pers.netname,
 						j, (cl_ent == ent) ? "string2" : "string",
 						(cl_ent->client->chase_target != NULL) ? 
