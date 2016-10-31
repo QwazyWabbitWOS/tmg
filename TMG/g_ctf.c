@@ -3978,8 +3978,7 @@ void CTFShowScores(edict_t *ent, pmenu_t *p)
 	DeathmatchScoreboard (ent);
 }
 
-static
-void restartthismap(void)
+static void restartthismap(void)
 {
 	char command[80];
 
@@ -4535,7 +4534,8 @@ pmenu_t noworlatermenu[] = {
 };
 
 pmenu_t yesnomenu[] = {
-	{ "*Vote to change map to",			PMENU_ALIGN_CENTER,  0,  NULL },
+	{ "*TMG_MOD",			PMENU_ALIGN_CENTER,  0,  NULL },
+	{ "*Vote to change map to:",			PMENU_ALIGN_CENTER,  0,  NULL },
 	{ NULL,				PMENU_ALIGN_CENTER,   0, NULL },
 	{ NULL,				PMENU_ALIGN_CENTER,   0, NULL },
 	{ NULL,				PMENU_ALIGN_CENTER,   0, NULL },
@@ -4545,7 +4545,7 @@ pmenu_t yesnomenu[] = {
 };
 
 pmenu_t specmenu[] = {
-	{ "*Force Player to Spec:", PMENU_ALIGN_CENTER, 0, NULL },
+	{ "*Force Player to Spec", PMENU_ALIGN_CENTER, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
@@ -4582,7 +4582,7 @@ pmenu_t specmenu[] = {
 };
 
 pmenu_t switchmenu[] = {
-	{ "*Transfer a Player:", PMENU_ALIGN_CENTER, 0, NULL },
+	{ "*Transfer a Player", PMENU_ALIGN_CENTER, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
@@ -4619,7 +4619,7 @@ pmenu_t switchmenu[] = {
 };
 
 pmenu_t promotemenu[] = {
-	{ "*Add an Operator:",	PMENU_ALIGN_CENTER, 0, NULL },
+	{ "*Add an Operator",	PMENU_ALIGN_CENTER, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
@@ -4656,18 +4656,18 @@ pmenu_t promotemenu[] = {
 };
 
 pmenu_t lightsmenu[] = {
-	{ "*Lights Menu:",		PMENU_ALIGN_CENTER, 0, NULL },
+	{ "*TMG_MOD",			PMENU_ALIGN_CENTER,  0,  NULL },
+	{ "*Lights Menu",		PMENU_ALIGN_CENTER, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ "Lights ON",			PMENU_ALIGN_LEFT, 0, LightsOn },
-	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ "Lights OFF",			PMENU_ALIGN_LEFT, 0, LightsOff },
 };
 
 pmenu_t botsmenu[] = {
-	{ "**TMG_MOD",			PMENU_ALIGN_CENTER,  0,  NULL },
-	{ "*Bots Menu:",		PMENU_ALIGN_CENTER, 0, NULL },
+	{ "*TMG_MOD",			PMENU_ALIGN_CENTER,  0,  NULL },
+	{ "Bot Control Menu",		PMENU_ALIGN_CENTER, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
@@ -4678,12 +4678,17 @@ pmenu_t botsmenu[] = {
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
-	{ "*(TAB to Return)",	PMENU_ALIGN_LEFT,  0,  NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ "*(TAB to Exit)",	PMENU_ALIGN_LEFT,  0,  NULL },
 };
 
 pmenu_t opmenu[] = {
-	{ "**TMG_MOD",			PMENU_ALIGN_CENTER,  0,  NULL },
-	{ "*Operator Menu",		PMENU_ALIGN_CENTER,  0,  NULL },
+	{ "*TMG_MOD",			PMENU_ALIGN_CENTER,  0,  NULL },
+	{ "Operator Menu",		PMENU_ALIGN_CENTER,  0,  NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
@@ -4694,12 +4699,22 @@ pmenu_t opmenu[] = {
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
-	{ "*(TAB to Return)",	PMENU_ALIGN_LEFT,  0,  NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ "*(TAB to Exit)",	PMENU_ALIGN_LEFT,  0,  NULL },
 };
 
 pmenu_t opmenuP[] = {
-	{ "**TMG_MOD",			PMENU_ALIGN_CENTER,  0,  NULL },
+	{ "*TMG_MOD",			PMENU_ALIGN_CENTER,  0,  NULL },
 	{ "*Operator Player Menu",	PMENU_ALIGN_CENTER,  0,  NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
+	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
@@ -5788,17 +5803,19 @@ void KickPlayer(edict_t *ent, pmenu_t *p)
 			   true, true);
 }
 
+//QW// 
 void UpdateBotMenu(edict_t *ent)
 {
 	char bots_on_off[20];
 	char bot_chat_on_off[25];
 	char bot_insult_on_off[25];
 	int	pos;
-	int	startpos = 2;
-	int	entries = 1;
+	int	startpos = 3; // title and heading are 0, 1
+	int	entries = 2;  // so we've made 2 entries
 	char str[256];
 	char seps[]= "\t";
 	char *token;
+	size_t msize;
 
 	// Initialize the search strings per current state
 	if (use_bots->value)
@@ -5816,7 +5833,7 @@ void UpdateBotMenu(edict_t *ent)
 	else
 		strcpy(bot_insult_on_off, "Toggle Bot Insult ON");
 
-	// Initialize the menu elements per current state
+	// Initialize the menu element string per current state
 	strcpy(str, "");
 	if (use_bots->value)
 		strcat(str, "Toggle Bots OFF\t");
@@ -5833,6 +5850,10 @@ void UpdateBotMenu(edict_t *ent)
 	else
 		strcat(str, "Toggle Bot Insult ON\t");
 
+	if (strlen(str) >= sizeof str)
+		DbgPrintf("%s str space used: %d\n", __FUNCTION__, strlen(str));
+
+	// Populate the structure
 	token = strtok (str, seps);
 	pos = startpos;
 	while (token != NULL)
@@ -5844,6 +5865,7 @@ void UpdateBotMenu(edict_t *ent)
 	}
 
 	// Initialize the function pointers of the active elements
+	// by matching the tokens to the string items
 	for (pos = startpos; pos < entries + 1; pos++)
 	{
 		botsmenu[pos].text = menustring[pos];
@@ -5858,7 +5880,8 @@ void UpdateBotMenu(edict_t *ent)
 	}
 
 	// Clear the rest of the menu
-	while (pos < 9)
+	msize = (sizeof(botsmenu) / sizeof(pmenu_t)) - entries;
+	while (pos < msize)
 	{
 		botsmenu[pos].text = NULL;
 		botsmenu[pos].SelectFunc = NULL;
@@ -5872,11 +5895,12 @@ void UpdateOpMenu(edict_t *ent)
 	char team_lock_unlock[20];
 	char server_lock_unlock[20];
 	int	pos;
-	int	startpos = 2;
-	int	entries = 1;
+	int	startpos = 3;
+	int	entries = 2;
 	char str[256];
 	char seps[]= "\t";
 	char *token;
+	size_t	msize;
 
 	if (locked_teams)
 		strcpy(team_lock_unlock, "Unlock Teams");
@@ -5918,6 +5942,9 @@ void UpdateOpMenu(edict_t *ent)
 
 	if (ent->client->pers.oplevel & OP_CHANGEMAP)
 		strcat (str, "Exec CTF Configuration\t");
+
+	if (strlen(str) >= sizeof str)
+		DbgPrintf("%s str space used: %d\n", __FUNCTION__, strlen(str));
 
 	if (ent->client->pers.oplevel & OP_PLAYERCONTROL)
 	{
@@ -5961,7 +5988,8 @@ void UpdateOpMenu(edict_t *ent)
 	}
 
 	//Clear the rest of the menu
-	while (pos < 9)
+	msize = (sizeof(opmenu) / sizeof(pmenu_t)) - entries;
+	while (pos < msize)
 	{
 		opmenu[pos].text = NULL;
 		opmenu[pos].SelectFunc = NULL;
@@ -5971,10 +5999,12 @@ void UpdateOpMenu(edict_t *ent)
 
 void UpdatePlayerMenu(edict_t *ent)
 {
-	int pos = 2, entries = 1;
+	int pos = 2;
+	int entries = 1;
 	char str[256];
 	char seps[]= "\t";
 	char *token;
+	size_t msize;
 
 	strcpy(str, "");
 	if (ent->client->pers.oplevel & OP_STATUS)
@@ -5999,7 +6029,7 @@ void UpdatePlayerMenu(edict_t *ent)
 		pos++;
 	}
 
-	for (pos = 2; pos < entries+1; pos++)
+	for (pos = 2; pos < entries + 1; pos++)
 	{
 		opmenuP[pos].text = menustring[pos];
 		if (Q_stricmp(opmenuP[pos].text, "Player List") == 0)
@@ -6022,6 +6052,15 @@ void UpdatePlayerMenu(edict_t *ent)
 			opmenuP[pos].SelectFunc = OpPlayer;
 		else
 			opmenuP[pos].SelectFunc = NULL;
+	}
+
+	//Clear the rest of the menu
+	msize = (sizeof(opmenuP) / sizeof(pmenu_t)) - entries;
+	while (pos < msize)
+	{
+		opmenuP[pos].text = NULL;
+		opmenuP[pos].SelectFunc = NULL;
+		++pos;
 	}
 }
 //end
@@ -6570,16 +6609,16 @@ qboolean CTFCheckRules(void)
 	//RAV even teams
 	if(even_teams->value)
 	{
-		int wining =0;
+		int winning =0;
 
 		//get scores and compare to see if we need to go further
 		if(ctfgame.team1 != ctfgame.team2)
 		{
 			if(ctfgame.team1 > ctfgame.team2)
-				wining = 1;//red
+				winning = 1;//red
 			else
-				wining = 2;//blue
-			switch(wining)
+				winning = 2;//blue
+			switch(winning)
 			{
 			case 1:
 				if(ctfgame.players1 >= ctfgame.players2+even_teams->value)
@@ -6908,7 +6947,7 @@ void SpawnExtra(vec3_t position, char *classname)
 	it_ent = G_Spawn();
 
 	it_ent->classname = classname;
-	VectorCopy(position,it_ent->s.origin);
+	VectorCopy(position, it_ent->s.origin);
 	ED_CallSpawn(it_ent);
 
 	if(ctf->value && chedit->value)

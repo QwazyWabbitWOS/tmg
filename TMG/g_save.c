@@ -422,11 +422,12 @@ void InitGame (void)
 	log_connect = gi.cvar ("log_connect", "1", 0);
 	log_chat = gi.cvar ("log_chat", "0", 0);
 
-	// set these for debugging output
+	//QW// Set these for debugging output
 	debug_spawn = gi.cvar ("debug_spawn", "0", 0);
 	debug_botspawn = gi.cvar ("debug_botspawn", "0", 0);
 	debug_ops = gi.cvar ("debug_ops", "0", 0);
 
+	//QW// Configure FFA and CTF config files for OP menu
 	ffa_cfg_file = gi.cvar ("ffa_cfgfile", "ffa.cfg", 0);
 	ctf_cfg_file = gi.cvar ("ctf_cfgfile", "railwarz.cfg", 0);
 
