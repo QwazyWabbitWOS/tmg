@@ -352,7 +352,7 @@ void BeginIntermission (edict_t *targ)
 
 void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 {
-	char	entry[512];	// Temporary string store
+	char	entry[MAX_MSGLEN];	// Temporary string store
 	char	string[MAX_MSGLEN]; // The scoreboard message
 	size_t	len;
 	int		i;
