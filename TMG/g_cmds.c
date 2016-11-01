@@ -1990,7 +1990,7 @@ void ClientCommand (edict_t *ent)
 	{
 		if(locked_teams == false)
 		{
-			ent->client->resp.hook_wait = level.time + .5; //JSW was 5, is that number necessary??
+			ent->client->resp.hook_wait = level.framenum + 5; // 1/2 second delay
 			abandon_hook_reset (ent);
 			CTFTeam_f (ent, 0);
 		}
