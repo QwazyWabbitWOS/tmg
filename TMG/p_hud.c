@@ -384,8 +384,8 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 
 	if (ent->client->showscores)
 	{
-		//force a hud update
-		ent->client->hudtime = level.framenum + 5; //QW// was: 8
+		// schedule a hud update
+		ent->client->hudtime = level.framenum + 2; //QW// was: 8
 		if (ctf->value)
 		{
 			if (newscore->value)
