@@ -1422,9 +1422,9 @@ void ClientEndServerFrame (edict_t *ent)
 				DeathmatchScoreboardMessage (ent, ent->enemy);
 
 			if(ent->client->chase_target)
-				ent->client->hudtime = level.framenum + 10;
+				ent->client->hudtime = level.framenum + 5;	// HUD update interval (chasing)
 			else
-				ent->client->hudtime = level.framenum + 10;
+				ent->client->hudtime = level.framenum + 2;	// HUD update interval players
 
 			gi.unicast (ent, false);
 		}

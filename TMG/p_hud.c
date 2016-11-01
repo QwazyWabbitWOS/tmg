@@ -385,7 +385,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 	if (ent->client->showscores)
 	{
 		//force a hud update
-		ent->client->hudtime = level.framenum + 8;
+		ent->client->hudtime = level.framenum + 5; //QW// was: 8
 		if (ctf->value)
 		{
 			if (newscore->value)
@@ -540,7 +540,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 			gi.WriteString (string);
 		}
 	}
-	//DbgPrintf("Length: %d %s\n", strlen(string), string);
+	//DbgPrintf("%d Length: %d %s\n", level.framenum, strlen(string), string);
 }
 
 void DeathmatchScoreboard (edict_t *ent)
