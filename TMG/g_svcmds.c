@@ -391,7 +391,8 @@ void ServerCommand (void)
 	else if (Q_stricmp (cmd, "msg") == 0)
 		Svcmd_Msg ();
 	else if (Q_stricmp (cmd, "restart") == 0)
-		RestartLevel();
+		//RestartLevel(); //FIXME: Does not reset bot stats. 
+		RestartThisMap();
 	else if (Q_stricmp (cmd, "lockserver") == 0)
 	{
 		serverlocked = true;

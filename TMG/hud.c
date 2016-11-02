@@ -112,8 +112,6 @@ void TimeLeft(void)
 		return;
 	timer = 0;
 
-	//	strcpy (time_left, "/0");
-
 	if (sec < 0)
 	{
 		Com_sprintf (time_left2, sizeof(time_left2), "00:00");
@@ -134,29 +132,6 @@ void TimeLeft(void)
 		GetTime();
 	}
 }
-	
-	
-int rav_getFPM(gclient_t* cl)
-{
-	float fCLTimeSecs = (level.framenum - cl->resp.enterframe)/10.0;
-	float fFPM;
-
-	if(fCLTimeSecs > 0.0)
-		fFPM = (cl->resp.score * 3600.0 / fCLTimeSecs);
-	else
-		fFPM = cl->resp.score;
-
-	// we never show an FPH of > 999 or < -99 for now (3 character field)
-	if(fFPM >= 999.0)
-		return 999;
-	if(fFPM <= -99.0)
-		return -99;
-
-	if(fFPM >= 0.0)
-		return (int)(fFPM + 0.5);
-	else
-		return (int)(fFPM - 0.5);
-} 
 
 ///////////////get # of clients////////////////
 int rav_getnumclients()
@@ -181,7 +156,7 @@ static char *tn_id (edict_t *ent)
 {
 	int j = 0;
 	long	playernum;
-	float dist;//, mindist; JSW no longer used
+	float dist;
 	static char stats[200];
 	vec3_t  start, forward, end, v;
 	trace_t tr;
@@ -193,23 +168,14 @@ static char *tn_id (edict_t *ent)
 	VectorMA(start, 8192, forward, end);
 	tr = gi.trace(start, NULL, NULL, end, ent, MASK_SHOT|CONTENTS_SLIME|CONTENTS_LAVA);
 
-	if ((Q_stricmp (tr.ent->classname, "player")==0 && tr.ent->inuse) /*|| tr.ent->bot_client*/)
+	if ((Q_stricmp (tr.ent->classname, "player") == 0 && tr.ent->inuse))
 	{
 		playernum = tr.ent - g_edicts - 1;
 		VectorSubtract (ent->s.origin, tr.ent->s.origin, v);
 		dist=VectorLength (v) / 32; // 32 units = 1 metre?
-
-//		mindist = ((light_comp->value/100) * tr.ent->light_level);
-		//JSW Comment - why use this? they are either there or they aren't,
-		//no matter what the light situation.  Who cares about dist varying
-
-		//		if (dist <= (float)ent->client->resp.iddist)
-		j += sprintf(stats + j, "xv 80 yb -68 string \"Viewing %s\" ", tr.ent->client->pers.netname );
-
-	/*		if ((mindist >= dist) && (dist <= max_hud_dist->value))
-	 JSW			j += sprintf(stats + j, "xv 0 yb -58 string \"%s\" "
-	 remvd			, tr.ent->client->pers.netname );
-	 */
+		j += sprintf(stats + j, 
+			"xv 80 yb -68 string \"Viewing %s\" ", 
+			tr.ent->client->pers.netname );
 	}
 	return (stats); 
 }
@@ -256,45 +222,47 @@ char *tn_votewait (edict_t *ent)
 }
 */
 
-int rav_getFPH(gclient_t* cl)
+/* 
+	Calculate player's frags per hour
+	and clamp it to three digits.
+	Store result in player's client data.
+*/
+void CalcFPH(edict_t *ent)
 {
-	float fCLTimeSecs = (level.newframenum - cl->resp.startframe) / 10.0;
-	float fFPH;
+	int fph = 0;
+	float framesperhour = 3600 / FRAMETIME;
+	gclient_t *cl = ent->client;
+	int interval = level.framenum - cl->resp.enterframe;
+	fph = cl->resp.score / (interval / framesperhour);
 
-	if(fCLTimeSecs > 0.0)
-		fFPH = (cl->resp.frags * 3600.0 / fCLTimeSecs);
-	else
-		fFPH = cl->resp.frags;
-
-	// we never show an FPH of > 999 or < -99 for now (3 character field)
-	if(fFPH >= 999.0)
-		return 999;
-	if(fFPH <= -99.0)
-		return -99;
-
-	if(fFPH >= 0.0)
-		return (int)(fFPH + 0.5);
-	else
-		return (int)(fFPH - 0.5);
+	if(fph >= 999)
+		fph = 999;
+	if(fph <= -99)
+		fph = -99;
+	if(fph >= 0)
+		cl->resp.fph = fph;
 }
 
-int rav_time(void)
+/* 
+	Calculate player's frags per minute
+	and clamp it to three digits.
+	Store result in player's client data.
+*/
+void CalcFPM(edict_t *ent)
 {
-	long sec;
+	int fpm = 0;
+	float framespermin = 60 / FRAMETIME;
+	gclient_t *cl = ent->client;
+	int interval = level.framenum - cl->resp.enterframe;
+	fpm = cl->resp.score / (interval / framespermin);
 
-	sec	= ceil(match_state_end - level.time);
-
-	if (sec < 0)
-		return 0;
-
-	if(sec > 60)
-		return (int) sec/60;
-
-	if(sec <= 60)
-		return (int) sec;
-	
-	return 0;
-}
+	if(fpm >= 999)
+		fpm = 999;
+	if(fpm <= -99)
+		fpm = -99;
+	if(fpm >= 0)
+		cl->resp.fpm = fpm;
+} 
 
 static int rav_getrank(edict_t *ent)
 {
@@ -307,8 +275,7 @@ static int rav_getrank(edict_t *ent)
 	for (i=0; i < game.maxclients; i++)
 	{
 		cl_ent = g_edicts + 1 + i;
-		if (!cl_ent->inuse)// || cl_ent->client->pers.spectator ||
-						   //cl_ent->flags & FL_ANTI)
+		if (!cl_ent->inuse)
 			continue;
 
 		score = game.clients[i].resp.score;
@@ -332,24 +299,23 @@ static int rav_getrank(edict_t *ent)
 		if (cl_ent == ent)
 		{
 			return  i+1;
-
 		}
 	}
 	return 0;
 }
 
-
 static int rav_getdied(gclient_t* cl)
 {
 	int dead = 0;
 
-	dead = ((int)cl->resp.deaths);
+	dead = cl->resp.deaths;
 
-	// we never show an value of > 999 or < -99 for now (3 character field)
-	if(dead <= 0)
-		return 0;
+	if(dead >= 999)
+		dead = 999;
+	if(dead <= -99)
+		dead = -99;
 
-	return (int)(dead);
+	return dead;
 }
 
 char *rav_gettech(edict_t *ent)
@@ -463,7 +429,10 @@ char *tn_showHud (edict_t *ent)
 	static char layout[1300];
 	int j = 0;
 	gclient_t	*cl;
-	int	score, ping, fph, fpm;
+	int	score;
+	int ping;
+	int fph;
+	int fpm;
 	int frags, captures, died, num_ppl, rank;
 	int shots, eff;
 	int bigspree;
@@ -500,16 +469,17 @@ char *tn_showHud (edict_t *ent)
 			j += sprintf (layout+j, "xv 0 yt 105 cstring \"%s\" ", motd_line->string);
 			if (use_hook->value)
 				j += sprintf (layout+j, "xv 0 yt 125 cstring2 \"Bind a key to +hook for Hook\" ");
-			j += sprintf (layout+j, "xv 0 yt 155 cstring \"Hit Any Key to Begin\" ");
+				//j += sprintf (layout+j, "xv 0 yt 155 cstring \"Hit Any Key to Begin\" ");
 		}
 		else
 		{
 			if (use_hook->value)
 				j += sprintf (layout+j, "xv 0 yt 105 cstring2 \"Bind a key to +hook for Hook\" ");
-			j += sprintf (layout+j, "xv 0 yt 125 cstring \"Hit Any Key to Begin\" ");
+				//j += sprintf (layout+j, "xv 0 yt 125 cstring \"Hit Any Key to Begin\" ");
 		}
 	}
-	//spectator hud
+
+	// Begin spectator HUD
 	else if ((ent->client->resp.spectator != PL_SPECTATOR || 
 		ent->client->pers.pl_state == PL_SPECTATOR) && 
 		(ent->client->pers.motd == false))
@@ -533,7 +503,7 @@ char *tn_showHud (edict_t *ent)
 			}
 			else
 			{
-				j += sprintf (layout + j, "xv 0 yb -90 cstring \"%s\" ", rectangle);
+				j += sprintf (layout+j, "xv 0 yb -90 cstring \"%s\" ", rectangle);
 				j += sprintf (layout+j, "xv 0 yb -94 cstring \"\nFloatCam\" ");
 				j += sprintf (layout+j, "%s", va ("xv 0 yb -78 cstring \"%s\" ",
 							ent->client->chase_target->client->pers.netname ));
@@ -579,9 +549,8 @@ char *tn_showHud (edict_t *ent)
 
 		if(ent->client->chase_target != NULL)	// chasing a player
 		{
-			//Raven 12-31-1999
-			//this replaces the ugly old statusbar
-			//parse out the info
+			// Raven 12-31-1999
+			// Revised by QwazyWabbit 2016
 			score = cl->chase_target->client->resp.score;
 			frags = cl->chase_target->client->resp.frags;
 			captures = cl->chase_target->client->resp.captures;
@@ -589,9 +558,9 @@ char *tn_showHud (edict_t *ent)
 			eff = cl->chase_target->client->resp.eff;
 			ping = cl->chase_target->client->ping;
 			died = rav_getdied(cl->chase_target->client);
-			fph = rav_getFPH(cl->chase_target->client);
+			fph = cl->chase_target->client->resp.fph;
 			//QW// fpm is unused for now.
-			fpm = rav_getFPM(cl->chase_target->client);
+			fpm = cl->chase_target->client->resp.fpm;
 			rank = rav_getrank(cl->chase_target);
 			bigspree = cl->chase_target->client->resp.spree;
 			//score
@@ -627,9 +596,9 @@ char *tn_showHud (edict_t *ent)
 			j += sprintf (layout+j, "xr -70 yt 162 string \"%i \" ", bigspree);
 
 		}
-	}
+	} // End spectator HUD
 
-
+	// All players see this
 	if (match_state < STATE_PLAYING)
 	{
 		if(match_state == STATE_WARMUP)
@@ -637,7 +606,8 @@ char *tn_showHud (edict_t *ent)
 		if(match_state == STATE_COUNTDOWN)
 			j += sprintf (layout+j, "xl 22 yb -200 string2 \"Seconds Until Level Starts\" ");
 	}
-	// the player in game HUD
+
+	// Begin player HUD
 	if(ent->client->pers.pl_state != PL_SPECTATOR)
 	{
 		//parse out the info
@@ -648,7 +618,6 @@ char *tn_showHud (edict_t *ent)
 		eff = cl->resp.eff;
 		ping = cl->ping;
 		died = rav_getdied(cl);
-		fph = rav_getFPH(cl);
 		rank = rav_getrank(ent);
 		bigspree = cl->resp.spree;
 
@@ -660,7 +629,7 @@ char *tn_showHud (edict_t *ent)
 		j += sprintf (layout+j, "xr -70 yt 26 string \"%i\" ", ping);
 		//fph
 		j += sprintf (layout+j, "xr -70 yt 34 string2 \"FPH\" ");
-		j += sprintf (layout+j, "xr -70 yt 42 string \"%i\" ", fph);
+		j += sprintf (layout+j, "xr -70 yt 42 string \"%i\" ", cl->resp.fph);
 		//Efficiency
 		j += sprintf (layout+j, "xr -70 yt 50 string2 \"Eff\" ");
 		j += sprintf (layout+j, "xr -70 yt 58 string \"%i%%%%\" ", eff);
@@ -724,20 +693,21 @@ char *tn_showHud (edict_t *ent)
 				j += sprintf (layout+j, "xl 22 yb -200 string2 \"UNFAIR: Blue  Has Too many Players\" ");
 			if(redtime >level.time || bluetime >level.time)
 				j += sprintf (layout+j, "xl 340 yb -220 string \"Even Teams Please!\" ");
-			// j += sprintf (layout+j, "xl 2 yb -80 string2 \"%s\" ",hostname->string);
+			// j += sprintf (layout+j, "xl 2 yb -80 string2 \"%s\" ", hostname->string);
 		}
-	}
+	}	// End player HUD
+
 	s = strlen(layout);
 	if ( s > sizeof (layout))
 	{
 		gi.dprintf("%s: Statusbar too big %d\n", __func__, s); //to the log
 		layout[sizeof(layout) - 1] = 0;
 	}
-	//id disabling added 12-14-99 raven
 
+	//id disabling added 12-14-99 raven
 	if ((!ent->client->chase_target) && (ent->client->pers.db_id))
 		j += sprintf (layout+j, "%s", tn_id (ent));
-	
+
 	return (layout);
 }
 

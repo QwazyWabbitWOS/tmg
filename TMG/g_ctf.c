@@ -3978,7 +3978,7 @@ void CTFShowScores(edict_t *ent, pmenu_t *p)
 	DeathmatchScoreboard (ent);
 }
 
-static void restartthismap(void)
+void RestartThisMap(void)
 {
 	char command[80];
 
@@ -3996,7 +3996,7 @@ void OpBotToggle(edict_t *ent, pmenu_t *menu)
 	else
 		gi.cvar_set("use_bots", "0");
 
-	restartthismap();
+	RestartThisMap();
 }
 
 void OpBotChatToggle (edict_t *ent, pmenu_t *menu)
@@ -4683,7 +4683,7 @@ pmenu_t botsmenu[] = {
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
-	{ "*(TAB to Exit)",	PMENU_ALIGN_LEFT,  0,  NULL },
+	{ "*(TAB to Return)",	PMENU_ALIGN_LEFT,  0,  NULL },
 };
 
 pmenu_t opmenu[] = {
@@ -4704,7 +4704,7 @@ pmenu_t opmenu[] = {
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
 	{ NULL,					PMENU_ALIGN_LEFT, 0, NULL },
-	{ "*(TAB to Exit)",	PMENU_ALIGN_LEFT,  0,  NULL },
+	{ "*(TAB to Return)",	PMENU_ALIGN_LEFT,  0,  NULL },
 };
 
 pmenu_t opmenuP[] = {
@@ -4732,7 +4732,7 @@ void OpRestart(edict_t *ent, pmenu_t *p)
 {
 	if (ent->client->menu)
 		PMenu_Close(ent);
-	RestartLevel();
+	RestartThisMap();
 }
 
 void ChangeNow (edict_t *ent, pmenu_t *menu)

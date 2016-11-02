@@ -107,6 +107,7 @@ void CTFShowScores(edict_t *ent, pmenu_t *p);
 void JoinGame(edict_t *ent, pmenu_t *menu);
 void OPMenu(edict_t *ent, pmenu_t *p);
 void KickMe(edict_t *ent, pmenu_t *p);
+void RestartThisMap(void);
 
 void LightsOn(edict_t *ent, pmenu_t *menu);
 void LightsOff(edict_t *ent, pmenu_t *menu);

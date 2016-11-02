@@ -47,7 +47,6 @@ void ResetItems (void)
 	CTFResetFlags();
 }
 
-//#define rndnum(y,z) ((random()*((z)-((y)+1)))+(y))
 void RestartLevel()
 {
 	edict_t *player;

@@ -1828,6 +1828,7 @@ void BotEndServerFrame (edict_t *ent)
 	// apply all the damage taken this frame
 	B_DamageFeedback (ent);
 
+	G_SetStats (ent);
 
 	if(!ent->deadflag)
 	{

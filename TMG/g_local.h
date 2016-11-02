@@ -41,7 +41,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.29"
+#define MOD_VERSION "0.2.30"
 #define MOD "TMG_MOD"
 
 #ifndef _DEBUG
@@ -1332,6 +1332,8 @@ typedef struct client_respawn_s
 	int			captures;   // flag capture count 
 	int			shots;      // shots fired
 	int			eff;        // frags/shots * 100
+	int			fph;		// frags per hour
+	int			fpm;		// frags per minute
 	int			suicide;
 	int			deaths;
 	int			speed_cheat;

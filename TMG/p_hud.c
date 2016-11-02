@@ -448,7 +448,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 					"xv -125 %s \"%3d  %3d  %3d %3d %3d    %s\"",
 					(cl_ent == ent) ? "string2" : "string",
 					cl->resp.score,
-					(cl->ping > 999) ? 999 : cl->ping,  rav_getFPH (cl), 
+					(cl->ping > 999) ? 999 : cl->ping, cl->resp.fph, 
 					(level.framenum - cl->resp.enterframe) / 600,
 					cl->resp.bigspree, cl->pers.netname);
 
@@ -727,14 +727,14 @@ void G_SetStats (edict_t *ent)
 	gitem_t		*item;
 	int			index, cells = 0;
 	int			power_armor_type;
-	int i;//RAV
+	int i;
 
 	// Make sure ent exists!
-	if (!G_EntExists(ent)) return;
-
-	//raven gzspace bug chase	
-	//if(ent->display == 0)
-	// return;
+	if (!G_EntExists(ent)) 
+		return;
+	
+	CalcFPH(ent);	//QW// Refactored
+	CalcFPM(ent);	//QW//
 
 	//
 	// health

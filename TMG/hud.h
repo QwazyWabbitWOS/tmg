@@ -26,9 +26,8 @@ extern void vote_think (edict_t *ent, float timenow);
 extern edict_t *votestarter;
 extern edict_t *votetarget;
 extern int CountConnectedClients (void);
-extern int rav_getFPM(gclient_t* cl);
-extern int rav_getFPH(gclient_t* cl);
-extern int rav_time(void);
+extern void CalcFPM(edict_t *ent);
+extern void CalcFPH(edict_t* ent);
 extern void TimeLeft(void);
 
 extern char *rav_gettech(edict_t *ent);
