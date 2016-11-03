@@ -178,11 +178,14 @@ int CountDownInFinalMinute ()
 	// no count-down if not in the right state
 	if (match_state < STATE_WARMUP)
 		return false;
-	// last 60 seconds ?
-	return (match_state_end - level.time <= 60);
+	if (match_state_end - level.time <= 60)
+		return true;
+	else
+		return false;
 }
 
 // display minute warnings and the countdown on the screen near end.
+//FIXME: use level.frametime, not level.time, integers not floats.
 void CountDown()
 {
 	edict_t *player;
@@ -196,6 +199,7 @@ void CountDown()
 	// how long left ?
 	seconds_left = (long) ceil(match_state_end - level.time);
 	//DbgPrintf("%d %f %f\n", seconds_left, match_state_end, level.time);
+
 	// ignore if <0 seconds
 	if (seconds_left < 0)
 		return;

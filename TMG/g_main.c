@@ -753,7 +753,7 @@ void G_RunFrame (void)
 			spawncycle = level.time + FRAMETIME * 10;
 	}
 	
-	TimeLeft();
+	TimeLeft(); // Maintain the HUD match timer countdown
 
 	//
 	// treat each object in turn
@@ -790,7 +790,7 @@ void G_RunFrame (void)
 			continue;
 		}
 		G_RunEntity (ent);
-	}
+	} // End world-think
 
 	if(mapvote->value && maplist->nextmap == -1)
 	{

@@ -2320,7 +2320,8 @@ void PutClientInServer (edict_t *ent)
 	ent->client->checkframe = level.framenum+40;
 	ent->client->checkpingtime = level.time + 25;
 
-	DbgPrintf("%s entered time: %.1f\n", __func__, level.time);
+	if (debug_spawn->value)
+		DbgPrintf("%s %s entered time: %.1f\n", __func__, ent->client->pers.netname, level.time);
 
 	//JSW
 	ent->client->kill = 0;	//Clear kill

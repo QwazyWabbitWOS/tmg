@@ -1756,7 +1756,6 @@ float redtime;
 float bluetime;
 qboolean force_specs;
 char time_left[32];
-char time_left2[32];
 qboolean techspawn;
 
 //bot spawn & remove

@@ -13,7 +13,7 @@
 #include "runes.h"
 
 // globals
-float timer;
+int timer;
 int vote_state;
 int vote_pro;
 int vote_con;
@@ -48,7 +48,7 @@ void GetTime()
 	time_t gmtime;     
 
 	time(&gmtime);
-	ltime=localtime(&gmtime);
+	ltime = localtime(&gmtime);
 
 	min = ltime->tm_min;
 	sec = ltime->tm_sec;
@@ -56,8 +56,10 @@ void GetTime()
 
 	Com_sprintf(ampm, sizeof ampm, "");
 
-	if (tmgclock->value != 24) {
-		if (hour >= 12) {
+	if (tmgclock->value != 24)
+	{
+		if (hour >= 12)
+		{
 			hour -= 12;
 			Com_sprintf(ampm, sizeof ampm, "PM");
 		}
@@ -68,7 +70,8 @@ void GetTime()
 	Com_sprintf (sys_time2, sizeof sys_time2,
 				 "%02i:%02i:%02i %s", hour, min, sec, ampm);
 
-	if (Q_stricmp(sys_time, sys_time2) != 0) {
+	if (Q_stricmp(sys_time, sys_time2) != 0) 
+	{
 		strcpy(sys_time, sys_time2);
 		gi.configstring (CS_SYSTIME, sys_time);
 	}
@@ -101,36 +104,33 @@ void TimeLeft(void)
 {
 	int min;
 	int sec;
+	char buf[32];
 	long seconds_left;
+
 	// how long left ?
 	seconds_left = ceil(match_state_end - level.time);
-	min = (int) seconds_left/60;
-	sec = (int) seconds_left - (min)*60;
+	min = (int) seconds_left / 60;
+	sec = (int) seconds_left - (min) * 60;
 
-	timer ++;
+	// this slows the update rate to once every 0.5 seconds
+	timer++; 
 	if((timer < 5 ) || (level.intermissiontime))
 		return;
+	
 	timer = 0;
-
 	if (sec < 0)
-	{
-		Com_sprintf (time_left2, sizeof(time_left2), "00:00");
-	}
+		Com_sprintf (buf, sizeof(buf), "00:00");
 	else
-	{
-		Com_sprintf (time_left2, sizeof(time_left2), "%02i:%02i", min, sec);
-	}
+		Com_sprintf (buf, sizeof(buf), "%02i:%02i", min, sec);
 
-	if (strcmp(time_left, time_left2) != 0)
+	if (strcmp(time_left, buf) != 0)
 	{
-		strcpy(time_left, time_left2);
+		strcpy(time_left, buf);
 		gi.configstring (CS_TIMELEFT, time_left);
 	}
 	//track server time
 	if(show_time->value)
-	{
 		GetTime();
-	}
 }
 
 ///////////////get # of clients////////////////
