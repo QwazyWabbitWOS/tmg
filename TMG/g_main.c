@@ -210,7 +210,7 @@ cvar_t  *flag_assist;
 cvar_t  *frag_carrier_assist;
 cvar_t  *flag_return_time;
 //
-cvar_t  *show_time;
+cvar_t  *server_time;
 cvar_t  *show_carrier;
 
 cvar_t  *clan_name;

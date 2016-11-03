@@ -743,7 +743,7 @@ extern  cvar_t  *frag_carrier_assist;
 extern  cvar_t  *flag_return_time;
 
 //
-extern  cvar_t  *show_time;
+extern  cvar_t  *server_time;
 extern  cvar_t  *show_carrier;
 extern  cvar_t  *clan_name;
 extern  cvar_t  *clan_pass;

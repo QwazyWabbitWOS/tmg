@@ -390,7 +390,7 @@ void InitGame (void)
 	flag_return_time = gi.cvar ("flag_return_time", "30", CVAR_LATCH);
 
 	// HUD control
-	show_time = gi.cvar ("server_time", "0", 0);
+	server_time = gi.cvar ("server_time", "0", 0);
 	show_carrier = gi.cvar ("show_carrier", "1", 0);
 
 	clan_name = gi.cvar ("clan_name", " ", CVAR_LATCH);

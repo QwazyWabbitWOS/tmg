@@ -31,30 +31,42 @@ void GetDate()
 	time_t gmtime;     
 
 	time(&gmtime);
-	ltime=localtime(&gmtime);
+	ltime = localtime(&gmtime);
 
 	month = ltime->tm_mon + 1;
 	day = ltime->tm_mday;
 	year = ltime->tm_year + 1900;
-	sprintf (sys_date,"%02i-%02i-%4i", month, day, year);
+	sprintf(sys_date, "%02i-%02i-%4i", month, day, year);
 }
-
+/*
+ Format the local time string for use in the HUD.
+ Use AM/PM or 24 hour time depending on the cvar tmgclock, (12 or 24). 
+ Cvar server_time controls display of local or UTC modes. 
+ UTC is always 24-hour time and we alter tmgclock accordingly.
+ Set server_time to 0 for no time in HUD, 1 for local time, 2 for GMT.
+ Variable ampm contains "", "AM", "PM" or "UTC" per each mode.
+*/
 void GetTime()
 {
-	char ampm[4];
-	char sys_time2[32];
+	char ampm[4] = "";
+	char buf[32] = "";
 	int min, hour, sec;
 	struct tm *ltime;  
-	time_t gmtime;     
+	time_t gmt_time;     
 
-	time(&gmtime);
-	ltime = localtime(&gmtime);
+	time(&gmt_time); // read current time
+	if (server_time->value == 1)
+		ltime = localtime(&gmt_time);
+	else // if server_time != 0 or 1 we want UTC
+	{
+		ltime = gmtime(&gmt_time);
+		gi.cvar_set("tmgclock", "24");
+		Com_sprintf(ampm, sizeof ampm, "UTC");
+	}
 
 	min = ltime->tm_min;
 	sec = ltime->tm_sec;
 	hour = ltime->tm_hour;
-
-	Com_sprintf(ampm, sizeof ampm, "");
 
 	if (tmgclock->value != 24)
 	{
@@ -67,12 +79,12 @@ void GetTime()
 			Com_sprintf(ampm, sizeof ampm, "AM");
 	}
 
-	Com_sprintf (sys_time2, sizeof sys_time2,
+	Com_sprintf (buf, sizeof buf,
 				 "%02i:%02i:%02i %s", hour, min, sec, ampm);
 
-	if (Q_stricmp(sys_time, sys_time2) != 0) 
+	if (Q_stricmp(sys_time, buf) != 0) 
 	{
-		strcpy(sys_time, sys_time2);
+		strcpy(sys_time, buf);
 		gi.configstring (CS_SYSTIME, sys_time);
 	}
 }
@@ -129,7 +141,7 @@ void TimeLeft(void)
 		gi.configstring (CS_TIMELEFT, time_left);
 	}
 	//track server time
-	if(show_time->value)
+	if(server_time->value)
 		GetTime();
 }
 
@@ -674,7 +686,7 @@ char *tn_showHud (edict_t *ent)
 			if (ent->client->pers.oplevel)
 				j += sprintf (layout+j, "xl 2 yb -20 string2 \"Operator Level %d\" ", ent->client->pers.oplevel);
 
-			if(show_time->value)
+			if(server_time->value)
 			{
 				j += sprintf (layout+j, "xl 2 yb -90 string2 \" Server Time\" ");
 				j += sprintf (layout+j, "xl 2 yb -80 string \" %s\" ", sys_time);
