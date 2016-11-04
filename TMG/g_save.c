@@ -427,7 +427,7 @@ void InitGame (void)
 	debug_botspawn = gi.cvar ("debug_botspawn", "0", 0);
 	debug_ops = gi.cvar ("debug_ops", "0", 0);
 
-	//QW// Configure FFA and CTF config files for OP menu
+	//QW// Configure FFA and CTF config file names for OP menu
 	ffa_cfg_file = gi.cvar ("ffa_cfgfile", "ffa.cfg", 0);
 	ctf_cfg_file = gi.cvar ("ctf_cfgfile", "railwarz.cfg", 0);
 
