@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "g_local.h"
+#include "hud.h"
 
 #define	MAXSONGS	256
 
