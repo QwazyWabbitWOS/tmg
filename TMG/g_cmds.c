@@ -1152,13 +1152,13 @@ void Cmd_SkinList_f(edict_t *ent)
 		gi.cprintf (ent,
 					PRINT_HIGH,
 					"\n--- ---------------- ---------------------\n");
-		for (i=0, edict=g_edicts + 1 + i; i < maxclients->value; i++, edict++)
+		for (i = 0, edict = g_edicts + 1 + i; i < maxclients->value; i++, edict++)
 		{
 			if (!edict->inuse) 
 				continue;
 			skin = Info_ValueForKey(edict->client->pers.userinfo, "skin");
 			name = Info_ValueForKey(edict->client->pers.userinfo, "name");
-			sprintf (string,"%3i %16s %s\n", i, name, skin);
+			sprintf (string, "%3i %16s %s\n", i, name, skin);
 			gi.cprintf (ent, PRINT_HIGH, string);
 		}
 		sprintf (string, "\n");

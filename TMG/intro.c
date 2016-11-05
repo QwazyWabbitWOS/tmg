@@ -1,17 +1,16 @@
 #include <stdio.h>
 #include "g_local.h"
-#include "hud.h"
 
 #define	MAXSONGS	256
 
-int			wav_mod_ = 0;
-int			wav_mod_current_level_ = -1;
-int			wav_mod_n_levels_ = 0;
-char		wav_mod_names_[MAXSONGS][64];
+int			wav_mod = 0;
+int			wav_mod_current_level = -1;
+int			wav_mod_n_levels = 0;
+char		wav_mod_names[MAXSONGS][64];
 
 // niq hack:
 qboolean	wav_used[MAXSONGS];
-int			unused_wav=0;
+int			unused_wav = 0;
 
 cvar_t *use_song_file;
 cvar_t *wav_random;
@@ -22,17 +21,19 @@ void wav_mod_set_up(void)
 {
 	FILE *file;
 	char file_name[256];
-	
+
 	use_song_file = gi.cvar ("use_song_file", "0", CVAR_ARCHIVE);
 	wav_random = gi.cvar ("wav_random", "1", CVAR_ARCHIVE);
 	wav = gi.cvar ("wav", "mm.wav",0);
 
-	sprintf(file_name, "%s/%s/%s/intro.txt", basedir->string, game_dir->string, cfgdir->string);
+	sprintf(file_name, "%s/%s/%s/intro.txt", 
+		basedir->string, game_dir->string, cfgdir->string);
 
 	file = fopen(file_name, "r");
-	wav_mod_ = 0;
-	wav_mod_current_level_ = -1;
-	wav_mod_n_levels_ = 0;
+	wav_mod = 0;
+	wav_mod_current_level = -1;
+	wav_mod_n_levels = 0;
+
 	if (file != NULL)
 	{
 		int file_size;
@@ -45,13 +46,13 @@ void wav_mod_set_up(void)
 		file_size = 0;
 		while (!feof(file))
 		{
-		  fgetc(file);
-		  file_size++;
+			fgetc(file);
+			file_size++;
 		}
 		rewind(file);
 
 		p_buffer = gi.TagMalloc(file_size, TAG_GAME);
-		memset(p_buffer,0,file_size);
+		memset(p_buffer, 0, file_size);
 
 		count = fread((void *)p_buffer, sizeof(char), file_size, file);
 
@@ -64,15 +65,22 @@ void wav_mod_set_up(void)
 			// niq: skip rest of line after a '#' (works with Unix?)
 			if(*p_name == '#')
 			{
-				while ((*p_name != '\n') && (*p_name != '\r') && counter < file_size)
-					{
+				while ((*p_name != '\n') && 
+					(*p_name != '\r') && 
+					counter < file_size)
+				{
 					p_name++;
 					counter++;
-					}
+				}
 			}
 			else
 			{
-				while ((((*p_name >= 'a') && (*p_name <= 'z')) || ((*p_name >= 'A') && (*p_name <= 'Z')) || ((*p_name >= '0') && (*p_name <= '9')) || (*p_name == '_') || (*p_name == '-') || (*p_name == '/') || (*p_name == '\\')) && counter < file_size)
+				while ((((*p_name >= 'a') && (*p_name <= 'z')) ||
+					((*p_name >= 'A') && (*p_name <= 'Z')) ||
+					((*p_name >= '0') && (*p_name <= '9')) ||
+					(*p_name == '_') || (*p_name == '-') ||
+					(*p_name == '/') || (*p_name == '\\')) &&
+					counter < file_size)
 				{
 					n_chars++;
 					counter++;
@@ -82,17 +90,18 @@ void wav_mod_set_up(void)
 
 			if (n_chars)
 			{
-				memcpy(&wav_mod_names_[wav_mod_n_levels_][0], p_name - n_chars, n_chars);
-				memset(&wav_mod_names_[wav_mod_n_levels_][n_chars], 0, 1);
+				memcpy(&wav_mod_names[wav_mod_n_levels][0], 
+					p_name - n_chars, n_chars);
+				memset(&wav_mod_names[wav_mod_n_levels][n_chars], 0, 1);
 
-				if (wav_mod_n_levels_ > 0)
+				if (wav_mod_n_levels > 0)
 					gi.dprintf(", ");
-				gi.dprintf("%s", wav_mod_names_[wav_mod_n_levels_]);
+				gi.dprintf("%s", wav_mod_names[wav_mod_n_levels]);
 
-				wav_mod_n_levels_++;
+				wav_mod_n_levels++;
 				n_chars = 0;
 
-				if (wav_mod_n_levels_ >= MAXSONGS)
+				if (wav_mod_n_levels >= MAXSONGS)
 				{
 					gi.dprintf("\nMAXSONGS exceeded\nUnable to add more Wav's.\n");
 					break;
@@ -104,7 +113,13 @@ void wav_mod_set_up(void)
 			p_name++;
 
 			// eat up non-characters (niq: except #)
-			while (!((*p_name == '#') || ((*p_name >= 'a') && (*p_name <= 'z')) || ((*p_name >= 'A') && (*p_name <= 'Z')) || ((*p_name >= '0') && (*p_name <= '9')) || (*p_name == '_') || (*p_name == '-') || (*p_name == '/') || (*p_name == '\\')) && counter < file_size)
+			while (!((*p_name == '#') || 
+				((*p_name >= 'a') && (*p_name <= 'z')) ||
+				((*p_name >= 'A') && (*p_name <= 'Z')) ||
+				((*p_name >= '0') && (*p_name <= '9')) ||
+				(*p_name == '_') || (*p_name == '-') ||
+				(*p_name == '/') || (*p_name == '\\')) &&
+				counter < file_size)
 			{
 				counter++;
 				p_name++;
@@ -117,9 +132,9 @@ void wav_mod_set_up(void)
 		gi.TagFree(p_buffer);
 		fclose(file);
 
-		if (wav_mod_n_levels_)
+		if (wav_mod_n_levels)
 		{
-			wav_mod_ = true;
+			wav_mod = true;
 		}
 	}
 	else
@@ -128,7 +143,7 @@ void wav_mod_set_up(void)
 		gi.cvar_set ("use_song_file", "0");
 	}
 
-	unused_wav=0;
+	unused_wav = 0;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -137,12 +152,12 @@ char* wav_mod_next_map()
 {
 	int i;
 
-	if (wav_mod_)
+	if (wav_mod)
 	{
 		if (wav_random->value)
 		{
 			// NIQ hack start
-			if(wav_mod_n_levels_ >= 2)
+			if(wav_mod_n_levels >= 2)
 			{
 				// niq: hack to mapmode code to make sure we try all maps
 				// before starting over.
@@ -150,38 +165,38 @@ char* wav_mod_next_map()
 				int skipped;
 
 				if(!unused_wav)
-					{
+				{
 					// reset random maps 
-					for(map=0; map<wav_mod_n_levels_; map++)
+					for(map = 0; map<wav_mod_n_levels; map++)
 						wav_used[map] = false;
 
-					if(wav_mod_current_level_ == -1 && wav->string)
-						{
+					if(wav_mod_current_level == -1 && wav->string)
+					{
 						// no current MapMod map:
 						// if there is a current map make sure we don't
 						// pick it again right away if it is in the list
-						for (i=0; (i<wav_mod_n_levels_ && wav_mod_current_level_== -1); i++)
-							if (!Q_stricmp(wav->string, wav_mod_names_[i]))
-								wav_mod_current_level_ = i;
+						for (i = 0; (i < wav_mod_n_levels && wav_mod_current_level == -1); i++)
+							if (!Q_stricmp(wav->string, wav_mod_names[i]))
+								wav_mod_current_level = i;
 
-						}
-
-					if(wav_mod_current_level_ != -1)
-						{
-						// zap the map
-						wav_used[wav_mod_current_level_] = true;
-
-						// one less unused map to choose from
-						unused_wav = wav_mod_n_levels_ - 1; 
-						}
-					else
-						{
-						// can choose any map in list
-						unused_wav = wav_mod_n_levels_; 
-						}
 					}
 
-				// pick number of unsued maps to skip (less clustering likely)
+					if(wav_mod_current_level != -1)
+					{
+						// zap the map
+						wav_used[wav_mod_current_level] = true;
+
+						// one less unused map to choose from
+						unused_wav = wav_mod_n_levels - 1; 
+					}
+					else
+					{
+						// can choose any map in list
+						unused_wav = wav_mod_n_levels; 
+					}
+				}
+
+				// pick number of unused maps to skip (less clustering likely)
 				i = (int) floor(random() * ((float)(unused_wav)));
 
 				// skip to first unused map (has to find one)
@@ -191,52 +206,52 @@ char* wav_mod_next_map()
 
 				// skip over i unused maps (has to find them)
 				skipped	= 0;
-				while(skipped<i)
-					{
+				while(skipped < i)
+				{
 					if(!wav_used[map++])
 						skipped++;
-					}
+				}
 
 				// skip to unused map if necessary (e.g. if last skip skipped to used one)
 				while(wav_used[map])
 					map++;
 
-				wav_mod_current_level_ = map;
+				wav_mod_current_level = map;
 				wav_used[map] = true;
 				unused_wav--;
 			}
 			// NIQ hack end
-		else
+			else
 			{
-				wav_mod_current_level_ = -1;
+				wav_mod_current_level = -1;
 
-				i = (int) floor(random() * ((float)(wav_mod_n_levels_)));
+				i = (int) floor(random() * ((float)(wav_mod_n_levels)));
 
-				if (!Q_stricmp(wav->string, wav_mod_names_[i]))
+				if (!Q_stricmp(wav->string, wav_mod_names[i]))
 				{
-					if (++i >= wav_mod_n_levels_)
+					if (++i >= wav_mod_n_levels)
 						i=0;
 				}
-				wav_mod_current_level_ = i;
+				wav_mod_current_level = i;
 			}
 		}
 		else
 		{
-			wav_mod_current_level_ = -1;
-	
-			for (i=0; i < wav_mod_n_levels_; i++)
-				if (!Q_stricmp(wav->string, wav_mod_names_[i]))
-					wav_mod_current_level_ = i+1;
+			wav_mod_current_level = -1;
+
+			for (i=0; i < wav_mod_n_levels; i++)
+				if (!Q_stricmp(wav->string, wav_mod_names[i]))
+					wav_mod_current_level = i+1;
 		}
 
-		if (wav_mod_current_level_ >= wav_mod_n_levels_)
+		if (wav_mod_current_level >= wav_mod_n_levels)
 		{
-			wav_mod_current_level_ = 0;
+			wav_mod_current_level = 0;
 		}
 
-		if (wav_mod_current_level_ > -1)
+		if (wav_mod_current_level > -1)
 		{
-			return wav_mod_names_[wav_mod_current_level_];
+			return wav_mod_names[wav_mod_current_level];
 		}
 
 	}

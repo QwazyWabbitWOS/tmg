@@ -78,7 +78,7 @@ void BeginIntermission (edict_t *targ)
 		return;		// already activated
 
 	//RAV WAVMOD
-	if (wav_mod_ && use_song_file->value)
+	if (wav_mod && use_song_file->value)
 	{
 		char *nextwav;
 		char sound[64];

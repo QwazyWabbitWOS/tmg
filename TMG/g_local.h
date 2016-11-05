@@ -1806,7 +1806,7 @@ void Touch_Plat_Center (edict_t *ent, edict_t *other, cplane_t *plane, csurface_
 
 void plat_spawn_inside_trigger (edict_t *ent);
 
-void SP_func_plat (edict_t *ent);
+//void SP_func_plat (edict_t *ent);
 
 void rotating_blocked (edict_t *self, edict_t *other);
 void rotating_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
@@ -1830,9 +1830,6 @@ void UsePrimaryWeapon(edict_t *ent);
 
 //Explotion Index
 void UpdateExplIndex(edict_t* ent);
-
-//flag
-qboolean ZIGDrop_Flag(edict_t *ent, gitem_t *item);
 
 //p_view.c
 void BotEndServerFrame (edict_t *ent);

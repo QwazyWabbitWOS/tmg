@@ -10,9 +10,9 @@ cvar_t	*bot_free_clients;
 cvar_t	*bot_insult;
 cvar_t	*bot_chat;
 cvar_t	*bot_camptime;
-cvar_t	*bot_walkspeed;//20
-cvar_t	*bot_runspeed;//32
-cvar_t	*bot_duckpeed;//10
+cvar_t	*bot_walkspeed; //20
+cvar_t	*bot_runspeed;  //32
+cvar_t	*bot_duckpeed;  //10
 cvar_t	*bot_waterspeed;//16
 
 
@@ -29,30 +29,19 @@ void Bot_InitCvars(void)
 	bot_insult = gi.cvar ("bot_insult", "1", 0);
 	bot_chat = gi.cvar ("bot_chat", "1", 0);
 	bot_camptime = gi.cvar ("bot_camptime", "30", 0);
-	bot_walkspeed = gi.cvar ("bot_walkspeed", "25", 0);//20
-	bot_runspeed = gi.cvar ("bot_runspeed", "40", 0);//32
-	bot_duckpeed = gi.cvar ("bot_duckpeed", "20", 0);//10
-	bot_waterspeed = gi.cvar ("bot_waterspeed", "20", 0);//16
+	bot_walkspeed = gi.cvar ("bot_walkspeed", "25", 0);     //20
+	bot_runspeed = gi.cvar ("bot_runspeed", "40", 0);       //32
+	bot_duckpeed = gi.cvar ("bot_duckpeed", "20", 0);       //10
+	bot_waterspeed = gi.cvar ("bot_waterspeed", "20", 0);   //16
 
 }
 
 
-void SetBotFlag1(edict_t *ent)
-{
-	bot_team_flag1 = ent;
-}
-void SetBotFlag2(edict_t *ent)
-{
-	bot_team_flag2 = ent;
-}
-edict_t *GetBotFlag1(void)
-{
-	return bot_team_flag1;
-}
-edict_t *GetBotFlag2(void)
-{
-	return bot_team_flag2;
-}
+void SetBotFlag1(edict_t *ent) { bot_team_flag1 = ent; }
+void SetBotFlag2(edict_t *ent) { bot_team_flag2 = ent; }
+
+edict_t *GetBotFlag1(void) { return bot_team_flag1; }
+edict_t *GetBotFlag2(void) { return bot_team_flag2; }
 
 qboolean ChkTFlg( void )
 {
@@ -70,8 +59,6 @@ void SpawnItem4 (edict_t *ent, gitem_t *item)
 	ent->think = droptofloor;
 	ent->s.effects = 0;
 	ent->s.renderfx = RF_GLOW;
-	//	if (ent->model)
-	//		gi.modelindex (ent->model);
 	droptofloor (ent);
 	ent->s.modelindex = 0;
 	ent->nextthink = level.time + 100 * FRAMETIME;    // items start after other solids
@@ -109,7 +96,7 @@ qboolean Bot_trace (edict_t *ent,edict_t *other)
 
 	rs_trace = gi.trace (ttx, NULL, NULL, tty, ent, 
 		CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | 
-		CONTENTS_SLIME /*| CONTENTS_TRANSLUCENT*/);
+		CONTENTS_SLIME);
 	if (rs_trace.fraction == 1.0 && !rs_trace.allsolid && 
 		!rs_trace.startsolid) 
 	{
@@ -314,12 +301,11 @@ float Get_yaw (vec3_t vec)
 	VectorNormalize2 (out, out);
 
 	yaw = acos((double) out[0]);
-	//	yaw = (float) yaw;
 	yaw = yaw / M_PI * 180;
 
-	if (asin((double) out[1]) < 0) {
+	if (asin((double) out[1]) < 0)
 		yaw *= -1;
-	}
+
 	return (float)yaw;
 }
 
@@ -331,16 +317,11 @@ float Get_pitch (vec3_t vec)
 	VectorNormalize2 (vec, out);
 
 	pitch = acos((double) out[2]);
-	//	yaw = (float) yaw;
 	pitch = ((float)pitch) / M_PI * 180;
 
-	 //if(asin((double) out[0]) < 0 ) 
-		// pitch *= -1;
-
 	pitch -= 90;
-	if (pitch < -180) {
+	if (pitch < -180)
 		pitch += 360;
-	}
 
 	return pitch;
 }
@@ -351,16 +332,13 @@ float Get_vec_yaw (vec3_t vec,float yaw)
 
 	vecsyaw = Get_yaw (vec);
 
-	if (vecsyaw > yaw) {
+	if (vecsyaw > yaw)
 		vecsyaw -= yaw;
-	}
-	else {
+	else
 		vecsyaw = yaw - vecsyaw;
-	}
 
-	if (vecsyaw > 180) {
+	if (vecsyaw > 180)
 		vecsyaw = 360 - vecsyaw;
-	}
 
 	return vecsyaw;
 }
@@ -372,13 +350,10 @@ float Get_vec_yaw2 (vec3_t vec,float yaw)
 	vecsyaw = Get_yaw (vec);
 
 	vecsyaw -= yaw;
-	if (vecsyaw > 180) {
+	if (vecsyaw > 180)
 		vecsyaw -= 360;
-	}
-	else if (vecsyaw < -180) {
+	else if (vecsyaw < -180)
 		vecsyaw += 360;
-	}
 
 	return vecsyaw;
 }
-

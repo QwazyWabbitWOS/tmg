@@ -600,13 +600,15 @@ char *tn_showHud (edict_t *ent)
 
 			j += sprintf (layout+j, "xr -70 yt 122 string2 \"Frags\" ");
 			j += sprintf (layout+j, "xr -70 yt 130 string \"%i \" ", frags);
+			
+			j += sprintf (layout+j, "xr -70 yt 138 string2 \"Spree\" ");
+			j += sprintf (layout+j, "xr -70 yt 146 string \"%i \" ", bigspree);
 
-			j += sprintf (layout+j, "xr -70 yt 138 string2 \"Caps\" ");
-			j += sprintf (layout+j, "xr -70 yt 146 string \"%i \" ", captures);
-
-			j += sprintf (layout+j, "xr -70 yt 154 string2 \"Spree\" ");
-			j += sprintf (layout+j, "xr -70 yt 162 string \"%i \" ", bigspree);
-
+			if (ctf->value)
+			{
+				j += sprintf (layout+j, "xr -70 yt 154 string2 \"Caps\" ");
+				j += sprintf (layout+j, "xr -70 yt 162 string \"%i \" ", captures);
+			}
 		}
 	} // End spectator HUD
 
@@ -663,11 +665,14 @@ char *tn_showHud (edict_t *ent)
 		j += sprintf (layout+j, "xr -70 yt 122 string2 \"Frags\" ");
 		j += sprintf (layout+j, "xr -70 yt 130 string \"%i \" ", frags);
 
-		j += sprintf (layout+j, "xr -70 yt 138 string2 \"Caps\" ");
-		j += sprintf (layout+j, "xr -70 yt 146 string \"%i \" ", captures);
+		j += sprintf (layout+j, "xr -70 yt 138 string2 \"Spree\" ");
+		j += sprintf (layout+j, "xr -70 yt 146 string \"%i \" ", bigspree);
 
-		j += sprintf (layout+j, "xr -70 yt 154 string2 \"Spree\" ");
-		j += sprintf (layout+j, "xr -70 yt 162 string \"%i \" ", bigspree);
+		if (ctf->value)
+		{
+			j += sprintf (layout+j, "xr -70 yt 154 string2 \"Caps\" ");
+			j += sprintf (layout+j, "xr -70 yt 162 string \"%i \" ", captures);
+		}
 
 		// show player location just below crosshair if "location" is toggled on
 		if (ent->client->resp.locationactive)

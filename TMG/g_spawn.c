@@ -20,40 +20,11 @@ typedef struct
 	void	(*spawn)(edict_t *ent);
 } spawn_t;
 
-
-//void SP_info_player_start (edict_t *ent);
-//void SP_info_player_deathmatch (edict_t *ent);
-//void SP_info_player_coop (edict_t *ent);
-//void SP_info_player_intermission (edict_t *ent);
-
-//void SP_func_plat (edict_t *ent);
-//void SP_func_rotating (edict_t *ent);
-//void SP_func_button (edict_t *ent);
-//void SP_func_door (edict_t *ent);
-//void SP_func_door_secret (edict_t *ent);
-//void SP_func_door_rotating (edict_t *ent);
-//void SP_func_water (edict_t *ent);
-//void SP_func_train (edict_t *ent);
-//void SP_func_conveyor (edict_t *self);
 void SP_func_wall (edict_t *self);
 void SP_func_object (edict_t *self);
 void SP_func_explosive (edict_t *self);
-//void SP_func_timer (edict_t *self);
 extern void SP_func_areaportal (edict_t *ent);
 void SP_func_clock (edict_t *ent);
-//void SP_func_killbox (edict_t *ent);
-
-//void SP_trigger_always (edict_t *ent);
-//void SP_trigger_once (edict_t *ent);
-//void SP_trigger_multiple (edict_t *ent);
-//void SP_trigger_relay (edict_t *ent);
-//void SP_trigger_push (edict_t *ent);
-//void SP_trigger_hurt (edict_t *ent);
-//void SP_trigger_key (edict_t *ent);
-//void SP_trigger_counter (edict_t *ent);
-//void SP_trigger_elevator (edict_t *ent);
-//void SP_trigger_gravity (edict_t *ent);
-//void SP_trigger_monsterjump (edict_t *ent);
 
 void SP_target_temp_entity (edict_t *ent);
 void SP_target_speaker (edict_t *ent);
@@ -72,6 +43,8 @@ void SP_target_lightramp (edict_t *self);
 void SP_target_earthquake (edict_t *ent);
 void SP_target_character (edict_t *ent);
 void SP_target_string (edict_t *ent);
+
+void PrecacheSongs(void);
 
 void SP_worldspawn (edict_t *ent);
 void SP_viewthing (edict_t *ent);
@@ -213,15 +186,11 @@ spawn_t	spawns[] = {
 	{"misc_ctf_small_banner", SP_misc_ctf_small_banner},
 //ZOID
 	{"misc_satellite_dish", SP_misc_satellite_dish},
-//#if 0 // remove monster code
 	{"misc_actor", SP_misc_actor},
-//#endif
 	{"misc_gib_arm", SP_misc_gib_arm},
 	{"misc_gib_leg", SP_misc_gib_leg},
 	{"misc_gib_head", SP_misc_gib_head},
-//#if 0 // remove monster code
 	{"misc_insane", SP_misc_insane},
-//#endif
 	{"misc_deadsoldier", SP_misc_deadsoldier},
 	{"misc_viper", SP_misc_viper},
 	{"misc_viper_bomb", SP_misc_viper_bomb},
@@ -237,8 +206,6 @@ spawn_t	spawns[] = {
 	{"misc_eastertank", SP_misc_eastertank},
 	{"misc_easterchick", SP_misc_easterchick},
 	{"misc_easterchick2", SP_misc_easterchick2},
-
-//#if 0 // remove monster code
 	{"monster_berserk", SP_monster_berserk},
 	{"monster_gladiator", SP_monster_gladiator},
 	{"monster_gunner", SP_monster_gunner},
@@ -267,8 +234,6 @@ spawn_t	spawns[] = {
 	{"turret_breach", SP_turret_breach},
 	{"turret_base", SP_turret_base},
 	{"turret_driver", SP_turret_driver},
-//#endif
-
 	{NULL, NULL}
 };
 
@@ -324,7 +289,7 @@ void ED_CallSpawn (edict_t *ent)
 	}
 
 	// check normal spawn functions
-	for (s=spawns ; s->name ; s++)
+	for (s = spawns; s->name; s++)
 	{
 		if (!strcmp(s->name, ent->classname))
 		{	// found it
@@ -332,14 +297,6 @@ void ED_CallSpawn (edict_t *ent)
 			return;
 		}
 	}
-/*
-	if (!((ent->classname[0] == 'm') && 
-		  (ent->classname[1] == 'o') && 
-		  (ent->classname[2] != 'n')))
-	{
-		gi.dprintf ("%s doesn't have a spawn function\n", ent->classname);
-	}
-*/
 }
 
 /*
@@ -354,9 +311,7 @@ char *ED_NewString (char *string)
 	int		l;
 	
 	l = (int) strlen(string) + 1;
-
 	newb = gi.TagMalloc (l, TAG_LEVEL);
-
 	new_p = newb;
 
 	for (i=0 ; i< l ; i++)
@@ -1326,6 +1281,122 @@ char *raildm_statusbar =
 "endif "
 ;
 
+//RAV precache songs
+void PrecacheSongs(void)
+{
+	FILE *file;
+	char names[256][64];
+	char file_name[256];
+	char song[64];
+	int levels = 0;
+	size_t	count;
+
+	song[0] = '\0';
+
+	sprintf(file_name, "%s/%s/%s/intro.txt",
+		basedir->string, game_dir->string, cfgdir->string);
+
+	file = fopen(file_name, "r");
+	if (file != NULL)
+	{
+		int file_size = 0;
+		char *p_buffer;
+		char *p_name;
+		long counter = 0;
+		int n_chars = 0;
+
+		while (!feof(file))
+		{
+			fgetc(file);
+			file_size++;
+		}
+		rewind(file);
+		p_buffer = gi.TagMalloc(file_size, TAG_LEVEL);
+		memset(p_buffer, 0, file_size);
+		count = fread((void *)p_buffer, sizeof(char), file_size, file);
+		if (!count)
+			gi.dprintf("%s read %d of %d bytes in %s\n",
+			__FUNCTION__, count, file_size, file);
+
+		p_name = p_buffer;
+		do
+		{
+			// niq: skip rest of line after a '#' (works with Unix?)
+			if(*p_name == '#')
+			{
+				while ((*p_name != '\n') &&
+					(*p_name != '\r') &&
+					counter < file_size)
+				{
+					p_name++;
+					counter++;
+				}
+			}
+			else
+			{
+				while ((((*p_name >= 'a') && (*p_name <= 'z')) ||
+					((*p_name >= 'A') && (*p_name <= 'Z')) ||
+					((*p_name >= '0') && (*p_name <= '9')) ||
+					(*p_name == '_') ||
+					(*p_name == '-') ||
+					(*p_name == '/') ||
+					(*p_name == '\\')) && counter < file_size)
+				{
+					n_chars++;
+					counter++;
+					p_name++;
+				}
+			}
+			if (n_chars)
+			{
+				memcpy(&names[levels][0], p_name - n_chars, n_chars);
+				memset(&names[levels][n_chars], 0, 1);
+				if (levels > 0)
+					//precache here 
+					sprintf(song, "misc/%s.wav", names[levels]);
+				if (strlen(song) > 0)
+				{
+					//gi.dprintf("song to be indexed is %s\n", song);
+					gi.soundindex (song);
+				}
+				levels++;
+				n_chars = 0;
+				if (levels >= 256)
+				{
+					gi.dprintf("\nMAXSONGS exceeded\n"
+						"Unable to add more Wav's.\n");
+					break;
+				}
+			}
+
+			// next mapname
+			counter++;
+			p_name++;
+			// eat up non-characters (niq: except #)
+			while (!((*p_name == '#') ||
+				((*p_name >= 'a') && (*p_name <= 'z')) ||
+				((*p_name >= 'A') && (*p_name <= 'Z')) ||
+				((*p_name >= '0') && (*p_name <= '9')) ||
+				(*p_name == '_') ||
+				(*p_name == '-') ||
+				(*p_name == '/') ||
+				(*p_name == '\\')) && counter < file_size)
+			{
+				counter++;
+				p_name++;
+			}
+		}
+		while (counter < file_size);
+		gi.dprintf("\n\n");
+		gi.TagFree(p_buffer);
+		fclose(file);
+	}
+	else
+	{
+		gi.dprintf ("==== Wav Mod v.01 - missing intro.txt file ====\n");
+	}
+}
+
 extern qboolean	respawn_flag;
 
 /*QUAKED worldspawn (0 0 0) ?
@@ -1346,9 +1417,6 @@ void SP_worldspawn (edict_t *ent)
 	ent->s.modelindex = 1;		// world model is always index 1
 
 	//---------------
-
-
-
 
 	// reserve some spots for dead player bodies
 	InitBodyQue ();
@@ -1404,7 +1472,6 @@ void SP_worldspawn (edict_t *ent)
 	gi.configstring (CS_EMPTYSTRING, va(""));
 	
 	//---------------
-
 	
 	// help icon for statusbar
 	gi.imageindex ("i_help");
@@ -1417,123 +1484,8 @@ void SP_worldspawn (edict_t *ent)
 	else
 		gi.cvar_set("sv_gravity", st.gravity);
 
-	//RAV precache songs
-	if(use_song_file->value)
-	{
-		FILE *file;
-		char names_[256][64];
-		char file_name[256];
-		char song[64];
-		//QW// UNUSED int current_level_ = -1;
-		int levels_ = 0;
-		size_t	count;
-		
-		song[0] = '\0';
+	PrecacheSongs();
 
-		sprintf(file_name, "%s/%s/%s/intro.txt",
-				basedir->string, game_dir->string, cfgdir->string);
-
-		file = fopen(file_name, "r");
-		if (file != NULL)
-		{
-			int file_size = 0;
-			char *p_buffer;
-			char *p_name;
-			long counter = 0;
-			int n_chars = 0;
-
-			while (!feof(file))
-			{
-				fgetc(file);
-				file_size++;
-			}
-			rewind(file);
-			p_buffer = gi.TagMalloc(file_size, TAG_LEVEL);
-			memset(p_buffer, 0, file_size);
-			count = fread((void *)p_buffer, sizeof(char), file_size, file);
-			if (!count)
-				gi.dprintf("%s read %d of %d bytes in %s\n",
-						   __FUNCTION__, count, file_size, file);
-
-			p_name = p_buffer;
-			do
-			{
-				// niq: skip rest of line after a '#' (works with Unix?)
-				if(*p_name == '#')
-				{
-					while ((*p_name != '\n') &&
-						   (*p_name != '\r') &&
-						   counter < file_size)
-					{
-						p_name++;
-						counter++;
-					}
-				}
-				else
-				{
-					while ((((*p_name >= 'a') && (*p_name <= 'z')) ||
-							((*p_name >= 'A') && (*p_name <= 'Z')) ||
-							((*p_name >= '0') && (*p_name <= '9')) ||
-							(*p_name == '_') ||
-							(*p_name == '-') ||
-							(*p_name == '/') ||
-							(*p_name == '\\')) && counter < file_size)
-					{
-						n_chars++;
-						counter++;
-						p_name++;
-					}
-				}
-				if (n_chars)
-				{
-					memcpy(&names_[levels_][0], p_name - n_chars, n_chars);
-					memset(&names_[levels_][n_chars], 0, 1);
-					if (levels_ > 0)
-						//precache here 
-						sprintf(song, "misc/%s.wav", names_[levels_]);
-					if (strlen(song) > 0)
-					{
-//						gi.dprintf("song to be indexed is %s\n", song);
-						gi.soundindex (song);
-					}
-					levels_++;
-					n_chars = 0;
-					if (levels_ >= 256)
-					{
-						gi.dprintf("\nMAXSONGS exceeded\n"
-								   "Unable to add more Wav's.\n");
-						break;
-					}
-				}
-				
-				// next mapname
-				counter++;
-				p_name++;
-				// eat up non-characters (niq: except #)
-				while (!((*p_name == '#') ||
-						 ((*p_name >= 'a') && (*p_name <= 'z')) ||
-						 ((*p_name >= 'A') && (*p_name <= 'Z')) ||
-						 ((*p_name >= '0') && (*p_name <= '9')) ||
-						 (*p_name == '_') ||
-						 (*p_name == '-') ||
-						 (*p_name == '/') ||
-						 (*p_name == '\\')) && counter < file_size)
-				{
-					counter++;
-					p_name++;
-				}
-			}
-			while (counter < file_size);
-			gi.dprintf("\n\n");
-			gi.TagFree(p_buffer);
-			fclose(file);
-		}
-		else
-		{
-			gi.dprintf ("==== Wav Mod v.01 - missing intro.txt file ====\n");
-		}
-	}
-	//
 	snd_fry = gi.soundindex ("player/fry.wav");	// standing in lava / slime
 	PrecacheItem (FindItem ("Blaster"));
 
@@ -1722,41 +1674,35 @@ void SP_worldspawn (edict_t *ent)
 	Fdi_CELLS			= FindItem ("Cells");
 	Fdi_ROCKETS			= FindItem ("Rockets");
 	Fdi_SLUGS			= FindItem ("Slugs");
-memset(ExplIndex,0,sizeof(ExplIndex));
 
-
-
+	memset(ExplIndex,0,sizeof(ExplIndex));
 }
+
 //This removes all the monster code safely
-void SP_monster_berserk (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_gladiator (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_gunner (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_infantry (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_soldier_light (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_soldier (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_soldier_ss (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_tank (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_medic (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_flipper (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_chick (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_parasite (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_flyer (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_brain (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_floater (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_hover (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_mutant (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_supertank (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_boss2 (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_jorg (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_boss3_stand (edict_t *self){        G_FreeEdict (self);}
-void SP_monster_commander_body (edict_t *self){        G_FreeEdict (self);}
-void SP_misc_actor (edict_t *self){        G_FreeEdict (self);}
-//QW// undefined? Originally in m_actor.c
-//void SP_target_actor (edict_t *self){        G_FreeEdict (self);}
-void SP_misc_insane (edict_t *self){        G_FreeEdict (self);}
-void SP_turret_driver (edict_t *self){        G_FreeEdict (self);}
-void SP_turret_base (edict_t *self){        G_FreeEdict (self);}
-void SP_turret_breach (edict_t *self){        G_FreeEdict (self);}
-
-
-
+void SP_monster_berserk (edict_t *self)       { G_FreeEdict (self); }
+void SP_monster_gladiator (edict_t *self)     { G_FreeEdict (self); }
+void SP_monster_gunner (edict_t *self)        { G_FreeEdict (self); }
+void SP_monster_infantry (edict_t *self)      { G_FreeEdict (self); }
+void SP_monster_soldier_light (edict_t *self) { G_FreeEdict (self); }
+void SP_monster_soldier (edict_t *self)       { G_FreeEdict (self); }
+void SP_monster_soldier_ss (edict_t *self)    { G_FreeEdict (self); }
+void SP_monster_tank (edict_t *self)          { G_FreeEdict (self); }
+void SP_monster_medic (edict_t *self)         { G_FreeEdict (self); }
+void SP_monster_flipper (edict_t *self)       { G_FreeEdict (self); }
+void SP_monster_chick (edict_t *self)         { G_FreeEdict (self); }
+void SP_monster_parasite (edict_t *self)      { G_FreeEdict (self); }
+void SP_monster_flyer (edict_t *self)         { G_FreeEdict (self); }
+void SP_monster_brain (edict_t *self)         { G_FreeEdict (self); }
+void SP_monster_floater (edict_t *self)       { G_FreeEdict (self); }
+void SP_monster_hover (edict_t *self)         { G_FreeEdict (self); }
+void SP_monster_mutant (edict_t *self)        { G_FreeEdict (self); }
+void SP_monster_supertank (edict_t *self)     { G_FreeEdict (self); }
+void SP_monster_boss2 (edict_t *self)         { G_FreeEdict (self); }
+void SP_monster_jorg (edict_t *self)          { G_FreeEdict (self); }
+void SP_monster_boss3_stand (edict_t *self)   { G_FreeEdict (self); }
+void SP_monster_commander_body (edict_t *self){ G_FreeEdict (self); }
+void SP_misc_actor (edict_t *self)            { G_FreeEdict (self); }
+void SP_misc_insane (edict_t *self)           { G_FreeEdict (self); }
+void SP_turret_driver (edict_t *self)         { G_FreeEdict (self); }
+void SP_turret_base (edict_t *self)           { G_FreeEdict (self); }
+void SP_turret_breach (edict_t *self)         { G_FreeEdict (self); }

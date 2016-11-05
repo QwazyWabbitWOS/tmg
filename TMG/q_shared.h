@@ -908,31 +908,30 @@ typedef enum
 #define	CS_MAPCHECKSUM		31		// for catching cheater maps
 
 #define	CS_MODELS			32
-#define	CS_SOUNDS			(CS_MODELS+MAX_MODELS)
-#define	CS_IMAGES			(CS_SOUNDS+MAX_SOUNDS)
-#define	CS_LIGHTS			(CS_IMAGES+MAX_IMAGES)
-#define	CS_ITEMS			(CS_LIGHTS+MAX_LIGHTSTYLES)
-#define	CS_PLAYERSKINS		(CS_ITEMS+MAX_ITEMS)
+#define	CS_SOUNDS			(CS_MODELS + MAX_MODELS)
+#define	CS_IMAGES			(CS_SOUNDS + MAX_SOUNDS)
+#define	CS_LIGHTS			(CS_IMAGES + MAX_IMAGES)
+#define	CS_ITEMS			(CS_LIGHTS + MAX_LIGHTSTYLES)
+#define	CS_PLAYERSKINS		(CS_ITEMS + MAX_CLIENTS)
 //RAVEN
-#define CS_PLAYERNAMESRIGHT	(CS_PLAYERSKINS+MAX_CLIENTS/4) //64 players should be enough. who runs a 64+ ctf server?
-#define CS_EMPTYSTRING		(CS_PLAYERNAMESRIGHT+MAX_CLIENTS/4) //64 players should be enough. who runs a 64+ ctf server?
-//timeleft
-#define CS_TIMELEFT		(CS_EMPTYSTRING+MAX_CLIENTS/4)
-//systime
-#define CS_SYSTIME		(CS_TIMELEFT+MAX_CLIENTS/4)
-//#define CS_PLAYERNAMESRIGHT	1568
-//#define CS_EMPTYSTRING		1569
-//timeleft
-//#define CS_TIMELEFT		1570
-//systime
-//#define CS_SYSTIME		1571
-
-
+#define CS_PLAYERNAMESRIGHT	(CS_PLAYERSKINS + MAX_CLIENTS)
+#define CS_EMPTYSTRING		(CS_PLAYERNAMESRIGHT + MAX_CLIENTS)
 //
-#define	MAX_CONFIGSTRINGS	(CS_SYSTIME+MAX_CLIENTS)
+
+// For TMG HUD
+#define CS_TIMELEFT			(CS_EMPTYSTRING + 1) // match time left
+#define CS_SYSTIME			(CS_TIMELEFT + 1)	// wall clock time
+
+#define	MAX_CONFIGSTRINGS	(CS_SYSTIME)	// cannot exceed 2080
+
+//QW// This magic number comes from q_shared.h 
+// of the original game. We can play around in the CS_*
+// indexes in our mods but can't go over this 2080 limit.
+#if (MAX_CONFIGSTRINGS > 2080)
+	#error MAX_CONFIGSTRINGS > 2080
+#endif
 
 //==============================================
-
 
 // entity_state_t->event values
 // entity events are for effects that take place relative

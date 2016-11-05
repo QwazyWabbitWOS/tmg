@@ -19,5 +19,6 @@ extern void SP_func_timer (edict_t *self);
 extern void SP_func_conveyor (edict_t *self);
 extern void SP_func_door_secret (edict_t *ent);
 extern void SP_func_killbox (edict_t *ent);
+extern void SP_func_plat (edict_t *ent);
 
 #endif /* G_FUNC_H */

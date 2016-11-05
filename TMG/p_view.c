@@ -1746,7 +1746,7 @@ B_DamageFeedback (edict_t *player)
 =================
 BotEndServerFrame
 
-Called for each player at the end of the server frame
+Called for each bot at the end of the server frame
 and right after spawning
 =================
 */
