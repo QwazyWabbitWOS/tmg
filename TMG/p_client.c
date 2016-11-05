@@ -2802,7 +2802,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	//ZOID
 		gi.configstring (CS_PLAYERSKINS+playernum, va("%s\\%s", ent->client->pers.netname, s) );
 
-	gi.configstring (CS_PLAYERNAMESRIGHT+playernum, va("%15s", ent->client->pers.netname) );
+	gi.configstring (CS_GENERAL + playernum, va("%15s", ent->client->pers.netname) );
 	
 	//Skin changers delight
 	if(ent->client->pers.pl_state == PL_PLAYING && ent->client->resp.ctf_team > 0)

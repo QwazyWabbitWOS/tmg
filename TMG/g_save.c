@@ -153,6 +153,8 @@ void InitGame (void)
 	gi.dprintf ("    detection system developed\n");
 	gi.dprintf ("        by Doug 'RaVeN' Buckley.\n");
 	gi.dprintf ("TMGBot 'Base' Bot code developed By Ponpoko\n");
+	gi.dprintf ("  Corrections, improvements and bug fixes\n");
+	gi.dprintf ("              by QwazyWabbit\n");
 	gi.dprintf ("===========================================\n\n");
 	bot_team_flag1 = NULL;
 	bot_team_flag2 = NULL;

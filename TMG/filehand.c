@@ -305,7 +305,7 @@ int CheckOpFile (edict_t *ent, char ip[IP_LENGTH], qboolean returnindex)
 		return -1;
 	}
 
-	if (developer->value)
+	if (debug_ops->value)
 	{
 		gi.dprintf("%d entries in user_o.txt\n", entriesinopfile);
 		for (i = 0; i < entriesinopfile+1; i++)
@@ -325,7 +325,7 @@ int CheckOpFile (edict_t *ent, char ip[IP_LENGTH], qboolean returnindex)
 		ent->client->pers.oplevel = oplist[flagged].level;
 		strcpy(ent->client->pers.namepass, oplist[flagged].namepass);
 	}
-	if (developer->value && flagged != -1)
+	if (debug_ops->value && flagged != -1)
 		gi.dprintf ("Player %s matches entry %s, level = %d\n", 
 			ent->client->pers.netname, 
 			oplist[flagged].entry, oplist[flagged].level);

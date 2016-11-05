@@ -1425,7 +1425,7 @@ void SetCTFStats(edict_t *ent)
 	ent->client->ps.stats[STAT_CTF_TEAM2_HEADER] = gi.imageindex ("ctfsb2");
 
 	// if during intermission, we must blink the team header of the winning team
-	if (level.intermissiontime && (level.framenum & 8)) { // blink 1/8th second
+	if (level.intermissiontime && (level.framenum & 8)) { // blink 0.8 second
 		// note that ctfgame.total[12] is set when we go to intermission
 		if (ctfgame.team1 > ctfgame.team2)
 			ent->client->ps.stats[STAT_CTF_TEAM1_HEADER] = 0;
@@ -1543,11 +1543,11 @@ void SetCTFStats(edict_t *ent)
 	//if (ent->client->resp.id_state)
 	//	CTFSetIDView(ent);
 	if (rfc != 0 )
-		rfc = rfc + (CS_PLAYERNAMESRIGHT - 1);
+		rfc = rfc + (CS_GENERAL - 1);
 	else
 		rfc = CS_EMPTYSTRING;
 	if (bfc != 0 )
-		bfc = bfc + (CS_PLAYERNAMESRIGHT - 1);
+		bfc = bfc + (CS_GENERAL - 1);
 	else
 		bfc = CS_EMPTYSTRING;
 	if(show_carrier->value)
