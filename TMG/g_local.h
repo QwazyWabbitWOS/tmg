@@ -683,7 +683,6 @@ extern  cvar_t  *motd_line;
 //RAV new bot detection
 extern  cvar_t	*prox;
 extern  cvar_t  *check_models;
-//extern  cvar_t	*connect_time;
 extern  cvar_t  *speed_check;
 
 extern  cvar_t	*lag_limit;

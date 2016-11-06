@@ -121,6 +121,7 @@ void rune_use (edict_t *ent, gitem_t *item) {
 void rune_drop (edict_t *ent, gitem_t *item)
 {
 	edict_t	*rune;
+
 	rune = Drop_Item(ent, item);
 	rune->nextthink = level.time + 1;
 	rune->think = rune_make_touchable;
@@ -175,15 +176,16 @@ void runes_drop (edict_t *ent)
 
 	if(rune_has_rune(ent, RUNE_INVIS))
 	{
-		ent->stealth = level.time +2;
+		ent->stealth = level.time + 2;
 		rune_drop (ent, FindItem(rune_namefornum[RUNE_INVIS]));
 	}
 	else
 	{
-		for (i=RUNE_FIRST; i<=RUNE_LAST; i++) {
+		for (i = RUNE_FIRST; i <= RUNE_LAST; i++) 
+		{
 			if (rune_has_rune(ent, i))
 				rune_drop (ent, FindItem(rune_namefornum[i]));
-	 }
+		}
 	}
 }
 

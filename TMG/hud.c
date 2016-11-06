@@ -1,10 +1,4 @@
 
-//	HUD
-//
-///////////==================////////
-//
-//	HUD
-//
 #include "g_local.h"
 #include "hud.h"
 #include "g_items.h"
@@ -21,9 +15,6 @@ int newdmflags;
 edict_t *votestarter;
 edict_t *votetarget;
 
-//
-//TIME STUFF
-//
 void GetDate()
 {
 	int day, month, year;
@@ -38,11 +29,11 @@ void GetDate()
 	year = ltime->tm_year + 1900;
 	sprintf(sys_date, "%02i-%02i-%4i", month, day, year);
 }
+
 /*
  Format the local time string for use in the HUD.
  Use AM/PM or 24 hour time depending on the cvar tmgclock, (12 or 24). 
  Cvar server_time controls display of local or UTC modes. 
- UTC is always 24-hour time and we alter tmgclock accordingly.
  Set server_time to 0 for no time in HUD, 1 for local time, 2 for GMT.
  Variable ampm contains "", "AM", "PM" or "UTC" per each mode.
 */
@@ -57,10 +48,10 @@ void GetTime()
 	time(&gmt_time); // read current time
 	if (server_time->value == 1)
 		ltime = localtime(&gmt_time);
+
 	else // if server_time != 0 or 1 we want UTC
 	{
 		ltime = gmtime(&gmt_time);
-		gi.cvar_set("tmgclock", "24");
 		Com_sprintf(ampm, sizeof ampm, "UTC");
 	}
 
@@ -68,7 +59,7 @@ void GetTime()
 	sec = ltime->tm_sec;
 	hour = ltime->tm_hour;
 
-	if (tmgclock->value != 24)
+	if (server_time->value == 1 && tmgclock->value != 24)
 	{
 		if (hour >= 12)
 		{
@@ -82,34 +73,14 @@ void GetTime()
 	Com_sprintf (buf, sizeof buf,
 				 "%02i:%02i:%02i %s", hour, min, sec, ampm);
 
+	//QW// Not sure why we're doing this, it's never used.
+	// FIXME: Consider removal.
 	if (Q_stricmp(sys_time, buf) != 0) 
 	{
 		strcpy(sys_time, buf);
 		gi.configstring (CS_SYSTIME, sys_time);
 	}
 }
-
-//
-//MAP STUFF
-//
-int CountConnectedClients (void)
-{
-	int n, count;
-	edict_t *player;
-
-	count = 0;
-	for (n = 1; n <= maxclients->value; n++)
-	{
-		player = &g_edicts[n];
-		if (!player->inuse)
-			continue;
-		count++;
-	}
-	return(count);
-}
-
-
-
 
 /************this displays 5 digit min:sec************/
 void TimeLeft(void)
@@ -145,8 +116,27 @@ void TimeLeft(void)
 		GetTime();
 }
 
+//QW// ...and here we have two methods for counting clients
+int CountConnectedClients (void)
+{
+	int n, count;
+	edict_t *player;
+
+	count = 0;
+	for (n = 1; n <= maxclients->value; n++)
+	{
+		player = &g_edicts[n];
+		if (!player->inuse)
+			continue;
+		else
+			count++;
+	}
+	return count;
+}
+
+// Called by ShowHud, AdjustBotNumber, Spec_Check
 ///////////////get # of clients////////////////
-int rav_getnumclients()
+int rav_getnumclients(void)
 {
 	int rCount = 0;
 	int i;
@@ -154,12 +144,10 @@ int rav_getnumclients()
 	for (i = 1; i <= game.maxclients; i++)
 	{
 		edict_t* ent = g_edicts + i;
-		if (!ent->inuse)
+		if (!ent->inuse || !ent->client)
 			continue;
-		if (!ent->client)
-			continue;
-
-		rCount++;
+		else
+			rCount++;
 	}
 	return rCount;
 }
@@ -336,22 +324,18 @@ char *rav_gettech(edict_t *ent)
 	int i;
 
 	//rune addition
-	if(runes->value)
+	if(runes->value && rune_has_a_rune(ent))
 	{
-		if (rune_has_a_rune(ent))
+		for (i=RUNE_FIRST; i<=RUNE_LAST; i++)
 		{
-			for (i=RUNE_FIRST; i<=RUNE_LAST; i++)
+			if (rune_has_rune(ent, i))
 			{
-				if (rune_has_rune(ent, i))
-				{
-					if ((rune = FindItem(rune_namefornum[i])) != NULL
-						&& ent->client->pers.inventory[ITEM_INDEX(rune)])
-						return(rune->pickup_name);
-				}
+				if ((rune = FindItem(rune_namefornum[i])) != NULL
+					&& ent->client->pers.inventory[ITEM_INDEX(rune)])
+					return(rune->pickup_name);
 			}
 		}
 	}
-
 	return ("No Rune");
 }
 
@@ -436,7 +420,7 @@ below it. This seems to give a nice uniform leading between lines.
 
 // ===================================================================
 
-char *tn_showHud (edict_t *ent)
+char *ShowHud (edict_t *ent)
 {
 	static char layout[1300];
 	int j = 0;
@@ -651,13 +635,9 @@ char *tn_showHud (edict_t *ent)
 		//rank
 		j += sprintf (layout+j, "xr -70 yt 74 string2 \"Rank\" ");
 		j += sprintf (layout+j, "xr -70 yt 82 string \"%i/%i\" ",rank, num_ppl);
-
-		//if(!voosh->value){
 		//time
 		j += sprintf (layout+j, "xr -70 yt 90 string2 \"Time\" ");
 		j += sprintf (layout+j, "xr -70 yt 98 string \"%s \" ", time_left);
-		//}
-		//if(!ctf->value)
 		//Deaths
 		j += sprintf (layout+j, "xr -70 yt 106 string2 \"Deaths\" ");
 		j += sprintf (layout+j, "xr -70 yt 114 string \"%i \" ", died);
@@ -710,7 +690,6 @@ char *tn_showHud (edict_t *ent)
 				j += sprintf (layout+j, "xl 22 yb -200 string2 \"UNFAIR: Blue  Has Too many Players\" ");
 			if(redtime >level.time || bluetime >level.time)
 				j += sprintf (layout+j, "xl 340 yb -220 string \"Even Teams Please!\" ");
-			// j += sprintf (layout+j, "xl 2 yb -80 string2 \"%s\" ", hostname->string);
 		}
 	}	// End player HUD
 

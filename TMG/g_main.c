@@ -74,7 +74,7 @@ cvar_t	*hook_pullspeed;     // sets how fast the hook pulls a player
 cvar_t	*hook_sky;           // enables hooking to the sky
 cvar_t	*hook_maxtime;       // sets max time you can stay hooked
 cvar_t	*hook_damage;        // sets damage hook does to other players
-cvar_t	*hook_reset;         //QW// I have no idea why this is a cvar
+cvar_t	*hook_reset;         // 1 = hook will not inflict damage on opponents
 cvar_t  *hook_color;         // global selection of hook color in DM
 cvar_t  *hook_offhand;       //QW// UNUSED
 
@@ -151,7 +151,6 @@ cvar_t  *resp_protect;
 cvar_t  *motd_line;
 cvar_t	*prox;
 cvar_t  *check_models;
-//cvar_t	*connect_time;
 
 cvar_t	*lag_limit;
 cvar_t  *menutime;

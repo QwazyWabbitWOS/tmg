@@ -224,18 +224,16 @@ void InitGame (void)
 	// all hook related vars
 	use_hook = gi.cvar("use_hook", "1", CVAR_SERVERINFO);
 	hook_speed = gi.cvar("hook_speed", "2200", CVAR_SERVERINFO);
-
 	hook_pullspeed = gi.cvar("hook_pullspeed", "900", CVAR_SERVERINFO);
-	hook_carrierspeed = gi.cvar("hook_carrierspeed", hook_pullspeed->string, 0);
-	if (hook_carrierspeed->value == 0)
-		gi.cvar_set("hook_carrierspeed", hook_pullspeed->string);
-
 	hook_sky = gi.cvar("hook_sky", "1", 0);
 	hook_maxtime = gi.cvar("hook_maxtime", "5", 0);
 	hook_damage = gi.cvar("hook_damage", "5", 0);
 	hook_reset = gi.cvar("hook_reset", "0", 0);
 	hook_color = gi.cvar("hook_color", "7", 0);
 	hook_offhand = gi.cvar("hook_offhand", "1", 0);
+	hook_carrierspeed = gi.cvar("hook_carrierspeed", hook_pullspeed->string, 0);
+	if (hook_carrierspeed->value == 0)
+		gi.cvar_set("hook_carrierspeed", hook_pullspeed->string);
 
 	sv_botdetection = gi.cvar("sv_botdetection", "29", 0);
 	server_ip =  gi.cvar("server_ip", "", CVAR_LATCH);
@@ -256,7 +254,7 @@ void InitGame (void)
 	voosh = gi.cvar ("railserver", "1", CVAR_SERVERINFO | CVAR_LATCH);
 
 	//hud stuff
-	hud_freq = gi.cvar ("hud_freq", "2", 0);
+	hud_freq = gi.cvar ("hud_freq", "2", 0); //QW// FIXME: not used, delete?
 	max_hud_dist = gi.cvar ("id_dist", "150", 0);
 	light_comp = gi.cvar ("light_comp", "100", 0);
 
@@ -276,8 +274,13 @@ void InitGame (void)
 	raildamage = gi.cvar ("raildamage", "300", CVAR_LATCH);
 	railkick = gi.cvar ("railkick", "200", CVAR_LATCH);
 
-	flashlight = gi.cvar ("flashlight", "1", CVAR_LATCH);
+	// Enable flashlight command
+	flashlight = gi.cvar ("flashlight", "1", 0);
+	
+	//QW// Not used. FIXME: mark for deletion
 	lights = gi.cvar ("lights", "1", CVAR_LATCH);
+	
+	// allow ops to control lighting
 	lights_out = gi.cvar ("lights_out", "1", CVAR_LATCH);
 
 	InitHighScores();
@@ -317,7 +320,6 @@ void InitGame (void)
 
 	//RAV new bot detection
 	prox = gi.cvar ("prox", "0", 0);
-	//	connect_time = gi.cvar ("connect_time", "180", 0);
 	//check for speed hack
 	speed_check = gi.cvar ("speed_check", "0", 0);
 	//

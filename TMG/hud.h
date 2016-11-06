@@ -19,7 +19,7 @@ extern qboolean Team2Players(void);
 extern char *rav_redflag(edict_t *ent);
 extern char *rav_blueflag(edict_t *ent);
 
-extern char *tn_showHud (edict_t *ent);	//RAV
+extern char *ShowHud (edict_t *ent);	//RAV
 
 extern void vote_think (edict_t *ent, float timenow);
 

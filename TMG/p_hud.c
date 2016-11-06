@@ -531,7 +531,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 	{
 		string[0] = 0;
 		stringlength = strlen(string);
-		Com_sprintf (entry, sizeof(entry), tn_showHud(ent));
+		Com_sprintf (entry, sizeof(entry), ShowHud(ent));
 		j = strlen(entry);
 		if (!(stringlength + j > 1400))
 		{
