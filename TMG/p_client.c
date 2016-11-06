@@ -2784,15 +2784,15 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	
 	// set skin
 	s = Info_ValueForKey (userinfo, "skin");
-	playernum = ent-g_edicts-1;
+	playernum = ent - g_edicts - 1;
 	// combine name and skin into a configstring
 	
 	//RAV
 	//Check for bad skins here
 	if(CheckModel (ent, s))
-		gi.configstring (CS_PLAYERSKINS+playernum, va("%s\\%s", ent->client->pers.netname, s) );
+		gi.configstring (CS_PLAYERSKINS + playernum, va("%s\\%s", ent->client->pers.netname, s) );
 	else
-		gi.configstring (CS_PLAYERSKINS+playernum, va("%s\\male/grunt", ent->client->pers.netname) );
+		gi.configstring (CS_PLAYERSKINS + playernum, va("%s\\male/grunt", ent->client->pers.netname) );
 	//RAV
 
 	//ZOID
@@ -2800,7 +2800,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 		CTFAssignSkin(ent, s);
 	else
 	//ZOID
-		gi.configstring (CS_PLAYERSKINS+playernum, va("%s\\%s", ent->client->pers.netname, s) );
+		gi.configstring (CS_PLAYERSKINS + playernum, va("%s\\%s", ent->client->pers.netname, s) );
 
 	gi.configstring (CS_GENERAL + playernum, va("%15s", ent->client->pers.netname) );
 	
@@ -2828,7 +2828,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 				{
 					//	safe_bprintf (PRINT_HIGH, "%s's skin was changed to %s \n", ent->client->pers.name_change, s);
 					strcpy (ent->client->pers.skin_change, s);
-					ent->client->skintime = level.time+5;
+					ent->client->skintime = level.time + 5;
 				}
 			}
 		}
@@ -2869,7 +2869,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 
 	// save off the userinfo in case we want to check something later
 	strncpy(ent->client->pers.userinfo, 
-		userinfo, sizeof(ent->client->pers.userinfo)-1);
+		userinfo, sizeof(ent->client->pers.userinfo) - 1);
 }
 
 /*
@@ -2892,7 +2892,7 @@ void RavenDisconnect (edict_t *ent)
 	ent->inuse = false;
 	ent->classname = "disconnected";
 	ent->client->pers.connected = false;
-	playernum = ent-g_edicts-1;
+	playernum = ent - g_edicts - 1;
 	gi.configstring (CS_PLAYERSKINS+playernum, "");
 }
 
@@ -2905,7 +2905,7 @@ char *GetPort(edict_t *ent,char *ip)
 
 	sprintf(entry, "%sX", ip);
 
-	j=0;
+	j = 0;
 	ec = 0;
 
 	while  (!strchr(".", entry[ec]))
