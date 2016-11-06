@@ -1241,8 +1241,8 @@ static void drop_make_touchable (edict_t *ent)
 	ent->touch = Touch_Item;
 	if (deathmatch->value)
 	{
-	ent->nextthink = level.time + 29;
-	ent->think = G_FreeEdict;
+		ent->nextthink = level.time + 29.0f;
+		ent->think = G_FreeEdict;
 	}
 }
 
@@ -1291,13 +1291,13 @@ edict_t *Drop_Item (edict_t *ent, gitem_t *item)
 	dropped->velocity[2] = 300;
 
 	dropped->think = drop_make_touchable;
-	dropped->nextthink = level.time + 1;
+	dropped->nextthink = level.time + 1.0f;
 
 	gi.linkentity (dropped);
-	
+
 	if (Q_stricmp(dropped->classname, "item_quad") == 0 && ((int)quad_notify->value & QUAD_NOTIFY_DROP))
 	{
-//		gi.dprintf("a quad damage was dropped!\n");
+		//gi.dprintf("a quad damage was dropped!\n");
 		for (i = 1; i <= maxclients->value; i++)
 		{
 			e = g_edicts + i;
