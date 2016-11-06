@@ -3586,11 +3586,9 @@ static void CTFSay_Team_Health(edict_t *who, char *buf)
 static void CTFSay_Team_Tech(edict_t *who, char *buf)
 {
 	gitem_t *tech,*rune;
-	int i;
+	int i = 0;
 
 	// see if the player has a tech powerup
-	i = 0;
-
 	//RAV
 	//rune addition
 	if (rune_has_a_rune(who))
@@ -3611,7 +3609,8 @@ static void CTFSay_Team_Tech(edict_t *who, char *buf)
 	while (tnames[i])
 	{
 		if ((tech = FindItemByClassname(tnames[i])) != NULL &&
-			who->client->pers.inventory[ITEM_INDEX(tech)]) {
+			who->client->pers.inventory[ITEM_INDEX(tech)]) 
+		{
 				sprintf(buf, "the %s", tech->pickup_name);
 				return;
 		}
