@@ -1557,8 +1557,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy,
 
 			if(distance > 1 || voosh->value)
 			{
-				if(B_UseRailgun(ent, target, enewep, aim, distance, skill)
-					|| voosh->value) //QW// FIXME: redundant
+				if(B_UseRailgun(ent, target, enewep, aim, distance, skill))
 					goto FIRED;
 			}
 			break;
