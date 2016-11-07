@@ -274,7 +274,7 @@ void InitGame (void)
 	raildamage = gi.cvar ("raildamage", "300", CVAR_LATCH);
 	railkick = gi.cvar ("railkick", "200", CVAR_LATCH);
 
-	// Enable flashlight command
+	// Enable/disable the flashlight command
 	flashlight = gi.cvar ("flashlight", "1", 0);
 	
 	//QW// Not used. FIXME: mark for deletion
