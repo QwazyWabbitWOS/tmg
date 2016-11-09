@@ -12,7 +12,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7AD44313-7BFF-48E5-895B-3CF18CB6B8FC}</ProjectGuid>
-    <ProjectName>gamex86</ProjectName>
+    <ProjectName>gamex86.real</ProjectName>
     <SccProjectName>Svn</SccProjectName>
     <SccAuxPath>Svn</SccAuxPath>
     <SccLocalPath>Svn</SccLocalPath>

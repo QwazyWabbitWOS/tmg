@@ -796,7 +796,8 @@ extern	cvar_t	*debug_ops;
 extern	cvar_t *ctf_cfg_file;
 extern	cvar_t *ffa_cfg_file;
 
-/*extern	cvar_t	*allow_lasermines;
+/*
+extern	cvar_t	*allow_lasermines;
 extern	cvar_t	*allow_energy_lasers;
 extern cvar_t	*energylaser_time;
 extern cvar_t	*energylaser_damage;
@@ -809,7 +810,8 @@ extern cvar_t	*nuke_slugs;
 extern cvar_t	*nuke_cells;
 extern cvar_t	*nuke_radius;
 extern cvar_t	*nuke_radius2;
-*/extern cvar_t	*runes4all;
+*/
+extern cvar_t	*runes4all;
 extern	cvar_t	*quad_notify;
 extern	cvar_t	*teamtechs;
 extern	cvar_t	*auto_flag_return;

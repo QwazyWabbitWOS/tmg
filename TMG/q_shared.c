@@ -8,6 +8,8 @@ vec3_t vec3_origin = {0,0,0};
 
 #ifdef _WIN32
 #pragma optimize( "", off )
+#pragma warning (push)
+#pragma warning(disable : 4748) // disable warning about buffer security check
 #endif
 
 void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, float degrees )
@@ -67,6 +69,7 @@ void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, 
 
 #ifdef _WIN32
 #pragma optimize( "", on )
+#pragma warning (pop)
 #endif
 
 
