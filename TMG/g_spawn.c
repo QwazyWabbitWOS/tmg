@@ -1029,7 +1029,6 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	GetDate();
 	gi.dprintf ("%s started %10s %8s\n", level.mapname, sys_date, sys_time); 
 
-	voted = false;
 	mapscrewed = false;
 
 	if(ctf->value)

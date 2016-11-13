@@ -724,7 +724,6 @@ void G_RunFrame (void)
 	if (level.exitintermission)
 	{
 		ExitLevel ();
-		voted = false;
 		return;
 	}
 	//

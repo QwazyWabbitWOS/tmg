@@ -1739,7 +1739,6 @@ qboolean CheckModel(edict_t *ent, char *s);
 
 
 //Voting /MAP
-qboolean	voted;
 float	votetime;
 //MENUS
 //void SpecialMenu(edict_t *ent);
