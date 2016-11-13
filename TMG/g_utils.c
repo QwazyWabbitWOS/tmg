@@ -702,21 +702,19 @@ void AddModelSkin (char *modelfile, char *skinname)
 void my_bprintf (int printlevel, char *fmt, ...)
 {
 	int i;
-	char	bigbuffer[0x10000];
-	char	bigbuffer2[0x10000];
+	char	buffer[0x10000];
 	int		len;
 	va_list		argptr;
 	edict_t	*cl_ent;
 
 	va_start (argptr,fmt);
-	len = vsprintf (bigbuffer,fmt,argptr);
+	len = vsprintf (buffer, fmt, argptr);
 	va_end (argptr);
 
 	if (dedicated->value)
 	{
-		white_text(bigbuffer, bigbuffer2); // green -> white
-		gi.dprintf ("%s", bigbuffer2);
-		//safe_cprintf(NULL, printlevel, bigbuffer);
+		white_text(buffer, buffer);
+		gi.dprintf ("%s", buffer);
 	}
 
 	for (i = 0; i < maxclients->value; i++)
@@ -729,15 +727,8 @@ void my_bprintf (int printlevel, char *fmt, ...)
 
 		// Safety check...
 		if (G_EntExists(cl_ent))
-			safe_cprintf(cl_ent, printlevel, bigbuffer);
+			gi.cprintf(cl_ent, printlevel, buffer);
 	}
-/*
-	for (i=0; i<num_players; i++)
-	{
-		if (!players[i]->bot_client)
-			gi.cprintf(players[i], printlevel, bigbuffer);
-	}
-*/
 }
 
 //======================================================================
@@ -746,40 +737,44 @@ void my_bprintf (int printlevel, char *fmt, ...)
 // botsafe cprintf
 void safe_cprintf (edict_t *ent, int printlevel, char *fmt, ...)
 {
-	char	bigbuffer[0x10000];
+	char	buffer[0x10000];
 	va_list	argptr;
 	int		len;
 
-	if (!ent || !ent->inuse || ent->bot_client || !ent->client->pers.in_game)
+	if (!ent || !ent->inuse || 
+		ent->bot_client || 
+		!ent->client->pers.in_game)
 		return;
 
-	va_start (argptr,fmt);
-	len = vsprintf (bigbuffer,fmt,argptr);
+	va_start (argptr, fmt);
+	len = vsprintf (buffer, fmt, argptr);
 	va_end (argptr);
 
 	// Safety check...
 	if (G_EntExists(ent))
-		gi.cprintf(ent, printlevel, bigbuffer);
+		gi.cprintf(ent, printlevel, buffer);
 	
 }
 
 // botsafe centerprintf
 void safe_centerprintf (edict_t *ent, char *fmt, ...)
 {
-	char	bigbuffer[0x10000];
+	char	buffer[0x10000];
 	va_list	argptr;
 	int		len;
 
-	if (!ent->inuse || ent->bot_client || !ent->client->pers.in_game)
+	if (!ent->inuse || 
+		ent->bot_client || 
+		!ent->client->pers.in_game)
 		return;
 
-	va_start (argptr,fmt);
-	len = vsprintf (bigbuffer,fmt,argptr);
+	va_start (argptr, fmt);
+	len = vsprintf (buffer, fmt, argptr);
 	va_end (argptr);
 
 	// Safety check...
 	if (G_EntExists(ent))
-		gi.centerprintf(ent, bigbuffer);
+		gi.centerprintf(ent, buffer);
 	
 }
 
@@ -787,20 +782,19 @@ void safe_centerprintf (edict_t *ent, char *fmt, ...)
 void safe_bprintf (int printlevel, char *fmt, ...)
 {
 	int		i;
-	char	bigbuffer[0x10000];
-	char	bigbuffer2[0x10000];
+	char	buffer[0x10000];
 	int		len;
 	va_list	argptr;
 	edict_t	*cl_ent;
 
-	va_start (argptr,fmt);
-	len = vsprintf (bigbuffer,fmt,argptr);
+	va_start (argptr, fmt);
+	len = vsprintf (buffer, fmt, argptr);
 	va_end (argptr);
 
 	if (dedicated->value)
 	{
-		white_text(bigbuffer, bigbuffer2); // green -> white
-		gi.cprintf(NULL, printlevel, bigbuffer2);
+		white_text(buffer, buffer); // green -> white
+		gi.cprintf(NULL, printlevel, buffer);
 	}
 
 	// This is to be compatible with Eraser (ACE)
@@ -811,7 +805,7 @@ void safe_bprintf (int printlevel, char *fmt, ...)
 
 	if (cl_ent->inuse && !cl_ent->bot_client && cl_ent->client->pers.in_game)
 		if (G_EntExists(cl_ent))
-			gi.cprintf(cl_ent, printlevel, bigbuffer);
+			gi.cprintf(cl_ent, printlevel, buffer);
 	}
 }
 
@@ -820,8 +814,10 @@ void safe_bprintf (int printlevel, char *fmt, ...)
 //======================================================
 qboolean G_EntExists(edict_t *ent)
 {
-	return ((ent)
-			&& (ent->client) && (ent->inuse) && (ent->client->ping < 800));
+	return ((ent) && 
+		(ent->client) && 
+		(ent->inuse) && 
+		(ent->client->ping < 800));
 }
 
 //======================================================
@@ -830,9 +826,9 @@ qboolean G_EntExists(edict_t *ent)
 qboolean G_ClientNotDead(edict_t *ent)
 {
 	qboolean buried = true;
-	qboolean b1=ent->client->ps.pmove.pm_type != PM_DEAD;
-	qboolean b2=ent->deadflag != DEAD_DEAD;
-	qboolean b3=ent->health > 0;
+	qboolean b1 = ent->client->ps.pmove.pm_type != PM_DEAD;
+	qboolean b2 = ent->deadflag != DEAD_DEAD;
+	qboolean b3 = ent->health > 0;
 	return ((b3 || b2 || b1) && buried);
 }
 
@@ -841,8 +837,10 @@ qboolean G_ClientNotDead(edict_t *ent)
 //======================================================
 qboolean G_ClientInGame(edict_t *ent)
 {
-	if (!G_EntExists(ent)) return false;
-	if (!G_ClientNotDead(ent)) return false;
+	if (!G_EntExists(ent))
+		return false;
+	if (!G_ClientNotDead(ent))
+		return false;
 	return (ent->client->respawn_time + 5.0 < level.time);
 }
 
