@@ -4,10 +4,6 @@
 #include "timer.h"
 #include "bot.h"
 
-void sv_addop (edict_t *ent);
-//void sv_addmop (edict_t *ent);
-
-
 void Move_LastRouteIndex(void)
 {
 	int	i;
@@ -31,19 +27,6 @@ void Move_LastRouteIndex(void)
 			Route[CurrentIndex].index = Route[CurrentIndex - 1].index + 1;
 	}
 }
-
-//static void	RouteTreepointSet(void)
-//{
-//	int	i;
-//
-//	for(i = 0;i < CurrentIndex;i++)
-//	{
-//		if(Route[i].state == GRS_NORMAL)
-//		{
-//			// something...
-//		}
-//	}
-//}
 
 static void SaveChain(void)
 {
@@ -227,7 +210,7 @@ static void Svcmd_Stuff (void)
 	gi.dprintf ("stuffing to client: %s\n", ent->client->pers.netname);
 	gi.cprintf (ent, PRINT_HIGH, "You were stuffed the following "
 				"command by the server admin: %s\n", buff);
-	stuffcmd(ent, buff);
+	StuffCmd(ent, buff);
 }
 
 /**

@@ -529,21 +529,7 @@ void	G_TouchSolids (edict_t *ent)
 	}
 }
 
-
-
-
 /*
-==============================================================================
-
-Kill box
-
-==============================================================================
-*/
-
-/*
-=================
-KillBox
-
 Kills all entities that would touch the proposed new positioning
 of ent.  Ent should be unlinked before calling this!
 =================
@@ -583,12 +569,10 @@ qboolean KillBox (edict_t *ent)
 // Ridah
 /*
 ==================
-stuffcmd
-
   QC equivalent, sends a command to the client's console
 ==================
 */
-void stuffcmd(edict_t *ent, char *text)
+void StuffCmd(edict_t *ent, char *text)
 {
 
 	if(!G_EntExists(ent) || !ent)

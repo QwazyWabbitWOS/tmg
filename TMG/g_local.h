@@ -962,7 +962,7 @@ float vectoyaw (vec3_t vec);
 void vectoangles (vec3_t vec, vec3_t angles);
 
 // Ridah
-void stuffcmd(edict_t *ent, char *text);
+void StuffCmd(edict_t *ent, char *text);
 float	entdist(edict_t *ent1, edict_t *ent2);
 void AddModelSkin (char *modelfile, char *skinname);
 
@@ -982,8 +982,7 @@ void toupper_text(char *src, char *dest);
 void tolower_text(char *src, char *dest);
 
 qboolean CheckFlood(edict_t *who);
-void LogConnect(edict_t *ent, qboolean connect);
-void LogChat(char *text);
+// end g_utils.c declarations
 
 float yesvotes;
 float novotes;

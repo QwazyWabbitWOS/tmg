@@ -50,7 +50,7 @@ void CheckForCamping (edict_t *ent)
 	{
 		safe_centerprintf (ent, CAMP_MSG);
 		ent->client->camp_time = 0; // reset when player returns
-		stuffcmd (ent, va("spec\n"));
+		StuffCmd (ent, va("spec\n"));
 	}
 }
 

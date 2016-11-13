@@ -2560,7 +2560,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 
 	if (strstr("badinfo", s))
 	{
-		stuffcmd(ent,"disconnect\n");
+		StuffCmd(ent,"disconnect\n");
 		return;
 	}
 	
@@ -2584,7 +2584,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	// fix empty or blank names
 	if(strcmp ("", s) == 0 || emptyname)
 	{
-		stuffcmd (ent, va("name ImARetard\n")); // force client name change
+		StuffCmd (ent, va("name ImARetard\n")); // force client name change
 		return;
 	}
 
@@ -2645,7 +2645,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	}
 
 	//JSW
-//	stuffcmd(ent, "mm_delta $cl_nodelta\n");
+//	StuffCmd(ent, "mm_delta $cl_nodelta\n");
 
 ///* JSW - handled above^^^^^
 	if(cl_check->value)
@@ -2681,7 +2681,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 			int newglmono = q2a_atoi(Info_ValueForKey(userinfo, "gl_monolightmap"));
 			if(newps == 0)
 			{
-				stuffcmd(ent, "set cl_pitchspeed $cl_pitchspeed u\n");
+				StuffCmd(ent, "set cl_pitchspeed $cl_pitchspeed u\n");
 			}
 			else if(ent->client->pers.pitchspeed == 0)
 			{
@@ -2699,7 +2699,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 			//anglespeed cheaters
 			if(newas == 0)
 			{
-				stuffcmd(ent, "set cl_anglespeedkey $cl_anglespeedkey u\n");
+				StuffCmd(ent, "set cl_anglespeedkey $cl_anglespeedkey u\n");
 			}
 			else if(ent->client->pers.anglespeed == 0)
 			{
@@ -2708,7 +2708,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 			else if(ent->client->pers.anglespeed != newas)
 			{
 				gi.bprintf (PRINT_HIGH, "%s changed anglespeed to %d and was Warned\n", ent->client->pers.netname, newas);
-				// stuffcmd (ent, va("set cl_anglespeedkey %i u\n", ent->client->pers.anglespeed));
+				// StuffCmd (ent, va("set cl_anglespeedkey %i u\n", ent->client->pers.anglespeed));
 				ent->command = 6;
 				newas = ent->client->pers.anglespeed;
 				safe_cprintf (ent, PRINT_HIGH, "Pitch and Angle Speed changing is not permitted here\n ");
@@ -2718,7 +2718,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 			//gl_monolightmap check
 			if(newglmono == 1)
 			{
-				stuffcmd(ent, "set gl_monolightmap 0 u\n");
+				StuffCmd(ent, "set gl_monolightmap 0 u\n");
 			}
 			else if(ent->client->pers.glmonolightmap == 1)
 			{
@@ -2727,7 +2727,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 			else if(ent->client->pers.glmonolightmap != newglmono)
 			{
 				gi.bprintf (PRINT_HIGH, "%s tried to use gl_monolightmap and was Warned\n", ent->client->pers.netname);
-				// stuffcmd (ent, va("set cl_anglespeedkey %i u\n", ent->client->pers.anglespeed));
+				// StuffCmd (ent, va("set cl_anglespeedkey %i u\n", ent->client->pers.anglespeed));
 				ent->command = 9;
 				newglmono = ent->client->pers.glmonolightmap;
 				safe_cprintf (ent, PRINT_HIGH, "Pitch and Angle Speed changing is not permitted here\n ");
@@ -2752,7 +2752,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 				thinker->nextthink = level.time + 2 + random()*2;
 				thinker->owner = ent;
 				Info_SetValueForKey( userinfo, "rate", va("%i", (int)maxrate->value) );
-				stuffcmd(ent, va("rate %i\n", (int)maxrate->value));
+				StuffCmd(ent, va("rate %i\n", (int)maxrate->value));
 			}
 		}
 	}
@@ -2820,7 +2820,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 				if(ent->client->skintime > level.time)
 				{
 					safe_cprintf (ent, PRINT_HIGH, "Skin Change Flooding is not permitted here\n ");
-					//	stuffcmd (ent, va("skin %s\n",ent->client->pers.skin_change));
+					//	StuffCmd (ent, va("skin %s\n",ent->client->pers.skin_change));
 					ent->command = 3;
 					return;
 				}
@@ -4253,7 +4253,7 @@ void Spec_Check (edict_t *ent)
 	if(ent->spec_warned && (ent->spec_kick == level.time))
 	{
 		safe_centerprintf (ent, "Spectators not allowed\nYou have been kicked\n");
-		stuffcmd (ent, "disconnect\n");
+		StuffCmd (ent, "disconnect\n");
 		return;
 	}
 }
@@ -4312,12 +4312,12 @@ void ClientBeginServerFrame (edict_t *ent)
 		ent->display = 0;
 		//	ent->inuse = false;
 		if(ent->flags & FL_SPECIAL)
-			stuffcmd (ent, va("reconnect\n"));
+			StuffCmd (ent, va("reconnect\n"));
 		else
 		{
 			sprintf(buffer, "\nconnect %s\n", reconnect_address);
 			ent->bust_time = 0;
-			stuffcmd (ent, va("%s\n",buffer));
+			StuffCmd (ent, va("%s\n",buffer));
 		}
 		ent->command = 0;
 		ent->pausetime = 0;
@@ -4345,51 +4345,51 @@ void ClientBeginServerFrame (edict_t *ent)
 			if (ent->command == 2)
 			{
 				//name
-				stuffcmd (ent, va("name %s\n", ent->client->pers.name_change));
+				StuffCmd (ent, va("name %s\n", ent->client->pers.name_change));
 				ent->command = 0;
 			}
 			else if (ent->command == 3)
 			{
 				//skin
-				stuffcmd (ent, va("skin %s\n",ent->client->pers.skin_change));
+				StuffCmd (ent, va("skin %s\n",ent->client->pers.skin_change));
 				ent->command = 0;
 			}
 			else if (ent->command == 4)
 			{
 				//Clan name
-				stuffcmd (ent, va("disconnect\n"));
+				StuffCmd (ent, va("disconnect\n"));
 				ent->command = 0;
 			}
 			else if (ent->command == 5)
 			{
 				//Anglespeed
-				stuffcmd (ent, va("set cl_anglespeedkey %i u\n", 
+				StuffCmd (ent, va("set cl_anglespeedkey %i u\n", 
 					ent->client->pers.anglespeed));
 				ent->command = 0;
 			}
 			else if (ent->command == 6)
 			{
 				//Anglespeed
-				stuffcmd (ent, va("set cl_anglespeedkey %i u\n",
+				StuffCmd (ent, va("set cl_anglespeedkey %i u\n",
 					ent->client->pers.anglespeed));
 				ent->command = 0;
 			}
 			else if (ent->command == 7)
 			{
 				//Anglespeed
-				stuffcmd (ent, va("set cl_pitchspeed %i u\n",
+				StuffCmd (ent, va("set cl_pitchspeed %i u\n",
 					ent->client->pers.pitchspeed));
 				ent->command = 0;
 			}
 			else if (ent->command== 8)
 			{
 				//Anglespeed
-				stuffcmd (ent, va("set cl_nodelta 0 u\n" ));
+				StuffCmd (ent, va("set cl_nodelta 0 u\n" ));
 				ent->command = 0;
 			}
 			else if (ent->command == 9)
 			{
-				stuffcmd (ent, va("set gl_monolightmap 0 u\n" ));
+				StuffCmd (ent, va("set gl_monolightmap 0 u\n" ));
 				ent->command = 0;
 			}
 		}
@@ -4431,7 +4431,7 @@ void ClientBeginServerFrame (edict_t *ent)
 			{
 				Com_sprintf(song, sizeof(song), songtoplay->string);
 				//gi.sound (ent, CHAN_AUTO, gi.soundindex (song), 1, ATTN_NORM, 0);
-				stuffcmd(ent, va("play %s\n", song));
+				StuffCmd(ent, va("play %s\n", song));
 			}
 		}
 	}
@@ -4457,11 +4457,11 @@ void ClientBeginServerFrame (edict_t *ent)
 
 	//Check For Cheaters
 	//if (!ent->bot_client)
-	//	stuffcmd(ent, "mm_fps $cl_maxfps\n");//max fps
+	//	StuffCmd(ent, "mm_fps $cl_maxfps\n");//max fps
 	//if(ent->client->checkframe == level.framenum && !ent->bot_client)
 	//{
-	//	//stuffcmd(ent, "mm_fps $cl_maxfps\n");//max fps
-	//	stuffcmd(ent, "mm_ts $timescale\n");//timescale hack
+	//	//StuffCmd(ent, "mm_fps $cl_maxfps\n");//max fps
+	//	StuffCmd(ent, "mm_ts $timescale\n");//timescale hack
 	//	ent->client->checkframe = level.framenum+40;
 	//}
 	
@@ -4554,7 +4554,7 @@ void ClientBeginServerFrame (edict_t *ent)
 	if((ent->client->pers.pl_state == PL_SPECTATOR || ent->client->resp.spectator)
 		&&(ent->client->ps.gunindex != 0))
 	{
-		stuffcmd (ent, va("spec\n"));
+		StuffCmd (ent, va("spec\n"));
 	}
 	
 	//RAV flag tracking

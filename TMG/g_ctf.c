@@ -2335,16 +2335,16 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 		////RAV
 		if(chedit->value)
 		{//for node making !!!
-			stuffcmd(ent, "alias +hook \"cmd hook\"\n");
-			stuffcmd(ent, "alias -hook \"cmd unhook\"\n");
-			stuffcmd(ent, "alias +use +hook ; alias -use -hook\n");
+			StuffCmd(ent, "alias +hook \"cmd hook\"\n");
+			StuffCmd(ent, "alias -hook \"cmd unhook\"\n");
+			StuffCmd(ent, "alias +use +hook ; alias -use -hook\n");
 		}
 		else //normal hook ent/
-			stuffcmd(ent, "alias +hook +use; alias -hook -use \n");
+			StuffCmd(ent, "alias +hook +use; alias -hook -use \n");
 		ent->spec_warned = false;
 		ent->speccheck = false;
 		//set up the no delta value
-		stuffcmd(ent, "set cl_notelta $cl_nodelta u\n");
+		StuffCmd(ent, "set cl_notelta $cl_nodelta u\n");
 	}
 
 	ent->svflags = 0;
@@ -3869,13 +3869,13 @@ void JoinGame(edict_t *ent, pmenu_t *menu)
 	if(!ent->bot_client)
 	{
 		////RAV
-		stuffcmd(ent, "alias +hook \"cmd hook\"\n");
-		stuffcmd(ent, "alias -hook \"cmd unhook\"\n");
-		stuffcmd(ent, "alias +hook +use; alias -hook -use \n");
+		StuffCmd(ent, "alias +hook \"cmd hook\"\n");
+		StuffCmd(ent, "alias -hook \"cmd unhook\"\n");
+		StuffCmd(ent, "alias +hook +use; alias -hook -use \n");
 		ent->spec_warned = false;
 		ent->speccheck = false;
 		//set up the no delta value
-		stuffcmd(ent, "set cl_notelta $cl_nodelta u\n");
+		StuffCmd(ent, "set cl_notelta $cl_nodelta u\n");
 	}
 	PMenu_Close(ent);
 }
@@ -3952,7 +3952,7 @@ void CTFChaseCam(edict_t *ent, pmenu_t *p)
 void RAVspec(edict_t *ent, pmenu_t *p)
 {
 	PMenu_Close(ent);
-	stuffcmd (ent, va("spec\n"));
+	StuffCmd (ent, va("spec\n"));
 }
 
 
@@ -4035,13 +4035,13 @@ void OpExecCTFConfig (edict_t *ent, pmenu_t *menu)
 void LightsOn(edict_t *ent, pmenu_t *menu)
 {
 	PMenu_Close(ent);
-	stuffcmd (ent, va("lightson\n"));
+	StuffCmd (ent, va("lightson\n"));
 }
 
 void LightsOff(edict_t *ent, pmenu_t *menu)
 {
 	PMenu_Close(ent);
-	stuffcmd (ent, va("lightsoff\n"));
+	StuffCmd (ent, va("lightsoff\n"));
 }
 
 void VoteYes (edict_t *ent, pmenu_t *menu)
@@ -5064,7 +5064,7 @@ void OpMe(edict_t *ent, pmenu_t *p)
 
 	sprintf(entry, "addop %s %d nopass",
 			GetIp(e), (int)defaultoplevel->value);
-	stuffcmd (ent, entry);
+	StuffCmd (ent, entry);
 }
 
 void OpLockServer(edict_t *ent, pmenu_t *p)
@@ -5178,14 +5178,14 @@ void SwitchMe(edict_t *ent, pmenu_t *p)
 		if(e->bot_client)
 			CTFJoinTeam(e, CTF_TEAM2);
 		else
-			stuffcmd (e, va("team blue\n"));
+			StuffCmd (e, va("team blue\n"));
 	}
 	else
 	{
 		if(e->bot_client)
 			CTFJoinTeam(e, CTF_TEAM1);
 		else
-			stuffcmd (e, va("team red\n"));
+			StuffCmd (e, va("team red\n"));
 	}
 }
 
@@ -5212,7 +5212,7 @@ void SpecMe(edict_t *ent, pmenu_t *p)
 					  "Player spec force attempted while player was hooking\n");
 		return;
 	}
-	stuffcmd (e, va("spec\n"));
+	StuffCmd (e, va("spec\n"));
 }
 
 void List_Spec(edict_t *ent)

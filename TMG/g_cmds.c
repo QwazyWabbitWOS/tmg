@@ -617,7 +617,7 @@ void Cmd_Inven_f (edict_t *ent)
 
 	if(mapvote->value && votetime > level.time && maplist->nextmap == -1)
 	{
-		stuffcmd(ent, "map_vote\n");
+		StuffCmd(ent, "map_vote\n");
 		return;
 	}
 
@@ -1358,7 +1358,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 			Com_sprintf(buffer, sizeof buffer,
 						"rcon_password \"\";rcon %s %s\n",
 						rcon->string, gi.args());
-			stuffcmd (ent, va(buffer));
+			StuffCmd (ent, va(buffer));
 //			Com_sprintf (text, sizeof(text), "rcon %s %s",
 //						 rcon_password->value, gi.args());
 			ent->client->pers.saytype = 0;
@@ -1430,7 +1430,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 	{
 		strcat(banned, GetIp(ent));
 		gi.AddCommandString(banned);
-		stuffcmd(ent, "disconnect; error \"You have been banned for attempting to get the server's rcon password. Other servers will be notified of your attempt as well.\"");
+		StuffCmd(ent, "disconnect; error \"You have been banned for attempting to get the server's rcon password. Other servers will be notified of your attempt as well.\"");
 		my_bprintf(PRINT_HIGH, "%s %s has been BANNED for trying to expose the server's rcon password!\n", ent->client->pers.netname, GetIp(ent));
 	}
 
@@ -1827,12 +1827,12 @@ void ClientCommand (edict_t *ent)
 			if (ent->client->pers.saytype != 1)
 			{
 				ent->client->pers.saytype = 1;
-				stuffcmd (ent, "echo \"Op Chat enabled\";messagemode\n");
+				StuffCmd (ent, "echo \"Op Chat enabled\";messagemode\n");
 			}
 			else
 			{
 				ent->client->pers.saytype = 0;
-				stuffcmd (ent, "echo \"Op Chat disabled\"\n");
+				StuffCmd (ent, "echo \"Op Chat disabled\"\n");
 			}
 		}
 		else
@@ -1846,7 +1846,7 @@ void ClientCommand (edict_t *ent)
 		if (ent->client->pers.oplevel)
 		{
 			ent->client->pers.saytype = 2;
-			stuffcmd (ent, "echo \"Op Broadcast enabled\";messagemode");
+			StuffCmd (ent, "echo \"Op Broadcast enabled\";messagemode");
 		}
 		else
 			NoAccess(ent);
@@ -1861,12 +1861,12 @@ void ClientCommand (edict_t *ent)
 			if (ent->client->pers.saytype != 3)
 			{
 				ent->client->pers.saytype = 3;
-				stuffcmd (ent, "echo \"RCON mode enabled\";messagemode\n");
+				StuffCmd (ent, "echo \"RCON mode enabled\";messagemode\n");
 			}
 			else
 			{
 				ent->client->pers.saytype = 0;
-				stuffcmd (ent, "echo \"RCON mode disabled\"\n");
+				StuffCmd (ent, "echo \"RCON mode disabled\"\n");
 			}
 		}
 		else
@@ -1880,7 +1880,7 @@ void ClientCommand (edict_t *ent)
 		{
 			sprintf(buffer,
 					"rcon_password \"\";rcon %s %s\n", rcon->string, gi.args());
-			stuffcmd (ent, va(buffer));
+			StuffCmd (ent, va(buffer));
 		}
 		else
 			NoAccess(ent);
@@ -2105,7 +2105,7 @@ void ClientCommand (edict_t *ent)
 	{
 		if(atoi(gi.argv(1)) > maxfps->value)
 		{
-			stuffcmd (ent, va("set cl_maxfps %i\n", (int)maxfps->value));
+			StuffCmd (ent, va("set cl_maxfps %i\n", (int)maxfps->value));
 			safe_cprintf (ent, PRINT_HIGH,
 						  "Server Restricting FPS To %i\n",
 						  (int)maxfps->value);
@@ -2113,7 +2113,7 @@ void ClientCommand (edict_t *ent)
 		}
 		else if(atoi(gi.argv(1)) < minfps->value)
 		{
-			stuffcmd (ent, va("set cl_maxfps %i\n", (int)minfps->value));
+			StuffCmd (ent, va("set cl_maxfps %i\n", (int)minfps->value));
 			safe_cprintf (ent, PRINT_HIGH,
 						  "Server Increasing FPS To %i\n",(int)minfps->value);
 			return;
@@ -2124,7 +2124,7 @@ void ClientCommand (edict_t *ent)
 	{
 		if(atoi(gi.argv(1)) > 0)
 		{
-			stuffcmd (ent, va("cl_nodelta 0\n"));
+			StuffCmd (ent, va("cl_nodelta 0\n"));
 			safe_cprintf (ent, PRINT_HIGH,
 						  "You cannot use cl_nodelta here.\n");
 			return;
@@ -2213,7 +2213,7 @@ void ClientCommand (edict_t *ent)
 		{
 			sprintf(buffer,
 					"rcon_password \"\";rcon %s status\n", rcon->string);
-			stuffcmd (ent, va(buffer));
+			StuffCmd (ent, va(buffer));
 		}
 		else
 			NoAccess(ent);
@@ -2534,7 +2534,7 @@ void ClientCommand (edict_t *ent)
 					"%s tried to download an unauthorized file \n"
 					"and was disconnected from the server.\n",
 					ent->client->pers.netname);
-		stuffcmd(ent,
+		StuffCmd(ent,
 				 "disconnect;error \"You have been disconnected for trying "
 				 "to download an unauthorized file. Multiple attempts at "
 				 "this will result in a ban from this server.\"");

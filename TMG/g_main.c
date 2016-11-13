@@ -830,7 +830,7 @@ void G_RunFrame (void)
 				if ((e = &g_edicts[i]) && e && e->inuse && !e->bot_client)
 				{
 					// display it for all to view!!
-					stuffcmd(e, "cmd hscore\n");
+					StuffCmd(e, "cmd hscore\n");
 				}
 			}
 		}
@@ -889,7 +889,7 @@ void G_RunFrame (void)
 //			if(ent->client->showscores)
 //				ent->client->showscores = false;
 			if(!ent->bot_client)
-				stuffcmd (ent, va("map_vote\n"));
+				StuffCmd (ent, va("map_vote\n"));
 		}
 	}
 

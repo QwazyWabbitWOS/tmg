@@ -43,6 +43,6 @@ void abandon_hook_fire (edict_t *ent);					// a call has been made to fire the h
 
 void abandon_Weapon_Hook (edict_t *ent);				/* boring service routine*/
 
-void stuffcmd(edict_t *e, char *s);				/* Stuffs a command to the client 
+void StuffCmd(edict_t *e, char *s);				/* Stuffs a command to the client 
 												 (just like typing in the console)*/
 
