@@ -938,6 +938,12 @@ void	G_UseTargets (edict_t *ent, edict_t *activator);
 void	G_SetMovedir (vec3_t angles, vec3_t movedir);
 
 void	G_InitEdict (edict_t *e);
+void G_UseTargets (edict_t *ent, edict_t *activator);
+void G_SetMovedir (vec3_t angles, vec3_t movedir);
+qboolean G_EntExists(edict_t *ent);
+qboolean G_ClientNotDead(edict_t *ent);
+qboolean G_ClientInGame(edict_t *ent);
+
 /**
  Either finds a free edict, or allocates a new one.
 */
@@ -1737,34 +1743,20 @@ int ApplyLocationalSystem (edict_t *attacker, edict_t *targ, vec3_t point, int m
 //
 qboolean CheckModel(edict_t *ent, char *s);
 
-
 //Voting /MAP
 float	votetime;
-//MENUS
-//void SpecialMenu(edict_t *ent);
 
-qboolean G_EntExists(edict_t *ent);
-qboolean G_ClientNotDead(edict_t *ent);
-qboolean G_ClientInGame(edict_t *ent);
 qboolean locked_teams; // teams status
 qboolean mapscrewed;
 char defaultmap[MAX_QPATH];
+
 //even teams stuff
-qboolean notfairRED;
+qboolean notfairRED; // Used to control HUD messages
 qboolean notfairBLUE;
 float redtime;
 float bluetime;
-qboolean force_specs;
 char time_left[32];
 qboolean techspawn;
-
-//bot spawn & remove
-qboolean	SpawnBot(int i);
-void		Bot_LevelChange(void);
-void		Load_BotInfo(void);
-void		Bot_SpawnCall(void);
-void		RemoveBot(void);
-void		SpawnBotReserving(void);
 
 //weapon
 extern void Weapon_Blaster (edict_t *ent);
@@ -1780,56 +1772,13 @@ extern void Weapon_Railgun (edict_t *ent);
 extern void Weapon_BFG (edict_t *ent);
 int hstime;
 
-//
-// g_func.c
-//
-void Move_Done (edict_t *ent);
-void Move_Final (edict_t *ent);
-void Move_Begin (edict_t *ent);
-void Move_Calc (edict_t *ent, vec3_t dest, void(*func)(edict_t*));
-void AngleMove_Done (edict_t *ent);
-void AngleMove_Final (edict_t *ent);
-void AngleMove_Begin (edict_t *ent);
-void AngleMove_Calc (edict_t *ent, void(*func)(edict_t*));
-void plat_CalcAcceleratedMove(moveinfo_t *moveinfo);
-void plat_Accelerate (moveinfo_t *moveinfo);
-void Think_AccelMove (edict_t *ent);
-
-void plat_hit_top (edict_t *ent);
-void plat_hit_bottom (edict_t *ent);
-void plat_go_down (edict_t *ent);
-void plat_go_up (edict_t *ent);
-void plat_blocked (edict_t *self, edict_t *other);
-
-void Use_Plat (edict_t *ent, edict_t *other, edict_t *activator);
-void Touch_Plat_Center (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf);
-
-void plat_spawn_inside_trigger (edict_t *ent);
-
-//void SP_func_plat (edict_t *ent);
-
-void rotating_blocked (edict_t *self, edict_t *other);
-void rotating_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
-void rotating_use (edict_t *self, edict_t *other, edict_t *activator);
-
-void trigger_elevator_use (edict_t *self, edict_t *other, edict_t *activator);
-
 //route util
 void Move_LastRouteIndex(void);
-
-//Bot Func
-void Cmd_AirStrike(edict_t *ent);
-void Get_WaterState(edict_t *ent);
-void PutBotInServer (edict_t *ent);
-void SpawnBotReserving2(int *red,int *blue);
 
 //Combat AI
 void Combat_Level0(edict_t *ent,int foundedenemy,int enewep,float aim,float distance,int skill);
 void Combat_LevelX(edict_t *ent,int foundedenemy,int enewep,float aim,float distance,int skill);
 void UsePrimaryWeapon(edict_t *ent);
-
-//Explotion Index
-void UpdateExplIndex(edict_t* ent);
 
 //p_view.c
 void BotEndServerFrame (edict_t *ent);

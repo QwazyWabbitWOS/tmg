@@ -6,6 +6,7 @@
 #include "g_cmds.h"
 #include "bot.h"
 #include "botstr.h"
+#include "g_func.h"
 
 qboolean	pickup_pri;
 void RandomChat(edict_t *ent);
@@ -4321,7 +4322,8 @@ DCHCANC:// keep squatting
 			if(/*!k &&*/ zc->waitin_obj->moveinfo.state == PSTATE_UP
 			   || zc->waitin_obj->moveinfo.state == PSTATE_BOTTOM) k = true;
 
-			if(zc->waitin_obj->moveinfo.state == PSTATE_BOTTOM) plat_go_up (zc->waitin_obj);
+			if(zc->waitin_obj->moveinfo.state == PSTATE_BOTTOM) 
+				plat_go_up (zc->waitin_obj);
 
 			if(zc->route_trace)
 			{
