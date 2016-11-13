@@ -6620,13 +6620,13 @@ qboolean CTFCheckRules(void)
 			switch(winning)
 			{
 			case 1:
-				if(ctfgame.players1 >= ctfgame.players2+even_teams->value)
+				if(ctfgame.players1 >= ctfgame.players2 + even_teams->value)
 					notfairBLUE = true;
 				else
 					notfairBLUE = false;
 				break;
 			case 2:
-				if(ctfgame.players2 >= ctfgame.players1+even_teams->value)
+				if(ctfgame.players2 >= ctfgame.players1 + even_teams->value)
 					notfairRED = true;
 				else
 					notfairRED = false;
