@@ -552,7 +552,7 @@ void Cmd_Drop_f (edict_t *ent)
 	}
 
 	s = gi.args();
-	if ((Q_stricmp(s, "rune")==0)|| (Q_stricmp(s, "tech")==0))
+	if ((Q_stricmp(s, "rune") == 0) || (Q_stricmp(s, "tech") == 0))
 	{
 		if (!CTFWhat_Tech(ent))
 		{
