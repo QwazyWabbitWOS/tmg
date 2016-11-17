@@ -73,11 +73,11 @@ void GetTime()
 	Com_sprintf (buf, sizeof buf,
 				 "%02i:%02i:%02i %s", hour, min, sec, ampm);
 
-	//QW// Not sure why we're doing this, it's never used.
-	// FIXME: Consider removal.
 	if (Q_stricmp(sys_time, buf) != 0) 
 	{
 		strcpy(sys_time, buf);
+		//QW// Not sure why we're using configstring.
+		// FIXME: Consider removal.
 		gi.configstring (CS_SYSTIME, sys_time);
 	}
 }

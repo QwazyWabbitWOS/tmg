@@ -748,7 +748,7 @@ void G_SetStats (edict_t *ent)
 		//
 		// ammo
 		//
-		if (!ent->client->ammo_index /* || !ent->client->pers.inventory[ent->client->ammo_index] */)
+		if (!ent->client->ammo_index)
 		{
 			ent->client->ps.stats[STAT_AMMO_ICON] = 0;
 			ent->client->ps.stats[STAT_AMMO] = 0;
@@ -852,7 +852,8 @@ void G_SetStats (edict_t *ent)
 
 	//RAV
 	ent->client->ps.stats[STAT_RUNE] = 0;
-	for (i=RUNE_FIRST; i<=RUNE_LAST; i++) {
+	for (i = RUNE_FIRST; i <= RUNE_LAST; i++) 
+	{
 		if (rune_has_rune(ent, i))
 			ent->client->ps.stats[STAT_RUNE] = CS_ITEMS + ITEM_INDEX(FindItem(rune_namefornum[i]));
 	}
