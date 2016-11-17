@@ -486,13 +486,17 @@ speed	default 150
 
 Plats are always drawn in the extended position, so they will light correctly.
 
-If the plat is the target of another trigger or button, it will start out disabled in the extended position until it is trigger, when it will lower and become a normal plat.
+If the plat is the target of another trigger or button, it will start out 
+disabled in the extended position until it is triggered, when it will lower 
+and become a normal plat.
 
 "speed"	overrides default 200.
 "accel" overrides default 500
 "lip"	overrides default 8 pixel lip
 
-If the "height" key is set, that will determine the amount the plat moves, instead of being implicitly determoveinfoned by the model's height.
+If the "height" key is set, that will determine the amount the 
+plat moves, instead of being implicitly determoveinfoned by 
+the model's height.
 
 Set "sounds" to one of the following:
 1) base fast
@@ -588,8 +592,9 @@ void SP_func_plat (edict_t *ent)
 //====================================================================
 
 /*QUAKED func_rotating (0 .5 .8) ? START_ON REVERSE X_AXIS Y_AXIS TOUCH_PAIN STOP ANIMATED ANIMATED_FAST
-You need to have an origin brush as part of this entity.  The center of that brush will be
-the point around which it is rotated. It will rotate around the Z axis by default.  You can
+You need to have an origin brush as part of this entity.  
+The center of that brush will be the point around which it is rotated. 
+It will rotate around the Z axis by default.  You can
 check either the X_AXIS or Y_AXIS box to change that.
 
 "speed" determines how fast it moves; default value is 100.
@@ -606,8 +611,8 @@ void rotating_blocked (edict_t *self, edict_t *other)
 
 void rotating_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
-	//ponko
-	if(other->svflags & SVF_MONSTER) return;
+	if(other->svflags & SVF_MONSTER)
+		return;
 	if (self->avelocity[0] || self->avelocity[1] || self->avelocity[2])
 		T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, self->dmg, 1, 0, MOD_CRUSH);
 }
@@ -682,7 +687,9 @@ BUTTONS
 */
 
 /*QUAKED func_button (0 .5 .8) ?
-When a button is touched, it moves some distance in the direction of it's angle, triggers all of it's targets, waits some time, then returns to it's original position where it can be triggered again.
+When a button is touched, it moves some distance in the direction of 
+it's angle, triggers all of it's targets, waits some time, then returns 
+to it's original position where it can be triggered again.
 
 "angle"		determines the opening direction
 "target"	all entities with a matching targetname will be used
@@ -1199,14 +1206,14 @@ static void door_blocked  (edict_t *self, edict_t *other)
 	}
 	//
 
-//	T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, self->dmg, 1, 0, MOD_CRUSH);
+	//	T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, self->dmg, 1, 0, MOD_CRUSH);
 
 	if (self->spawnflags & DOOR_CRUSHER)
 		return;
 
 
-// if a door has a negative wait, it would never come back if blocked,
-// so let it just squash the object to death real fast
+	// if a door has a negative wait, it would never come back if blocked,
+	// so let it just squash the object to death real fast
 	if (self->moveinfo.wait >= 0)
 	{
 		if (self->moveinfo.state == STATE_DOWN)
@@ -1368,12 +1375,15 @@ void SP_func_door (edict_t *ent)
 /*QUAKED func_door_rotating (0 .5 .8) ? START_OPEN REVERSE CRUSHER NOMONSTER ANIMATED TOGGLE X_AXIS Y_AXIS
 TOGGLE causes the door to wait in both the start and end states for a trigger event.
 
-START_OPEN	the door to moves to its destination when spawned, and operate in reverse.  It is used to temporarily or permanently close off an area when triggered (not useful for touch or takedamage doors).
+START_OPEN	the door to moves to its destination when spawned, and operate in reverse.  
+It is used to temporarily or permanently close off an area when triggered 
+(not useful for touch or takedamage doors).
 NOMONSTER	monsters will not trigger this door
 
-You need to have an origin brush as part of this entity.  The center of that brush will be
-the point around which it is rotated. It will rotate around the Z axis by default.  You can
-check either the X_AXIS or Y_AXIS box to change that.
+You need to have an origin brush as part of this entity.  
+The center of that brush will be the point around which it 
+is rotated. It will rotate around the Z axis by default.  
+You can check either the X_AXIS or Y_AXIS box to change that.
 
 "distance" is how many degrees the door will be rotated.
 "speed" determines how fast the door moves; default value is 100.
@@ -1497,9 +1507,12 @@ void SP_func_door_rotating (edict_t *ent)
 
 
 /*QUAKED func_water (0 .5 .8) ? START_OPEN
-func_water is a moveable water brush.  It must be targeted to operate.  Use a non-water texture at your own risk.
+func_water is a moveable water brush.  
+It must be targeted to operate.  
+Use a non-water texture at your own risk.
 
-START_OPEN causes the water to move to its destination when spawned and operate in reverse.
+START_OPEN causes the water to move to its destination 
+when spawned and operate in reverse.
 
 "angle"		determines the opening direction (up or down only)
 "speed"		movement speed (25 default)
