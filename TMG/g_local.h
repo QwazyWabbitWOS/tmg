@@ -1154,7 +1154,7 @@ void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 //
 // p_weapon.c
 //
-extern void ShowGun(edict_t *ent);
+void ShowGun(edict_t *ent);
 
 //
 // m_move.c
@@ -1758,17 +1758,17 @@ char time_left[32];
 qboolean techspawn;
 
 //weapon
-extern void Weapon_Blaster (edict_t *ent);
-extern void Weapon_Shotgun (edict_t *ent);
-extern void Weapon_SuperShotgun (edict_t *ent);
-extern void Weapon_Machinegun (edict_t *ent);
-extern void Weapon_Chaingun (edict_t *ent);
-extern void Weapon_HyperBlaster (edict_t *ent);
-extern void Weapon_RocketLauncher (edict_t *ent);
-extern void Weapon_Grenade (edict_t *ent);
-extern void Weapon_GrenadeLauncher (edict_t *ent);
-extern void Weapon_Railgun (edict_t *ent);
-extern void Weapon_BFG (edict_t *ent);
+void Weapon_Blaster (edict_t *ent);
+void Weapon_Shotgun (edict_t *ent);
+void Weapon_SuperShotgun (edict_t *ent);
+void Weapon_Machinegun (edict_t *ent);
+void Weapon_Chaingun (edict_t *ent);
+void Weapon_HyperBlaster (edict_t *ent);
+void Weapon_RocketLauncher (edict_t *ent);
+void Weapon_Grenade (edict_t *ent);
+void Weapon_GrenadeLauncher (edict_t *ent);
+void Weapon_Railgun (edict_t *ent);
+void Weapon_BFG (edict_t *ent);
 int hstime;
 
 //route util

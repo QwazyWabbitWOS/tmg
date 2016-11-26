@@ -9,8 +9,8 @@ extern char hscores [];
 
 extern qboolean hs_show;
 
-extern void InitHighScores (void);
-extern void SaveHighScores (void);
-extern void LoadHighScores (void);
+void InitHighScores (void);
+void SaveHighScores (void);
+void LoadHighScores (void);
 
 #endif /* HIGHSCORE_H */

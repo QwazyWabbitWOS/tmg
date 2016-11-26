@@ -20,9 +20,9 @@
 extern int match_state;
 extern float match_state_end;
 
-extern void ResetItems (void);
-extern void RestartLevel (void);
-extern void TimerThink (void);
+void ResetItems (void);
+void RestartLevel (void);
+void TimerThink (void);
 
 /**
  returns true if less than 60 seconds left in match

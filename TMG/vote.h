@@ -7,12 +7,12 @@
 
 #define NO_MAPVOTES -1
 
-extern void ClearMapVotes(void) ;
-extern int MapMaxVotes(void);
-extern void VoteForMap(int i);
-extern void DumpMapVotes(void);
-extern void ClearMapList(void);
-extern int MaplistNextMap(edict_t *ent);
+void ClearMapVotes(void) ;
+int MapMaxVotes(void);
+void VoteForMap(int i);
+void DumpMapVotes(void);
+void ClearMapList(void);
+int MaplistNextMap(edict_t *ent);
 
 
 

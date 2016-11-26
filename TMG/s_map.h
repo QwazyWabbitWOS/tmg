@@ -27,12 +27,12 @@ typedef struct
 extern	maplist_t	*maplist;
 extern MAP_ENTRY   *mdsoft_map;
 
-extern edict_t *mdsoft_NextMap( void );
+edict_t *mdsoft_NextMap( void );
 
 /**
  Call this at game intialization
  */
-extern void mdsoft_InitMaps(void);
+void mdsoft_InitMaps(void);
 
 // cvars used by this module
 extern cvar_t	*map_change;

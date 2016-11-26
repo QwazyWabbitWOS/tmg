@@ -8,7 +8,7 @@
 /**
  Replaces bad strings in the text with an asterisk.
  */
-extern qboolean FilterText(char *pszText);
+qboolean FilterText(char *pszText);
 
 /**
  Load textfilter.cfg file from current mod
@@ -17,6 +17,6 @@ extern qboolean FilterText(char *pszText);
  
  If no file exists, do nothing.
  */
-extern void LoadTextFilterInfo(void);
+void LoadTextFilterInfo(void);
 
 #endif /* FILTERING_H */

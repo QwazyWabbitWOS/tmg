@@ -18,19 +18,19 @@
 extern char *rune_namefornum[];
 extern int	rune_renderfx[];
 
-int runespawn;
+extern int runespawn;
 
-extern qboolean rune_has_rune(edict_t *ent, int type);
-extern qboolean rune_has_a_rune(edict_t *ent);
-extern qboolean rune_pickup(edict_t *self, edict_t *other);
-extern void rune_move (edict_t *self);
-extern void rune_make_touchable (edict_t *ent);
-extern void rune_use (edict_t *ent, gitem_t *item);
-extern void rune_drop (edict_t *ent, gitem_t *item);
-extern void runes_drop (edict_t *ent);
-extern void rune_select_spawn_point(vec3_t origin);
-extern void Rune_Spawn(edict_t *rune, gitem_t *item);
-extern void runes_spawn(edict_t *self);
-extern void runes_spawn_start(void);
+qboolean rune_has_rune(edict_t *ent, int type);
+qboolean rune_has_a_rune(edict_t *ent);
+qboolean rune_pickup(edict_t *self, edict_t *other);
+void rune_move (edict_t *self);
+void rune_make_touchable (edict_t *ent);
+void rune_use (edict_t *ent, gitem_t *item);
+void rune_drop (edict_t *ent, gitem_t *item);
+void runes_drop (edict_t *ent);
+void rune_select_spawn_point(vec3_t origin);
+void Rune_Spawn(edict_t *rune, gitem_t *item);
+void runes_spawn(edict_t *self);
+void runes_spawn_start(void);
 
 #endif /* RUNES_H */
