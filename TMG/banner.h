@@ -3,6 +3,7 @@
 // Added by QwazyWabbit to keep it all in one place
 
 #ifndef MODBANNER
+#define MODBANNER
 
 static char gamebanner[] = 
 {
@@ -15,5 +16,4 @@ static char gamebanner[] =
 	"|=========================================================|\n"
 };
 
-#define MODBANNER
 #endif
