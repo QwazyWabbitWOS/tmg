@@ -207,6 +207,8 @@ void LoadHighScores (void)
 		strcpy (string + stringlength, entry);
 		stringlength += j;
 	}
+	if (stringlength > sizeof string)
+		DbgPrintf("%s Warning! Highscore stringlength too big!", __FUNCTION__);
 	Com_sprintf (hscores, sizeof(hscores), string);
 }
 

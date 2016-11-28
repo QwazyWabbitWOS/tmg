@@ -17,6 +17,10 @@ void _START_PERFORMANCE_TIMER (void);
 #endif
 #endif
 
+/**
+ * Send message to debug console on Windows
+ * or game server console via gi.dprintf on Linux.
+ */
 void DbgPrintf (char *msg, ...);
 
 /* Select debug features */
