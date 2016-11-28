@@ -41,7 +41,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.31"
+#define MOD_VERSION "0.2.32"
 #define MOD "TMG_MOD"
 
 #ifndef _DEBUG
@@ -815,7 +815,6 @@ extern cvar_t	*runes4all;
 extern	cvar_t	*quad_notify;
 extern	cvar_t	*teamtechs;
 extern	cvar_t	*auto_flag_return;
-//extern	cvar_t	*uneven_dif;
 extern	cvar_t	*tmgclock;
 extern	cvar_t	*allow_flagdrop;
 extern	cvar_t	*extrasounds;

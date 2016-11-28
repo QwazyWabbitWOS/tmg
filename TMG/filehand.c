@@ -663,33 +663,27 @@ void LogChat (char *text)
 	char file_name[PATH_MAX];
 	char entry[2048];
 
-	sprintf(file_name, "%s/%s/%s/logs/%schat.log",
-			basedir->string, game_dir->string, cfgdir->string, sys_date);
-
 	if (text == NULL)
 	{
-		if ((file = fopen(file_name, "a")))
-		{
-			fclose (file);
-		}
-		else
-		{
-			gi.dprintf("Error opening/creating %s!\n", file_name);
-			gi.dprintf("Please make sure you have a logs folder in your cfg directory.\n");
-		}
+		gi.dprintf("%s text argument was NULL\n", __func__);
 		return;
 	}
 
-	white_text(entry, entry);
-	sprintf(entry, "%s [%s] %s", sys_date, sys_time, text);
-	
+	sprintf(file_name, "%s/%s/%s/logs/%schat.log",
+			basedir->string, game_dir->string, cfgdir->string, sys_date);
 
+	sprintf(entry, "%s [%s] %s", sys_date, sys_time, text);
+	white_text(entry, entry);
+	
 	if ((file=fopen(file_name, "a")))
 	{
 		fputs(entry, file);
 		fclose (file);
 	}
 	else
+	{
 		gi.dprintf("Could not open chat log! using: %s\n", file_name);
+		gi.dprintf("Please make sure you have a logs folder in your cfg directory.\n");
+	}
 }
 

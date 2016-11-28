@@ -1,5 +1,6 @@
 #include "g_local.h"
 #include "performance.h"
+#include "highscore.h"
 #include "g_items.h"
 #include "g_cmds.h"
 #include "timer.h"
@@ -121,6 +122,8 @@ void ServerInit (int resetall)
 	serverlocked = false;
 	dmflagtimer = level.time;
 	hstime = level.time - 10;
+	hs_show = true; //JSW - makes highscores display on first map
+	locked_teams = false;
 	mapvoteactive = false;
 	votetime = 0;
 	maplist->currentmapvote = -1;

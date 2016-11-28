@@ -455,7 +455,6 @@ void InitGame (void)
 	quad_notify = gi.cvar ("quad_notify", "0", 0);
 	teamtechs = gi.cvar ("teamtechs", "0", 0);
 	auto_flag_return = gi.cvar ("auto_flag_return", "30", 0);
-	//	uneven_dif = gi.cvar ("uneven_dif", "2", CVAR_LATCH);
 	tmgclock = gi.cvar ("tmgclock", "24", 0);
 
 	allow_flagdrop = gi.cvar ("allow_flagdrop", "0", 0);
@@ -480,15 +479,11 @@ void InitGame (void)
 	//QW//FIXME: this probably belongs in level_local_t
 	votetime = 0;
 
-	dmflag=(int)dmflags->value;	//JSW
+	dmflag = (int)dmflags->value;	//JSW
+	
 	wav_mod_set_up();
-	if(log_connect->value)
-		LogConnect(NULL, false);
-	if (log_chat->value)
-		LogChat(NULL);
-	// items
-
-	Bot_InitCvars(); // initialize the bot cvars
+	
+	Bot_InitCvars();
 	InitItems ();
 
 	Com_sprintf (game.helpmessage1, sizeof(game.helpmessage1), "");
@@ -514,14 +509,7 @@ void InitGame (void)
 	//RAV
 	ServerInit (true);
 
-	hs_show = true; //JSW - makes highscores display on first map
-	locked_teams = false;
-
 	CTFInit();
-
-	// MAP MOD
-	//wav_mod_set_up();
-	// MAP MOD
 
 	CheckOpFile(NULL, "*@*.*.*.*", false);
 
@@ -533,6 +521,16 @@ void InitGame (void)
 
 	if(use_bots->value)
 		Load_BotInfo();
+
+	// For the logs
+	GetDate();
+	GetTime();
+
+	if(log_connect->value)
+		LogConnect(NULL, false);
+	if (log_chat->value)
+		LogChat("Chat log Initializing\n");
+
 }
 
 //=========================================================

@@ -280,9 +280,6 @@ cvar_t	*runes4all;
 cvar_t	*quad_notify;
 cvar_t	*teamtechs;
 cvar_t	*auto_flag_return;
-
-//cvar_t	*uneven_dif;
-
 cvar_t	*tmgclock;
 cvar_t	*allow_flagdrop;
 cvar_t	*extrasounds;
