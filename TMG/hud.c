@@ -15,7 +15,7 @@ int newdmflags;
 edict_t *votestarter;
 edict_t *votetarget;
 
-void GetDate()
+void GetDate(void)
 {
 	int day, month, year;
 	struct tm *ltime;  
@@ -37,7 +37,7 @@ void GetDate()
  Set server_time to 0 for no time in HUD, 1 for local time, 2 for GMT.
  Variable ampm contains "", "AM", "PM" or "UTC" per each mode.
 */
-void GetTime()
+void GetTime(void)
 {
 	char ampm[4] = "";
 	char buf[32] = "";
