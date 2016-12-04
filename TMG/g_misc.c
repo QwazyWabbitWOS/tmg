@@ -927,15 +927,15 @@ barrel_touch (edict_t *self,
 			  cplane_t *plane,
 			  csurface_t *surf)
 {
-	float	ratio;
+	//float	ratio;
 	vec3_t	v;
 
 	if ((!other->groundentity) || (other->groundentity == self))
 		return;
 
-	ratio = (float)other->mass / (float)self->mass;
+	//ratio = (float)other->mass / (float)self->mass;
 	VectorSubtract (self->s.origin, other->s.origin, v);
-//	M_walkmove (self, vectoyaw(v), 20 * ratio * FRAMETIME);
+	//M_walkmove (self, vectoyaw(v), 20 * ratio * FRAMETIME);
 }
 
 static void

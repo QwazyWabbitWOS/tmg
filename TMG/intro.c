@@ -42,7 +42,6 @@ void wav_mod_set_up(void)
 		char *p_name;
 		long counter = 0;
 		int n_chars = 0;
-		size_t count = 0;
 
 		file_size = 0;
 		while (!feof(file))
@@ -55,7 +54,7 @@ void wav_mod_set_up(void)
 		p_buffer = gi.TagMalloc(file_size, TAG_GAME);
 		memset(p_buffer, 0, file_size);
 
-		count = fread((void *)p_buffer, sizeof(char), file_size, file);
+		fread((void *)p_buffer, sizeof(char), file_size, file);
 
 		gi.dprintf ("\n==== Wav Mod v.01 set up ====\n");
 		gi.dprintf("Adding Wav's to cycle: ");

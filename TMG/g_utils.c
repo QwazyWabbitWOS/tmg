@@ -610,7 +610,6 @@ void AddModelSkin (char *modelfile, char *skinname)
 	size_t	i;
 	char	filename[256], infilename[256];
 	char	buffer;
-	size_t	count = 0;
 
 	i = sprintf(infilename, "%s", modelfile);
 
@@ -636,30 +635,30 @@ void AddModelSkin (char *modelfile, char *skinname)
 	// mirror header stuff before skinnum
 	for (i=0; i<5; i++)
 	{
-		count= fread(&buffer_int, sizeof(buffer_int), 1, f);
+		fread(&buffer_int, sizeof(buffer_int), 1, f);
 		fwrite(&buffer_int, sizeof(buffer_int), 1, out);
 	}
 
 	// increment skinnum
-	count= fread(&buffer_int, sizeof(buffer_int), 1, f);
+	fread(&buffer_int, sizeof(buffer_int), 1, f);
 	++buffer_int;
 	fwrite(&buffer_int, sizeof(buffer_int), 1, out);
 
 	// mirror header stuff before skin_ofs
 	for (i=0; i<5; i++)
 	{
-		count= fread(&buffer_int, sizeof(buffer_int), 1, f);
+		fread(&buffer_int, sizeof(buffer_int), 1, f);
 		fwrite(&buffer_int, sizeof(buffer_int), 1, out);
 	}
 
 	// copy the skins offset value, since it doesn't change
-	count= fread(&buffer_int, sizeof(buffer_int), 1, f);
+	fread(&buffer_int, sizeof(buffer_int), 1, f);
 	fwrite(&buffer_int, sizeof(buffer_int), 1, out);
 
 	// increment all offsets by 64 to make way for new skin
 	for (i=0; i<5; i++)
 	{
-		count= fread(&buffer_int, sizeof(buffer_int), 1, f);
+		fread(&buffer_int, sizeof(buffer_int), 1, f);
 		buffer_int += 64;
 		fwrite(&buffer_int, sizeof(buffer_int), 1, out);
 	}
@@ -682,11 +681,11 @@ void AddModelSkin (char *modelfile, char *skinname)
 	}
 
 	// copy the rest of the file
-	count= fread(&buffer, sizeof(buffer), 1, f);
+	fread(&buffer, sizeof(buffer), 1, f);
 	while (!feof(f))
 	{
 		fwrite(&buffer, sizeof(buffer), 1, out);
-		count= fread(&buffer, sizeof(buffer), 1, f);
+		fread(&buffer, sizeof(buffer), 1, f);
 	}
 
 	fclose (f);
@@ -703,12 +702,11 @@ void my_bprintf (int printlevel, char *fmt, ...)
 {
 	int i;
 	char	buffer[0x10000];
-	int		len;
 	va_list		argptr;
 	edict_t	*cl_ent;
 
 	va_start (argptr,fmt);
-	len = vsprintf (buffer, fmt, argptr);
+	vsprintf (buffer, fmt, argptr);
 	va_end (argptr);
 
 	if (dedicated->value)

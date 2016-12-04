@@ -1663,7 +1663,7 @@ static void
 B_DamageFeedback (edict_t *player)
 {
 	gclient_t	*client;
-	float	realcount, count;
+	float	count;
 	int		r, l;
 
 	client = player->client;
@@ -1709,11 +1709,8 @@ B_DamageFeedback (edict_t *player)
 		}
 	}
 
-	realcount = count;
-	if (count < 10)
-		count = 10;	// always make a visible effect
 
-	// play an apropriate pain sound
+	// play an appropriate pain sound
 	if ((level.time > player->pain_debounce_time) &&
 		!(player->flags & FL_GODMODE) &&
 		(client->invincible_framenum <= level.framenum))

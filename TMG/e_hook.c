@@ -109,7 +109,7 @@ edict_t *abandon_hook_laser_start(edict_t *ent)
 {
 	edict_t *self;
 
-	char		*info;
+	//char		*info;
 
 	//	int			randyhook;
 
@@ -123,7 +123,7 @@ edict_t *abandon_hook_laser_start(edict_t *ent)
 	// set the beam diameter
 	self->s.frame = 3;
 
-	info = Info_ValueForKey (ent->owner->client->pers.userinfo, "hook_color");
+	//info = Info_ValueForKey (ent->owner->client->pers.userinfo, "hook_color");
 	//set the color
 	//gi.dprintf("Hook color selected it \"%s\".\n",info);
 
