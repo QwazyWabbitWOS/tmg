@@ -1130,7 +1130,7 @@ int Bot_Watermove ( edict_t *ent,vec3_t pos,float dist,float upd)
 	vec3_t		trmin,trmax,touchmin;
 	float		i,j;
 
-	float		max,vec;
+	float		vec;
 
 	VectorCopy(ent->s.origin,trmax);
 
@@ -1155,7 +1155,6 @@ int Bot_Watermove ( edict_t *ent,vec3_t pos,float dist,float upd)
 	trmin[2] += upd;
 
 	vec = -1;
-	max = 0;
 	for(i = 0;i < 360; i += 10)
 	{
 		if(i && upd > -13 && upd < 0/*13*/) break;
@@ -1807,12 +1806,10 @@ JMPCHK:
 
 qboolean TargetJump(edict_t *ent,vec3_t tpos)
 {
-	zgcl_t	*zc;
 	float	x,l,grav,vel,ypos,yori;
 	vec3_t	v,vv;
 	int		mf = false;
 
-	zc = &ent->client->zc;
 	grav = ent->gravity * sv_gravity->value * FRAMETIME;
 
 	vel = ent->velocity[2] + VEL_BOT_JUMP;
@@ -1875,13 +1872,11 @@ qboolean TargetJump(edict_t *ent,vec3_t tpos)
 static
 qboolean TargetJump_Turbo(edict_t *ent,vec3_t tpos)
 {
-	zgcl_t	*zc;
 	float	x,l,grav,vel,ypos,yori;
 	vec3_t	v,vv;
 	int		mf = false;
 	float	jvel;
 
-	zc = &ent->client->zc;
 	grav = ent->gravity * sv_gravity->value * FRAMETIME;
 
 	vel = ent->velocity[2] + VEL_BOT_JUMP;
@@ -1953,12 +1948,10 @@ qboolean TargetJump_Turbo(edict_t *ent,vec3_t tpos)
 static
 qboolean TargetJump_Chk(edict_t *ent,vec3_t tpos,float defvel)
 {
-	zgcl_t	*zc;
 	float	x,l,grav,vel,ypos,yori;
 	vec3_t	v,vv;
 	int		mf = false;
 
-	zc = &ent->client->zc;
 	grav = ent->gravity * sv_gravity->value * FRAMETIME;
 
 	vel = defvel + VEL_BOT_JUMP;
@@ -2011,6 +2004,7 @@ qboolean TargetJump_Chk(edict_t *ent,vec3_t tpos,float defvel)
 	}
 	return false;
 }
+
 //-----------------------------------------------------------------------------------------
 // set anim
 void Set_BotAnim(edict_t *ent,int anim,int frame,int end)
@@ -2021,7 +2015,6 @@ void Set_BotAnim(edict_t *ent,int anim,int frame,int end)
 		ent->client->anim_end = end;
 	}
 }
-
 
 //-----------------------------------------------------------------------------------------
 // Get Water State
@@ -3856,8 +3849,8 @@ DCHCANC:// keep squatting
 						if(trace_priority < TRP_ANGLEKEEP) ent->s.angles[PITCH] = Get_pitch(temppos);
 
 						k = false;
-						//						if(zc->waterstate != WAS_IN && temppos[2] < 32) k = true;
-						//						else if(zc->waterstate == WAS_IN) k = true;
+						//if(zc->waterstate != WAS_IN && temppos[2] < 32) k = true;
+						//	else if(zc->waterstate == WAS_IN) k = true;
 
 						if(ent->groundentity || ent->waterlevel)
 						{

@@ -1443,10 +1443,6 @@ edict_t *SelectRandomDeathmatchSpawnPoint (void)
 		if (spot == spot1 || spot == spot2)
 			selection++;
 	} while(selection--);
-
-	if(debug_spawn->value)
-		DbgPrintf("9999 %s returning %s \nat %f %f %f\n", __func__, spot->classname,
-			spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
 	return spot;
 }
 
@@ -2370,9 +2366,13 @@ void ClientBeginDeathmatch (edict_t *ent)
 	name = ent->client->pers.netname;
 	highlight_text(name, name);
 	if (ctf->value)
-		sprintf (text, "%s entered the game (%d red, %d blue, %d spectators)\n", name, ctfgame.players1, ctfgame.players2, ctfgame.specs);
+		sprintf (text,
+				 "%s entered the game (%d red, %d blue, %d spectators)\n",
+				 name, ctfgame.players1, ctfgame.players2, ctfgame.specs);
 	else
-		sprintf (text, "%s entered the game (%d players, %d spectators)\n", name, ctfgame.players_total, ctfgame.specs);
+		sprintf (text,
+				 "%s entered the game (%d players, %d spectators)\n",
+				 name, ctfgame.players_total, ctfgame.specs);
 	my_bprintf (PRINT_HIGH, text);
 
 	InitClientResp (ent->client);

@@ -672,7 +672,6 @@ edict_t *Get_NewClient (void)
 //----------------------------------------------------------------
 void Bot_Think (edict_t *self)
 {
-	gclient_t	*client;
 	edict_t	*other;
 	int		i;
 
@@ -696,7 +695,6 @@ void Bot_Think (edict_t *self)
 
 		if (self->linkcount != self->monsterinfo.linkcount)
 		{
-			//		self->monsterinfo.linkcount = self->linkcount;
 			M_CheckGround (self);
 		}
 
@@ -730,21 +728,10 @@ void Bot_Think (edict_t *self)
 			if(!self->inuse) //QW// This never traps. Is it needed?
 				return;			//removed botself
 
-			//-------------------------------------------
-			// If camping then keep'em at same origin
-			//-------------------------------------------
-			//if (self->client->camptime > level.time)
-			//{
-			//	VectorCopy(self->client->lastorigin,self->s.origin);
-			//}
-
-			client = self->client;
-
 			ClientBeginServerFrame (self);
 		}
 		if (self->linkcount != self->monsterinfo.linkcount)
 		{
-			//		self->monsterinfo.linkcount = self->linkcount;
 			M_CheckGround (self);
 		}
 

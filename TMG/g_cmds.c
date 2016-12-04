@@ -1295,13 +1295,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 	char *pdest;
 	int  result;
 	char banned[64] = "sv ban ";
-	char *name;
 	//end
-
-	name = ent->client->pers.netname;
-
-//	gi.dprintf("DEBUG: netname is .%s. name is .%s.\n",
-//			   ent->client->pers.netname, name);
 
 	//RAV
 	//turn off camping if chatting
@@ -1430,8 +1424,13 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 	{
 		strcat(banned, GetIp(ent));
 		gi.AddCommandString(banned);
-		StuffCmd(ent, "disconnect; error \"You have been banned for attempting to get the server's rcon password. Other servers will be notified of your attempt as well.\"");
-		my_bprintf(PRINT_HIGH, "%s %s has been BANNED for trying to expose the server's rcon password!\n", ent->client->pers.netname, GetIp(ent));
+		StuffCmd(ent, "disconnect; error \""
+				 "You have been banned for attempting to get the server's "
+				 "rcon password. Other servers will be notified of your "
+				 "attempt as well.\"");
+		my_bprintf(PRINT_HIGH, "%s %s has been BANNED for trying to expose"
+				   " the server's rcon password!\n",
+				   ent->client->pers.netname, GetIp(ent));
 	}
 
 	//JSW

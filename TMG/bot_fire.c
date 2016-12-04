@@ -608,11 +608,9 @@ static qboolean B_UseHyperBlaster(edict_t *ent, edict_t *target,
 {
 	int k;
 	int mywep;
-	zgcl_t		*zc;
 	gclient_t	*client;
 
 	client = ent->client;
-	zc = &client->zc;
 
 	if((k = CanUsewep(ent, WEAP_HYPERBLASTER)))
 	{
@@ -728,11 +726,9 @@ static qboolean B_UseRailgun(edict_t *ent, edict_t *target,
 	int enewep,	float aim, float distance, int skill)
 {
 	int k, mywep;
-	zgcl_t		*zc;
 	gclient_t	*client;
 
 	client = ent->client;
-	zc = &client->zc;
 
 	if((k = CanUsewep(ent, WEAP_RAILGUN)))
 	{
@@ -814,11 +810,9 @@ static qboolean B_UseChainGun(edict_t *ent, edict_t *target,
 {
 	int k;
 	int mywep;
-	zgcl_t		*zc;
 	gclient_t	*client;
 
 	client = ent->client;
-	zc = &client->zc;
 
 	if((k = CanUsewep(ent,WEAP_CHAINGUN)))
 	{
@@ -843,11 +837,9 @@ static qboolean B_UseMachineGun(edict_t *ent, edict_t *target,
 {
 	int k;
 	int mywep;
-	zgcl_t		*zc;
 	gclient_t	*client;
 
 	client = ent->client;
-	zc = &client->zc;
 
 	if((k = CanUsewep(ent, WEAP_MACHINEGUN)))
 	{
@@ -872,11 +864,9 @@ static qboolean B_UseSuperShotgun(edict_t *ent, edict_t *target,
 {
 	int k;
 	int mywep;
-	zgcl_t		*zc;
 	gclient_t	*client;
 
 	client = ent->client;
-	zc = &client->zc;
 
 	if((k = CanUsewep(ent,WEAP_SUPERSHOTGUN)))
 	{
@@ -900,11 +890,9 @@ static qboolean B_UseShotgun(edict_t *ent, edict_t *target,
 {
 	int k;
 	int mywep;
-	zgcl_t		*zc;
 	gclient_t	*client;
 
 	client = ent->client;
-	zc = &client->zc;
 
 	if((k = CanUsewep(ent,WEAP_SHOTGUN)))
 	{
@@ -928,11 +916,9 @@ static qboolean B_UseHandGrenade(edict_t *ent, edict_t *target,
 {
 	int k;
 	int mywep;
-	zgcl_t		*zc;
 	gclient_t	*client;
 
 	client = ent->client;
-	zc = &client->zc;
 
 	if((k = CanUsewep(ent,WEAP_GRENADES)))
 	{
@@ -959,11 +945,9 @@ static qboolean B_UseBlaster(edict_t *ent, edict_t *target,
 {
 	int k;
 	int mywep;
-	zgcl_t		*zc;
 	gclient_t	*client;
 
 	client = ent->client;
-	zc = &client->zc;
 
 	if((k = CanUsewep(ent,WEAP_BLASTER)))
 	{
@@ -1801,10 +1785,6 @@ FIRED:
 
 void UsePrimaryWeapon(edict_t *ent)
 {
-	int mywep;
-
-	mywep = Get_KindWeapon(ent->client->pers.weapon);
-
 	if(CanUsewep(ent, WEAP_BFG))
 		return;
 
