@@ -38,7 +38,7 @@ void mdsoft_InitMaps(void);
 extern cvar_t	*map_change;
 extern cvar_t	*map_randomize;
 extern cvar_t	*map_once;
-extern cvar_t	*map_debug;
+extern cvar_t	*debug_smap;
 
 
 #endif /* S_MAP_H */

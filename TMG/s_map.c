@@ -16,7 +16,7 @@ parse_line(FILE	*fpFile, char *pFile, char *pName, int  *pMin, int  *pMax );
 cvar_t	*map_change;
 cvar_t	*map_randomize;
 cvar_t	*map_once;
-cvar_t	*map_debug;
+cvar_t	*debug_smap;
 
 // other cvars used:
 // basedir, game_dir, maplist
@@ -30,7 +30,7 @@ void mdsoft_InitMaps(void)
 	map_change = gi.cvar( "map_change", "1", 0 );
 	map_randomize = gi.cvar( "map_randomize", "0", 0 );
 	map_once = gi.cvar( "map_once", "0", 0 );
-	map_debug = gi.cvar( "map_debug", "0", 0 );
+	debug_smap = gi.cvar( "debug_smap", "1", 0 );
 	maplist->active = false;
 	mdsoft_NextMap();
 }
@@ -156,13 +156,13 @@ edict_t *mdsoft_NextMap( void )
 
 				for (i = 0; i < maplist->nummaps; i++)
 				{
-					if (map_debug->value)
+					if (debug_smap->value)
 						DbgPrintf("Map loaded: %s \"%s\" %d %d\n",
 								mdsoft_map[i].aFile, mdsoft_map[i].aName,
 								mdsoft_map[i].min, mdsoft_map[i].max);
 				}
 
-				if (map_debug->value)
+				if (debug_smap->value)
 					DbgPrintf("%d maps loaded.\n", maplist->nummaps);
 
 				fclose( fpFile );
@@ -189,7 +189,7 @@ edict_t *mdsoft_NextMap( void )
 				if( mdsoft_map_last <= 0 )
 					mdsoft_map_last = 0 - mdsoft_map_last;
 
-				if(map_debug->value)
+				if(debug_smap->value)
 					gi.bprintf( PRINT_HIGH,
 							   "Random Map %d %s\n",
 							   mdsoft_map_last,
@@ -209,7 +209,7 @@ edict_t *mdsoft_NextMap( void )
 						count++;
 				}
 
-				if (map_debug->value)
+				if (debug_smap->value)
 					DbgPrintf ("MAP CHANGE: Count = %d \n", count );
 
 				do 
@@ -224,7 +224,7 @@ edict_t *mdsoft_NextMap( void )
 							point = -1;
 							fFound = 1;
 
-							if(map_debug->value)
+							if(debug_smap->value)
 								gi.bprintf( PRINT_HIGH,
 										   "Map Found %s [fVisited = %d]\n",
 										   mdsoft_map[mdsoft_map_last].aFile,
@@ -244,7 +244,7 @@ edict_t *mdsoft_NextMap( void )
 				/* Could not select an appropriate map */
 				if(point == mdsoft_map_last)
 				{
-					if (map_debug->value)
+					if (debug_smap->value)
 						DbgPrintf("Map could not be found, "
 						"map_sought %d, point %d name %s\n", 
 						map_sought, point, mdsoft_map[map_sought].aName);
@@ -254,7 +254,7 @@ edict_t *mdsoft_NextMap( void )
 					{
 						int i;
 
-						if(map_debug->value)
+						if(debug_smap->value)
 							gi.bprintf(PRINT_HIGH, "Clearing Visited flags\n" );
 
 						for(i = 0; i < mdsoft_map_size; i++ )
@@ -289,7 +289,7 @@ edict_t *mdsoft_NextMap( void )
 			ent->classname = "target_changelevel";
 			ent->map = &mdsoft_map[mdsoft_map_last].aFile[0];
 
-			if(map_debug->value)
+			if(debug_smap->value)
 			{
 				DbgPrintf ("MAP CHANGE: Selected = %d %s\n", 
 					mdsoft_map_last, &mdsoft_map[mdsoft_map_last].aFile[0]);
