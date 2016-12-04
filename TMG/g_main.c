@@ -860,33 +860,34 @@ void G_RunFrame (void)
 			if (ent && !ent->inuse)
 				continue;
 
-			ent->client->pers.vote_times = 0;// set all voting to 0
-			ent->client->newweapon = NULL;
-			ChangeWeapon (ent);
-			ent->client->ps.gunindex = 0;
-			if(ent->client->hook)
-				abandon_hook_reset(ent->client->hook);
-			runes_drop(ent);
-			if ( ent->flashlight )
+			if (ent && ent->client)
 			{
-				G_FreeEdict(ent->flashlight);
-				ent->flashlight = NULL;
+				ent->client->pers.vote_times = 0;// set all voting to 0
+				ent->client->newweapon = NULL;
+
+				ChangeWeapon (ent);
+				ent->client->ps.gunindex = 0;
+				if(ent->client->hook)
+					abandon_hook_reset(ent->client->hook);
+				runes_drop(ent);
+				if ( ent->flashlight )
+				{
+					G_FreeEdict(ent->flashlight);
+					ent->flashlight = NULL;
+				}
+
+				if(ctf->value)
+				{
+					CTFPlayerResetGrapple(ent);
+					CTFDeadDropFlag(ent);
+					CTFDeadDropTech(ent);
+				}
+				//bring up menu for voting
+				if(ent->client->pers.pl_state == PL_PLAYING)
+					ent->client->pers.pl_state = PL_WARMUP;
+				if(!ent->bot_client)
+					StuffCmd (ent, va("map_vote\n"));
 			}
-			if(ctf->value)
-			{
-				CTFPlayerResetGrapple(ent);
-				CTFDeadDropFlag(ent);
-				CTFDeadDropTech(ent);
-			}
-			//bring up menu for voting
-			if(ent->client->pers.pl_state == PL_PLAYING)
-				ent->client->pers.pl_state = PL_WARMUP;
-//			if (ent->client->menu)
-//				ent->client->menu = 0;
-//			if(ent->client->showscores)
-//				ent->client->showscores = false;
-			if(!ent->bot_client)
-				StuffCmd (ent, va("map_vote\n"));
 		}
 	}
 
