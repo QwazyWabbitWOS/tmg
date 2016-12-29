@@ -4731,7 +4731,7 @@ void OpRestart(edict_t *ent, pmenu_t *p)
 {
 	if (ent->client->menu)
 		PMenu_Close(ent);
-	RestartThisMap();
+	RestartLevel();
 }
 
 void ChangeNow (edict_t *ent, pmenu_t *menu)
