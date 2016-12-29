@@ -48,6 +48,8 @@ void ResetItems (void)
 	CTFResetFlags();
 }
 
+// Restart the level while keeping 
+// players on their teams
 void RestartLevel()
 {
 	edict_t *player;
