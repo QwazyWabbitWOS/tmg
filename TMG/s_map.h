@@ -33,6 +33,7 @@ edict_t *mdsoft_NextMap( void );
  Call this at game intialization
  */
 void mdsoft_InitMaps(void);
+void MaplistInit(void);
 
 // cvars used by this module
 extern cvar_t	*map_change;
