@@ -698,6 +698,9 @@ void AddModelSkin (char *modelfile, char *skinname)
 	gi.dprintf("Model skin added.\n", filename);
 }
 
+// Safely print formatted text to players
+// Then convert to white text for the log
+// when running dedicated server
 void my_bprintf (int printlevel, char *fmt, ...)
 {
 	int i;
@@ -705,15 +708,9 @@ void my_bprintf (int printlevel, char *fmt, ...)
 	va_list		argptr;
 	edict_t	*cl_ent;
 
-	va_start (argptr,fmt);
+	va_start (argptr, fmt);
 	vsprintf (buffer, fmt, argptr);
 	va_end (argptr);
-
-	if (dedicated->value)
-	{
-		white_text(buffer, buffer);
-		gi.dprintf ("%s", buffer);
-	}
 
 	for (i = 0; i < maxclients->value; i++)
 	{
@@ -723,9 +720,15 @@ void my_bprintf (int printlevel, char *fmt, ...)
 			!cl_ent->client->pers.in_game)
 			continue;
 
-		// Safety check...
+		// Highlighted text to players
 		if (G_EntExists(cl_ent))
 			gi.cprintf(cl_ent, printlevel, buffer);
+	}
+
+	if (dedicated->value)
+	{
+		white_text(buffer, buffer);
+		gi.dprintf ("%s", buffer); // White text to log/console
 	}
 }
 
