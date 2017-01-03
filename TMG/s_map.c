@@ -9,8 +9,9 @@ maplist_t	*maplist;
 static unsigned int mdsoft_map_size  = 0;
 static unsigned int mdsoft_map_last  = 0;
 
-static int 
-parse_line(FILE	*fpFile, char *pFile, char *pName, int  *pMin, int  *pMax );
+static int parse_line(FILE	*fpFile, 
+	char *pFile, char *pName, 
+	int  *pMin, int  *pMax );
 
 // instantiate cvars
 cvar_t	*map_change;
@@ -22,40 +23,38 @@ cvar_t	*debug_smap;
 // basedir, game_dir, maplist
 
 /*
- Call this at game initialization
- */
+Call this at game initialization
+*/
 void mdsoft_InitMaps(void)
 {
 	maplist = gi.TagMalloc (sizeof(maplist_t), TAG_GAME);
 	map_change = gi.cvar( "map_change", "1", 0 );
 	map_randomize = gi.cvar( "map_randomize", "0", 0 );
 	map_once = gi.cvar( "map_once", "0", 0 );
-	debug_smap = gi.cvar( "debug_smap", "1", 0 );
+	debug_smap = gi.cvar( "debug_smap", "0", 0 );
 	maplist->active = false;
 	MaplistInit();
 }
 
 /*
- //QW//
- Select a map either sequentially or at random 
- from the array of maps and return its entity 
- for use at changelevel.
+//QW//
+Select a map either sequentially or at random 
+from the array of maps and return its entity 
+for use at changelevel.
 
- Return pointer to selected map else return NULL on error.
- 
- BUGS: 
- 1. Map search can fail while indexing through the list.
- This failure mode should not be possible. 
- Failure to select a map in the list should never 
- occur unless the map file doesn't exist and the
- function doesn't even test for that.
- This makes it necessary to handle NULL return and
- go through gyrations to fall back to current map
- until human players break the cycle by voting
- a map.
- 2. This function fails to select map index 0 once
- the initial level has completed.
- */
+Return pointer to selected map else return NULL on error.
+
+BUGS: 
+1. Map search can fail while indexing through the list.
+This failure mode should not be possible. 
+Failure to select a map in the list should never 
+occur unless the map file doesn't exist and the
+function doesn't even test for that.
+This makes it necessary to handle NULL return and
+go through gyrations to fall back to current map
+until human players break the cycle by voting
+a map.
+*/
 
 edict_t *mdsoft_NextMap( void )
 {
@@ -67,14 +66,16 @@ edict_t *mdsoft_NextMap( void )
 	if(map_change->value == 0 )
 		return NULL;
 
-	/* Work out mdsoft_map_last by using map name */
-
 	if( mdsoft_map_size == 0 )
 	{
 		mdsoft_map_last = 0;
 		return NULL;
 	}
 
+	if(map_once->value)
+		ClearVisited();
+
+	/* Work out mdsoft_map_last by using map name */
 	do
 	{
 		/* Find random map to search from */
@@ -85,10 +86,10 @@ edict_t *mdsoft_NextMap( void )
 				mdsoft_map_last = 0 - mdsoft_map_last;
 
 			if(debug_smap->value)
-				gi.bprintf( PRINT_HIGH,
-				"Random Map %d %s\n",
+				DbgPrintf( "Random Map %d %s [fVisited = %d]\n",
 				mdsoft_map_last,
-				mdsoft_map[mdsoft_map_last].aFile);
+				mdsoft_map[mdsoft_map_last].aFile, 
+				mdsoft_map[mdsoft_map_last].fVisited);
 		}
 
 		/* Choose map */
@@ -104,7 +105,7 @@ edict_t *mdsoft_NextMap( void )
 					count++;
 			}
 
-			if (debug_smap->value)
+			if(debug_smap->value)
 				DbgPrintf ("MAP CHANGE: Count = %d \n", count );
 
 			do 
@@ -120,8 +121,8 @@ edict_t *mdsoft_NextMap( void )
 						fFound = 1;
 
 						if(debug_smap->value)
-							gi.bprintf( PRINT_HIGH,
-							"Map Found %s [fVisited = %d]\n",
+							DbgPrintf("Map Found = %d %s [fVisited = %d]\n",
+							mdsoft_map_last,
 							mdsoft_map[mdsoft_map_last].aFile,
 							mdsoft_map[mdsoft_map_last].fVisited);
 					}
@@ -144,34 +145,21 @@ edict_t *mdsoft_NextMap( void )
 					"map_sought %d, point %d name %s\n", 
 					map_sought, point, mdsoft_map[map_sought].aName);
 
-				/* Clear visited flags */
 				if(map_once->value)
-				{
-					int i;
-
-					if(debug_smap->value)
-						gi.bprintf(PRINT_HIGH, "Clearing Visited flags\n" );
-
-					for(i = 0; i < mdsoft_map_size; i++ )
-						mdsoft_map[i].fVisited = 0;
-				}
+					ClearVisited();
 
 				/* Use next map in list */
-				mdsoft_map_last = (mdsoft_map_last+1) % mdsoft_map_size;
+				mdsoft_map_last = (mdsoft_map_last + 1) % mdsoft_map_size;
 			}
 		}
-
 		nTimes++;
 	} while( !fFound && (nTimes < 2) );
-	mdsoft_map_last++;
 
 	if( fFound && !ent )
 	{
 		/* Set map as visited */
 		if(map_once->value)
-		{
 			mdsoft_map[mdsoft_map_last].fVisited = 1;
-		}
 
 		/* Set next map */
 		ent = G_Spawn ();
@@ -182,8 +170,9 @@ edict_t *mdsoft_NextMap( void )
 
 			if(debug_smap->value)
 			{
-				DbgPrintf ("MAP CHANGE: Selected = %d %s\n", 
-					mdsoft_map_last, &mdsoft_map[mdsoft_map_last].aFile[0]);
+				DbgPrintf ("Selected = %d %s [fVisited = %d]\n", 
+					mdsoft_map_last, &mdsoft_map[mdsoft_map_last].aFile[0], 
+					mdsoft_map[mdsoft_map_last].fVisited);
 				gi.bprintf (PRINT_HIGH, "MAP CHANGE: %d ", mdsoft_map_last );
 				gi.bprintf (PRINT_HIGH, &mdsoft_map[mdsoft_map_last].aFile[0] );
 				gi.bprintf (PRINT_HIGH, " [min = %d, max = %d, players = %d]\n",
@@ -193,23 +182,44 @@ edict_t *mdsoft_NextMap( void )
 			}
 		}
 	}
+	mdsoft_map_last++;
 	return ent;
 }
 
+/* 
+Test visited flags for all maps
+and clear them all only if they have
+all been visited.
+*/
+void ClearVisited(void)
+{
+	int i;
 
+	for(i = 0; i < mdsoft_map_size; i++ )
+	{
+		if (!mdsoft_map[i].fVisited)
+			return; // if any one of them is not visited
+	}
+
+	if(debug_smap->value)
+		DbgPrintf("Clearing Visited flags\n" );
+
+	for(i = 0; i < mdsoft_map_size; i++ )
+		mdsoft_map[i].fVisited = 0;
+}
 
 /**
- Parse a line from the previously opened fpFile.
- Elements of the line are mapname, mapnick and optional
- min and max players for each map.
- Data goes into two different structs.
- Name and nickname go into the maplist array for use at changelevel.
- All four elements are passed back to caller for populating the 
- table of map entries for use in the randomization and voting
- system. The optional min/max are for player-sensitive map selection.
- */
+Parse a line from the previously opened fpFile.
+Elements of the line are mapname, mapnick and optional
+min and max players for each map.
+Data goes into two different structs.
+Name and nickname go into the maplist array for use at changelevel.
+All four elements are passed back to caller for populating the 
+table of map entries for use in the randomization and voting
+system. The optional min/max are for player-sensitive map selection.
+*/
 static int
-parse_line(FILE *fpFile, char *pFile, char *pName, int *pMin, int *pMax)
+	parse_line(FILE *fpFile, char *pFile, char *pName, int *pMin, int *pMax)
 {
 	char buffer[MAX_QPATH]  = {0};
 	int  c;
@@ -223,34 +233,34 @@ parse_line(FILE *fpFile, char *pFile, char *pName, int *pMin, int *pMax)
 
 		/* Use buffer */
 		if( (i > 0) &&
-		   ((((' ' == c) || ('\t' == c)) && !fInQuotes) ||
+			((((' ' == c) || ('\t' == c)) && !fInQuotes) ||
 			(EOF == c) || ('\n' == c) || ('\r' == c)))
 		{
 			buffer[i] = '\0';
 
 			switch( element )
 			{
-				case 0:
+			case 0:
 				{
 					strncpy( pFile, buffer, MAX_QPATH );
 					strncpy(maplist->mapname[maplist->nummaps],
-							buffer, MAX_QPATH);
+						buffer, MAX_QPATH);
 					break;
 				}
-				case 1:
+			case 1:
 				{
 					strncpy( pName, buffer, MAX_QPATH );
 					strncpy(maplist->mapnick[maplist->nummaps],
-							buffer, MAX_QPATH);
+						buffer, MAX_QPATH);
 					maplist->nummaps++;
 					break;
 				}
-				case 2:
+			case 2:
 				{
 					*pMin = atoi( buffer );
 					break;
 				}
-				case 3:
+			case 3:
 				{
 					*pMax = atoi( buffer );
 					break;
@@ -264,19 +274,19 @@ parse_line(FILE *fpFile, char *pFile, char *pName, int *pMin, int *pMax)
 		{
 			switch( c )
 			{
-				case '\"':
+			case '\"':
 				{
 					fInQuotes = 1 - fInQuotes;
 					break;
 				}
 
-				case '\t':
-				case ' ':
+			case '\t':
+			case ' ':
 				{
 					if( !fInQuotes )
 						break;
 				} /* fallthrough */
-				default:
+			default:
 				{
 					if( i < (MAX_QPATH-1) )
 					{
@@ -288,99 +298,95 @@ parse_line(FILE *fpFile, char *pFile, char *pName, int *pMin, int *pMax)
 			}
 		}
 	} while( (c != EOF) && (c != '\n') );
-	
+
 	return element;
 }
 
 //QW//
 /* 
- This function initializes the maplist array.
- Note: uses realloc, mdsoft_map must
-       be explicitly freed in ShutdownGame.
- FIXME: find a way to use gi.TagMalloc instead.
+This function initializes the maplist array.
+Note: uses realloc, mdsoft_map must
+be explicitly freed in ShutdownGame.
+FIXME: find a way to use gi.TagMalloc instead.
 */
 void MaplistInit( void )
 {
 	int i;
 	FILE    *fpFile     = NULL;
+	char mapfile[MAX_QPATH] = {0};
+	char *pFileName = &mapfile[0];
 
-	if(map_change->value == 0 )
+	if(map_change->value == 0)
 		return;
 
-	/* Load maps.lst file */
-	if( game_dir && basedir )
+	/* Form and load maps list file */
+	strcat( mapfile, basedir->string );
+	strcat( mapfile, "/" );
+	strcat( mapfile, game_dir->string );
+
+	if(ctf->value)
+		sprintf(mapfile, "%s/%s/%s/maps_ctf.txt",
+		basedir->string, game_dir->string, cfgdir->string);
+	else
+		sprintf(mapfile, "%s/%s/%s/maps_dm.txt",
+		basedir->string, game_dir->string, cfgdir->string);
+
+	fpFile = fopen( pFileName, "r" );
+	if( fpFile )
 	{
-		char mapfile[MAX_QPATH] = {0};
-		char *pFileName = &mapfile[0];
+		MAP_ENTRY   temp;
+		int         element;
 
-		strcat( mapfile, basedir->string );
-		strcat( mapfile, "/" );
-		strcat( mapfile, game_dir->string );
-
-		if(ctf->value)
-			sprintf(mapfile, "%s/%s/%s/maps_ctf.txt",
-			basedir->string, game_dir->string, cfgdir->string);
-		else
-			sprintf(mapfile, "%s/%s/%s/maps_dm.txt",
-			basedir->string, game_dir->string, cfgdir->string);
-
-		fpFile = fopen( pFileName, "r" );
-		if( fpFile )
+		do
 		{
-			MAP_ENTRY   temp;
-			int         element;
+			temp.min      = 0;
+			temp.max      = (int) maxclients->value;
+			temp.fVisited = 0;
 
-			do
+			element = parse_line( fpFile,
+				&temp.aFile[0],
+				&temp.aName[0],
+				&temp.min,
+				&temp.max );
+
+			if( 2 <= element )
 			{
-				temp.min      = 0;
-				temp.max      = (int) maxclients->value;
-				temp.fVisited = 0;
+				MAP_ENTRY *newone;
 
-				element = parse_line( fpFile,
-					&temp.aFile[0],
-					&temp.aName[0],
-					&temp.min,
-					&temp.max );
+				int size = (mdsoft_map_size + 1) * sizeof(*newone);
+				//FIXME: gi.TagMalloc here.
+				newone = realloc(mdsoft_map, size);
 
-				if( 2 <= element )
+				if( newone )
 				{
-					MAP_ENTRY *newone;
-
-					int size = (mdsoft_map_size + 1) * sizeof(*newone);
-					//FIXME: gi.TagMalloc here.
-					newone = realloc(mdsoft_map, size);
-
-					if( newone )
-					{
-						mdsoft_map = newone;
-						memcpy( &mdsoft_map[mdsoft_map_size],
-							&temp, sizeof(temp) );
-						mdsoft_map_size++;
-					}
+					mdsoft_map = newone;
+					memcpy( &mdsoft_map[mdsoft_map_size],
+						&temp, sizeof(temp) );
+					mdsoft_map_size++;
 				}
-			} while ( 2 <= element );
-
-			maplist->active = true;
-
-			for (i = 0; i < maplist->nummaps; i++)
-			{
-				if (debug_smap->value)
-					DbgPrintf("Map loaded: %s \"%s\" %d %d\n",
-					mdsoft_map[i].aFile, mdsoft_map[i].aName,
-					mdsoft_map[i].min, mdsoft_map[i].max);
 			}
+		} while ( 2 <= element );
 
-			if (debug_smap->value)
-				DbgPrintf("%d maps loaded.\n", maplist->nummaps);
+		maplist->active = true;
 
-			fclose( fpFile );
-		}
-		else
+		for (i = 0; i < maplist->nummaps; i++)
 		{
-			maplist->active = false;
-			gi.bprintf (PRINT_HIGH,
-				"WARNING: Could not open maps list file"
-				" [%s]\n", pFileName);
+			if (debug_smap->value)
+				DbgPrintf("Map loaded: %s \"%s\" %d %d\n",
+				mdsoft_map[i].aFile, mdsoft_map[i].aName,
+				mdsoft_map[i].min, mdsoft_map[i].max);
 		}
+
+		if (debug_smap->value)
+			DbgPrintf("%d maps loaded.\n", maplist->nummaps);
+
+		fclose( fpFile );
+	}
+	else
+	{
+		maplist->active = false;
+		gi.bprintf (PRINT_HIGH,
+			"WARNING: Could not open maps list file"
+			" [%s]\n", pFileName);
 	}
 }

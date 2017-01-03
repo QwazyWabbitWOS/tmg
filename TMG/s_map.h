@@ -28,6 +28,7 @@ extern	maplist_t	*maplist;
 extern MAP_ENTRY   *mdsoft_map;
 
 edict_t *mdsoft_NextMap( void );
+void ClearVisited(void);
 
 /**
  Call this at game intialization
