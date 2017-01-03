@@ -792,21 +792,20 @@ void safe_bprintf (int printlevel, char *fmt, ...)
 	len = vsprintf (buffer, fmt, argptr);
 	va_end (argptr);
 
-	if (dedicated->value)
-	{
-		white_text(buffer, buffer); // green -> white
-		gi.cprintf(NULL, printlevel, buffer);
-	}
-
 	// This is to be compatible with Eraser (ACE)
 	// Ridah, changed this so CAM works
 	for (i = 0; i < maxclients->value; i++)
 	{
 		cl_ent = g_edicts + 1 + i;
 
-	if (cl_ent->inuse && !cl_ent->bot_client && cl_ent->client->pers.in_game)
-		if (G_EntExists(cl_ent))
+	if (G_EntExists(cl_ent) && !cl_ent->bot_client && cl_ent->client->pers.in_game)
 			gi.cprintf(cl_ent, printlevel, buffer);
+	}
+
+	if (dedicated->value)
+	{
+		white_text(buffer, buffer);
+		gi.cprintf(NULL, printlevel, buffer);
 	}
 }
 
