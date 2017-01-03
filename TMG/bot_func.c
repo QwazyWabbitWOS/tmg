@@ -314,7 +314,7 @@ qboolean InsideWall(edict_t *ent)
 	VectorCopy(ent->s.origin, torigin);
 	torigin[0] += 10.0;
 	torigin[1] += 10.0;
-	if (gi.pointcontents(torigin) & CONTENTS_SOLID)
+	if (gi.pointcontents(torigin) & CONTENTS_SOLID && ent->client)
 	{
 		DbgPrintf("1 %s %s\n", ent->client->pers.netname, __FUNCTION__);
 		return true;
@@ -323,7 +323,7 @@ qboolean InsideWall(edict_t *ent)
 	VectorCopy(ent->s.origin, torigin);
 	torigin[0] += 10.0;
 	torigin[1] -= 10.0;
-	if (gi.pointcontents(torigin) & CONTENTS_SOLID)
+	if (gi.pointcontents(torigin) & CONTENTS_SOLID && ent->client)
 	{
 		DbgPrintf("2 %s %s\n", ent->client->pers.netname, __FUNCTION__);
 		return true;
@@ -332,7 +332,7 @@ qboolean InsideWall(edict_t *ent)
 	VectorCopy(ent->s.origin, torigin);
 	torigin[0] -= 10.0;
 	torigin[1] += 10.0;
-	if (gi.pointcontents(torigin) & CONTENTS_SOLID)
+	if (gi.pointcontents(torigin) & CONTENTS_SOLID && ent->client)
 	{
 		DbgPrintf("3 %s %s\n", ent->client->pers.netname, __FUNCTION__);
 		return true;
@@ -341,7 +341,7 @@ qboolean InsideWall(edict_t *ent)
 	VectorCopy(ent->s.origin, torigin);
 	torigin[0] -= 10.0;
 	torigin[1] -= 10.0;
-	if (gi.pointcontents(torigin) & CONTENTS_SOLID)
+	if (gi.pointcontents(torigin) & CONTENTS_SOLID && ent->client)
 	{
 		DbgPrintf("4 %s %s\n", ent->client->pers.netname, __FUNCTION__);
 		return true;
