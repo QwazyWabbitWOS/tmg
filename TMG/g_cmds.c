@@ -17,9 +17,7 @@
 #include "maplist.h"
 #include "banner.h"
 
-int LIGHTS = 0;
-void no (edict_t *ent);
-void yes (edict_t *ent);//RAV
+int global_lights = 0;
 
 char *ClientTeam1 (edict_t *ent)
 {
@@ -2350,7 +2348,7 @@ void ClientCommand (edict_t *ent)
 						1, ATTN_NORM, 0);
 				}
 			}
-			if (LIGHTS)
+			if (global_lights)
 			{
 				// 0 normal
 				gi.configstring(CS_LIGHTS+0, "m");
@@ -2425,7 +2423,7 @@ void ClientCommand (edict_t *ent)
 						1, ATTN_NORM, 0);
 				}
 			}
-			if (LIGHTS)
+			if (global_lights)
 			{
 				// 0 normal
 				gi.configstring(CS_LIGHTS+0, "b");
