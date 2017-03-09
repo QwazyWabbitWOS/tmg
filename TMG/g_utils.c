@@ -703,27 +703,15 @@ void AddModelSkin (char *modelfile, char *skinname)
 // when running dedicated server
 void my_bprintf (int printlevel, char *fmt, ...)
 {
-	int i;
 	char	buffer[0x10000];
 	va_list		argptr;
-	edict_t	*cl_ent;
 
 	va_start (argptr, fmt);
 	vsprintf (buffer, fmt, argptr);
 	va_end (argptr);
 
-	for (i = 0; i < maxclients->value; i++)
-	{
-		cl_ent = g_edicts + 1 + i;
-		if (!cl_ent->inuse ||
-			cl_ent->bot_client ||
-			!cl_ent->client->pers.in_game)
-			continue;
-
-		// Highlighted text to players
-		if (G_EntExists(cl_ent))
-			gi.cprintf(cl_ent, printlevel, buffer);
-	}
+	// Highlighted text to players
+	gi.bprintf(printlevel, buffer);
 
 	if (dedicated->value)
 	{
