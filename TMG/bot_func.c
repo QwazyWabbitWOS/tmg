@@ -72,14 +72,14 @@ void Adjust_Bot_Number (void)
 	{
 		//ADD A BOT !!
 		if ((wait_time <= level.time) && 
-			(rav_getnumclients() < (maxclients->value - bot_free_clients->value )))
+			(CountConnectedClients() < (maxclients->value - bot_free_clients->value )))
 		{
 			gi.AddCommandString ("sv spb 1");
 			wait_time = level.time + 3;
 		}
 		//REMOVE A BOT !!  lowest on frags first
 		if ((GetNumBots() > 0) && 
-			(rav_getnumclients() > (maxclients->value - bot_free_clients->value )) &&
+			(CountConnectedClients() > (maxclients->value - bot_free_clients->value )) &&
 			(kill_time <= level.time))
 		{
 			// drop a bot to free a client spot
@@ -87,7 +87,7 @@ void Adjust_Bot_Number (void)
 			{
 				ent = &g_edicts[i];
 				if ((ent && !ent->bot_client) || 
-					(rav_getnumclients() <= (maxclients->value - bot_free_clients->value )))
+					(CountConnectedClients() <= (maxclients->value - bot_free_clients->value )))
 					continue;
 				//disconnect bot
 				ClientDisconnect(ent);

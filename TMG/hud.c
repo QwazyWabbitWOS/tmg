@@ -116,7 +116,6 @@ void TimeLeft(void)
 		GetTime();
 }
 
-//QW// ...and here we have two methods for counting clients
 int CountConnectedClients (void)
 {
 	int n, count;
@@ -134,28 +133,9 @@ int CountConnectedClients (void)
 	return count;
 }
 
-// Called by ShowHud, AdjustBotNumber, Spec_Check
-///////////////get # of clients////////////////
-int rav_getnumclients(void)
-{
-	int rCount = 0;
-	int i;
-
-	for (i = 1; i <= game.maxclients; i++)
-	{
-		edict_t* ent = g_edicts + i;
-		if (!ent->inuse || !ent->client)
-			continue;
-		else
-			rCount++;
-	}
-	return rCount;
-}
-
 static char *tn_id (edict_t *ent)
 {
 	int j = 0;
-	long	playernum;
 	float dist;
 	static char stats[200];
 	vec3_t  start, forward, end, v;
@@ -170,9 +150,8 @@ static char *tn_id (edict_t *ent)
 
 	if ((Q_stricmp (tr.ent->classname, "player") == 0 && tr.ent->inuse))
 	{
-		playernum = tr.ent - g_edicts - 1;
 		VectorSubtract (ent->s.origin, tr.ent->s.origin, v);
-		dist=VectorLength (v) / 32; // 32 units = 1 metre?
+		dist = VectorLength (v) / 32; // 32 units = 1 metre?
 		j += sprintf(stats + j, 
 			"xv 80 yb -68 string \"Viewing %s\" ", 
 			tr.ent->client->pers.netname );
@@ -443,7 +422,7 @@ char *ShowHud (edict_t *ent)
 					"Hit [ or ] for player select\n"
 					"Fire to change view\n";
 	
-	num_ppl = rav_getnumclients();
+	num_ppl = CountConnectedClients();
 	cl = ent->client;
 
 	Com_sprintf (layout, sizeof(layout), "");

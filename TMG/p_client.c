@@ -2365,6 +2365,7 @@ void ClientBeginDeathmatch (edict_t *ent)
 	CheckPlayers();
 	name = ent->client->pers.netname;
 	highlight_text(name, name);
+	
 	if (ctf->value)
 		sprintf (text,
 				 "%s entered the game (%d red, %d blue, %d spectators)\n",
@@ -2373,6 +2374,7 @@ void ClientBeginDeathmatch (edict_t *ent)
 		sprintf (text,
 				 "%s entered the game (%d players, %d spectators)\n",
 				 name, ctfgame.players_total, ctfgame.specs);
+	
 	my_bprintf (PRINT_HIGH, text);
 
 	InitClientResp (ent->client);
@@ -4221,7 +4223,7 @@ void Spec_Check (edict_t *ent)
 	if(ent->spec_time > level.time || match_state != STATE_PLAYING || ent->bot_client)
 		return;
 	
-	if (rav_getnumclients() < maxclients->value- 1 -(int)reserved_slots->value )
+	if (CountConnectedClients() < maxclients->value - 1 - (int)reserved_slots->value)
 	{
 		ent->spec_time = level.time + 30;
 		ent->spec_warned = false;

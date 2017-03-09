@@ -89,7 +89,8 @@ void UpdateChaseCam(edict_t *ent)
 	{
 		edict_t *old = ent->client->chase_target;
 		ChaseNext(ent);
-		if (ent->client->chase_target == old) {
+		if (ent->client->chase_target == old) 
+		{
 			ent->client->chase_target = NULL;
 			ent->client->ps.pmove.pm_flags &= ~PMF_NO_PREDICTION;
 			return;
@@ -145,7 +146,8 @@ void UpdateChaseCam(edict_t *ent)
 	VectorCopy(goal, o);
 	o[2] += 6;
 	trace = gi.trace(goal, vec3_origin, vec3_origin, o, targ, MASK_SOLID);
-	if (trace.fraction < 1) {
+	if (trace.fraction < 1) 
+	{
 		VectorCopy(trace.endpos, goal);
 		goal[2] -= 6;
 	}
@@ -153,7 +155,8 @@ void UpdateChaseCam(edict_t *ent)
 	VectorCopy(goal, o);
 	o[2] -= 6;
 	trace = gi.trace(goal, vec3_origin, vec3_origin, o, targ, MASK_SOLID);
-	if (trace.fraction < 1) {
+	if (trace.fraction < 1) 
+	{
 		VectorCopy(trace.endpos, goal);
 		goal[2] += 6;
 	}
@@ -266,7 +269,8 @@ void GetChaseTarget(edict_t *ent)
 	int i;
 	edict_t *other;
 
-	for (i = 1; i <= maxclients->value; i++) {
+	for (i = 1; i <= maxclients->value; i++) 
+	{
 		other = g_edicts + i;
 
 		if (other->inuse && other->client->pers.pl_state != PL_SPECTATOR)
