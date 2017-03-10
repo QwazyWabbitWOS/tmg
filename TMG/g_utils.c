@@ -711,7 +711,7 @@ void my_bprintf (int printlevel, char *fmt, ...)
 	va_end (argptr);
 
 	// Highlighted text to players
-	gi.bprintf(printlevel, buffer);
+	gi.bprintf(printlevel, "%s", buffer);
 
 	if (dedicated->value)
 	{
@@ -741,7 +741,7 @@ void safe_cprintf (edict_t *ent, int printlevel, char *fmt, ...)
 
 	// Safety check...
 	if (G_EntExists(ent))
-		gi.cprintf(ent, printlevel, buffer);
+		gi.cprintf(ent, printlevel, "%s", buffer);
 	
 }
 
@@ -763,7 +763,7 @@ void safe_centerprintf (edict_t *ent, char *fmt, ...)
 
 	// Safety check...
 	if (G_EntExists(ent))
-		gi.centerprintf(ent, buffer);
+		gi.centerprintf(ent, "%s", buffer);
 	
 }
 
@@ -787,13 +787,13 @@ void safe_bprintf (int printlevel, char *fmt, ...)
 		cl_ent = g_edicts + 1 + i;
 
 	if (G_EntExists(cl_ent) && !cl_ent->bot_client && cl_ent->client->pers.in_game)
-			gi.cprintf(cl_ent, printlevel, buffer);
+			gi.cprintf(cl_ent, printlevel, "%s", buffer);
 	}
 
 	if (dedicated->value)
 	{
 		white_text(buffer, buffer);
-		gi.cprintf(NULL, printlevel, buffer);
+		gi.cprintf(NULL, printlevel, "%s", buffer);
 	}
 }
 
