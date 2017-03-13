@@ -209,10 +209,10 @@ char *tn_votewait (edict_t *ent)
 void CalcFPH(edict_t *ent)
 {
 	int fph = 0;
-	float framesperhour = 3600 / FRAMETIME;
+	float framesperhour = 3600.0f / FRAMETIME;
 	gclient_t *cl = ent->client;
 	int interval = level.framenum - cl->resp.enterframe;
-	fph = cl->resp.score / (interval / framesperhour);
+	fph = cl->resp.frags / (interval / framesperhour);
 
 	if(fph >= 999)
 		fph = 999;
@@ -230,10 +230,10 @@ void CalcFPH(edict_t *ent)
 void CalcFPM(edict_t *ent)
 {
 	int fpm = 0;
-	float framespermin = 60 / FRAMETIME;
+	float framespermin = 60.0f / FRAMETIME;
 	gclient_t *cl = ent->client;
 	int interval = level.framenum - cl->resp.enterframe;
-	fpm = cl->resp.score / (interval / framespermin);
+	fpm = cl->resp.frags / (interval / framespermin);
 
 	if(fpm >= 999)
 		fpm = 999;
