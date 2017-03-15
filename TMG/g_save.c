@@ -612,6 +612,7 @@ static void ReadField (FILE *f, field_t *field, byte *base)
 	void	*p;
 	int		len;
 	int		index;
+	size_t	count = 0;
 
 	p = (void *)(base + field->ofs);
 	switch (field->type)
@@ -630,7 +631,7 @@ static void ReadField (FILE *f, field_t *field, byte *base)
 		else
 		{
 			*(char **)p = gi.TagMalloc (len, TAG_LEVEL);
-			fread (*(char **)p, len, 1, f);
+			count = fread (*(char **)p, len, 1, f);
 		}
 		break;
 	case F_GSTRING:
@@ -640,7 +641,7 @@ static void ReadField (FILE *f, field_t *field, byte *base)
 		else
 		{
 			*(char **)p = gi.TagMalloc (len, TAG_GAME);
-			fread (*(char **)p, len, 1, f);
+			count = fread (*(char **)p, len, 1, f);
 		}
 		break;
 	case F_EDICT:
@@ -713,8 +714,9 @@ All pointer variables (except function pointers) must be handled specially.
 static void ReadClient (FILE *f, gclient_t *client)
 {
 	field_t		*field;
+	size_t	count = 0;
 
-	fread(client, sizeof(*client), 1, f);
+	count = fread(client, sizeof(*client), 1, f);
 
 	for (field=clientfields ; field->name ; field++)
 	{
@@ -768,6 +770,7 @@ void ReadGame (char *filename)
 	FILE	*f;
 	int		i;
 	char	str[16];
+	size_t	count = 0;
 
 	gi.FreeTags (TAG_GAME);
 
@@ -775,7 +778,7 @@ void ReadGame (char *filename)
 	if (!f)
 		gi.error ("Couldn't open %s", filename);
 
-	fread (str, sizeof(str), 1, f);
+	count = fread (str, sizeof(str), 1, f);
 	if (strcmp (str, __DATE__))
 	{
 		fclose (f);
@@ -785,7 +788,7 @@ void ReadGame (char *filename)
 	g_edicts =  gi.TagMalloc (game.maxentities * sizeof(g_edicts[0]), TAG_GAME);
 	globals.edicts = g_edicts;
 
-	fread (&game, sizeof(game), 1, f);
+	count = fread (&game, sizeof(game), 1, f);
 	game.clients = gi.TagMalloc (game.maxclients * sizeof(game.clients[0]), TAG_GAME);
 	for (i=0 ; i<game.maxclients ; i++)
 		ReadClient (f, &game.clients[i]);
@@ -870,8 +873,9 @@ All pointer variables (except function pointers) must be handled specially.
 static void ReadEdict (FILE *f, edict_t *ent)
 {
 	field_t		*field;
+	size_t	count = 0;
 
-	fread (ent, sizeof(*ent), 1, f);
+	count = fread (ent, sizeof(*ent), 1, f);
 
 	for (field = savefields; field->name; field++)
 	{
@@ -889,8 +893,9 @@ All pointer variables (except function pointers) must be handled specially.
 static void ReadLevelLocals (FILE *f)
 {
 	field_t		*field;
+	size_t	count = 0;
 
-	fread (&level, sizeof(level), 1, f);
+	count = fread (&level, sizeof(level), 1, f);
 
 	for (field = levelfields; field->name; field++)
 	{
@@ -980,7 +985,7 @@ void ReadLevel (char *filename)
 	globals.num_edicts = maxclients->value+1;
 
 	// check edict size
-	fread (&i, sizeof(i), 1, f);
+	count = fread (&i, sizeof(i), 1, f);
 	if (i != sizeof(edict_t))
 	{
 		fclose (f);
@@ -988,7 +993,7 @@ void ReadLevel (char *filename)
 	}
 
 	// check function pointer base address
-	fread (&base, sizeof(base), 1, f);
+	count = fread (&base, sizeof(base), 1, f);
 	if (base != (void *)InitGame)
 	{
 		fclose (f);
