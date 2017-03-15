@@ -59,7 +59,7 @@ void wav_mod_set_up(void)
 		if (count == 0 || ferror(file))
 		{
 			gi.dprintf ("Error reading %s\n", file_name);
-			gi.dprintf ("Bytes read: %d\n", count);
+			gi.dprintf ("Characters read: %d\n", count);
 		}
 
 		gi.dprintf ("\n==== Wav Mod v.01 set up ====\n");
