@@ -38,12 +38,12 @@ void InitHighScores (void)
 void SaveHighScores (void)
 {
 	int		i;
-	edict_t	*cl_ent;
+	edict_t	*ent;
 	FILE	*HS_file;
 	char	binfile[MAX_QPATH];
 	char	txtfile[MAX_QPATH];
 	char	string[128];
-	int		count = 0;
+	size_t	count = 0;
 
 	if (DEBUG_HSCORES) 
 		DbgPrintf("%s entered\n", __func__);
@@ -61,23 +61,25 @@ void SaveHighScores (void)
 	
 	if(HS_file)
 	{
-		fread(g_TopScores, sizeof(g_TopScores[0]) * KEEP, 1, HS_file);
+		count = fread(g_TopScores, sizeof(g_TopScores[0]) * KEEP, 1, HS_file);
 		fclose(HS_file);
 
 		//JSW
 		// HS_file loaded - see if any entity made the list
 		for (i = 0 ; i < maxclients->value ; i++)
 		{
-			cl_ent = g_edicts + 1 + i;
-			if((game.clients[i].pers.pl_state == PL_PLAYING 
-				|| cl_ent->client->pers.pl_state == PL_WARMUP)
-				&& (game.clients[i].ps.stats[STAT_FRAGS] >
+			ent = g_edicts + 1 + i;
+			if((ent->client->pers.pl_state == PL_PLAYING
+				|| ent->client->pers.pl_state == PL_WARMUP)
+				&& (ent->client->ps.stats[STAT_FRAGS] >
 					g_TopScores[KEEP-1].score)
-				&& (game.clients[i].ps.stats[STAT_FRAGS] > 0))
-			{ // if it beat the lowest, keep score
-				//my_bprintf (PRINT_HIGH, "High scores changed\n");
-				strcpy(g_TopScores[KEEP-1].netname, game.clients[i].pers.netname);
-				g_TopScores[KEEP-1].score = game.clients[i].resp.score;
+				&& (ent->client->ps.stats[STAT_FRAGS] > 0)
+				&& (ent->bot_client == false))
+			{
+				// if it beat the lowest, keep score
+				my_bprintf (PRINT_HIGH, "High scores changed\n");
+				strcpy(g_TopScores[KEEP-1].netname, ent->client->pers.netname);
+				g_TopScores[KEEP-1].score = ent->client->resp.score;
 				if (DEBUG_HSCORES) 
 					DbgPrintf("Keeping %s - %d\n", 
 					g_TopScores[KEEP-1].netname, 
@@ -97,10 +99,11 @@ void SaveHighScores (void)
 		count = 0;
 		for (i = 0 ; i < maxclients->value; i++)
 		{
-			cl_ent = g_edicts + 1 + i;
-			if (cl_ent->inuse &&
-				(cl_ent->client->pers.pl_state == PL_PLAYING ||
-				 cl_ent->client->pers.pl_state == PL_WARMUP))
+			ent = g_edicts + 1 + i;
+			if (ent->inuse &&
+				(ent->client->pers.pl_state == PL_PLAYING ||
+				 ent->client->pers.pl_state == PL_WARMUP)
+				&& (ent->bot_client == false))
 			{
 				strcpy(g_TopScores[count].netname, game.clients[i].pers.netname);
 				g_TopScores[count].score = game.clients[i].resp.score;
