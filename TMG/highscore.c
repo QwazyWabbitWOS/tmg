@@ -62,6 +62,12 @@ void SaveHighScores (void)
 	if(HS_file)
 	{
 		count = fread(g_TopScores, sizeof(g_TopScores[0]) * KEEP, 1, HS_file);
+		if (count == 0 || ferror(HS_file))
+		{
+			gi.dprintf ("Error in %s reading %s\n", __FUNCTION__, binfile);
+			gi.dprintf ("Characters read: %d\n", count);
+		}
+
 		fclose(HS_file);
 
 		//JSW
