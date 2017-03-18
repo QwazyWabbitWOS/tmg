@@ -54,6 +54,13 @@ typedef enum {false, true}	qboolean;
 #define PATH_MAX _MAX_PATH
 #endif
 
+//terminating strncpy
+#define Q_strncpy(dst, src, len) \
+do { \
+	strncpy ((dst), (src), (len)); \
+	(dst)[(len)] = 0; \
+} while (0)
+
 // angle indexes
 #define	PITCH				0		// up / down
 #define	YAW					1		// left / right
