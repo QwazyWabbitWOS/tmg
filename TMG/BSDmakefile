@@ -11,7 +11,7 @@
 #
 
 ARCH = i386
-CC = gcc -std=gnu99
+CC = gcc -std=gnu99 -DCOMPAT_32BIT -L/usr/lib32 -B/usr/lib32
 
 
 # on x64 machines do this preparation:
