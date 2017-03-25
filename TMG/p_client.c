@@ -2015,7 +2015,7 @@ void PutClientInServer (edict_t *ent)
 	{
 		if (ent->client->pers.pl_state == 0 && ent->client->resp.ctf_team < 1 && !Check_for_SpecLimit(ent))
 			return;
-		if (CTFStartClient(ent) || ent->client->resp.enterframe + 5 > level.framenum)
+		if (CTFStartClient(ent) /*|| ent->client->resp.enterframe + 5 > level.framenum*/)
 			if(!ent->bot_client)
 				return;
 	}
