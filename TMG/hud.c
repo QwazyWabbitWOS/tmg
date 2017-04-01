@@ -411,7 +411,7 @@ char *ShowHud (edict_t *ent)
 	int frags, captures, died, num_ppl, rank;
 	int shots, eff;
 	int bigspree;
-	int s;  //status bar string length
+	size_t	s;  //status bar string length
 
 	// chasecam status plate
 	char rectangle[] =  "\22\23\23\23\23\23\23\23\23\23\23\23\23\24\n"

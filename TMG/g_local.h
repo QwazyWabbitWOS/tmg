@@ -1912,7 +1912,7 @@ typedef struct ctfgame_s
 	int players1;	// team1 count
 	int players2;	// team2 count
 	int players_total;	// total player count
-	int	specs;	// spectator count filled by CountSpecClients
+	int	specs;		// spectator count
 	float last_flag_capture;
 	int last_capture_team;
 } ctfgame_t;

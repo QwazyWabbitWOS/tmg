@@ -2427,7 +2427,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 {
 	char	entry[MAX_MSGLEN];
 	char	string[MAX_MSGLEN];
-	int		len = 0;
+	size_t	len = 0;
 	int		i, j, k, n;
 	int		trap = 0;
 	int		sorted[2][MAX_CLIENTS];
@@ -2635,7 +2635,7 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 {
 	char	entry[MAX_MSGLEN];
 	char	string[MAX_MSGLEN];
-	int		len = 0;
+	size_t	len = 0;
 	int		i, j, k, n;
 	int		trap = 0;
 	int		sorted[2][MAX_CLIENTS];

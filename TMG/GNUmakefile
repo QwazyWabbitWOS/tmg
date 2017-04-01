@@ -17,6 +17,7 @@ CC = gcc -std=gnu99
 # on x64 machines do this preparation:
 # sudo apt-get install ia32-libs
 # sudo apt-get install libc6-dev-i386
+# On Ubuntu 16.x use sudo apt install libc6-dev-i386
 # this will let you build 32-bits on ia64 systems
 #
 
