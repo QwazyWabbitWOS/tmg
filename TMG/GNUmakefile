@@ -25,7 +25,7 @@ CC = gcc -std=gnu99
 #
 
 #use these cflags to optimize this build
-CFLAGS=-O3 -march=$(ARCH) -DARCH="$(ARCH)"
+CFLAGS=-O3 -DARCH="$(ARCH)"
 
 #use these when debugging
 #CFLAGS=-g -Og -m32 -DEBUG -DARCH="$(ARCH)" -Wall -pedantic
