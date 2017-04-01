@@ -16,19 +16,21 @@ ARCH := $(shell uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc64/ -e s/arm.*/ar
 #ARCH = i386
 CC = gcc -std=gnu99
 
-
 # on x64 machines do this preparation:
 # sudo apt-get install ia32-libs
 # sudo apt-get install libc6-dev-i386
 # On Ubuntu 16.x use sudo apt install libc6-dev-i386
 # this will let you build 32-bits on ia64 systems
 #
+# This is for native build
+CFLAGS=-O3 -DARCH="$(ARCH)" -DLINUX 
+# This is for 32-bit build on 64-bit host
+ifeq ($(ARCH),i386)
+CFLAGS =-m32 -O3 -fPIC -DARCH="$(ARCH)" -DLINUX -DSTDC_HEADERS -I/usr/include
+endif
 
-#use these cflags to optimize this build
-CFLAGS=-O3 -DARCH="$(ARCH)"
-
-#use these when debugging
-#CFLAGS=-g -Og -m32 -DEBUG -DARCH="$(ARCH)" -Wall -pedantic
+# use this when debugging
+#CFLAGS=-g -Og -DEBUG -DARCH="$(ARCH)" -DLINUX -Wall -pedantic
 
 # flavors of Linux
 ifeq ($(shell uname),Linux)
