@@ -14,7 +14,7 @@
 ARCH := $(shell uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc64/ -e s/arm.*/arm/ -e s/sa110/arm/ -e s/alpha/axp/)
 
 #ARCH = i386
-CC = gcc -std=c11
+CC = gcc -std=gnu99
 
 # on x64 machines do this preparation:
 # sudo apt-get install ia32-libs
