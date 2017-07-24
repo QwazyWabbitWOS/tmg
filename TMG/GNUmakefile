@@ -86,7 +86,7 @@ clean:
 	/bin/rm -f $(GAME_OBJS) game$(ARCH).real.$(SHLIBEXT)
 
 depend:
-	$(CC) $(CFLAGS) -MM $(OBJS:.o=.c)
+	$(CC) -MM $(GAME_OBJS:.o=.c)
 
 depends:
 	$(CC) $(CFLAGS) -MM *.c > dependencies
