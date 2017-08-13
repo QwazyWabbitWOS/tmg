@@ -2,12 +2,13 @@
 #include "g_local.h"
 #include "hud.h"
 
-#define	MAXSONGS	256
+//QW// Set the max length of the list.
+#define	MAXSONGS	1000
 
 int			wav_mod = 0;
 int			wav_mod_current_level = -1;
 int			wav_mod_n_levels = 0;
-char		wav_mod_names[MAXSONGS][64];
+char		wav_mod_names[MAXSONGS][MAX_QPATH];
 
 // niq hack:
 qboolean	wav_used[MAXSONGS];
