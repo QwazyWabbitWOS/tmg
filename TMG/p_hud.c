@@ -81,7 +81,7 @@ void BeginIntermission (edict_t *targ)
 	if (wav_mod && use_song_file->value)
 	{
 		char *nextwav;
-		char sound[64];
+		char sound[MAX_QPATH];
 
 		if ((nextwav = wav_mod_next_map()))
 		{

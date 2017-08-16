@@ -1280,122 +1280,6 @@ char *raildm_statusbar =
 "endif "
 ;
 
-//RAV precache songs
-void PrecacheSongs(void)
-{
-	FILE *file;
-	char names[256][64];
-	char file_name[256];
-	char song[64];
-	int levels = 0;
-	size_t	count;
-
-	song[0] = '\0';
-
-	sprintf(file_name, "%s/%s/%s/intro.txt",
-		basedir->string, game_dir->string, cfgdir->string);
-
-	file = fopen(file_name, "r");
-	if (file != NULL)
-	{
-		int file_size = 0;
-		char *p_buffer;
-		char *p_name;
-		long counter = 0;
-		int n_chars = 0;
-
-		while (!feof(file))
-		{
-			fgetc(file);
-			file_size++;
-		}
-		rewind(file);
-		p_buffer = gi.TagMalloc(file_size, TAG_LEVEL);
-		memset(p_buffer, 0, file_size);
-		count = fread((void *)p_buffer, sizeof(char), file_size, file);
-		if (!count)
-			gi.dprintf("%s read %d of %d bytes in %s\n",
-			__FUNCTION__, count, file_size, file);
-
-		p_name = p_buffer;
-		do
-		{
-			// niq: skip rest of line after a '#' (works with Unix?)
-			if(*p_name == '#')
-			{
-				while ((*p_name != '\n') &&
-					(*p_name != '\r') &&
-					counter < file_size)
-				{
-					p_name++;
-					counter++;
-				}
-			}
-			else
-			{
-				while ((((*p_name >= 'a') && (*p_name <= 'z')) ||
-					((*p_name >= 'A') && (*p_name <= 'Z')) ||
-					((*p_name >= '0') && (*p_name <= '9')) ||
-					(*p_name == '_') ||
-					(*p_name == '-') ||
-					(*p_name == '/') ||
-					(*p_name == '\\')) && counter < file_size)
-				{
-					n_chars++;
-					counter++;
-					p_name++;
-				}
-			}
-			if (n_chars)
-			{
-				memcpy(&names[levels][0], p_name - n_chars, n_chars);
-				memset(&names[levels][n_chars], 0, 1);
-				if (levels > 0)
-					//precache here 
-					sprintf(song, "misc/%s.wav", names[levels]);
-				if (strlen(song) > 0)
-				{
-					//gi.dprintf("song to be indexed is %s\n", song);
-					gi.soundindex (song);
-				}
-				levels++;
-				n_chars = 0;
-				if (levels >= 256)
-				{
-					gi.dprintf("\nMAXSONGS exceeded\n"
-						"Unable to add more Wav's.\n");
-					break;
-				}
-			}
-
-			// next mapname
-			counter++;
-			p_name++;
-			// eat up non-characters (niq: except #)
-			while (!((*p_name == '#') ||
-				((*p_name >= 'a') && (*p_name <= 'z')) ||
-				((*p_name >= 'A') && (*p_name <= 'Z')) ||
-				((*p_name >= '0') && (*p_name <= '9')) ||
-				(*p_name == '_') ||
-				(*p_name == '-') ||
-				(*p_name == '/') ||
-				(*p_name == '\\')) && counter < file_size)
-			{
-				counter++;
-				p_name++;
-			}
-		}
-		while (counter < file_size);
-		gi.dprintf("\n\n");
-		gi.TagFree(p_buffer);
-		fclose(file);
-	}
-	else
-	{
-		gi.dprintf ("==== Wav Mod v.01 - missing intro.txt file ====\n");
-	}
-}
-
 extern qboolean	respawn_flag;
 
 /*QUAKED worldspawn (0 0 0) ?
@@ -1467,7 +1351,7 @@ void SP_worldspawn (edict_t *ent)
 		gi.configstring (CS_STATUSBAR, single_statusbar);
 	}
 
-	
+	//QW// for blanking hud text
 	gi.configstring (CS_EMPTYSTRING, va(""));
 	
 	//---------------
@@ -1483,7 +1367,7 @@ void SP_worldspawn (edict_t *ent)
 	else
 		gi.cvar_set("sv_gravity", st.gravity);
 
-	PrecacheSongs();
+	//QW//PrecacheSongs();
 
 	snd_fry = gi.soundindex ("player/fry.wav");	// standing in lava / slime
 	PrecacheItem (FindItem ("Blaster"));
