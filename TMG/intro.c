@@ -2,7 +2,7 @@
 #include "g_local.h"
 #include "hud.h"
 
-//QW// Set the max length of the list.
+//QW// Set the max length of the song list.
 #define	MAXSONGS	1000
 
 int			wav_mod = 0;
@@ -22,7 +22,7 @@ cvar_t *wav;
 void wav_mod_set_up(void)
 {
 	FILE *file;
-	char file_name[256];
+	char file_name[MAX_QPATH];
 
 	use_song_file = gi.cvar ("use_song_file", "0", CVAR_ARCHIVE);
 	wav_random = gi.cvar ("wav_random", "1", CVAR_ARCHIVE);
@@ -49,12 +49,13 @@ void wav_mod_set_up(void)
 		while (!feof(file))
 		{
 			fgetc(file);
-			file_size++;
+			file_size++;	// count the true file size
 		}
 		rewind(file);
 
 		p_buffer = gi.TagMalloc(file_size, TAG_GAME);
 		memset(p_buffer, 0, file_size);
+		DbgPrintf("Allocated %ld for file\n", file_size);
 
 		count = fread((void *)p_buffer, sizeof(char), file_size, file);
 		if (count == 0 || ferror(file))
@@ -72,9 +73,7 @@ void wav_mod_set_up(void)
 			// niq: skip rest of line after a '#' (works with Unix?)
 			if(*p_name == '#')
 			{
-				while ((*p_name != '\n') && 
-					(*p_name != '\r') && 
-					counter < file_size)
+				while ((*p_name != '\n') && counter < file_size)
 				{
 					p_name++;
 					counter++;
@@ -142,6 +141,7 @@ void wav_mod_set_up(void)
 		if (wav_mod_n_levels)
 		{
 			wav_mod = true;
+			gi.dprintf("Wav Mod load succeeded. Levels: %i\n\n", wav_mod_n_levels);
 		}
 	}
 	else
@@ -173,14 +173,14 @@ char* wav_mod_next_map()
 
 				if(!unused_wav)
 				{
-					// reset random maps 
+					// reset random wavs 
 					for(map = 0; map<wav_mod_n_levels; map++)
 						wav_used[map] = false;
 
 					if(wav_mod_current_level == -1 && wav->string)
 					{
-						// no current MapMod map:
-						// if there is a current map make sure we don't
+						// no current WavMod wav:
+						// if there is a current wav make sure we don't
 						// pick it again right away if it is in the list
 						for (i = 0; (i < wav_mod_n_levels && wav_mod_current_level == -1); i++)
 							if (!Q_stricmp(wav->string, wav_mod_names[i]))
@@ -190,28 +190,28 @@ char* wav_mod_next_map()
 
 					if(wav_mod_current_level != -1)
 					{
-						// zap the map
+						// zap the wav
 						wav_used[wav_mod_current_level] = true;
 
-						// one less unused map to choose from
+						// one less unused wav to choose from
 						unused_wav = wav_mod_n_levels - 1; 
 					}
 					else
 					{
-						// can choose any map in list
+						// can choose any wav in list
 						unused_wav = wav_mod_n_levels; 
 					}
 				}
 
-				// pick number of unused maps to skip (less clustering likely)
+				// pick number of unused wavs to skip (less clustering likely)
 				i = (int) floor(random() * ((float)(unused_wav)));
 
-				// skip to first unused map (has to find one)
+				// skip to first unused wav (has to find one)
 				map	= 0;
 				while(wav_used[map])
 					map++;
 
-				// skip over i unused maps (has to find them)
+				// skip over i unused wavs (has to find them)
 				skipped	= 0;
 				while(skipped < i)
 				{
@@ -219,7 +219,7 @@ char* wav_mod_next_map()
 						skipped++;
 				}
 
-				// skip to unused map if necessary (e.g. if last skip skipped to used one)
+				// skip to unused wav if necessary (e.g. if last skip skipped to used one)
 				while(wav_used[map])
 					map++;
 
@@ -264,4 +264,138 @@ char* wav_mod_next_map()
 	}
 
 	return NULL;
+}
+
+/* 
+//QW// 
+This was in g_spawn.c and was called by SP_worldspawn.
+I'm placing it here for now until I can refactor and figure out
+if it's even needed. Caching a long list blows up the server
+when it can't cache the rest of the weapon and player sounds.
+Game limit is 256 sounds and the original code allowed for up to
+256 songs. I've tried to reconcile the manifest constants with
+the game limits in q_shared.h.
+As long as we don't cache them in the index we're ok.
+
+I think the proper fix for this is to index the next song into the
+configstring at the start of a new map to make it ready for play at
+the next intermission. Need to look into how this affects downloads.
+
+NOTE: First item in the intro list doesn't get precached? Why not?
+levels is 0 on entry, this looks like a bug to me.
+*/
+//RAV precache songs
+void PrecacheSongs(void)
+{
+	FILE *file;
+	char names[MAXSONGS][MAX_QPATH];
+	char file_name[MAX_QPATH];
+	char song[MAX_QPATH];
+	int levels = 0;
+	size_t	count;
+
+	song[0] = '\0';
+
+	sprintf(file_name, "%s/%s/%s/intro.txt",
+		basedir->string, game_dir->string, cfgdir->string);
+
+	file = fopen(file_name, "r");
+	if (file != NULL)
+	{
+		int file_size = 0;
+		char *p_buffer;
+		char *p_name;
+		long counter = 0;
+		int n_chars = 0;
+
+		while (!feof(file))
+		{
+			fgetc(file);
+			file_size++;
+		}
+		rewind(file);
+		p_buffer = gi.TagMalloc(file_size, TAG_LEVEL);
+		memset(p_buffer, 0, file_size);
+		count = fread((void *)p_buffer, sizeof(char), file_size, file);
+		if (!count)
+			gi.dprintf("%s read %d of %d bytes in %s\n",
+			__FUNCTION__, count, file_size, file);
+
+		p_name = p_buffer;
+		do
+		{
+			// niq: skip rest of line after a '#' (works with Unix?)
+			if(*p_name == '#')
+			{
+				while ((*p_name != '\n') &&
+					(*p_name != '\r') &&
+					counter < file_size)
+				{
+					p_name++;
+					counter++;
+				}
+			}
+			else
+			{
+				while ((((*p_name >= 'a') && (*p_name <= 'z')) ||
+					((*p_name >= 'A') && (*p_name <= 'Z')) ||
+					((*p_name >= '0') && (*p_name <= '9')) ||
+					(*p_name == '_') ||	(*p_name == '-') ||
+					(*p_name == '/') ||	(*p_name == '\\')) && 
+					counter < file_size)
+				{
+					n_chars++;
+					counter++;
+					p_name++;
+				}
+			}
+			if (n_chars)
+			{
+				memcpy(&names[levels][0], p_name - n_chars, n_chars);
+				memset(&names[levels][n_chars], 0, 1);
+				if (levels > 0)
+					//precache here 
+					sprintf(song, "misc/%s.wav", names[levels]);
+				if (strlen(song) > 0)
+				{
+					//int i;
+					//DbgPrintf("song to be indexed is %s\n", song);
+					gi.soundindex (song);
+					//DbgPrintf("song index is %d\n", i);
+				}
+				levels++;
+				n_chars = 0;
+				if (levels >= MAXSONGS)
+				{
+					gi.dprintf("\nMAXSONGS exceeded\n"
+						"Unable to add more Wav's.\n");
+					break;
+				}
+			}
+
+			// next mapname
+			counter++;
+			p_name++;
+			// eat up non-characters (niq: except #)
+			while (!((*p_name == '#') ||
+				((*p_name >= 'a') && (*p_name <= 'z')) ||
+				((*p_name >= 'A') && (*p_name <= 'Z')) ||
+				((*p_name >= '0') && (*p_name <= '9')) ||
+				(*p_name == '_') ||	(*p_name == '-') ||
+				(*p_name == '/') ||	(*p_name == '\\')) && 
+				counter < file_size)
+			{
+				counter++;
+				p_name++;
+			}
+		}
+		while (counter < file_size);
+		gi.dprintf("\n\n");
+		gi.TagFree(p_buffer);
+		fclose(file);
+	}
+	else
+	{
+		gi.dprintf ("==== Wav Mod v.01 - missing intro.txt file ====\n");
+	}
 }
