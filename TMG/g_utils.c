@@ -887,7 +887,7 @@ void highlight_text (char *src, char *dest)
 {
 	if (dest == NULL)
 		dest = src;
-	convert_string(src, 0, 127, 128, dest); // white -> green
+	convert_string(src, 0, 127, (char) 128, dest); // white -> green
 }
 
 /**
@@ -900,7 +900,7 @@ void white_text (char *src, char *dest)
 {
 	if (dest == NULL)
 		dest = src;
-	convert_string(src, 128, 255, -128, dest); // green -> white
+	convert_string(src, (char) 128, (char) 255, -128, dest); // green -> white
 }
 
 /**
