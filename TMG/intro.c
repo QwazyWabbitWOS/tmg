@@ -2,6 +2,8 @@
 #include "g_local.h"
 #include "hud.h"
 
+void PrecacheSongs(void);
+
 //QW// Set the max length of the song list.
 #define	MAXSONGS	1000
 
