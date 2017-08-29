@@ -12,6 +12,7 @@
 #include "g_ctf.h"
 #include "highscore.h"
 #include "log_manager.h"
+#include "intro.h"
 
 //RAV
 #include "gslog.h"	//	StdLog - Mark Davies
@@ -306,9 +307,6 @@ void InitGame (void)
 	pickup_tech = gi.cvar("pickup_tech", "1 ", 0);
 	hide_spawn = gi.cvar("hide_spawn", "1 ", 0);
 
-	wavs = gi.cvar("wavs", "1 ", 0);
-	songtoplay = gi.cvar("song", "misc/mm.wav ", 0);
-
 	//anti camping
 	camper_check = gi.cvar ("camper_check", "0", 0);
 	camp_time = gi.cvar ("camp_time", "60", CVAR_LATCH);
@@ -481,7 +479,7 @@ void InitGame (void)
 
 	dmflag = (int)dmflags->value;	//JSW
 	
-	wav_mod_set_up();
+	Wav_Mod_Setup();
 	
 	Bot_InitCvars();
 	InitItems ();

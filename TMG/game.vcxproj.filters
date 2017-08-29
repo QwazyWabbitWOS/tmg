@@ -275,6 +275,9 @@
     <ClInclude Include="banner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="intro.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

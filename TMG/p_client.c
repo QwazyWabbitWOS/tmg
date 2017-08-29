@@ -12,6 +12,7 @@
 #include "p_hud.h"
 #include "filtering.h"
 #include "hud.h"
+#include "intro.h"
 #include "bot.h"
 #include "runes.h"
 #include "stdlog.h"	//	StdLog - Mark Davies

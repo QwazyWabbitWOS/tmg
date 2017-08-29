@@ -41,7 +41,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.35"
+#define MOD_VERSION "0.2.36"
 #define MOD "TMG_MOD"
 
 #ifndef _DEBUG
@@ -674,9 +674,6 @@ extern  cvar_t  *runeflags;
 extern  cvar_t  *max_Vhealth;
 extern  cvar_t  *pickup_tech;
 extern  cvar_t  *hide_spawn;
-extern  cvar_t  *wavs;
-extern  cvar_t  *songtoplay;
-extern  cvar_t  *use_song_file;
 extern	cvar_t  *camper_check;
 extern	cvar_t  *camp_time;
 extern	cvar_t  *camp_distance;

@@ -142,8 +142,6 @@ cvar_t  *runeflags;
 cvar_t  *max_Vhealth;
 cvar_t  *pickup_tech;
 cvar_t  *hide_spawn;
-cvar_t  *wavs;
-cvar_t  *songtoplay;
 cvar_t  *camper_check;
 cvar_t  *camp_time;
 cvar_t  *camp_distance;

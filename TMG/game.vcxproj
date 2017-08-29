@@ -530,6 +530,7 @@
     <ClInclude Include="g_trigger.h" />
     <ClInclude Include="highscore.h" />
     <ClInclude Include="hud.h" />
+    <ClInclude Include="intro.h" />
     <ClInclude Include="log_manager.h" />
     <ClInclude Include="maplist.h" />
     <ClInclude Include="m_player.h" />

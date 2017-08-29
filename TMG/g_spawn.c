@@ -44,8 +44,6 @@ void SP_target_earthquake (edict_t *ent);
 void SP_target_character (edict_t *ent);
 void SP_target_string (edict_t *ent);
 
-void PrecacheSongs(void);
-
 void SP_worldspawn (edict_t *ent);
 void SP_viewthing (edict_t *ent);
 

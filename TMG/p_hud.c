@@ -6,6 +6,7 @@
 #include "runes.h"
 #include "highscore.h"
 #include "stdlog.h"
+#include "intro.h"
 
 /*
 ======================================================================
@@ -78,12 +79,12 @@ void BeginIntermission (edict_t *targ)
 		return;		// already activated
 
 	//RAV WAVMOD
-	if (wav_mod && use_song_file->value)
+	if (use_song_file->value)
 	{
 		char *nextwav;
 		char sound[MAX_QPATH];
 
-		if ((nextwav = wav_mod_next_map()))
+		if ((nextwav = Wav_Mod_Next()))
 		{
 			gi.cvar_set("wav", nextwav);
 			//set up the songtoplay cvar
