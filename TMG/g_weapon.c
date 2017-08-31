@@ -855,6 +855,7 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 	int			k;
 	char		string[1024];
 
+	assert(self != NULL);
 	//START_PERFORMANCE_TIMER;
 	// long tracelines chew up HUGE amounts of CPU, only do for client
 	VectorMA (start, inc, aimdir, end);
@@ -865,7 +866,7 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 	water = false;
 	mask = MASK_SHOT|CONTENTS_SLIME|CONTENTS_LAVA;
 
-	while (ignore || (dist < 8192))
+	while (ignore != NULL || (dist < 8192))
 	{
 		tr = gi.trace (from, NULL, NULL, end, ignore, mask);
 

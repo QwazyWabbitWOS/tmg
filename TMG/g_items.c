@@ -103,6 +103,7 @@ void DoRespawn (edict_t *ent)
 	edict_t	*e;
 	int	i;
 
+	assert(ent != NULL);
 	if (ent->team)
 	{
 		edict_t	*master;
@@ -115,7 +116,7 @@ void DoRespawn (edict_t *ent)
 //in ctf, when we are weapons stay, only the master of a team of weapons
 //is spawned
 		if (ctf->value &&
-//JSW			((int)dmflags->value & DF_WEAPONS_STAY) &&
+			((int)dmflags->value & DF_WEAPONS_STAY) &&
 			(dmflag & DF_WEAPONS_STAY) &&
 			master->item && (master->item->flags & IT_WEAPON))
 			ent = master;
@@ -1162,10 +1163,12 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 			k = Get_KindWeapon(ent->item);
 			if(k > WEAP_BLASTER)
 			{
-				if(Bot[other->client->zc.botindex].param[BOP_PRIWEP] == k) ent->item->use(other,ent->item);
+				if(Bot[other->client->zc.botindex].param[BOP_PRIWEP] == k)
+					ent->item->use(other,ent->item);
 				else if(k != Get_KindWeapon(other->client->pers.weapon))
 				{
-					if(Bot[other->client->zc.botindex].param[BOP_SECWEP] == k) ent->item->use(other,ent->item);
+					if(Bot[other->client->zc.botindex].param[BOP_SECWEP] == k)
+						ent->item->use(other,ent->item);
 				}
 			}
 
@@ -1181,7 +1184,7 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 	//	else gi.bprintf(PRINT_HIGH,"get %s %x inv %i!\n",ent->classname,ent->spawnflags,other->client->pers.inventory[ITEM_INDEX(ent->item)]);
 
 	k = false;
-	//flag set ファンクションの上にある場合は無視
+	//flag set
 	if(ent->groundentity) if(ent->groundentity->union_ent) k = true;
 
 	//route update
@@ -1198,22 +1201,30 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 			|| ent->classname[5] =='b'
 			|| ent->classname[5] =='e'
 			|| ent->classname[5] =='a'))
-			|| (ent->classname[0] =='i' && ent->classname[5] =='h' && ent->classname[12] =='m')
+			|| (ent->classname[0] =='i' &&
+				ent->classname[5] =='h' &&
+				ent->classname[12] =='m')
 			|| (ent->classname[0] =='a')
 			)
 			&& !(ent->spawnflags & (DROPPED_ITEM | DROPPED_PLAYER_ITEM)))
 		{
-			//			gi.bprintf(PRINT_HIGH,"woohoo!\n");
-			VectorCopy(/*ent->s.origin*/ent->monsterinfo.last_sighting,Route[CurrentIndex].Pt);
+			VectorCopy(/*ent->s.origin*/ent->monsterinfo.last_sighting, Route[CurrentIndex].Pt);
 			Route[CurrentIndex].ent = ent;
-			if(ent == bot_team_flag1) { Route[CurrentIndex].state = GRS_REDFLAG;/*gi.bprintf(PRINT_HIGH,"woohoo!\n");*/}
-			else if(ent == bot_team_flag2) { Route[CurrentIndex].state = GRS_BLUEFLAG;/*gi.bprintf(PRINT_HIGH,"woohoo!\n");*/}
-			else Route[CurrentIndex].state = GRS_ITEMS;
+			if(ent == bot_team_flag1)
+			{
+				Route[CurrentIndex].state = GRS_REDFLAG;
+			}
+			else if(ent == bot_team_flag2)
+			{
+				Route[CurrentIndex].state = GRS_BLUEFLAG;
+			}
+			else
+				Route[CurrentIndex].state = GRS_ITEMS;
 			if(++CurrentIndex < MAXNODES)
 			{
-				gi.bprintf(PRINT_HIGH,"Last %i pod(s).\n",MAXNODES - CurrentIndex);
+				gi.bprintf(PRINT_HIGH, "Last %i pod(s).\n", MAXNODES - CurrentIndex);
 				memset(&Route[CurrentIndex],0,sizeof(route_t));
-				Route[CurrentIndex].index = Route[CurrentIndex - 1].index +1;
+				Route[CurrentIndex].index = Route[CurrentIndex - 1].index + 1;
 			}
 		}
 	}
@@ -1510,6 +1521,7 @@ void droptofloor (edict_t *ent)
 		gi.setmodel (ent, ent->model);
 	else
 		gi.setmodel (ent, ent->item->world_model);
+
 	ent->solid = SOLID_TRIGGER;
 	ent->movetype = MOVETYPE_TOSS;  
 	ent->touch = Touch_Item;
@@ -1571,7 +1583,7 @@ void droptofloor2 (edict_t *ent)
 	float	i,j,yaw;
 
 	trace_t		tr;
-	vec3_t		dest;
+	vec3_t		dest = {0,0,0};
 	float		*v;
 
 	v = tv(-15,-15,-15);
@@ -1581,11 +1593,14 @@ void droptofloor2 (edict_t *ent)
 /////////
 	if(ent->union_ent && Q_stricmp (ent->classname,"R_navi2"))
 	{
-//		dest[0] = (ent->union_ent->s.origin[0] + ent->union_ent->mins[0] + ent->union_ent->s.origin[0] + ent->union_ent->maxs[0])/2;//ent->s.origin[0];
-//		dest[1] = (ent->union_ent->s.origin[1] + ent->union_ent->mins[1] + ent->union_ent->s.origin[1] + ent->union_ent->maxs[1])/2;
-
-		dest[0] = (ent->union_ent->s.origin[0] + ent->union_ent->mins[0] + ent->union_ent->s.origin[0] + ent->union_ent->maxs[0])/2;//ent->s.origin[0];
-		dest[1] = (ent->union_ent->s.origin[1] + ent->union_ent->mins[1] + ent->union_ent->s.origin[1] + ent->union_ent->maxs[1])/2;
+		dest[0] = (ent->union_ent->s.origin[0] +
+				   ent->union_ent->mins[0] +
+				   ent->union_ent->s.origin[0] +
+				   ent->union_ent->maxs[0])/2;	//ent->s.origin[0];
+		dest[1] = (ent->union_ent->s.origin[1] +
+				   ent->union_ent->mins[1] +
+				   ent->union_ent->s.origin[1] +
+				   ent->union_ent->maxs[1])/2;
 
 		j = 0;
 		for( i = ent->union_ent->s.origin[2] + ent->union_ent->mins[2] /*moveinfo.start_origin[2]+15*/
@@ -1593,13 +1608,16 @@ void droptofloor2 (edict_t *ent)
 			; i++)
 		{
 			dest[2] = i;
-			tr = gi.trace(dest,ent->mins,ent->maxs,dest,ent,MASK_SOLID); // | MASK_WATER);
+			tr = gi.trace(dest, ent->mins, ent->maxs, dest, ent, MASK_SOLID); // | MASK_WATER);
 			if((!tr.startsolid && !tr.allsolid) && j == 1)
 			{
 				j = 2;
 				break;
 			}
-			else if((tr.startsolid || tr.allsolid) && j == 0 && tr.ent == ent->union_ent) j = 1;
+			else if((tr.startsolid || tr.allsolid) &&
+					j == 0 &&
+					tr.ent == ent->union_ent)
+				j = 1;
 
 		}
 		VectorCopy (dest,ent->s.origin);
@@ -1611,20 +1629,23 @@ void droptofloor2 (edict_t *ent)
 	else
 		gi.setmodel (ent, ent->item->world_model);*/
 	ent->s.modelindex = 0;
-//ent->s.modelindex =gi.modelindex ("models/items/armor/body/tris.md2");
-	if(Q_stricmp (ent->classname,"R_navi3") == 0) ent->solid = SOLID_NOT;
-	else ent->solid = SOLID_TRIGGER;
+//ent->s.modelindex = gi.modelindex ("models/items/armor/body/tris.md2");
+	if(Q_stricmp (ent->classname, "R_navi3") == 0)
+		ent->solid = SOLID_NOT;
+	else
+		ent->solid = SOLID_TRIGGER;
 	ent->movetype = MOVETYPE_TOSS;
 	ent->touch = Touch_Item;
 	ent->use = NULL;
 
-	v = tv(0,0,-128);
+	v = tv(0, 0, -128);
 	VectorAdd (ent->s.origin, v, dest);
 
 	tr = gi.trace (ent->s.origin, ent->mins, ent->maxs, dest, ent, MASK_SOLID);
 	if (tr.startsolid && ent->classname[0] != 'R' && ent->classname[6] != 'X')
 	{
-		gi.dprintf ("droptofloor: %s startsolid at %s\n", ent->classname, vtos(ent->s.origin));
+		gi.dprintf ("droptofloor: %s startsolid at %s\n",
+					ent->classname, vtos(ent->s.origin));
 		G_FreeEdict (ent);
 		return;
 	}
@@ -1701,7 +1722,7 @@ void droptofloor2 (edict_t *ent)
 					trmin[0] = ent->s.origin[0] + cos(yaw) *46;
 					trmin[1] = ent->s.origin[1] + sin(yaw) *46;
 					trmin[2] = ent->s.origin[2];
-					VectorCopy(trmin,trmax);
+					VectorCopy(trmin, trmax);
 					trmax[2] -= 128;
 					tr = gi.trace (trmin, NULL, NULL, trmax,ent, MASK_PLAYERSOLID );
 					if(tr.endpos[2] < ent->s.origin[2] - 16 && tr.endpos[2] > min[2] && !tr.allsolid && !tr.startsolid)

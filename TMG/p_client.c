@@ -2973,7 +2973,6 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	char	*value, *namecheck;
 	char *s;
     int client;
-    qboolean ret;
 	qboolean passed = false;
 	qboolean is_bot = false;
 	char *name;
@@ -3125,7 +3124,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 			proxyinfo[client].ipaddressBinary[1] = 0;
 			proxyinfo[client].ipaddressBinary[2] = 0;
 			proxyinfo[client].ipaddressBinary[3] = 0;
-			ret = 1;
+
 			if(client < maxclients->value )
 			{
 				// check for malformed or illegal info strings

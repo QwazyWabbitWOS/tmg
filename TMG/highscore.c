@@ -37,7 +37,7 @@ void InitHighScores (void)
 
 void SaveHighScores (void)
 {
-	int		i;
+	int		i = 0;
 	edict_t	*ent;
 	FILE	*HS_file;
 	char	binfile[MAX_QPATH];

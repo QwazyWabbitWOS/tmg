@@ -2147,7 +2147,8 @@ void Get_RouteOrigin(int index,vec3_t pos)
 			pos[2] = Route[index].ent->absmax[2];
 		}
 	}
-	else if(Route[index].state == GRS_PUSHBUTTON) VectorCopy(Route[index].ent->union_ent->s.origin,pos);
+	else if(Route[index].state == GRS_PUSHBUTTON)
+		VectorCopy(Route[index].ent->union_ent->s.origin,pos);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -2166,14 +2167,15 @@ void Search_NearlyPod(edict_t *ent)
 
 	if((ent->client->zc.routeindex + 1) < CurrentIndex)
 	{
-		if(Route[ent->client->zc.routeindex + 1].state >= GRS_ITEMS)	return;
-		Get_RouteOrigin(ent->client->zc.routeindex + 1,v);
-		if(TraceX(ent,v))
+		if(Route[ent->client->zc.routeindex + 1].state >= GRS_ITEMS)
+			return;
+		Get_RouteOrigin(ent->client->zc.routeindex + 1, v);
+		if(TraceX(ent, v))
 		{
-			VectorSubtract(v,ent->s.origin,v1);
+			VectorSubtract(v, ent->s.origin, v1);
 
-			Get_RouteOrigin(ent->client->zc.routeindex,v);
-			VectorSubtract(v,ent->s.origin,v2);
+			Get_RouteOrigin(ent->client->zc.routeindex, v);
+			VectorSubtract(v, ent->s.origin, v2);
 			x = fabs(v1[2]);
 
 			if(VectorLength(v1) < VectorLength(v2) && x <= JumpMax
@@ -2181,8 +2183,10 @@ void Search_NearlyPod(edict_t *ent)
 			{
 				ent->client->zc.routeindex++;
 			}
-			else if(ent->client->zc.waterstate) return;
-			else if(v2[2] > JumpMax && fabs(v1[2]) < JumpMax) ent->client->zc.routeindex++;
+			else if(ent->client->zc.waterstate)
+				return;
+			else if(v2[2] > JumpMax && fabs(v1[2]) < JumpMax)
+				ent->client->zc.routeindex++;
 
 		}
 	}
@@ -2190,20 +2194,33 @@ void Search_NearlyPod(edict_t *ent)
 
 int Get_KindWeapon(gitem_t	*it)
 {
-	if (it == NULL) return WEAP_BLASTER;
+	if (it == NULL)
+		return WEAP_BLASTER;
 
-	if (it->weaponthink		== Weapon_Shotgun)		return WEAP_SHOTGUN;
-	else if(it->weaponthink == Weapon_SuperShotgun) return WEAP_SUPERSHOTGUN;
-	else if(it->weaponthink == Weapon_Machinegun)	return WEAP_MACHINEGUN;
-	else if(it->weaponthink == Weapon_Chaingun)		return WEAP_CHAINGUN;
-	else if(it->weaponthink == Weapon_Grenade)		return WEAP_GRENADES;
-	else if(it->weaponthink == Weapon_GrenadeLauncher)	return WEAP_GRENADELAUNCHER;
-	else if(it->weaponthink == Weapon_RocketLauncher)	return WEAP_ROCKETLAUNCHER;
-	else if(it->weaponthink == Weapon_HyperBlaster) return WEAP_HYPERBLASTER;
-	else if(it->weaponthink == Weapon_Railgun)		return WEAP_RAILGUN;
-	else if(it->weaponthink == Weapon_BFG)			return WEAP_BFG;
-	else if(it->weaponthink == CTFWeapon_Grapple)	return WEAP_GRAPPLE;
-	else return WEAP_BLASTER;
+	if (it->weaponthink		== Weapon_Shotgun)
+		return WEAP_SHOTGUN;
+	else if(it->weaponthink == Weapon_SuperShotgun)
+		return WEAP_SUPERSHOTGUN;
+	else if(it->weaponthink == Weapon_Machinegun)
+		return WEAP_MACHINEGUN;
+	else if(it->weaponthink == Weapon_Chaingun)
+		return WEAP_CHAINGUN;
+	else if(it->weaponthink == Weapon_Grenade)
+		return WEAP_GRENADES;
+	else if(it->weaponthink == Weapon_GrenadeLauncher)
+		return WEAP_GRENADELAUNCHER;
+	else if(it->weaponthink == Weapon_RocketLauncher)
+		return WEAP_ROCKETLAUNCHER;
+	else if(it->weaponthink == Weapon_HyperBlaster)
+		return WEAP_HYPERBLASTER;
+	else if(it->weaponthink == Weapon_Railgun)
+		return WEAP_RAILGUN;
+	else if(it->weaponthink == Weapon_BFG)
+		return WEAP_BFG;
+	else if(it->weaponthink == CTFWeapon_Grapple)
+		return WEAP_GRAPPLE;
+	else
+		return WEAP_BLASTER;
 }
 
 
@@ -2227,7 +2244,7 @@ float Get_pitch1 (vec3_t vec)
 		return pitch;
 }
 
-//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 //
 //
 //
@@ -2235,7 +2252,7 @@ float Get_pitch1 (vec3_t vec)
 //
 //
 //
-//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 void Bots_Move_NORM (edict_t *ent)
 {
 	float		dist;		//moving distance
@@ -2281,9 +2298,9 @@ void Bots_Move_NORM (edict_t *ent)
 
 	ent->client->buttons &= ~BUTTON_ATTACK;
 
-	myrand=rand(); // Set these only once per cycle
-	myrandom=random();
-	//--------------------------------------------------------------------------------------
+	myrand = rand(); // Set these only once per cycle
+	myrandom = random();
+	//--------------------------------------------------------------------------
 
 	/*	
 	The original bot modules were in a cascade dll
@@ -3018,7 +3035,8 @@ DCHCANC:// keep squatting
 		{
 			for(i = zc->routeindex ; i < (zc->routeindex + 20); i++)
 			{
-				if(i >= CurrentIndex) break;
+				if(i >= CurrentIndex)
+					break;
 				if(Route[i].state == GRS_ITEMS)
 				{
 					if(Route[i].ent->solid == SOLID_TRIGGER)
@@ -3041,7 +3059,8 @@ DCHCANC:// keep squatting
 					{
 						for(i = zc->routeindex ; i < (zc->routeindex + 20); i++)
 						{
-							if(i >= CurrentIndex) break;
+							if(i >= CurrentIndex)
+								break;
 							if(Route[i].state == GRS_ITEMS)
 							{
 								if(Route[i].ent == zc->second_target)
@@ -3059,8 +3078,10 @@ DCHCANC:// keep squatting
 		if(zc->secondinterval > 40/*zc->second_target != NULL*/ /*&& !k*/)
 		{
 			zc->secondinterval = Bot[zc->botindex].param[BOP_PICKUP] * 4;
-			if(zc->secondinterval > 36) zc->secondinterval = 36;
-			if(zc->secondinterval < 0) zc->secondinterval = 0;
+			if(zc->secondinterval > 36)
+				zc->secondinterval = 36;
+			if(zc->secondinterval < 0)
+				zc->secondinterval = 0;
 		}
 
 		if(ent->client->zc.objshot) goto VCHCANSEL; //object shot!!
@@ -5430,7 +5451,8 @@ GOMOVE:
 				else if(!Q_stricmp (trent->classname,"func_door")
 						|| !Q_stricmp (trent->classname,"func_door_rotating"))
 				{
-					if(trent->targetname == NULL && !trent->takedamage && ent->groundentity != trent)
+					if(trent->targetname == NULL &&
+					   !trent->takedamage && ent->groundentity != trent)
 					{
 						k = 2;
 						it_ent = trent;
@@ -5635,8 +5657,10 @@ GOMOVE:
 	{
 		if(it_ent->moveinfo.state == PSTATE_BOTTOM)
 		{
-			if(it_ent->flags & FL_TEAMSLAVE)  it_ent->teammaster->use(it_ent->teammaster,ent,it_ent->teammaster/*ent*/);
-			else it_ent->use(it_ent,ent,it_ent/*ent*/);
+			if(it_ent->flags & FL_TEAMSLAVE)
+				it_ent->teammaster->use(it_ent->teammaster,ent,it_ent->teammaster/*ent*/);
+			else
+				it_ent->use(it_ent,ent,it_ent/*ent*/);
 		}
 
 		//if(zc->zcstate & STS_WAITSMASK ) gi.bprintf(PRINT_HIGH,"Door Use\n");

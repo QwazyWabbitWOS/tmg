@@ -607,12 +607,11 @@ void AddModelSkin (char *modelfile, char *skinname)
 {
 	FILE	*f, *out;
 	int		buffer_int;
-	size_t	i;
-	char	filename[256], infilename[256];
+	size_t	i = 0;
+	char	filename[MAX_QPATH], infilename[MAX_QPATH];
 	char	buffer;
-	size_t	count = 0;
 
-	i = sprintf(infilename, "%s", modelfile);
+	sprintf(infilename, "%s", modelfile);
 
 	f = fopen (infilename, "rb");
 
@@ -628,6 +627,9 @@ void AddModelSkin (char *modelfile, char *skinname)
 	i += sprintf(filename + i, "%s", modelfile);
 	i += sprintf(filename + i, "new");
 
+	if (i <= 0)
+		gi.dprintf("Error formatting filename in %s\n", __func__);
+
 	out = fopen (filename, "wb");
 
 	if (!out)
@@ -636,30 +638,30 @@ void AddModelSkin (char *modelfile, char *skinname)
 	// mirror header stuff before skinnum
 	for (i=0; i<5; i++)
 	{
-		count = fread(&buffer_int, sizeof(buffer_int), 1, f);
+		fread(&buffer_int, sizeof(buffer_int), 1, f);
 		fwrite(&buffer_int, sizeof(buffer_int), 1, out);
 	}
 
 	// increment skinnum
-	count = fread(&buffer_int, sizeof(buffer_int), 1, f);
+	fread(&buffer_int, sizeof(buffer_int), 1, f);
 	++buffer_int;
 	fwrite(&buffer_int, sizeof(buffer_int), 1, out);
 
 	// mirror header stuff before skin_ofs
 	for (i=0; i<5; i++)
 	{
-		count = fread(&buffer_int, sizeof(buffer_int), 1, f);
+		fread(&buffer_int, sizeof(buffer_int), 1, f);
 		fwrite(&buffer_int, sizeof(buffer_int), 1, out);
 	}
 
 	// copy the skins offset value, since it doesn't change
-	count = fread(&buffer_int, sizeof(buffer_int), 1, f);
+	fread(&buffer_int, sizeof(buffer_int), 1, f);
 	fwrite(&buffer_int, sizeof(buffer_int), 1, out);
 
 	// increment all offsets by 64 to make way for new skin
 	for (i=0; i<5; i++)
 	{
-		count = fread(&buffer_int, sizeof(buffer_int), 1, f);
+		fread(&buffer_int, sizeof(buffer_int), 1, f);
 		buffer_int += 64;
 		fwrite(&buffer_int, sizeof(buffer_int), 1, out);
 	}
@@ -682,11 +684,11 @@ void AddModelSkin (char *modelfile, char *skinname)
 	}
 
 	// copy the rest of the file
-	count = fread(&buffer, sizeof(buffer), 1, f);
+	fread(&buffer, sizeof(buffer), 1, f);
 	while (!feof(f))
 	{
 		fwrite(&buffer, sizeof(buffer), 1, out);
-		count = fread(&buffer, sizeof(buffer), 1, f);
+		fread(&buffer, sizeof(buffer), 1, f);
 	}
 
 	fclose (f);
@@ -729,7 +731,6 @@ void safe_cprintf (edict_t *ent, int printlevel, char *fmt, ...)
 {
 	char	buffer[0x10000];
 	va_list	argptr;
-	int		len;
 
 	if (!ent || !ent->inuse || 
 		ent->bot_client || 
@@ -737,7 +738,7 @@ void safe_cprintf (edict_t *ent, int printlevel, char *fmt, ...)
 		return;
 
 	va_start (argptr, fmt);
-	len = vsprintf (buffer, fmt, argptr);
+	(void) vsprintf (buffer, fmt, argptr);
 	va_end (argptr);
 
 	// Safety check...
@@ -751,7 +752,6 @@ void safe_centerprintf (edict_t *ent, char *fmt, ...)
 {
 	char	buffer[0x10000];
 	va_list	argptr;
-	int		len;
 
 	if (!ent->inuse || 
 		ent->bot_client || 
@@ -759,7 +759,7 @@ void safe_centerprintf (edict_t *ent, char *fmt, ...)
 		return;
 
 	va_start (argptr, fmt);
-	len = vsprintf (buffer, fmt, argptr);
+	(void) vsprintf (buffer, fmt, argptr);
 	va_end (argptr);
 
 	// Safety check...
@@ -773,12 +773,11 @@ void safe_bprintf (int printlevel, char *fmt, ...)
 {
 	int		i;
 	char	buffer[0x10000];
-	int		len;
 	va_list	argptr;
 	edict_t	*cl_ent;
 
 	va_start (argptr, fmt);
-	len = vsprintf (buffer, fmt, argptr);
+	(void) vsprintf (buffer, fmt, argptr);
 	va_end (argptr);
 
 	// This is to be compatible with Eraser (ACE)

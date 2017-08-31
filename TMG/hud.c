@@ -136,7 +136,6 @@ int CountConnectedClients (void)
 static char *tn_id (edict_t *ent)
 {
 	int j = 0;
-	float dist;
 	static char stats[200];
 	vec3_t  start, forward, end, v;
 	trace_t tr;
@@ -151,8 +150,7 @@ static char *tn_id (edict_t *ent)
 	if ((Q_stricmp (tr.ent->classname, "player") == 0 && tr.ent->inuse))
 	{
 		VectorSubtract (ent->s.origin, tr.ent->s.origin, v);
-		dist = VectorLength (v) / 32; // 32 units = 1 metre?
-		j += sprintf(stats + j, 
+		j += sprintf(stats + j,
 			"xv 80 yb -68 string \"Viewing %s\" ", 
 			tr.ent->client->pers.netname );
 	}
