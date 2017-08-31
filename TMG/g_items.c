@@ -125,8 +125,10 @@ void DoRespawn (edict_t *ent)
 			for (count = 0, ent = master; ent; ent = ent->chain, count++)
 				;
 
+			assert(count != 0);
 			choice = rand() % count;
 
+			assert(ent != NULL);
 			for (count = 0, ent = master; count < choice; ent = ent->chain, count++)
 				;
 		}

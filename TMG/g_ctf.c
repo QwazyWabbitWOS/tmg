@@ -677,6 +677,7 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 			selection++;
 	} while(selection--);
 
+	assert(spot != NULL);
 	if(debug_spawn->value)
 		DbgPrintf("6 %s returning %s for %s\nat %f %f %f\n", __func__, 
 			spot->classname, ent->client->pers.netname,
@@ -2567,7 +2568,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 			j = last[1];
 
 		j = (j + 2) * 8 + 42;
-		k = n = 0;
+		n = 0;
 		if (maxsize - len > 50)
 		{
 			for (i = 0; i < maxclients->value; i++)
@@ -2781,7 +2782,7 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 			j = last[1];
 
 		j = (j + 3) * 8 + 42;
-		k = n = 0;
+		n = 0;
 		if (maxsize - len > 50)
 		{
 			for (i = 0; i < maxclients->value; i++)

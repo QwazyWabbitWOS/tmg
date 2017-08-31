@@ -50,11 +50,17 @@ void SaveHighScores (void)
 	i =  sprintf(binfile, "./");
 	i += sprintf(binfile + i, "%s/%s", game_dir->string, cfgdir->string);
 	i += sprintf(binfile + i, "/hs/%s_hs.bin", level.mapname);
-	
+
+	if(i <= 0)
+		gi.dprintf("Error building binfile name in %s\n", __func__);
+
 	i =  sprintf(txtfile, "./");
 	i += sprintf(txtfile + i, "%s/%s", game_dir->string, cfgdir->string);
 	i += sprintf(txtfile + i, "/hs/%s_hs.txt", level.mapname);
-	
+
+	if(i <= 0)
+		gi.dprintf("Error building txtfile name in %s\n", __func__);
+
 	if (DEBUG_HSCORES) 
 		DbgPrintf("Opened for reading %s\n", binfile);
 	HS_file = fopen(binfile, "rb");
@@ -185,6 +191,8 @@ void LoadHighScores (void)
 	i =  sprintf(filename, "./");
 	i += sprintf(filename + i, "%s/%s", game_dir->string, cfgdir->string);
 	i += sprintf(filename + i, "/hs/%s_hs.txt", level.mapname);
+	if(i < 0)
+		gi.dprintf("Error building filename in %s\n", __func__);
 
 	if (!(motd_file = fopen(filename, "r")))
 	{
