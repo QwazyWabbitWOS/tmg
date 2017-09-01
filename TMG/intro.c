@@ -38,7 +38,7 @@ void Wav_Mod_Setup(void)
 	wav_mod_current_level = -1;
 	wav_mod_num_wavs = 0;
 
-	sprintf(file_name, "%s/%s/%s/intro.txt", 
+	Com_sprintf(file_name, sizeof file_name, "%s/%s/%s/intro.txt", 
 		basedir->string, game_dir->string, cfgdir->string);
 
 	file = fopen(file_name, "r");
@@ -117,7 +117,8 @@ void Wav_Mod_Setup(void)
 
 				if (wav_mod_num_wavs >= MAXSONGS)
 				{
-					gi.dprintf("\nMAXSONGS exceeded\nUnable to add more Wav's.\n");
+					gi.dprintf("\nExceeded %d song limit.\n", MAXSONGS);
+					gi.dprintf("Unable to add more Wavs.\n");
 					break;
 				}
 			}
@@ -126,19 +127,6 @@ void Wav_Mod_Setup(void)
 			counter++;
 			p_name++;
 
-			// eat up non-characters (niq: except #)
-			while (!((*p_name == '#') || 
-				((*p_name >= 'a') && (*p_name <= 'z')) ||
-				((*p_name >= 'A') && (*p_name <= 'Z')) ||
-				((*p_name >= '0') && (*p_name <= '9')) ||
-				(*p_name == '_') || (*p_name == '-') ||
-				(*p_name == '/') || (*p_name == '\\')) &&
-				counter < file_size)
-			{
-				counter++;
-				p_name++;
-			}
-
 		} while (counter < file_size);
 
 		gi.TagFree(p_buffer);
@@ -146,7 +134,7 @@ void Wav_Mod_Setup(void)
 
 		if (wav_mod_num_wavs)
 		{
-			gi.dprintf("\n\nWav Mod load succeeded. Levels: %i\n\n", wav_mod_num_wavs);
+			gi.dprintf("\nWav Mod load succeeded. Levels: %i\n\n", wav_mod_num_wavs);
 			gi.cvar_set ("use_song_file", "1");
 		}
 	}
