@@ -5214,7 +5214,8 @@ GOMOVE:
 
 		if(!zc->route_trace && zc->first_target == NULL)
 		{
-			if(trace_priority < TRP_ANGLEKEEP) ent->s.angles[YAW] = yaw;
+			if(trace_priority < TRP_ANGLEKEEP)
+				ent->s.angles[YAW] = yaw;
 		}
 
 		if(x >= 70)

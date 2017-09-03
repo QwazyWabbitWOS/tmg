@@ -1030,7 +1030,7 @@ void swimmonster_start (edict_t *self);
 void flymonster_start (edict_t *self);
 void AttackFinished (edict_t *self, float time);
 void monster_death_use (edict_t *self);
-void M_CatagorizePosition (edict_t *ent);
+void M_CategorizePosition (edict_t *ent);
 qboolean M_CheckAttack (edict_t *self);
 void M_FlyCheck (edict_t *self);
 void M_CheckGround (edict_t *ent);

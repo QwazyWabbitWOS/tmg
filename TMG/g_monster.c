@@ -163,6 +163,11 @@ void M_CheckGround (edict_t *ent)
 }
 */
 
+/**
+ Sets ent->groundentity according to
+ whether vertical velocity is near zero
+ or monster is standing on something solid.
+ **/
 void M_CheckGround (edict_t *ent)
 {
 	vec3_t		point,stp,v1,v2;
@@ -175,20 +180,11 @@ void M_CheckGround (edict_t *ent)
 	{
 		ent->client->zc.ground_slope = 1.0;
 
-/*		if(	ent->client->ctf_grapple && ent->client->ctf_grapplestate == CTF_GRAPPLE_STATE_PULL)
-		{
-			if(ent->velocity[2] > 0)
-			{
-				ent->groundentity = NULL;
-				return;
-			}
-		}*/
 	}
-		//ent->groundentity = NULL;
+
 	if (ent->velocity[2] > 100)
 	{
 		ent->groundentity = NULL;
-//gi.bprintf(PRINT_HIGH,"ogeeX\n");
 		return;
 	}
 
@@ -197,52 +193,39 @@ void M_CheckGround (edict_t *ent)
 	point[1] = ent->s.origin[1];
 	point[2] = ent->s.origin[2] - 0.25;
 
-	trace = gi.trace (ent->s.origin, ent->mins, ent->maxs, point, ent,MASK_BOTSOLID/*CONTENTS_SOLID|CONTENTS_WINDOW|CONTENTS_MONSTER*/);
-		//MASK_BOTSOLID /*MASK_PLAYERSOLID*/);
+	trace = gi.trace (ent->s.origin,
+					  ent->mins, ent->maxs,
+					  point, ent, MASK_BOTSOLID);
 
 	// check steepness
-	if ( trace.fraction == 1.0/*trace.plane.normal[2] < 0.7*/ 
-		&& (!trace.startsolid && !trace.allsolid))
+	if ( trace.fraction == 1.0 &&
+		(!trace.startsolid && !trace.allsolid))
 	{
 		ent->groundentity = NULL;
-//		ent->groundentity_linkcount = trace.ent->linkcount;
-//gi.bprintf(PRINT_HIGH,"NULLKUN\n");
 		return;
 	}
 
-	if(/*trace.ent &&*/ (/*trace.startsolid ||*/ trace.allsolid))
+	if(trace.allsolid)
 	{
-		if(1/*trace.ent->classname[0] == 'f' && trace.ent->classname[5] == 'r'*/)
-		{
-			VectorSet(v1,-16,-16,-24);
-			VectorSet(v2,16,16,4);
+		VectorSet(v1,-16,-16,-24);
+		VectorSet(v2,16,16,4);
 
-			VectorCopy(ent->s.origin,stp);
-//			gi.bprintf(PRINT_HIGH,"ogeeY\n");	
-			stp[2] += 24;
-			tracep = gi.trace (stp, v1, v2, point, ent, MASK_BOTSOLID /*MASK_PLAYERSOLID*/);
-			if(tracep.ent && !tracep.allsolid /*&& !tracep.startsolid*/)
+		VectorCopy(ent->s.origin,stp);
+		stp[2] += 24;
+		tracep = gi.trace (stp, v1, v2, point, ent, MASK_BOTSOLID);
+		if(tracep.ent && !tracep.allsolid)
+		{
+			if (tracep.ent->classname[0] == 'f')
 			{
-				if (tracep.ent->classname[0] == 'f' /*&& tracep.ent->classname[5] == 'r'*/)
-				{
-					VectorCopy(tracep.endpos,ent->s.origin);
-//					gi.bprintf(PRINT_HIGH,"ogee done\n");
-					ent->groundentity = tracep.ent;
-					/*if(tracep.ent->classname[5] == 'r')*/	ent->groundentity_linkcount = tracep.ent->linkcount;
-					//ent->velocity[2] = 0;
-					gi.linkentity(ent);
-					return;
-				}
+				VectorCopy(tracep.endpos,ent->s.origin);
+				ent->groundentity = tracep.ent;
+				ent->groundentity_linkcount = tracep.ent->linkcount;
+				gi.linkentity(ent);
+				return;
 			}
 		}
 	}
-
-//	ent->groundentity = trace.ent;
-//	ent->groundentity_linkcount = trace.ent->linkcount;
-//	if (!trace.startsolid && !trace.allsolid)
-//		VectorCopy (trace.endpos, ent->s.origin);
-
-	if (/*!trace.startsolid &&*/ !trace.allsolid)
+	else
 	{
 		if(ent->client)
 		{
@@ -252,15 +235,12 @@ void M_CheckGround (edict_t *ent)
 		VectorCopy (trace.endpos, ent->s.origin);
 		ent->groundentity = trace.ent;
 		ent->groundentity_linkcount = trace.ent->linkcount;
-	//	ent->velocity[2] = 0;
-//		VectorCopy(trace.endpos,ent->s.origin);
 	}
-//	else gi.bprintf(PRINT_HIGH,"mopmop! %x %f\n",trace.contents,ent->velocity[2]);
 	gi.linkentity(ent);
 }
 
 
-void M_CatagorizePosition (edict_t *ent)
+void M_CategorizePosition (edict_t *ent)
 {
 	vec3_t		point;
 	int			cont;
@@ -402,7 +382,7 @@ void M_droptofloor (edict_t *ent)
 
 	gi.linkentity (ent);
 	M_CheckGround (ent);
-	M_CatagorizePosition (ent);
+	M_CategorizePosition (ent);
 }
 
 /*

@@ -25,25 +25,21 @@ void P_ProjectSource (gclient_t *client, vec3_t point, vec3_t distance, vec3_t f
 }
 
 
-/*
-===============
-PlayerNoise
-
+/**
 Each player can have two noise objects associated with it:
 a personal noise (jumping, pain, weapon firing), and a weapon
 target noise (bullet wall impacts)
 
 Monsters that don't directly see the player can move
 to a noise in hopes of seeing the player from there.
-===============
 */
 void PlayerNoise(edict_t *who, vec3_t where, int type)
 {
 	edict_t		*noise = NULL;
 
-  // Make sure ent exists!
-  if (!G_EntExists(who))
-	  return;
+	// Make sure ent exists!
+	if (!G_EntExists(who))
+		return;
 
 	if (type == PNOISE_WEAPON)
 	{

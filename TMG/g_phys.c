@@ -929,7 +929,8 @@ SV_Physics_Toss (edict_t *ent)
 		else
 			backoff = 1;
 
-		ClipVelocity (ent->velocity, trace.plane.normal, ent->velocity, backoff);
+		ClipVelocity (ent->velocity, trace.plane.normal,
+					  ent->velocity, backoff);
 
 		// stop if on ground
 		if (trace.plane.normal[2] > 0.7)
@@ -1040,11 +1041,8 @@ SV_Physics_Step (edict_t *ent)
 	edict_t		*groundentity;
 	int			mask;
 
-
-
 	// airborn monsters should always check for ground
-//	if (!ent->groundentity)
-		M_CheckGround (ent);
+	M_CheckGround (ent);
 
 	groundentity = ent->groundentity;
 
@@ -1054,14 +1052,8 @@ SV_Physics_Step (edict_t *ent)
 		wasonground = true;
 	else
 		wasonground = false;
-		
-//	if (ent->avelocity[0] || ent->avelocity[1] || ent->avelocity[2])
-//		SV_AddRotationalFriction (ent);
 
-	// add gravity except:
-	//   flying monsters
-	//   swimming monsters who are in the water
-	if (! wasonground)
+	if (!wasonground)
 		if (!(ent->flags & FL_FLY))
 			if (!((ent->flags & FL_SWIM) && (ent->waterlevel > 2)))
 			{
@@ -1084,11 +1076,9 @@ SV_Physics_Step (edict_t *ent)
 		ent->velocity[2] *= newspeed;
 	}
 
-
 	// friction for flying monsters that have been given vertical velocity
 	if ((ent->flags & FL_SWIM) && (ent->velocity[2] != 0))
 	{
-//gi.bprintf(PRINT_HIGH,"SWIM!\n");
 		speed = fabs(ent->velocity[2]);
 		control = speed < sv_stopspeed ? sv_stopspeed : speed;
 		newspeed = speed - (FRAMETIME * control *
@@ -1098,18 +1088,6 @@ SV_Physics_Step (edict_t *ent)
 		newspeed /= speed;
 		ent->velocity[2] *= newspeed;
 	}
-
-
-	//RAVEN   this forces the bot to move up a bit ! 
-//	if(ent->client){
-//		if(ent->client->ctf_grapple)
-//			if(ent->client->ctf_grapplestate == CTF_GRAPPLE_STATE_FLY)
-//				ent->velocity[2] = 70;
-		//		ent->s.origin[2] +=12;
-//	}
-
-//
-
 
 	if (ent->velocity[2] || ent->velocity[1] || ent->velocity[0])
 	{
@@ -1138,56 +1116,22 @@ SV_Physics_Step (edict_t *ent)
 
 		if (ent->svflags & SVF_MONSTER)
 		{
-			if(!deathmatch->value) mask = MASK_MONSTERSOLID;
-			else mask = MASK_BOTSOLIDX;//MASK_PLAYERSOLID;
+			if(!deathmatch->value)
+				mask = MASK_MONSTERSOLID;
+			else
+				mask = MASK_BOTSOLIDX;
 		}
 		else
 			mask = MASK_SOLID;
+
 		SV_FlyMove (ent, FRAMETIME, mask);
-
 		gi.linkentity (ent);
-//		G_TouchTriggers (ent);
-
-/*		if (ent->groundentity)
-		{
-			if (!wasonground)
-			{
-				speed = ent->s.old_origin[2] - ent->s.origin[2];
-				VectorSubtract(ent->s.old_origin,ent->s.origin,dir);
-				VectorNormalize(dir);
-				if (hitsound && !ent->waterlevel && speed > 0)
-				{
-
-					if( speed < 5 ) gi.sound (ent, 0, gi.soundindex("player/land1.wav"), 1, 1, 0);
-					else if( speed < 40 || ent->client == NULL)
-					{
-						gi.sound (ent, 0, gi.soundindex("player/step3.wav"), 1, 1, 0);
-//						gi.bprintf(PRINT_HIGH,"level 1\n");
-					}
-					else if( speed < 60 )
-					{
-						gi.sound (ent, 0, gi.soundindex("*fall2.wav"), 1, 1, 0);
-						ent->pain_debounce_time = level.time + FRAMETIME * 10;
-						T_Damage (ent, world, world, dir, ent->s.origin, ent->s.origin, (int)(random()*(15)), 0, 0, MOD_FALLING);
-//						gi.bprintf(PRINT_HIGH,"level 2\n");
-					}
-					else
-					{
-						gi.sound (ent, 0, gi.soundindex("*fall1.wav"), 1, 1, 0);
-						ent->pain_debounce_time = level.time + FRAMETIME * 10;
-						T_Damage (ent, world, world, dir, ent->s.origin, ent->s.origin, (int)(random() * (25)), 0, 0, MOD_FALLING);
-//						gi.bprintf(PRINT_HIGH,"level 3\n");
-					}
-				}
-			}
-		}*/
 	}
 
 	// regular thinking
 	SV_RunThink (ent); 
 }
 
-//============================================================================
 /*
 ================
 G_RunEntity

@@ -747,7 +747,7 @@ void Bot_Think (edict_t *self)
 			self->client->resp.eff = 100 * self->client->resp.frags / self->client->resp.shots;
 		}
 
-		M_CatagorizePosition (self);
+		M_CategorizePosition (self);
 		BotEndServerFrame (self);
 		self->nextthink = level.time + FRAMETIME;
 		return;
