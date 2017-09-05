@@ -35,8 +35,6 @@ void Wav_Mod_Setup(void)
 	use_song_file = gi.cvar ("use_song_file", "0", CVAR_ARCHIVE);
 	wav_random = gi.cvar ("wav_random", "1", CVAR_ARCHIVE);
 	wav = gi.cvar ("wav", "mm.wav",0);
-	wav_mod_current_level = -1;
-	wav_mod_num_wavs = 0;
 
 	Com_sprintf(file_name, sizeof file_name, "%s/%s/%s/intro.txt", 
 		basedir->string, game_dir->string, cfgdir->string);
