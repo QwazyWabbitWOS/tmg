@@ -41,7 +41,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.36"
+#define MOD_VERSION "0.2.37"
 #define MOD "TMG_MOD"
 
 #ifndef _DEBUG
@@ -620,6 +620,7 @@ extern  cvar_t  *sv_botdetection;
 extern  cvar_t  *server_ip;
 extern  cvar_t  *warmup_time;
 extern  cvar_t  *g_filter;			// enable chat filtering
+extern	cvar_t	*motdfile;			// MOTD file in game_dir
 
 extern  cvar_t  *flood_msgs;
 extern  cvar_t  *flood_persecond;

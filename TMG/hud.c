@@ -431,29 +431,8 @@ char *ShowHud (edict_t *ent)
 	if (level.intermissiontime)
 		return 0;
 
-	if(ent->client->pers.motd == true)
-	{
-
-		j += sprintf (layout+j, "xv 0 yt 55 cstring2 \"%s\" \"%s\" ", MOD, MOD_VERSION);
-		j += sprintf (layout+j, "xv 0 yt 85 cstring2 \"Welcome to %s\" ", hostname->string);
-
-		if (strlen(motd_line->string))
-		{
-			j += sprintf (layout+j, "xv 0 yt 105 cstring \"%s\" ", motd_line->string);
-			if (use_hook->value)
-				j += sprintf (layout+j, "xv 0 yt 125 cstring2 \"Bind a key to +hook for Hook\" ");
-				//j += sprintf (layout+j, "xv 0 yt 155 cstring \"Hit Any Key to Begin\" ");
-		}
-		else
-		{
-			if (use_hook->value)
-				j += sprintf (layout+j, "xv 0 yt 105 cstring2 \"Bind a key to +hook for Hook\" ");
-				//j += sprintf (layout+j, "xv 0 yt 125 cstring \"Hit Any Key to Begin\" ");
-		}
-	}
-
 	// Begin spectator HUD
-	else if ((ent->client->resp.spectator != PL_SPECTATOR || 
+	if ((ent->client->resp.spectator != PL_SPECTATOR || 
 		ent->client->pers.pl_state == PL_SPECTATOR) && 
 		(ent->client->pers.motd == false))
 	{

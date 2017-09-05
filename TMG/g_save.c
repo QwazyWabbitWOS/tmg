@@ -183,6 +183,8 @@ void InitGame (void)
 	else
 		gi.cvar ("gamename", "TMG_DM", CVAR_SERVERINFO | CVAR_LATCH);
 	gi.cvar ("gamedate", __DATE__, CVAR_SERVERINFO | CVAR_LATCH);
+	
+	motdfile = gi.cvar ("motdfile", "motd.txt", 0);
 
 	maxclients = gi.cvar ("maxclients", "4", CVAR_SERVERINFO | CVAR_LATCH);
 	deathmatch = gi.cvar ("deathmatch", "0", CVAR_LATCH);
@@ -472,7 +474,7 @@ void InitGame (void)
 	cfgdir = gi.cvar ("cfgdir", "cfg", CVAR_NOSET);
 	doors_stay_open = gi.cvar("doors_stay_open", "0", 0);
 
-	modversion = gi.cvar ("modversion", MOD_VERSION, CVAR_SERVERINFO | CVAR_NOSET);
+	modversion = gi.cvar ("modversion", MOD" "MOD_VERSION, CVAR_SERVERINFO | CVAR_NOSET);
 
 	//QW//FIXME: this probably belongs in level_local_t
 	votetime = 0;

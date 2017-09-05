@@ -2347,6 +2347,107 @@ void Connect (edict_t *ent)
 }
 //end
 
+// Store the message of the day in memory.
+char *gMOTD = ((char *)-1); // initialized at startup as bad pointer
+cvar_t *motdfile;
+static qboolean motd_trap;
+
+void ClientPrintMOTD (edict_t *ent)
+{
+	FILE *in;
+	char motdPath[MAX_QPATH + 1];
+	int c;
+	int motdBytes;
+	char *here;
+	char *s1 = MOD" "MOD_VERSION"\n\n";
+	char s2[64];
+	char *s3 = "Bind a key to +hook for Hook\n\n";
+	int len1, len2, len3;
+	char *p2 = s2;
+
+	strcat (s2, "Welcome to ");
+	strncat(s2, hostname->string, sizeof s2 - strlen(s2) - 2);
+	strcat (s2, "\n\n");
+
+	len1 = strlen(s1);
+	len2 = strlen(s2);
+	len3 = strlen(s3);
+
+	// Generate the path to the MOTD file.
+	sprintf (motdPath, "./%s/%s", game_dir->string, motdfile->string);
+
+	// Open the file.
+	motdBytes = 0;
+	in = fopen (motdPath, "rt");
+	if (in != NULL)
+	{
+		// Count the number of bytes in the file.
+		while ((c = fgetc (in)), c != EOF)
+			motdBytes++;
+	}
+	else
+		gi.dprintf("Unable to open MOTD file at %s.\n", motdPath);
+
+	motdBytes += len1 + len2 + len3;
+
+	// Make space for that many bytes.
+	gMOTD = gi.TagMalloc (motdBytes + 1, TAG_GAME);
+	gi.dprintf("Allocating %i bytes for MOTD\n", motdBytes + 1);
+	here = gMOTD; //extra pointer for writing into gMOTD
+
+	//Combine the strings into a banner block
+	while (len1)
+	{
+		memcpy(here, s1++, 1);
+		here++;
+		motdBytes--;
+		len1--;
+	}
+
+	while (len2)
+	{
+		memcpy(here, p2++, 1);
+		here++;
+		motdBytes--;
+		len2--;
+	}
+
+	while (len3)
+	{
+		memcpy(here, s3++, 1);
+		here++;
+		motdBytes--;
+		len3--;
+	}
+
+	// Now append the MOTD file.  Null-terminate the string.
+	if (in)
+	{
+		rewind (in);
+		while ((c = fgetc (in)), c != EOF)
+		{
+			*here = c;
+			here++;
+			motdBytes--;
+		}
+		fclose(in);
+	}
+
+	*here = '\0';
+
+	// If anything went wrong, warn the console.
+	if (motdBytes != 0)
+		gi.dprintf ("MOTD error: off by %d bytes", motdBytes);
+
+	// Print the message.
+	if (!ent->bot_client)
+	{
+		highlight_text(gMOTD, gMOTD);
+		gi.centerprintf (ent, "%s", gMOTD);
+	}
+	return;
+}
+
 /*
 =====================
 ClientBeginDeathmatch
@@ -2403,6 +2504,8 @@ void ClientBeginDeathmatch (edict_t *ent)
 	gi.WriteByte (MZ_LOGIN);
 	gi.multicast (ent->s.origin, MULTICAST_PVS);
 */
+	ClientPrintMOTD(ent);
+
 	if(use_bots->value)
 	gi.centerprintf(ent,ClientMessage);
 	// make sure all view stuff is valid
@@ -3192,20 +3295,19 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	}
 	
 	// do real client specific stuff
-	//RAV
 	ent->client->pers.in_game = false;
-	//RAV
 	ent->client->pers.pl_state = PL_SPECTATOR; //spec
-	//JSW
 	ent->client->pers.oplevel = 0;
-	//end
 	ent->client->pers.motd = true;
 	ent->client->pers.in_game = false;
+
 	Spectate(ent, NULL);
+
 	ClientUserinfoChanged (ent, userinfo);
+
 	if (game.maxclients > 1)
 		gi.dprintf ("%s connected from %s\n", ent->client->pers.netname, Info_ValueForKey (userinfo, "ip"));
-	//set the players ip here
+
 	strcpy (ent->client->pers.ip, Info_ValueForKey (userinfo, "ip"));
 	ent->client->pers.connected = true;
 	if (log_connect->value)

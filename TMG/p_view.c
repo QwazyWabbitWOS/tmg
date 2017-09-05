@@ -1378,12 +1378,11 @@ void ClientEndServerFrame (edict_t *ent)
 	if(ent && ent->inuse && !ent->bot_client)
 	{
 		if ((ent->client->showscores && !(level.framenum & 31))
-			|| ((ent->client->pers.db_hud 
-			|| ent->client->pers.motd == true)
+			|| ((ent->client->pers.db_hud)
 			&& (level.framenum >= ent->client->hudtime)))
 		{
 			// delay before showing HUD (3 seconds)
-			if (ent->client->resp.enterframe + 30 > level.framenum)
+			if (ent->client->resp.enterframe + 10 > level.framenum)
 			{
 				ent->client->pers.motd_seen = false;
 				return;
@@ -1391,18 +1390,20 @@ void ClientEndServerFrame (edict_t *ent)
 
 			// delay 3 more seconds, then put client in server after motd shown
 			// this fixes TastySpleen WallFly blockout.
-			if (ent->client->resp.enterframe + 60 > level.framenum && !ent->client->pers.motd_seen)
-			{
-				if (DEBUG_HUD) 
-					DbgPrintf("%s in HUD display delay, framenum: %d\n", __func__, level.framenum);
-			}
-			else if (!ent->client->pers.motd_seen)
+			//if (ent->client->resp.enterframe + 60 > level.framenum && !ent->client->pers.motd_seen)
+			//{
+			//	if (DEBUG_HUD) 
+			//		DbgPrintf("%s in HUD display delay, framenum: %d\n", __func__, level.framenum);
+			//}
+			//else 
+			if (!ent->client->pers.motd_seen)
 			{
 				ent->client->pers.motd_seen = true;
-				ent->client->pers.in_game = true;
-				ent->client->pers.motd = false;
-				ent->client->pers.pl_state = PL_SPECTATOR;
-				ent->reset_time = level.time + 10;
+				Spectate(ent, NULL);
+				//ent->client->pers.in_game = true;
+				////ent->client->pers.motd = false;
+				//ent->client->pers.pl_state = PL_SPECTATOR;
+				//ent->reset_time = level.time + 10;
 			}
 
 			//ZOID
