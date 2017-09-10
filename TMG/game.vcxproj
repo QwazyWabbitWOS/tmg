@@ -545,9 +545,6 @@
     <ClInclude Include="timer.h" />
     <ClInclude Include="vote.h" />
   </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="game.rc" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
