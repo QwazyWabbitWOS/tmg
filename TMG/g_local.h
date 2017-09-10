@@ -56,9 +56,6 @@
 #define	svc_temp_entity		3
 #define	svc_layout			4
 #define	svc_inventory		5
-//RAV
-#define svc_disconnect      7
-//
 #define svc_stufftext		11
 
 //==================================================================
