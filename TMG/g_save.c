@@ -474,7 +474,7 @@ void InitGame (void)
 	cfgdir = gi.cvar ("cfgdir", "cfg", CVAR_NOSET);
 	doors_stay_open = gi.cvar("doors_stay_open", "0", 0);
 
-	modversion = gi.cvar ("modversion", MOD" "MOD_VERSION, CVAR_SERVERINFO | CVAR_NOSET);
+	modversion = gi.cvar ("modversion", MOD" "MOD_VERSION" "BUILD, CVAR_SERVERINFO | CVAR_NOSET);
 
 	//QW//FIXME: this probably belongs in level_local_t
 	votetime = 0;
