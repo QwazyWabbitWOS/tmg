@@ -148,7 +148,7 @@ void InitGame (void)
 	_CrtMemCheckpoint(&startup1);
 #endif
 
-	gi.dprintf ("==== InitGame (TMG "MOD_VERSION" built "__DATE__") ====\n");
+	gi.dprintf ("==== InitGame (TMG "MOD_VERSION" "BUILD" version built "__DATE__") ====\n");
 	gi.dprintf ("\n===========================================\n");
 	gi.dprintf (" This game library contains the bot\n");
 	gi.dprintf ("    detection system developed\n");
