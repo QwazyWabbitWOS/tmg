@@ -45,6 +45,7 @@ void body_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 void CopyToBodyQue (edict_t *ent);
 
 void Connect (edict_t *ent);
+void ClientPrintMOTD (edict_t *ent);
 void ClientBeginDeathmatch (edict_t *ent);
 void ClientBegin (edict_t *ent);
 void maxrate_think(edict_t *self);

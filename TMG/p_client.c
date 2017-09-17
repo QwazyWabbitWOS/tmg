@@ -2350,7 +2350,6 @@ void Connect (edict_t *ent)
 // Store the message of the day in memory.
 char *gMOTD = ((char *)-1); // initialized at startup as bad pointer
 cvar_t *motdfile;
-static qboolean motd_trap;
 
 void ClientPrintMOTD (edict_t *ent)
 {
