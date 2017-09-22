@@ -18,4 +18,4 @@ void StatsInitVars(void);
 void StatsLogHooks(edict_t *ent);
 void StatsLogPlayerStats(void);
 
-#endif STATSLOG_H
+#endif //STATSLOG_H

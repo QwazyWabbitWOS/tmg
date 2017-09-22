@@ -4419,7 +4419,7 @@ void ClientBeginServerFrame (edict_t *ent)
 
 	//RATBOT
 	//sorry bout yer luck dude
-	if(!ent->flags & FL_SPECIAL && ent->bust_time != 0 && !ent->client->resp.spectator &&
+	if(!(ent->flags & FL_SPECIAL) && ent->bust_time != 0 && !ent->client->resp.spectator &&
 		ent->bust_time < level.time && ent->client->pers.pl_state < PL_CHEATBOT)
 	{
 		OnBotDetection(ent, va("ProxyBot"));
@@ -4600,7 +4600,7 @@ void ClientBeginServerFrame (edict_t *ent)
 	if(ent->client->pers.pl_state == PL_PLAYING)
 	{
 		if((ent->movetype == MOVETYPE_NOCLIP ||	ent->solid & SOLID_NOT
-			|| ent->svflags & SVF_NOCLIENT || !ent->takedamage & DAMAGE_YES)
+			|| ent->svflags & SVF_NOCLIENT || !(ent->takedamage & DAMAGE_YES))
 			&& (ent->health > 5 ) /* && !ent->bot_client*/ )
 		{
 			//gi.dprintf ("%s was made whole by TMG\n",ent->client->pers.netname);
