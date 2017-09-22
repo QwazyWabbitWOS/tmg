@@ -716,11 +716,12 @@ void my_bprintf (int printlevel, char *fmt, ...)
 	// Highlighted text to players
 	gi.bprintf(printlevel, "%s", buffer);
 
-	if (dedicated->value)
-	{
-		white_text(buffer, buffer);
-		gi.dprintf ("%s", buffer); // White text to log/console
-	}
+	//QW// delete this - not needed. gi.bprintf does it already,
+	//if (dedicated->value)
+	//{
+	//	white_text(buffer, buffer);
+	//	gi.dprintf ("%s", buffer); // White text to log/console
+	//}
 }
 
 //======================================================================

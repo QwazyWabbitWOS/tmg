@@ -4,6 +4,7 @@
 #include "filehand.h"
 #include "g_ctf.h"
 #include "g_cmds.h"
+#include "g_chase.h"
 #include "p_client.h"
 #include "s_map.h"
 #include "e_hook.h"
@@ -12,8 +13,7 @@
 #include "hud.h"
 #include "bot.h"
 #include "runes.h"
-#include "stdlog.h"	//	StdLog - Mark Davies
-#include "gslog.h"	//	StdLog - Mark Davies. Depends on level_locals_t
+#include "statslog.h"
 #include "highscore.h"
 #include "performance.h"
 
@@ -517,13 +517,13 @@ void CTFAssignSkin(edict_t *ent, char *s)
 						t, CTF_TEAM1_SKIN) );
 		break;
 	case CTF_TEAM2:
-		gi.configstring (CS_PLAYERSKINS+playernum,
+		gi.configstring (CS_PLAYERSKINS + playernum,
 						va("%s\\%s%s",
 						ent->client->pers.netname,
 						t, CTF_TEAM2_SKIN) );
 		break;
 	default:
-		gi.configstring (CS_PLAYERSKINS+playernum,
+		gi.configstring (CS_PLAYERSKINS + playernum,
 						va("%s\\%s",
 						ent->client->pers.netname, s) );
 		break;
@@ -733,11 +733,12 @@ void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker)
 			safe_cprintf(attacker, PRINT_MEDIUM,
 						 "BONUS: %d points for fragging enemy flag carrier.\n",
 						 (int)CTF_FRAG_CARRIER_BONUS);
-		//RAV
-		// Log Flag Carrier Frag - MarkDavies
-		sl_LogScore( &gi, attacker->client->pers.netname,
-					NULL, "FC Frag", NULL, CTF_FRAG_CARRIER_BONUS, level.time);
-		//end
+
+		// Log Flag Carrier Frag
+		StatsLog("FLAG: %s\\%s\\%s\\%.0f\\%.1f\n", 
+			attacker->client->pers.netname, targ->client->pers.netname,
+			"FC Frag", CTF_FRAG_CARRIER_BONUS, level.time);
+
 		// the the target had the flag, clear the hurt carrier
 		// field on the other team
 		for (i = 1; i <= maxclients->value; i++)
@@ -760,12 +761,11 @@ void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker)
 				   "%s defends %s's flag carrier against an agressive enemy\n",
 				   attacker->client->pers.netname,
 				   CTFTeamName(attacker->client->resp.ctf_team));
-		//RAV
-		// Log Flag Danger Carrier Protect Frag - MarkDavies
-		sl_LogScore( &gi, attacker->client->pers.netname,
-					NULL, "FC Def", NULL,
-					CTF_CARRIER_DANGER_PROTECT_BONUS, level.time );
-		//end
+
+		// Log Flag Danger Carrier Protect Frag
+		StatsLog("PROT: %s\\%s\\%d\\%.1f\n", 
+			attacker->client->pers.netname,
+			"FC Def", CTF_CARRIER_DANGER_PROTECT_BONUS, level.time );
 		return;
 	}
 
@@ -833,12 +833,11 @@ void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker)
 					   "%s defends the %s flag.\n",
 					   attacker->client->pers.netname,
 			CTFTeamName(attacker->client->resp.ctf_team));
-		//RAV
-		// Log Flag Defense - MarkDavies
-		sl_LogScore( &gi, attacker->client->pers.netname,
-					NULL, "F Def", NULL,
-					CTF_FLAG_DEFENSE_BONUS, level.time );
-		//end
+
+		// Log Flag Defense
+		StatsLog( "FLAG: %s\\%s\\%s\\%.0f\\%.1f\n", 
+			attacker->client->pers.netname, targ->client->pers.netname,
+			"F Def", CTF_FLAG_DEFENSE_BONUS, level.time );
 		return;
 	}
 
@@ -855,12 +854,11 @@ void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker)
 					   "%s defends the %s's flag carrier.\n",
 					   attacker->client->pers.netname,
 					   CTFTeamName(attacker->client->resp.ctf_team));
-			//RAV
-			// Log Flag Carrier Protect Frag - MarkDavies
-			sl_LogScore( &gi, attacker->client->pers.netname,
-						NULL, "FC Def", NULL,
-						CTF_CARRIER_PROTECT_BONUS, level.time );
-			//end
+
+			// Log Flag Carrier Protect Frag
+			StatsLog("FLAG: %s\\%s\\%s\\%.0f\\%.1f\n", 
+				attacker->client->pers.netname, targ->client->pers.netname,
+				"FC Def", CTF_CARRIER_PROTECT_BONUS, level.time );
 			return;
 		}
 	}
@@ -988,7 +986,7 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 				//JSW - Other no longer has flag
 				other->hasflag = 0;
 				held_time = level.time - other->client->resp.ctf_flagsince;
-				sprintf(heldtime, "(held %1.1f seconds)", held_time);
+				sprintf(heldtime, "(held %.1f seconds)", held_time);
 				//end
 				if (other->client->pers.inventory[ITEM_INDEX(enemy_flag_item)])
 				{
@@ -998,12 +996,12 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 							   CTFOtherTeamName(ctf_team),
 							   heldtime);	//JSW added heldtime
 					other->client->resp.captures++;
-					//RAV
-					// Log Flag Capture - MarkDavies
-					sl_LogScore( &gi, other->client->pers.netname,
-								NULL, "F Capture", NULL,
-								CTF_CAPTURE_BONUS, level.time );
-					//end
+
+					// Log Flag Capture
+					StatsLog( "CAPT: %s\\%s\\%.0f\\%.1f\\%.1f\n", 
+						other->client->pers.netname,
+						"F Capture", CTF_CAPTURE_BONUS, held_time, level.time );
+
 					other->client->pers.inventory[ITEM_INDEX(enemy_flag_item)] = 0;
 					ctfgame.last_flag_capture = level.time;
 					ctfgame.last_capture_team = ctf_team;
@@ -1027,26 +1025,29 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 						else if (player->client->resp.ctf_team == other->client->resp.ctf_team)
 						{
 							if (player != other)
-							{	//RAV
+							{
 								player->client->resp.score += CTF_TEAM_BONUS;
-								// Log Flag Capture Team Score - MarkDavies
-								sl_LogScore( &gi, player->client->pers.netname,
-											NULL, "Team Score", NULL,
-											CTF_TEAM_BONUS, level.time );
+								
+								// Log Flag Capture Team Score
+								StatsLog( "TEAM: %s\\%s\\%.0f\\%.1f\n", 
+									player->client->pers.netname,
+									"Team Score", CTF_TEAM_BONUS, level.time );
 							}
 							//end
 							// award extra points for capture assists
 							if (player->client->resp.ctf_lastreturnedflag + CTF_RETURN_FLAG_ASSIST_TIMEOUT > level.time)
 							{
-								my_bprintf(PRINT_HIGH, "%s gets an assist for returning the flag!\n", player->client->pers.netname);
+								my_bprintf(PRINT_HIGH, 
+									"%s gets an assist for returning the flag!\n", 
+									player->client->pers.netname);
 								player->client->resp.score += CTF_RETURN_FLAG_ASSIST_BONUS;
-								//RAV
-								// Log Flag Capture Team Score - MarkDavies
-								sl_LogScore( &gi, player->client->pers.netname,
-											NULL, "F Return Assist", NULL,
-											CTF_RETURN_FLAG_ASSIST_BONUS,
-											level.time );
-								//end
+
+								// Log Flag Capture Team Score
+								StatsLog( "ASST: %s\\%s\\%.0f\\%.1f\n", 
+									player->client->pers.netname,
+									"F Return Assist", 
+									CTF_RETURN_FLAG_ASSIST_BONUS,
+									level.time );
 							}
 
 							if (player->client->resp.ctf_lastfraggedcarrier + CTF_FRAG_CARRIER_ASSIST_TIMEOUT > level.time)
@@ -1055,13 +1056,13 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 										   "%s gets an assist for fragging the flag carrier!\n",
 										   player->client->pers.netname);
 								player->client->resp.score += CTF_FRAG_CARRIER_ASSIST_BONUS;
-								//RAV
-								// Log Flag Capture Team Score - MarkDavies
-								sl_LogScore( &gi, player->client->pers.netname,
-											NULL, "FC Frag Assist", NULL,
-											CTF_FRAG_CARRIER_ASSIST_BONUS,
-											level.time );
-								//end
+
+								// Log Flag Capture Team Score
+								StatsLog( "ASST: %s\\%s\\%.0f\\%.1f\n", 
+									player->client->pers.netname,
+									"FC Frag Assist", 
+									CTF_FRAG_CARRIER_ASSIST_BONUS,
+									level.time );
 							}
 						}
 					}
@@ -1069,7 +1070,7 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 					CTFResetFlags();
 					return false;
 				}
-			}//RAV
+			}
 			return false; // its at home base already
 		}
 		// hey, its not home.  return it by teleporting it back
@@ -1077,13 +1078,14 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 				   "%s returned the %s flag!\n",
 				   other->client->pers.netname,
 				   CTFTeamName(ctf_team));
-		//RAV
-		// Log Flag Recover - MarkDavies
-		sl_LogScore( &gi, other->client->pers.netname,
-					NULL, "F Return", NULL,
-					CTF_RECOVERY_BONUS,
-					level.time );
-		//end
+
+		// Log Flag Recover
+		StatsLog( "FLAG: %s\\%s\\%.0f\\%.1f\n", 
+			other->client->pers.netname,
+			"F Return", 
+			CTF_RECOVERY_BONUS,
+			level.time );
+
 		other->client->resp.score += CTF_RECOVERY_BONUS;
 		other->client->resp.ctf_lastreturnedflag = level.time;
 		gi.sound (ent, CHAN_RELIABLE+CHAN_NO_PHS_ADD+CHAN_VOICE,
@@ -1097,12 +1099,13 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 	my_bprintf(PRINT_HIGH, "%s got the %s flag!\n",
 		other->client->pers.netname, CTFTeamName(ctf_team));
 	other->client->resp.score += CTF_FLAG_BONUS;
-	//RAV
-	// Log Flag Pickup - MarkDavies
-	sl_LogScore( &gi, other->client->pers.netname,
-				NULL, "F Pickup", NULL,
-				CTF_FLAG_BONUS, level.time );
-	//end
+
+	// Log Flag Pickup
+	StatsLog( "FLAG: %s\\%s\\%.0f\\%.1f\n", 
+		other->client->pers.netname,
+		"F Pickup",
+		CTF_FLAG_BONUS, 
+		level.time );
 
 	other->client->pers.inventory[ITEM_INDEX(flag_item)] = 1;
 	other->client->resp.ctf_flagsince = level.time;
@@ -2345,7 +2348,7 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 		ent->spec_warned = false;
 		ent->speccheck = false;
 		//set up the no delta value
-		StuffCmd(ent, "set cl_notelta $cl_nodelta u\n");
+		StuffCmd(ent, "set cl_nodelta $cl_nodelta u\n");
 	}
 
 	ent->svflags = 0;
@@ -2379,6 +2382,7 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 				   ctfgame.specs);
 		ent->client->pers.pl_state = PL_PLAYING;
 		ent->client->resp.spectator = 0;
+		StatsLog("JOIN1: %s\\%d\\%.1f\n", ent->client->pers.netname, ent->client->resp.ctf_team, level.time);
 		return;
 	}
 
@@ -2413,6 +2417,7 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 	ent->client->resp.spectator = 0;
 	//skin change is allowed here
 	ent->client->skintime = level.time - 1;
+	StatsLog("SIDE: %s\\%d\\%.1f\n", ent->client->pers.netname, ent->client->resp.ctf_team, level.time);
 
 	// don't even bother waiting for death frames
 	ent->deadflag = DEAD_DEAD;
@@ -3837,12 +3842,18 @@ void CTFJoinTeam(edict_t *ent, int desired_team)
 void CTFJoinTeam1(edict_t *ent, pmenu_t *p)
 {
 	CTFJoinTeam(ent, CTF_TEAM1);
+	StatsLog("JOIN: %s\\%i\\%.1f\n", 
+		ent->client->pers.netname,
+		CTF_TEAM1, level.time);
 }
 
 
 void CTFJoinTeam2(edict_t *ent, pmenu_t *p)
 {
 	CTFJoinTeam(ent, CTF_TEAM2);
+	StatsLog("JOIN: %s\\%i\\%.1f\n", 
+		ent->client->pers.netname,
+		CTF_TEAM2, level.time);
 }
 
 //RAV
@@ -3866,6 +3877,8 @@ void JoinGame(edict_t *ent, pmenu_t *menu)
 	my_bprintf(PRINT_HIGH,
 			   "%s Has a DeathWish. (%d players, %d spectators)\n",
 			   ent->client->pers.netname, ctfgame.players_total, ctfgame.specs);
+	
+	StatsLog("JOIN: %s\\%.1f\n", ent->client->pers.netname, level.time);
 
 	if(!ent->bot_client)
 	{
@@ -3880,8 +3893,6 @@ void JoinGame(edict_t *ent, pmenu_t *menu)
 	}
 	PMenu_Close(ent);
 }
-
-//RAV Add spectator mode
 
 void Spectate(edict_t *ent, pmenu_t *menu)
 {
@@ -3907,12 +3918,15 @@ void Spectate(edict_t *ent, pmenu_t *menu)
 	if(ctf->value)
 		ent->client->resp.ctf_team = CTF_NOTEAM;
 	gi.linkentity (ent);
+
+	if (ent->inuse)	// not in use on first connect
+		StatsLog("SPEC: %s\\%.1f\n", ent->client->pers.netname, level.time);
 }
 
 void CTFChaseCam(edict_t *ent, pmenu_t *p)
 {
 	int i;
-	edict_t *e;
+	edict_t *targ;
 	qboolean found = false;
 
 	if (ent->client->chase_target)
@@ -3920,33 +3934,34 @@ void CTFChaseCam(edict_t *ent, pmenu_t *p)
 		ent->client->chase_target = NULL;
 		Spectate(ent, NULL);
 		PMenu_Close(ent);
-		ent->client->pers.pl_state = PL_SPECTATOR;
 		return;
 	}
 
 	for (i = 1; i <= maxclients->value; i++)
 	{
-		e = g_edicts + i;
-		if (e->inuse && e->solid != SOLID_NOT && ent != e)
+		targ = g_edicts + i;
+		if (targ->inuse && targ->solid != SOLID_NOT && ent != targ)
 		{
-			ent->client->chase_target = e;
+			ent->client->chase_target = targ;
 			ent->client->update_chase = true;
-			//RAV
 			Spectate(ent, NULL);
+			my_bprintf(PRINT_HIGH, 
+				"%s Moved to Spectator.\n", 
+				ent->client->pers.netname);
 			found = true;
-			my_bprintf(PRINT_HIGH,
-					   "%s Moved to Spectator.\n",
-					   ent->client->pers.netname);
 			PMenu_Close(ent);
-			ent->client->pers.pl_state = PL_SPECTATOR;
 			break;
 		}
 	}
-	//RAV  close menu !!
+
 	if(!found)
+	{
 		safe_cprintf(ent, PRINT_HIGH, "No target to chase\n" );
-	ent->client->pers.pl_state = PL_SPECTATOR;
-	//
+		ent->client->chase_target = NULL;
+		ent->client->chase_mode = CHASE_FIRSTMODE;
+	}
+
+	Spectate(ent, NULL);
 }
 
 //RAV

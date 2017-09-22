@@ -685,7 +685,7 @@ void Bot_Think (edict_t *self)
 	if (!((int)level.time % 10))
 		if (InsideWall(self))
 		{
-			DbgPrintf("7777 %s spawned inside wall: %f %f %f\n", 
+			gi.dprintf("7777 %s spawned inside wall: %f %f %f\n", 
 				self->client->pers.netname,
 				self->s.origin[0], self->s.origin[1], self->s.origin[2]); 
 			Cmd_Kill_f(self); // suicide

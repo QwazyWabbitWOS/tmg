@@ -15,8 +15,7 @@
 #include "intro.h"
 #include "bot.h"
 #include "runes.h"
-#include "stdlog.h"	//	StdLog - Mark Davies
-#include "gslog.h"	//	StdLog - Mark Davies. Depends on level_locals_t
+#include "statslog.h"
 
 #define	OPTIMIZE_INTERVAL	0.1
 
@@ -128,7 +127,7 @@ void SP_info_player_deathmatch(edict_t *self)
 	}
 	SP_misc_teleporter_dest (self);
 
-	
+
 }
 
 /*QUAKED info_player_coop (1 0 1) (-16 -16 -24) (16 16 32)
@@ -143,19 +142,19 @@ void SP_info_player_coop(edict_t *self)
 	}
 
 	if((stricmp(level.mapname, "jail2") == 0)   ||
-	   (stricmp(level.mapname, "jail4") == 0)   ||
-	   (stricmp(level.mapname, "mine1") == 0)   ||
-	   (stricmp(level.mapname, "mine2") == 0)   ||
-	   (stricmp(level.mapname, "mine3") == 0)   ||
-	   (stricmp(level.mapname, "mine4") == 0)   ||
-	   (stricmp(level.mapname, "lab") == 0)     ||
-	   (stricmp(level.mapname, "boss1") == 0)   ||
-	   (stricmp(level.mapname, "fact3") == 0)   ||
-	   (stricmp(level.mapname, "biggun") == 0)  ||
-	   (stricmp(level.mapname, "space") == 0)   ||
-	   (stricmp(level.mapname, "command") == 0) ||
-	   (stricmp(level.mapname, "power2") == 0) ||
-	   (stricmp(level.mapname, "strike") == 0))
+		(stricmp(level.mapname, "jail4") == 0)   ||
+		(stricmp(level.mapname, "mine1") == 0)   ||
+		(stricmp(level.mapname, "mine2") == 0)   ||
+		(stricmp(level.mapname, "mine3") == 0)   ||
+		(stricmp(level.mapname, "mine4") == 0)   ||
+		(stricmp(level.mapname, "lab") == 0)     ||
+		(stricmp(level.mapname, "boss1") == 0)   ||
+		(stricmp(level.mapname, "fact3") == 0)   ||
+		(stricmp(level.mapname, "biggun") == 0)  ||
+		(stricmp(level.mapname, "space") == 0)   ||
+		(stricmp(level.mapname, "command") == 0) ||
+		(stricmp(level.mapname, "power2") == 0) ||
+		(stricmp(level.mapname, "strike") == 0))
 	{
 		// invoke one of our gross, ugly, disgusting hacks
 		self->think = SP_FixCoopSpots;
@@ -222,17 +221,37 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 	qboolean ff;
 	ff = meansOfDeath & MOD_FRIENDLY_FIRE;
 	mod = meansOfDeath & ~MOD_FRIENDLY_FIRE;
-	
+
 	// If no victim then no obit!
 	if (!G_EntExists(self))
 		return;
-	
+
+	if (statslog->value)
+	{
+		if (attacker->client != self->client && attacker->client != NULL) 
+			StatsLog("OBIT: %s\\%s\\%d\\%d\\%d\\%d\\%.1f\n", //a player fragged another player
+			self->client->pers.netname, //victim
+			attacker->client->pers.netname, //attacker
+			self->client->ping, 
+			attacker->client->ping, 
+			mod, //means of death
+			/*hitLocation*/NULL,
+			level.time); 
+		else 
+			StatsLog("KILL: %s\\%d\\%d\\%d\\%.1f\n",	// a player killed himself
+			self->client->pers.netname, 
+			self->client->ping, 
+			mod, 
+			/*hitLocation*/NULL,
+			level.time); 
+	}
+
 	for (i = 0; i < 16; i++)
 	{
 		message[i] = NULL;
 		message2[i] = "";
 	} //end for
-	
+
 	switch (mod)
 	{
 	case MOD_SUICIDE:
@@ -342,381 +361,381 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 		message[1] = "got lost";
 		message[2] = "shouldn't have been there";
 		break;
-		}
-		if (attacker == self)
+	}
+	if (attacker == self)
+	{
+		switch (mod)
 		{
-			switch (mod)
+		case MOD_HELD_GRENADE:
+			message[0] = "tried to put the pin back in";
+			message[2] = "got the red and blue wires mixed up";
+			if (IsNeutral(self))
 			{
-			case MOD_HELD_GRENADE:
-				message[0] = "tried to put the pin back in";
-				message[2] = "got the red and blue wires mixed up";
-				if (IsNeutral(self))
-				{
-					message[1] = "held it's grenade too long";
-					message[3] = "tried to disassemble it's own grenade";
-				} //end if
-				else if (IsFemale(self))
-				{
-					message[1] = "held her grenade too long";
-					message[3] = "tried to disassemble her own grenade";
-				} //end if
-				else
-				{
-					message[1] = "held his grenade too long";
-					message[3] = "tried to disassemble his own grenade";
-				} //end else
-				break;
-			case MOD_HG_SPLASH:
-//T-MEK
-/*				if (IsFemale(self))
-				{
-					message[0] = "tripped on her own lasermine";
-					message[1] = "didn't know that tripwire was hers";
-					message[2] = "needs to watch her step";
-				}
-				else if (IsNeutral(self))
-				{
-					message[0] = "tripped on its own lasermine";
-					message[1] = "didn't know that tripwire was its own";
-					message[2] = "needs to watch its step";
-				}
-				else
-				{
-					message[0] = "tripped on his own lasermine";
-					message[1] = "didn't know that tripwire was his";
-					message[2] = "needs to watch his step";
-				}
-				break;
-//T-MEK
-*/
-				if (IsNeutral(self))
-				{
-					message[0] = "tripped on it's own grenade";
-					message[1] = "stepped on it's own pineapple";
-				}
-				else if (IsFemale(self))
-				{
-					message[0] = "tripped on her own grenade";
-					message[1] = "stepped on her own pineapple";
-				} //end if
-				else
-				{
-					message[0] = "tripped on his own grenade";
-					message[1] = "stepped on his own pineapple";
-				} //end else
-				break;
-
-			case MOD_G_SPLASH:
-				message[2] = "tried to grenade-jump unsuccessfully";
-				message[3] = "tried to play football with a grenade";
-				message[4] = "shouldn't mess around with explosives";
-				if (IsNeutral(self))
-				{
-					message[0] = "tripped on it's own grenade";
-					message[1] = "stepped on it's own pineapple";
-				}
-				else if (IsFemale(self))
-				{
-					message[0] = "tripped on her own grenade";
-					message[1] = "stepped on her own pineapple";
-				} //end if
-				else
-				{
-					message[0] = "tripped on his own grenade";
-					message[1] = "stepped on his own pineapple";
-				} //end else
-				break;
-			case MOD_R_SPLASH:
-				message[2] = "had the rocket launcher backwards";
-				message[4] = "thought up a novel new way to fly";
-				if (IsNeutral(self))
-				{
-					message[0] = "blew itself up";
-					message[1] = "thought it was Werner von Braun";
-					message[3] = "thought it had more health";
-					message[5] = "found it's own rocketlauncher's trigger";
-					message[6] = "thought it had more armor on";
-					message[7] = "blew itself to kingdom come";
-				} //end if
-				else if (IsFemale(self))
-				{
-					message[0] = "blew herself up";
-					message[1] = "thought she was Werner von Braun";
-					message[3] = "thought she had more health";
-					message[5] = "found her own rocketlauncher's trigger";
-					message[6] = "thought she had more armor on";
-					message[7] = "blew herself to kingdom come";
-				} //end if	
-				else
-				{
-					message[0] = "blew himself up";
-					message[1] = "thought he was Werner von Braun";
-					message[3] = "thought he had more health";
-					message[5] = "found his own rocketlauncher's trigger";
-					message[6] = "thought he had more armor on";
-					message[7] = "blew himself to kingdom come";
-				} //end else
-				break;
-			case MOD_BFG_BLAST:
-				message[0] = "should have used a smaller gun";
-				message[1] = "shouldn't play with big guns";
-				message[2] = "doesn't know how to work the BFG";
-				message[3] = "has trouble using big guns";
-				message[4] = "can't distinguish which end is which with the BFG";
-				message[5] = "should try to avoid using the BFG near obstacles";
-				message[6] = "tried to BFG-jump unsuccesfully";
-				break;
-			default:
-				DbgPrintf("%s %s has MOD %d %f %f %f\n", __func__, self->client->pers.netname, mod,
-					self->s.origin[0], self->s.origin[1], self->s.origin[2]);
-				message[1] = "commited suicide";
-				message[2] = "went the way of the dodo";
-				message[3] = "thought 'kill' was a funny console command";
-				message[4] = "wanted one frag less";
-				if (IsNeutral(self))
-				{
-					message[0] = "killed itself";
-					message[5] = "thought it had one too many frags";
-				} //end if
-				else if (IsFemale(self))
-				{
-					message[0] = "killed herself";
-					message[5] = "thought she had one too many frags";
-				} //end if
-				else
-				{
-					message[0] = "killed himself";
-					message[5] = "thought he had one too many frags";
-				} //end else
-				break;
-			} //end switch
-		} //end if
-		if (message[0])
-		{
-			for (i = 0; i < 16; i++)
+				message[1] = "held it's grenade too long";
+				message[3] = "tried to disassemble it's own grenade";
+			} //end if
+			else if (IsFemale(self))
 			{
-				if (!message[i]) break;
-			} //end for
-			i = random() * (float) i;
-			safe_bprintf (PRINT_MEDIUM, "%s %s.\n", self->client->pers.netname, message[i]);
-			if(match_state == STATE_PLAYING)
+				message[1] = "held her grenade too long";
+				message[3] = "tried to disassemble her own grenade";
+			} //end if
+			else
 			{
-				//JSW
-				if (((int)punish_suicide->value & PS_RESETSCORE) && self->client->kill == 1)
-				{
-					safe_cprintf(self, PRINT_HIGH, "Your score has been reset to 0 due to intentional suicide\n");
-					self->client->resp.score = 0;
-					self->client->resp.frags = 0;
-				}
-				else
-				{//end
-					self->client->resp.score--;
-		//			self->client->resp.frags--;
-				}
-				self->client->resp.suicide++;
-				self->client->resp.spree = 0;
+				message[1] = "held his grenade too long";
+				message[3] = "tried to disassemble his own grenade";
+			} //end else
+			break;
+		case MOD_HG_SPLASH:
+			//T-MEK
+			/*				if (IsFemale(self))
+			{
+			message[0] = "tripped on her own lasermine";
+			message[1] = "didn't know that tripwire was hers";
+			message[2] = "needs to watch her step";
 			}
-			self->enemy = NULL;
-			return;
-		} //end if
-
-		self->enemy = attacker;
-		if (attacker && attacker->client)
-		{
-			if (mod == MOD_BLASTER && extrasounds->value)
-				gi.sound (attacker, CHAN_AUTO, gi.soundindex ("misc/humiliation.wav"), 1, ATTN_NORM, 0);
-			switch (mod)
+			else if (IsNeutral(self))
 			{
-			case MOD_BLASTER:
-				message[0] = "(quakeweenie) was massacred by";
-				message2[0] = " (quakegod)!!!";
-				message[1] = "was killed with the wimpy blaster by";
-				message[2] = "died a wimp's death by";
-				message[3] = "can't even avoid a blaster from";
-				message[4] = "was blasted by";
-				break;
-			case MOD_SHOTGUN:
-				message[1] = "was gunned down by";
-				if (IsNeutral(self))
-				{
-					message[0] = "found itself on the wrong end of";
-					message2[0] = "'s gun";
-				} //end if
-				else if (IsFemale(self))
-				{
-					message[0] = "found herself on the wrong end of";
-					message2[0] = "'s gun";
-				} //end if
-				else
-				{
-					message[0] = "found himself on the wrong end of";
-					message2[0] = "'s gun";
-				} //end else
-				break;
-			case MOD_SSHOTGUN:
-				message[0] = "was blown away by";
+			message[0] = "tripped on its own lasermine";
+			message[1] = "didn't know that tripwire was its own";
+			message[2] = "needs to watch its step";
+			}
+			else
+			{
+			message[0] = "tripped on his own lasermine";
+			message[1] = "didn't know that tripwire was his";
+			message[2] = "needs to watch his step";
+			}
+			break;
+			//T-MEK
+			*/
+			if (IsNeutral(self))
+			{
+				message[0] = "tripped on it's own grenade";
+				message[1] = "stepped on it's own pineapple";
+			}
+			else if (IsFemale(self))
+			{
+				message[0] = "tripped on her own grenade";
+				message[1] = "stepped on her own pineapple";
+			} //end if
+			else
+			{
+				message[0] = "tripped on his own grenade";
+				message[1] = "stepped on his own pineapple";
+			} //end else
+			break;
+
+		case MOD_G_SPLASH:
+			message[2] = "tried to grenade-jump unsuccessfully";
+			message[3] = "tried to play football with a grenade";
+			message[4] = "shouldn't mess around with explosives";
+			if (IsNeutral(self))
+			{
+				message[0] = "tripped on it's own grenade";
+				message[1] = "stepped on it's own pineapple";
+			}
+			else if (IsFemale(self))
+			{
+				message[0] = "tripped on her own grenade";
+				message[1] = "stepped on her own pineapple";
+			} //end if
+			else
+			{
+				message[0] = "tripped on his own grenade";
+				message[1] = "stepped on his own pineapple";
+			} //end else
+			break;
+		case MOD_R_SPLASH:
+			message[2] = "had the rocket launcher backwards";
+			message[4] = "thought up a novel new way to fly";
+			if (IsNeutral(self))
+			{
+				message[0] = "blew itself up";
+				message[1] = "thought it was Werner von Braun";
+				message[3] = "thought it had more health";
+				message[5] = "found it's own rocketlauncher's trigger";
+				message[6] = "thought it had more armor on";
+				message[7] = "blew itself to kingdom come";
+			} //end if
+			else if (IsFemale(self))
+			{
+				message[0] = "blew herself up";
+				message[1] = "thought she was Werner von Braun";
+				message[3] = "thought she had more health";
+				message[5] = "found her own rocketlauncher's trigger";
+				message[6] = "thought she had more armor on";
+				message[7] = "blew herself to kingdom come";
+			} //end if	
+			else
+			{
+				message[0] = "blew himself up";
+				message[1] = "thought he was Werner von Braun";
+				message[3] = "thought he had more health";
+				message[5] = "found his own rocketlauncher's trigger";
+				message[6] = "thought he had more armor on";
+				message[7] = "blew himself to kingdom come";
+			} //end else
+			break;
+		case MOD_BFG_BLAST:
+			message[0] = "should have used a smaller gun";
+			message[1] = "shouldn't play with big guns";
+			message[2] = "doesn't know how to work the BFG";
+			message[3] = "has trouble using big guns";
+			message[4] = "can't distinguish which end is which with the BFG";
+			message[5] = "should try to avoid using the BFG near obstacles";
+			message[6] = "tried to BFG-jump unsuccesfully";
+			break;
+		default:
+			DbgPrintf("%s %s has MOD %d %f %f %f\n", __func__, self->client->pers.netname, mod,
+				self->s.origin[0], self->s.origin[1], self->s.origin[2]);
+			message[1] = "commited suicide";
+			message[2] = "went the way of the dodo";
+			message[3] = "thought 'kill' was a funny console command";
+			message[4] = "wanted one frag less";
+			if (IsNeutral(self))
+			{
+				message[0] = "killed itself";
+				message[5] = "thought it had one too many frags";
+			} //end if
+			else if (IsFemale(self))
+			{
+				message[0] = "killed herself";
+				message[5] = "thought she had one too many frags";
+			} //end if
+			else
+			{
+				message[0] = "killed himself";
+				message[5] = "thought he had one too many frags";
+			} //end else
+			break;
+		} //end switch
+	} //end if
+	if (message[0])
+	{
+		for (i = 0; i < 16; i++)
+		{
+			if (!message[i]) break;
+		} //end for
+		i = random() * (float) i;
+		safe_bprintf (PRINT_MEDIUM, "%s %s.\n", self->client->pers.netname, message[i]);
+		if(match_state == STATE_PLAYING)
+		{
+			//JSW
+			if (((int)punish_suicide->value & PS_RESETSCORE) && self->client->kill == 1)
+			{
+				safe_cprintf(self, PRINT_HIGH, "Your score has been reset to 0 due to intentional suicide\n");
+				self->client->resp.score = 0;
+				self->client->resp.frags = 0;
+			}
+			else
+			{//end
+				self->client->resp.score--;
+				//			self->client->resp.frags--;
+			}
+			self->client->resp.suicide++;
+			self->client->resp.spree = 0;
+		}
+		self->enemy = NULL;
+		return;
+	} //end if
+
+	self->enemy = attacker;
+	if (attacker && attacker->client)
+	{
+		if (mod == MOD_BLASTER && extrasounds->value)
+			gi.sound (attacker, CHAN_AUTO, gi.soundindex ("misc/humiliation.wav"), 1, ATTN_NORM, 0);
+		switch (mod)
+		{
+		case MOD_BLASTER:
+			message[0] = "(quakeweenie) was massacred by";
+			message2[0] = " (quakegod)!!!";
+			message[1] = "was killed with the wimpy blaster by";
+			message[2] = "died a wimp's death by";
+			message[3] = "can't even avoid a blaster from";
+			message[4] = "was blasted by";
+			break;
+		case MOD_SHOTGUN:
+			message[1] = "was gunned down by";
+			if (IsNeutral(self))
+			{
+				message[0] = "found itself on the wrong end of";
+				message2[0] = "'s gun";
+			} //end if
+			else if (IsFemale(self))
+			{
+				message[0] = "found herself on the wrong end of";
+				message2[0] = "'s gun";
+			} //end if
+			else
+			{
+				message[0] = "found himself on the wrong end of";
+				message2[0] = "'s gun";
+			} //end else
+			break;
+		case MOD_SSHOTGUN:
+			message[0] = "was blown away by";
+			message2[0] = "'s super shotgun";
+			if (IsNeutral(self))
+			{
+				message[0] = "had it ears cleaned out by";
 				message2[0] = "'s super shotgun";
-				if (IsNeutral(self))
-				{
-					message[0] = "had it ears cleaned out by";
-					message2[0] = "'s super shotgun";
-				} //end if
-				else if (IsFemale(self))
-				{
-					message[0] = "had her ears cleaned out by";
-					message2[0] = "'s super shotgun";
-				} //end if
-				else
-				{
-					message[0] = "had his ears cleaned out by";
-					message2[0] = "'s super shotgun";
-				} //end else
-				message[3] = "was put full of buckshot by";
-				break;
-			case MOD_MACHINEGUN:
-				message[0] = "was machinegunned by";
-				message[1] = "was filled with lead by";
-				message[2] = "was put full of lead by";
-				message[3] = "was pumped full of lead by";
-				message[4] = "ate lead dished out by";
-				message[5] = "eats lead from";
-				message[6] = "bites the bullet from";
-				break;
-			case MOD_CHAINGUN:
-				message[0] = "was cut in half by";
-				message2[0] = "'s chaingun";
-				message[2] = "was turned into a strainer by";
-				message[3] = "was put full of holes by";
-				message[4] = "couldn't avoid death by painless from";
-				if (IsNeutral(self))
-				{
-					message[1] = "was put so full of lead by";
-					message2[1] = " you can call it a pencil";
-				} //end if
-				else if (IsFemale(self))
-				{
-					message[1] = "was put so full of lead by";
-					message2[1] = " you can call her a pencil";
-				} //end if
-				else
-				{
-					message[1] = "was put so full of lead by";
-					message2[1] = " you can call him a pencil";
-				} //end else
-				break;
-			case MOD_GRENADE:
-				message[0] = "was popped by";
-				message2[0] = "'s grenade";
-				message[1] = "caught";
-				message2[1] = "'s grenade in the head";
-				message[2] = "tried to headbutt the grenade of";
-				break;
-			case MOD_G_SPLASH:
-				message[0] = "was shredded by";
-				message2[0] = "'s shrapnel";
-				break;
-			case MOD_ROCKET:
-				message[0] = "ate";
-				message2[0] = "'s rocket";
-				message[1] = "sucked on";
-				message2[1] = "'s boomstick";
-				message[2] = "tried to play 'dodge the missile' with";
-				message[3] = "tried the 'patriot move' on the rocket from";
-				message[4] = "had a rocket stuffed down the throat by";
-				message[5] = "got a rocket up the tailpipe by";
-				message[6] = "tried to headbutt";
-				message2[6] = "'s rocket";
-				break;
-			case MOD_R_SPLASH:
-				message[0] = "almost dodged";
-				message2[0] = "'s rocket";
-				message[1] = "was spread around the place by";
-				message[2] = "was gibbed by";
-				message[3] = "has been blown to smithereens by";
-				message[4] = "was blown to itsie bitsie tiny pieces by";
-				break;
-			case MOD_HYPERBLASTER:
-				message[0] = "was melted by";
-				message2[0] = "'s hyperblaster";
-				message[1] = "was used by";
-				message2[1] = " for target practice";
-				message[2] = "was hyperblasted by";
-				message[3] = "was pumped full of bolts by";
-				message[4] = "couldn't outrun the hyperblaster from";
-				break;
-			case MOD_RAILGUN:
-				message[0] = "was railed by";
-				message[2] = "played 'catch the slug' with";
-				message[4] = "bites the slug from";
-				message[5] = "caught the slug from";
-				if (IsNeutral(self))
-				{
-					message[1] = "got a slug put through it by";
-					message[3] = "was corkscrewed through it's head by";
-					message[6] = "had it's body pierced with a slug from";
-					message[7] = "had it's brains blown out by";
-				} //end if
-				else if (IsFemale(self))
-				{
-					message[1] = "got a slug put through her by";
-					message[3] = "was corkscrewed through her head by";
-					message[6] = "had her body pierced with a slug from";
-					message[7] = "had her brains blown out by";
-				} //end if
-				else
-				{
-					message[1] = "got a slug put through him by";
-					message[3] = "was corkscrewed through his head by";
-					message[6] = "had his body pierced with a slug from";
-					message[7] = "had his brains blown out by";
-				} //end else
-				break;
-			case MOD_BFG_LASER:
-				message[0] = "saw the pretty lights from";
-				message2[0] = "'s BFG";
-				message[1] = "was diced by the BFG from";
-				break;
-			case MOD_BFG_BLAST:
-				message[0] = "was disintegrated by";
-				message2[0] = "'s BFG blast";
-				message[1] = "was flatched with the green light by";
-				message2[1] = "";
-				break;
-			case MOD_BFG_EFFECT:
-				message[0] = "couldn't hide from";
-				message2[0] = "'s BFG";
-				message[1] = "tried to soak up green energy from";
-				message2[1] = "'s BFG";
-				message[2] = "was energized with 50 cells by";
-				message[3] = "doesn't know when to run from";
-				message[4] = "'saw the light' from";
-				break;
-			case MOD_HANDGRENADE:
-				message[0] = "caught";
-				message2[0] = "'s handgrenade";
-				message[1] = "should watch more carefully for handgrenades from";
-				message[2] = "caught";
-				message2[2] = "'s handgrenade in the head";
-				message[3] = "tried to headbutt the handgrenade of";
-				break;
-			case MOD_HG_SPLASH:
-				message[0] = "didn't see";
-				message2[0] = "'s handgrenade";
-				break;
-			case MOD_HELD_GRENADE:
-				message[0] = "feels";
-				message2[0] = "'s pain";
-				break;
-			case MOD_TELEFRAG:
-				message[0] = "tried to invade";
-				message2[0] = "'s personal space";
-				message[1] = "is less telefrag aware than";
-				message[2] = "should appreciate scotty more like";
-				break;
-			case MOD_GRAPPLE:
-				message[0] = "was caught by";
-				message2[0] = "'s grapple";
-				break;
+			} //end if
+			else if (IsFemale(self))
+			{
+				message[0] = "had her ears cleaned out by";
+				message2[0] = "'s super shotgun";
+			} //end if
+			else
+			{
+				message[0] = "had his ears cleaned out by";
+				message2[0] = "'s super shotgun";
+			} //end else
+			message[3] = "was put full of buckshot by";
+			break;
+		case MOD_MACHINEGUN:
+			message[0] = "was machinegunned by";
+			message[1] = "was filled with lead by";
+			message[2] = "was put full of lead by";
+			message[3] = "was pumped full of lead by";
+			message[4] = "ate lead dished out by";
+			message[5] = "eats lead from";
+			message[6] = "bites the bullet from";
+			break;
+		case MOD_CHAINGUN:
+			message[0] = "was cut in half by";
+			message2[0] = "'s chaingun";
+			message[2] = "was turned into a strainer by";
+			message[3] = "was put full of holes by";
+			message[4] = "couldn't avoid death by painless from";
+			if (IsNeutral(self))
+			{
+				message[1] = "was put so full of lead by";
+				message2[1] = " you can call it a pencil";
+			} //end if
+			else if (IsFemale(self))
+			{
+				message[1] = "was put so full of lead by";
+				message2[1] = " you can call her a pencil";
+			} //end if
+			else
+			{
+				message[1] = "was put so full of lead by";
+				message2[1] = " you can call him a pencil";
+			} //end else
+			break;
+		case MOD_GRENADE:
+			message[0] = "was popped by";
+			message2[0] = "'s grenade";
+			message[1] = "caught";
+			message2[1] = "'s grenade in the head";
+			message[2] = "tried to headbutt the grenade of";
+			break;
+		case MOD_G_SPLASH:
+			message[0] = "was shredded by";
+			message2[0] = "'s shrapnel";
+			break;
+		case MOD_ROCKET:
+			message[0] = "ate";
+			message2[0] = "'s rocket";
+			message[1] = "sucked on";
+			message2[1] = "'s boomstick";
+			message[2] = "tried to play 'dodge the missile' with";
+			message[3] = "tried the 'patriot move' on the rocket from";
+			message[4] = "had a rocket stuffed down the throat by";
+			message[5] = "got a rocket up the tailpipe by";
+			message[6] = "tried to headbutt";
+			message2[6] = "'s rocket";
+			break;
+		case MOD_R_SPLASH:
+			message[0] = "almost dodged";
+			message2[0] = "'s rocket";
+			message[1] = "was spread around the place by";
+			message[2] = "was gibbed by";
+			message[3] = "has been blown to smithereens by";
+			message[4] = "was blown to itsie bitsie tiny pieces by";
+			break;
+		case MOD_HYPERBLASTER:
+			message[0] = "was melted by";
+			message2[0] = "'s hyperblaster";
+			message[1] = "was used by";
+			message2[1] = " for target practice";
+			message[2] = "was hyperblasted by";
+			message[3] = "was pumped full of bolts by";
+			message[4] = "couldn't outrun the hyperblaster from";
+			break;
+		case MOD_RAILGUN:
+			message[0] = "was railed by";
+			message[2] = "played 'catch the slug' with";
+			message[4] = "bites the slug from";
+			message[5] = "caught the slug from";
+			if (IsNeutral(self))
+			{
+				message[1] = "got a slug put through it by";
+				message[3] = "was corkscrewed through it's head by";
+				message[6] = "had it's body pierced with a slug from";
+				message[7] = "had it's brains blown out by";
+			} //end if
+			else if (IsFemale(self))
+			{
+				message[1] = "got a slug put through her by";
+				message[3] = "was corkscrewed through her head by";
+				message[6] = "had her body pierced with a slug from";
+				message[7] = "had her brains blown out by";
+			} //end if
+			else
+			{
+				message[1] = "got a slug put through him by";
+				message[3] = "was corkscrewed through his head by";
+				message[6] = "had his body pierced with a slug from";
+				message[7] = "had his brains blown out by";
+			} //end else
+			break;
+		case MOD_BFG_LASER:
+			message[0] = "saw the pretty lights from";
+			message2[0] = "'s BFG";
+			message[1] = "was diced by the BFG from";
+			break;
+		case MOD_BFG_BLAST:
+			message[0] = "was disintegrated by";
+			message2[0] = "'s BFG blast";
+			message[1] = "was flatched with the green light by";
+			message2[1] = "";
+			break;
+		case MOD_BFG_EFFECT:
+			message[0] = "couldn't hide from";
+			message2[0] = "'s BFG";
+			message[1] = "tried to soak up green energy from";
+			message2[1] = "'s BFG";
+			message[2] = "was energized with 50 cells by";
+			message[3] = "doesn't know when to run from";
+			message[4] = "'saw the light' from";
+			break;
+		case MOD_HANDGRENADE:
+			message[0] = "caught";
+			message2[0] = "'s handgrenade";
+			message[1] = "should watch more carefully for handgrenades from";
+			message[2] = "caught";
+			message2[2] = "'s handgrenade in the head";
+			message[3] = "tried to headbutt the handgrenade of";
+			break;
+		case MOD_HG_SPLASH:
+			message[0] = "didn't see";
+			message2[0] = "'s handgrenade";
+			break;
+		case MOD_HELD_GRENADE:
+			message[0] = "feels";
+			message2[0] = "'s pain";
+			break;
+		case MOD_TELEFRAG:
+			message[0] = "tried to invade";
+			message2[0] = "'s personal space";
+			message[1] = "is less telefrag aware than";
+			message[2] = "should appreciate scotty more like";
+			break;
+		case MOD_GRAPPLE:
+			message[0] = "was caught by";
+			message2[0] = "'s grapple";
+			break;
 		}
 
 		if (message[0])
@@ -833,8 +852,8 @@ void TossClientWeapon (edict_t *self)
 	qboolean	quad;
 	float		spread;
 
-  // Make sure ent exists!
-  if (!G_EntExists(self)) return;
+	// Make sure ent exists!
+	if (!G_EntExists(self)) return;
 
 	if (!deathmatch->value)
 		return;
@@ -848,7 +867,7 @@ void TossClientWeapon (edict_t *self)
 	//dont try to loose the grapple
 	if (item && (strcmp (item->pickup_name, "Grapple") == 0))
 		item = NULL;
-		
+
 	if (!((int)(dmflags->value) & DF_QUAD_DROP))
 		quad = false;
 	else
@@ -959,19 +978,19 @@ static void player_die_fast (edict_t *self, edict_t *inflictor, edict_t *attacke
 
 /*
 ==================
-    player_die
+player_die
 ==================
 */
 void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	int		n;
+
 	// if no-one died, then exit..
 	if (!G_EntExists(self)) 
 		return;
 
 	VectorClear (self->avelocity);
 
-	//RAV
 	// drop the rune if we have one
 	runes_drop(self);
 
@@ -980,7 +999,6 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 		G_FreeEdict(self->flashlight);
 		self->flashlight = NULL;
 	}
-	//
 
 	self->takedamage = DAMAGE_YES;
 	self->movetype = MOVETYPE_TOSS;
@@ -1012,24 +1030,22 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 			CTFFragBonuses(self, inflictor, attacker);
 
 		//ZOID
-		//RAV
-		sl_WriteStdLogDeath( &gi, level, self, inflictor, attacker);	// StdLog - Mark Davies
 
 		if(voosh->value == 0)
 			TossClientWeapon (self);
 
 		if(match_state == STATE_PLAYING)
 			self->client->resp.deaths++;
-		
+
 		self->client->resp.spree = 0;
 		//		
-	
+
 		//ZOID
 		CTFPlayerResetGrapple(self);
 		CTFDeadDropFlag(self);
 		CTFDeadDropTech(self);
 		//ZOID
-		
+
 		if (deathmatch->value && ctf_deathscores->value && !self->bot_client)
 			Cmd_Help_f (self);		// show scores
 	}
@@ -1146,15 +1162,15 @@ void InitClientPersistant (gclient_t *client)
 	client->pers.vote_times = mapvoted;
 
 	if (voosh->value)
-    {
-        item = FindItem("Slugs");
-        client->pers.selected_item = ITEM_INDEX(item);
-        client->pers.inventory[client->pers.selected_item] = 1000;
+	{
+		item = FindItem("Slugs");
+		client->pers.selected_item = ITEM_INDEX(item);
+		client->pers.inventory[client->pers.selected_item] = 1000;
 
-        item = FindItem("Railgun");
-        client->pers.selected_item = ITEM_INDEX(item);
-        client->pers.inventory[client->pers.selected_item] = 1;
-    }
+		item = FindItem("Railgun");
+		client->pers.selected_item = ITEM_INDEX(item);
+		client->pers.inventory[client->pers.selected_item] = 1;
+	}
 	else
 	{
 		item = FindItem("Blaster");
@@ -1162,7 +1178,7 @@ void InitClientPersistant (gclient_t *client)
 		client->pers.inventory[client->pers.selected_item] = 2;
 
 		/********************************************
-        start  ammo
+		start  ammo
 		********************************************/
 		if (sa_shells->value)
 		{
@@ -1194,7 +1210,7 @@ void InitClientPersistant (gclient_t *client)
 			item = FindItem("Rockets");
 			client->pers.selected_item = ITEM_INDEX(item);
 			client->pers.inventory[client->pers.selected_item] = sa_rockets->value;
-			
+
 		}
 
 		if (sa_cells->value)
@@ -1310,7 +1326,7 @@ void FetchClientEntData (edict_t *ent)
 /*
 =======================================================================
 
-  SelectSpawnPoint
+SelectSpawnPoint
 
 =======================================================================
 */
@@ -1335,9 +1351,9 @@ float	PlayersRangeFromSpotRAV (edict_t *spot, edict_t *ent)
 	for (n = 0; n < maxclients->value; n++)
 	{
 		player = &g_edicts[n];
-	
+
 		if (!player->inuse|| !player->client || player == ent ||
-		  player->client->pers.pl_state != PL_PLAYING)
+			player->client->pers.pl_state != PL_PLAYING)
 			continue;
 
 		if (player->health <= 0)
@@ -1373,7 +1389,7 @@ float	PlayersRangeFromSpot (edict_t *spot)
 	for (n = 0; n < maxclients->value; n++)
 	{
 		player = &g_edicts[n];
-	
+
 		if (!player->inuse)
 			continue;
 
@@ -1481,7 +1497,7 @@ edict_t *SelectFarthestDeathmatchSpawnPoint (void)
 	{
 		if(debug_spawn->value)
 			DbgPrintf("Bestspot %s returning %s \nat %f %f %f\n", __func__, bestspot->classname,
-				bestspot->s.origin[0], bestspot->s.origin[1], bestspot->s.origin[2]); 
+			bestspot->s.origin[0], bestspot->s.origin[1], bestspot->s.origin[2]); 
 		return bestspot;
 	}
 
@@ -1492,7 +1508,7 @@ edict_t *SelectFarthestDeathmatchSpawnPoint (void)
 
 	if(debug_spawn->value)
 		DbgPrintf("Telefrag %s returning %s \nat %f %f %f\n", __func__, spot->classname,
-			spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
+		spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
 
 	return spot;
 }
@@ -1539,8 +1555,8 @@ edict_t *SpawnNearFlag (edict_t *ent)
 
 	if(debug_spawn->value)	
 		DbgPrintf("8888 %s returning %s for %s\nat %f %f %f\n", __func__, 
-			spot->classname, ent->client->pers.netname,
-			spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
+		spot->classname, ent->client->pers.netname,
+		spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
 
 	return spot;
 }
@@ -1548,10 +1564,10 @@ edict_t *SpawnNearFlag (edict_t *ent)
 edict_t *SelectDeathmatchSpawnPoint (void)
 {
 	edict_t *spot;
-	
+
 	if(debug_spawn->value)
 		DbgPrintf("%s\n", __FUNCTION__);
-	
+
 	if ( (int)(dmflags->value) & DF_SPAWN_FARTHEST)
 	{
 		spot = SelectFarthestDeathmatchSpawnPoint ();
@@ -1609,23 +1625,23 @@ Chooses a player start, deathmatch start, coop start, etc
 //void 
 qboolean SelectSpawnPointRAV (edict_t *ent, vec3_t origin, vec3_t angles)
 {
-  edict_t  *spot = NULL;
+	edict_t  *spot = NULL;
 
 	if(debug_spawn->value)
 		DbgPrintf("%s\n", __FUNCTION__);
 
-		//ZOID
-		if (ctf->value && ent->client->kill) //JSW
-			spot = SpawnNearFlag(ent);
-		else if (!ctf->value)
-			spot = SelectDeathmatchSpawnPoint ();
-		else
-			spot = SelectCTFSpawnPoint(ent);
-		//ZOID
-    
- 
-		
-		// find a single player start spot
+	//ZOID
+	if (ctf->value && ent->client->kill) //JSW
+		spot = SpawnNearFlag(ent);
+	else if (!ctf->value)
+		spot = SelectDeathmatchSpawnPoint ();
+	else
+		spot = SelectCTFSpawnPoint(ent);
+	//ZOID
+
+
+
+	// find a single player start spot
 	if(!spot) 
 	{
 		//warning!!!
@@ -1654,13 +1670,13 @@ qboolean SelectSpawnPointRAV (edict_t *ent, vec3_t origin, vec3_t angles)
 	}
 
 
-//*******************************************//
-//return false if  we are playing and someone is standing on a spawn pad.
+	//*******************************************//
+	//return false if  we are playing and someone is standing on a spawn pad.
 
 	if(PlayersRangeFromSpotRAV(spot, ent) < 60.0
 		&& ent->client->pers.pl_state == PL_PLAYING)
 		return(false);
-//*********************************************//
+	//*********************************************//
 	VectorCopy (spot->s.origin, origin);
 	origin[2] += 9;
 
@@ -1683,12 +1699,12 @@ void	SelectSpawnPoint (edict_t *ent, vec3_t origin, vec3_t angles)
 		DbgPrintf("%s %s\n", __FUNCTION__, ent->client->pers.netname);
 
 	if (deathmatch->value)
-//ZOID
+		//ZOID
 		if (ctf->value)
 			spot = SelectCTFSpawnPoint(ent);
 		else
-//ZOID
-		spot = SelectDeathmatchSpawnPoint ();
+			//ZOID
+			spot = SelectDeathmatchSpawnPoint ();
 	else if (coop->value)
 		spot = SelectCoopSpawnPoint (ent);
 
@@ -1794,33 +1810,33 @@ void CopyToBodyQue (edict_t *ent)
 	gi.unlinkentity (body);
 	return;
 
-//	body->s = ent->s;
-//	body->s.number = body - g_edicts;
-//
-//	body->svflags = ent->svflags;
-//	VectorCopy (ent->mins, body->mins);
-//	VectorCopy (ent->maxs, body->maxs);
-//	VectorCopy (ent->absmin, body->absmin);
-//	VectorCopy (ent->absmax, body->absmax);
-//	VectorCopy (ent->size, body->size);
-//	body->solid = ent->solid;
-//	body->clipmask = ent->clipmask;
-//	body->owner = ent->owner;
-//	body->movetype = ent->movetype;
-//
-//	body->die = body_die;
-//	body->takedamage = DAMAGE_YES;
-//
-//	gi.linkentity (body);
+	//	body->s = ent->s;
+	//	body->s.number = body - g_edicts;
+	//
+	//	body->svflags = ent->svflags;
+	//	VectorCopy (ent->mins, body->mins);
+	//	VectorCopy (ent->maxs, body->maxs);
+	//	VectorCopy (ent->absmin, body->absmin);
+	//	VectorCopy (ent->absmax, body->absmax);
+	//	VectorCopy (ent->size, body->size);
+	//	body->solid = ent->solid;
+	//	body->clipmask = ent->clipmask;
+	//	body->owner = ent->owner;
+	//	body->movetype = ent->movetype;
+	//
+	//	body->die = body_die;
+	//	body->takedamage = DAMAGE_YES;
+	//
+	//	gi.linkentity (body);
 
-//	body->nextthink = level.time + 0.2;
-//	body->think = Body_droptofloor;
+	//	body->nextthink = level.time + 0.2;
+	//	body->think = Body_droptofloor;
 }
 
 
 void respawn (edict_t *self, qboolean spawn)
 {
-  	if(!spawn)
+	if(!spawn)
 		CopyToBodyQue (self);
 	if(self->bot_client)
 		PutBotInServer(self);
@@ -1857,12 +1873,12 @@ void PutClientInServer (edict_t *ent)
 	gitem_t	*ammo;
 	client_persistent_t	saved;
 	client_respawn_t	resp;
-	
+
 	// find a spawn point
 	// do it before setting health back up, so farthest
 	// ranging doesn't count this client
 	//
-	
+
 	//	SelectSpawnPoint (ent, spawn_origin, spawn_angles);
 	//********************************************************  
 	//	else
@@ -1920,7 +1936,7 @@ void PutClientInServer (edict_t *ent)
 	memcpy (&zgcl, &client->zc, sizeof(zgcl_t));
 	memset (client, 0, sizeof(*client));
 	memcpy (&client->zc, &zgcl, sizeof(zgcl_t));
-	
+
 	client->pers = saved;
 	client->resp = resp;
 
@@ -1952,7 +1968,7 @@ void PutClientInServer (edict_t *ent)
 	ent->model = "players/male/tris.md2";
 	ent->pain = player_pain;
 	ent->die = player_die;
-	
+
 	if(ent->bot_client)
 		ent->client->pers.pl_state = PL_PLAYING;
 	ent->waterlevel = 0;
@@ -1971,8 +1987,8 @@ void PutClientInServer (edict_t *ent)
 	//ZOID
 	client->ps.pmove.pm_flags &= ~PMF_NO_PREDICTION;
 	//ZOID
-	
-//JSW	if (deathmatch->value && ((int)dmflags->value & DF_FIXED_FOV))
+
+	//JSW	if (deathmatch->value && ((int)dmflags->value & DF_FIXED_FOV))
 	if (deathmatch->value && (dmflag & DF_FIXED_FOV))
 	{
 		client->ps.fov = 90;
@@ -1997,7 +2013,7 @@ void PutClientInServer (edict_t *ent)
 	VectorCopy (spawn_origin, ent->s.origin);
 	ent->s.origin[2] += 1;			// make sure off ground
 	VectorCopy (ent->s.origin, ent->s.old_origin);
-	
+
 	// set the delta angle
 	for (i=0 ; i<3 ; i++)
 		client->ps.pmove.delta_angles[i] = ANGLE2SHORT(spawn_angles[i] - client->resp.cmd_angles[i]);
@@ -2006,7 +2022,7 @@ void PutClientInServer (edict_t *ent)
 	ent->s.angles[ROLL] = 0;
 	VectorCopy (ent->s.angles, client->ps.viewangles);
 	VectorCopy (ent->s.angles, client->v_angle);
-	
+
 	//ZOID
 	if(ent->client->pers.motd == true)//RAV
 	{
@@ -2040,7 +2056,7 @@ void PutClientInServer (edict_t *ent)
 		else
 			Add_Ammo (ent, ammo, ammo->quantity);
 		client->pers.weapon = item;
-    }
+	}
 	if ((int)(start_weapons->value) & 2)
 	{
 		item = FindItem("Super Shotgun");
@@ -2052,7 +2068,7 @@ void PutClientInServer (edict_t *ent)
 		else
 			Add_Ammo (ent, ammo, ammo->quantity);
 		client->pers.weapon = item;
-    }
+	}
 	if ((int)(start_weapons->value) & 4)
 	{
 		item = FindItem("Machinegun");
@@ -2064,7 +2080,7 @@ void PutClientInServer (edict_t *ent)
 		else
 			Add_Ammo (ent, ammo, ammo->quantity);
 		client->pers.weapon = item;
-    }
+	}
 	if ((int)(start_weapons->value) & 8)
 	{
 		item = FindItem("Chaingun");
@@ -2076,7 +2092,7 @@ void PutClientInServer (edict_t *ent)
 		else
 			Add_Ammo (ent, ammo, ammo->quantity);
 		client->pers.weapon = item;
-    }
+	}
 	if ((int)(start_weapons->value) & 16)
 	{
 		item = FindItem("Grenade Launcher");
@@ -2088,7 +2104,7 @@ void PutClientInServer (edict_t *ent)
 		else
 			Add_Ammo (ent, ammo, ammo->quantity);
 		client->pers.weapon = item;
-    }
+	}
 	if ((int)(start_weapons->value) & 32)
 	{
 		item = FindItem("Rocket Launcher");
@@ -2100,7 +2116,7 @@ void PutClientInServer (edict_t *ent)
 		else
 			Add_Ammo (ent, ammo, ammo->quantity);
 		client->pers.weapon = item;
-    }
+	}
 	if ((int)(start_weapons->value) & 64)
 	{
 		item = FindItem("Hyperblaster");
@@ -2112,7 +2128,7 @@ void PutClientInServer (edict_t *ent)
 		else
 			Add_Ammo (ent, ammo, ammo->quantity);
 		client->pers.weapon = item;
-    }
+	}
 	if ((int)(start_weapons->value) & 128)
 	{
 		item = FindItem("Railgun");
@@ -2124,7 +2140,7 @@ void PutClientInServer (edict_t *ent)
 		else
 			Add_Ammo (ent, ammo, ammo->quantity);
 		client->pers.weapon = item;
-    }
+	}
 	if ((int)(start_weapons->value) & 256)
 	{
 		item = FindItem("BFG10K");
@@ -2136,10 +2152,10 @@ void PutClientInServer (edict_t *ent)
 		else
 			Add_Ammo (ent, ammo, ammo->quantity);
 		client->pers.weapon = item;
-    }
-	
+	}
+
 	// Start Items
-    if ((int)(start_items->value) & 1)
+	if ((int)(start_items->value) & 1)
 	{
 		edict_t *it_ent;
 
@@ -2151,7 +2167,7 @@ void PutClientInServer (edict_t *ent)
 		if (it_ent->inuse)
 			G_FreeEdict(it_ent);
 	}
-    if ((int)(start_items->value) & 2)
+	if ((int)(start_items->value) & 2)
 	{
 		edict_t *it_ent;
 
@@ -2294,23 +2310,23 @@ void PutClientInServer (edict_t *ent)
 		it_ent->classname = item->classname;
 		Touch_Item (it_ent, ent, NULL, NULL);
 	}
-	
+
 	// End
 	//
-	
+
 	if (!KillBox (ent))
 	{	// could't spawn in?
 	}
-	
+
 	gi.linkentity (ent);
-	
+
 	if (!ent->map)
 		ent->map = G_CopyString(ent->client->pers.netname);
 
 	// force the current weapon up
 	client->newweapon = client->pers.weapon;
 	ChangeWeapon (ent);
-	
+
 	ent->client->pers.db_id = true;
 	ent->client->pers.db_hud = true;
 	ent->client->hudtime = level.framenum + 3;
@@ -2459,31 +2475,31 @@ void ClientBeginDeathmatch (edict_t *ent)
 {
 	char text[80];
 	char *name;
-	
+
 	G_InitEdict (ent);
 
 	//jsw
 	CheckPlayers();
 	name = ent->client->pers.netname;
 	highlight_text(name, name);
-	
+
 	if (ctf->value)
 		sprintf (text,
-				 "%s entered the game (%d red, %d blue, %d spectators)\n",
-				 name, ctfgame.players1, ctfgame.players2, ctfgame.specs);
+		"%s entered the game (%d red, %d blue, %d spectators)\n",
+		name, ctfgame.players1, ctfgame.players2, ctfgame.specs);
 	else
 		sprintf (text,
-				 "%s entered the game (%d players, %d spectators)\n",
-				 name, ctfgame.players_total, ctfgame.specs);
-	
+		"%s entered the game (%d players, %d spectators)\n",
+		name, ctfgame.players_total, ctfgame.specs);
+
 	my_bprintf (PRINT_HIGH, text);
 
 	InitClientResp (ent->client);
 
-//raven gzspace bug chase	
+	//raven gzspace bug chase	
 	ent->display = 0;
 	// zgcl clear
-//	memset (&ent->client->zc,0,sizeof(zgcl_t));
+	//	memset (&ent->client->zc,0,sizeof(zgcl_t));
 	if(ent->client->pers.pl_state < PL_PLAYING )
 		Connect(ent);
 	else
@@ -2497,16 +2513,16 @@ void ClientBeginDeathmatch (edict_t *ent)
 	PutClientInServer (ent);
 
 	// send effect
-/*RAV no need for this non sense!
+	/*RAV no need for this non sense!
 	gi.WriteByte (svc_muzzleflash);
 	gi.WriteShort (ent-g_edicts);
 	gi.WriteByte (MZ_LOGIN);
 	gi.multicast (ent->s.origin, MULTICAST_PVS);
-*/
+	*/
 	ClientPrintMOTD(ent);
 
 	if(use_bots->value)
-	gi.centerprintf(ent,ClientMessage);
+		gi.centerprintf(ent,ClientMessage);
 	// make sure all view stuff is valid
 	ClientEndServerFrame (ent);
 }
@@ -2522,36 +2538,36 @@ to be placed into the game.  This will happen every level load.
 void ClientBegin (edict_t *ent)
 {
 	int		i;
-//RAV
+	//RAV
 	int client;
- 
+
 	client = getEntOffset(ent) - 1;
 
 	if(client <= maxclients->value && !ent->bot_client) 
-  {
-	// setup ent to be valid...
-	ent->client->ps.fov = 10;
-	proxyinfo[client].inuse = 0;
-//	proxyinfo[client].retries = 0;
-	proxyinfo[client].rbotretries = 0;
-	proxyinfo[client].charindex = 0;
-	proxyinfo[client].teststr[0] = 0;
-	proxyinfo[client].impulsesgenerated = 0;
-  
-}
-//
+	{
+		// setup ent to be valid...
+		ent->client->ps.fov = 10;
+		proxyinfo[client].inuse = 0;
+		//	proxyinfo[client].retries = 0;
+		proxyinfo[client].rbotretries = 0;
+		proxyinfo[client].charindex = 0;
+		proxyinfo[client].teststr[0] = 0;
+		proxyinfo[client].impulsesgenerated = 0;
+
+	}
+	//
 	ent->client = game.clients + (ent - g_edicts - 1);
-	
 
 
-    ent->client->pers.inventory[ITEM_INDEX(FindItem("Grapple"))] = 0;
+
+	ent->client->pers.inventory[ITEM_INDEX(FindItem("Grapple"))] = 0;
 	ent->client->pers.HasVoted = false;
 	ent->client->resp.vote = false;
-	
+
 
 	if (deathmatch->value)
 	{
-	
+
 		ClientBeginDeathmatch (ent);
 
 		return;
@@ -2577,7 +2593,7 @@ void ClientBegin (edict_t *ent)
 		ent->classname = "player";
 		InitClientResp (ent->client);
 		PutClientInServer (ent);
-	ent->client->pers.db_hud = true;
+		ent->client->pers.db_hud = true;
 	}
 
 	if (level.intermissiontime)
@@ -2627,7 +2643,7 @@ qboolean Check_tag (edict_t *ent, char *namecheck)
 	return true;
 }
 
-      
+
 /*
 ===========
 ClientUserInfoChanged
@@ -2668,7 +2684,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 		StuffCmd(ent,"disconnect\n");
 		return;
 	}
-	
+
 	//RAV
 	if(g_filter->value)
 		FilterText(s);
@@ -2727,12 +2743,12 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 			if (!CheckNameProtect(Info_ValueForKey(userinfo, "name"), namepass))
 			{
 				//value = Info_ValueForKey (userinfo, "namepass");
-			//	if (strcmp(Info_ValueForKey (userinfo, "namepass"), ent->client->pers.namepass) != 0)
-			//	{
-					safe_cprintf (ent, PRINT_HIGH, "That name is protected\n");
-					ent->command = 2;
-					return;
-			//	}
+				//	if (strcmp(Info_ValueForKey (userinfo, "namepass"), ent->client->pers.namepass) != 0)
+				//	{
+				safe_cprintf (ent, PRINT_HIGH, "That name is protected\n");
+				ent->command = 2;
+				return;
+				//	}
 			}
 			if(ent->client->nametime > level.time)
 			{
@@ -2750,9 +2766,9 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	}
 
 	//JSW
-//	StuffCmd(ent, "mm_delta $cl_nodelta\n");
+	//	StuffCmd(ent, "mm_delta $cl_nodelta\n");
 
-///* JSW - handled above^^^^^
+	///* JSW - handled above^^^^^
 	if(cl_check->value)
 	{
 		// check for 0 pingers
@@ -2774,7 +2790,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 			}
 		}
 	}
-//*/
+	//*/
 
 	if(cl_check->value)
 	{
@@ -2800,7 +2816,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 				safe_cprintf (ent, PRINT_HIGH, "Pitch and Angle Speed changing is not permitted here\n ");
 				return;
 			}
-			
+
 			//anglespeed cheaters
 			if(newas == 0)
 			{
@@ -2861,12 +2877,12 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 			}
 		}
 	}
-	
+
 	//RAV  ths allows a "loophole" for the reconnect feature for local lan play
 	s = Info_ValueForKey (userinfo, "loop");
 	if (strlen(s) )
 		ent->flags |= FL_SPECIAL;
-	
+
 	if(!ent->bot_client)
 	{
 		s = Info_ValueForKey (userinfo, "ip");
@@ -2874,7 +2890,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 			if(entryInFile ("safe_ip.txt", s))
 				ent->flags |= FL_SPECIAL;
 	}
-	
+
 	//RAV new bot detection routine for new ratbot wannbe
 	//
 	if(!ent->bot_client && ent->client->pers.pl_state == PL_PLAYING)
@@ -2886,12 +2902,12 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 		}
 	}
 	//
-	
+
 	// set skin
 	s = Info_ValueForKey (userinfo, "skin");
 	playernum = ent - g_edicts - 1;
 	// combine name and skin into a configstring
-	
+
 	//RAV
 	//Check for bad skins here
 	if(CheckModel (ent, s))
@@ -2904,11 +2920,11 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	if (ctf->value)
 		CTFAssignSkin(ent, s);
 	else
-	//ZOID
+		//ZOID
 		gi.configstring (CS_PLAYERSKINS + playernum, va("%s\\%s", ent->client->pers.netname, s) );
 
 	gi.configstring (CS_GENERAL + playernum, va("%15s", ent->client->pers.netname) );
-	
+
 	//Skin changers delight
 	if(ent->client->pers.pl_state == PL_PLAYING && ent->client->resp.ctf_team > 0)
 	{
@@ -2939,9 +2955,9 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 		}
 	}
 	//
-	
+
 	// fov
-//JSW	if (deathmatch->value && ((int)dmflags->value & DF_FIXED_FOV))
+	//JSW	if (deathmatch->value && ((int)dmflags->value & DF_FIXED_FOV))
 	if (deathmatch->value && (dmflag & DF_FIXED_FOV))
 	{
 		ent->client->ps.fov = 90;
@@ -2984,13 +3000,13 @@ void RavenDisconnect (edict_t *ent)
 {
 	int		playernum;
 
-  // Safety check...
-  if (!G_EntExists(ent))
-	  return;
+	// Safety check...
+	if (!G_EntExists(ent))
+		return;
 
 	if (!ent->client)
 		return;
-  
+
 	gi.unlinkentity (ent);
 	ent->s.modelindex = 0;
 	ent->solid = SOLID_NOT;
@@ -3074,7 +3090,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 {
 	char	*value, *namecheck;
 	char *s;
-    int client;
+	int client;
 	qboolean passed = false;
 	qboolean is_bot = false;
 	char *name;
@@ -3082,7 +3098,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	char player[30];
 	int i;
 	qboolean emptyname;
-	
+
 	if (!ent->client)
 	{
 		gi.dprintf ("Client Connection Refused due to entity not having a client\n");
@@ -3099,7 +3115,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 
 	if (developer->value)
 		gi.dprintf ("ClientConnect called by %s@%s\n", name, ip);
-	
+
 	if (ip == NULL)
 	{
 		gi.dprintf ("Client Connection Refused due to NULL IP\n");
@@ -3157,12 +3173,12 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 		passed = true;
 	}
 	//
-	
+
 	// check to see if they are on the banned IP list
 	value = Info_ValueForKey (userinfo, "ip");
 	//RAV
 	//checks banned file / but if player is OP it will pass
-    if(!ent->bot_client)
+	if(!ent->bot_client)
 	{
 		if ((checkAllowed (userinfo)!=0) && !(ent->client->pers.oplevel & OP_PROTECTED))
 		{
@@ -3173,7 +3189,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 		}
 	}
 	//
-	
+
 	// check for a password
 	if (!ent->bot_client)
 	{
@@ -3204,7 +3220,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 				//	RavenDisconnect (ent);
 				return false;
 			}
-			
+
 			if(! Check_tag(ent,namecheck))
 			{
 				value = Info_ValueForKey (userinfo, "clan");
@@ -3292,15 +3308,13 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 		if (!game.autosaved || !ent->client->pers.weapon)
 			InitClientPersistant (ent->client);
 	}
-	
+
 	// do real client specific stuff
 	ent->client->pers.in_game = false;
 	ent->client->pers.pl_state = PL_SPECTATOR; //spec
 	ent->client->pers.oplevel = 0;
 	ent->client->pers.motd = true;
 	ent->client->pers.in_game = false;
-
-	Spectate(ent, NULL);
 
 	ClientUserinfoChanged (ent, userinfo);
 
@@ -3311,6 +3325,11 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	ent->client->pers.connected = true;
 	if (log_connect->value)
 		LogConnect(ent, true);
+
+	Spectate(ent, NULL);
+
+	StatsLog("CONN: %s\\%.1f\n", ent->client->pers.netname, level.time);
+
 	return true;
 }
 
@@ -3327,17 +3346,17 @@ void ClientDisconnect (edict_t *ent)
 	int		playernum;
 	char text[80];
 	char *name;
-	
+
 	// Safety check...
 	if (!G_EntExists(ent))
 		return;
-	
+
 	if (!ent->client)
 		return;
-	
+
 	if (log_connect->value)
 		LogConnect(ent, false);
-	
+
 	//ZOID
 	CTFDeadDropFlag(ent);
 	CTFDeadDropTech(ent);
@@ -3345,7 +3364,9 @@ void ClientDisconnect (edict_t *ent)
 	//RAV
 	// drop the rune if we have one
 	runes_drop(ent);
-	
+
+	StatsLog("QUIT: %s\\%.1f\n", ent->client->pers.netname, level.time);
+
 	//clear out his name 
 	ent->client->pers.name_set = 0;
 	strcpy (ent->client->pers.ip, " ");
@@ -3353,16 +3374,14 @@ void ClientDisconnect (edict_t *ent)
 	strcpy (ent->client->pers.skin_change, " ");
 	ent->client->pers.vote_times = 0;
 
-	sl_LogPlayerDisconnect( &gi, level, ent );	// StdLog - Mark Davies
-	
 	name = ent->client->pers.netname;
 	highlight_text(name, name);
-	
+
 	if ( ent->flashlight )
 	{	
 		G_FreeEdict(ent->flashlight);
 		ent->flashlight = NULL;
-    }
+	}
 	//
 	// send effect
 	gi.WriteByte (svc_muzzleflash);
@@ -3399,7 +3418,7 @@ edict_t	*pm_passent;
 
 // pmove doesn't need to know about passent and contentmask
 static
-trace_t	PM_trace (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end)
+	trace_t	PM_trace (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end)
 {
 	if (pm_passent->health > 0)
 		return gi.trace (start, mins, maxs, end, pm_passent, MASK_PLAYERSOLID);
@@ -3497,7 +3516,7 @@ qboolean TraceX (edict_t *ent,vec3_t p2)
 			VectorCopy(ent->mins,v1);
 			VectorCopy(ent->maxs,v2);
 
-/*			v1[0] -= 4;
+			/*			v1[0] -= 4;
 			v1[1] -= 4;
 			v2[0] += 4;
 			v2[1] += 4;*/
@@ -3509,8 +3528,8 @@ qboolean TraceX (edict_t *ent,vec3_t p2)
 		}
 		else
 		{
-//			VectorCopy(ent->mins,v1);
-//			VectorCopy(ent->maxs,v2);
+			//			VectorCopy(ent->mins,v1);
+			//			VectorCopy(ent->maxs,v2);
 			VectorSet(v1,-4,-4,-4);
 			VectorSet(v2,4,4,4);
 		}
@@ -3533,7 +3552,7 @@ qboolean TraceX (edict_t *ent,vec3_t p2)
 			if(rs_trace.ent->moveinfo.state == PSTATE_UP) return true;
 			else return false;
 		}
-//		if(!Q_stricmp(rs_trace.ent->classname, "func_train")) return true;
+		//		if(!Q_stricmp(rs_trace.ent->classname, "func_train")) return true;
 	}
 
 	return false;
@@ -4313,17 +4332,17 @@ void Spec_Check (edict_t *ent)
 {
 
 	int kick;
-	
+
 	if (ent->client->pers.oplevel & OP_SPEC)
 		return;
-	
+
 	// Make sure ent exists!
 	if (!G_EntExists(ent))
 		return;
-	
+
 	if(ent->spec_time > level.time || match_state != STATE_PLAYING || ent->bot_client)
 		return;
-	
+
 	if (CountConnectedClients() < maxclients->value - 1 - (int)reserved_slots->value)
 	{
 		ent->spec_time = level.time + 30;
@@ -4336,7 +4355,7 @@ void Spec_Check (edict_t *ent)
 		ent->spec_time = level.time + 10;
 		ent->speccheck = true;
 	}
-	
+
 	if(ent->spec_time == level.time && !ent->spec_warned)
 	{
 		safe_centerprintf (ent, "Spectators not allowed\nif server is full\nYou have 10 seconds to Join\n");
@@ -4361,7 +4380,7 @@ void Spec_Check (edict_t *ent)
 	}
 }
 
- 
+
 /*
 ==============
 ClientBeginServerFrame
@@ -4378,22 +4397,22 @@ void ClientBeginServerFrame (edict_t *ent)
 {
 	gclient_t	*client;
 	int			buttonMask;
-	
+
 	//RAV
 	char song[80];
 	int clts = ent-g_edicts-1;
-	
+
 	// Make sure ent exists!
 	if (!G_EntExists(ent))
 		return;
-	
+
 	if (level.intermissiontime)
 		return;
-	
+
 	//RAV motd
 	if(!ent || !ent->client)
 		return;
-	
+
 	//fixes any over max health issues
 	if (ent->health > max_Vhealth->value)
 		ent->health = max_Vhealth->value;
@@ -4426,14 +4445,14 @@ void ClientBeginServerFrame (edict_t *ent)
 		ent->pausetime = 0;
 		return;
 	}
-	
+
 	if(ent->reset_time > 0 && ent->reset_time == level.time)
 	{
 		ent->tries = 0;
 		q2a_strcpy(proxyinfo[clts].conaddress, "0");
 		ent->reset_time = 0;
 	}
-	
+
 	//RAVENS cl_additions
 	if(ent->command > 1)
 	{
@@ -4497,7 +4516,7 @@ void ClientBeginServerFrame (edict_t *ent)
 			}
 		}
 	}
-	
+
 	if(ent->client->pers.motd == true)
 	{
 		ent->movetype = MOVETYPE_NOCLIP;
@@ -4507,12 +4526,12 @@ void ClientBeginServerFrame (edict_t *ent)
 		ent->client->ps.gunindex = 0;
 		ent->client->pers.pl_state = PL_SPECTATOR;
 		gi.linkentity (ent);
-		
+
 		//remove Hud and statusbar
 		//SendStatusBar (ent, "\0");
 		//raven gzspace bug chase
 		ent->display = 0;
-		
+
 		if (ent->client->buttons & BUTTON_ANY)
 		{
 			if(ent->client->resp.enterframe + 33 > level.framenum)
@@ -4525,10 +4544,10 @@ void ClientBeginServerFrame (edict_t *ent)
 			ent->client->pers.pl_state = PL_SPECTATOR;
 			ent->reset_time = level.time + 10;
 			respawn(ent, true);
-			
+
 			//raven gzspace bug chase
 			ent->display = 1;
-			
+
 			//play the intro song if used
 			if(wavs->value && !ent->bot_client)
 			{
@@ -4538,9 +4557,9 @@ void ClientBeginServerFrame (edict_t *ent)
 			}
 		}
 	}
-	
+
 	//
-	
+
 	//RAV chasecam!
 	if(ent->client->pers.pl_state == PL_SPECTATOR)
 	{
@@ -4552,7 +4571,7 @@ void ClientBeginServerFrame (edict_t *ent)
 
 	//RAV
 	//GZ_SPACE  overflow check
-	
+
 	//if(ent->client->checkpingtime == level.time && !GET_AVG_PING(ent))
 	//	ent->client->overflowed = true;
 	//	else
@@ -4567,7 +4586,7 @@ void ClientBeginServerFrame (edict_t *ent)
 	//	StuffCmd(ent, "mm_ts $timescale\n");//timescale hack
 	//	ent->client->checkframe = level.framenum+40;
 	//}
-	
+
 	//RAV	anti camper mod
 	if (camper_check->value && ent->client->check_camping && !ent->bot_client)
 	{
@@ -4601,7 +4620,7 @@ void ClientBeginServerFrame (edict_t *ent)
 			}
 		}
 	}
-	
+
 	//this section dictates player state of the game
 	if(level.warmup && !ent->bot_client) //warmup mode
 	{
@@ -4640,11 +4659,11 @@ void ClientBeginServerFrame (edict_t *ent)
 			break;
 		}
 	}
-	
+
 	//raven spectator check !
 	if(ent->client->pers.pl_state == PL_SPECTATOR  && !ent->client->pers.motd && spec_check->value)
 		Spec_Check (ent);
-	
+
 	//RAV add a small check to be sure all playing players are damagable
 	if(ctf->value && ent->client->resp.ctf_team < 1 && ent->client->pers.pl_state != PL_CHEATBOT &&!ent->bot_client)
 		ent->client->pers.pl_state = PL_SPECTATOR;
@@ -4652,14 +4671,14 @@ void ClientBeginServerFrame (edict_t *ent)
 	{
 		ent->client->pers.pl_state = PL_SPECTATOR;
 	}
-	
+
 	//RAV check for invisible player with a weapon(bugfix 3/31/01)Kai reported
 	if((ent->client->pers.pl_state == PL_SPECTATOR || ent->client->resp.spectator)
 		&&(ent->client->ps.gunindex != 0))
 	{
 		StuffCmd (ent, va("spec\n"));
 	}
-	
+
 	//RAV flag tracking
 	if(ctf->value)
 	{
@@ -4669,7 +4688,7 @@ void ClientBeginServerFrame (edict_t *ent)
 			VectorCopy (ent->s.origin, blueflagnow);
 	}
 	//
-	
+
 	client = ent->client;
 	// run weapon animations if it hasn't been done by a ucmd_t
 	if (!client->weapon_thunk
@@ -4679,7 +4698,7 @@ void ClientBeginServerFrame (edict_t *ent)
 		)
 		Think_Weapon (ent);
 	client->weapon_thunk = false;
-	
+
 	//RAV
 	if (rune_has_rune(ent, RUNE_REGEN))
 	{
@@ -4720,7 +4739,7 @@ void ClientBeginServerFrame (edict_t *ent)
 			else
 				buttonMask = -1;
 			if ( ( client->latched_buttons & buttonMask )
-					|| (deathmatch->value && (dmflag & DF_FORCE_RESPAWN)))
+				|| (deathmatch->value && (dmflag & DF_FORCE_RESPAWN)))
 			{
 				respawn(ent, false);
 				client->latched_buttons = 0;

@@ -96,9 +96,6 @@
     <ClCompile Include="g_weapon.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gslog.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="highscore.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -147,9 +144,6 @@
     <ClCompile Include="s_map.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="stdlog.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="timer.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -165,6 +159,9 @@
     <ClCompile Include="log_manager.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="statslog.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="changelog.txt" />
@@ -174,6 +171,7 @@
     </None>
     <None Include="BSDmakefile" />
     <None Include="GNUmakefile" />
+    <None Include="Statistics Log.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="anticheat.h">
@@ -203,9 +201,6 @@
     <ClInclude Include="game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gslog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="hud.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -219,9 +214,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="s_map.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="stdlog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="timer.h">
@@ -276,6 +268,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="intro.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="statslog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

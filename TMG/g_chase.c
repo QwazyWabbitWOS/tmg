@@ -34,7 +34,7 @@ void SwitchModeChaseCam(edict_t *ent)
 void ToggleChaseCam(edict_t *ent, pmenu_t *p)
 {
 	int i;
-	edict_t *e;
+	edict_t *targ;
 
 	// if it's on, turn if off...
 	if (ent->client->chase_target) {
@@ -50,13 +50,13 @@ void ToggleChaseCam(edict_t *ent, pmenu_t *p)
 
 	// if it's off, find a new chase target and track it
 	for (i = 1; i <= maxclients->value; i++) {
-		e = g_edicts + i;
+		targ = g_edicts + i;
 
 		// if we find a player that is in the game,
 		// not spectating and not dead, track them !
-		if (e->inuse && e->solid != SOLID_NOT){
+		if (targ->inuse && targ->solid != SOLID_NOT){
 			ent->client->chase_mode = CHASE_FIRSTMODE;
-			ent->client->chase_target = e;
+			ent->client->chase_target = targ;
 			PMenu_Close(ent);
 			ent->client->update_chase = true;
 			safe_cprintf(ent, PRINT_HIGH, 

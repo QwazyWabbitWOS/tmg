@@ -2316,7 +2316,7 @@ void Bots_Move_NORM (edict_t *ent)
 	{
 		ent->nextthink = level.time + FRAMETIME;
 		if(debug_botspawn->value)
-			DbgPrintf("%s %s %s at %f %f %f\n", __func__, 
+			gi.dprintf("%s %s %s at %f %f %f\n", __func__, 
 				ent->client->pers.netname, "Position",
 				ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
 		

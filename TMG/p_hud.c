@@ -5,7 +5,7 @@
 #include "p_client.h"
 #include "runes.h"
 #include "highscore.h"
-#include "stdlog.h"
+#include "statslog.h"
 #include "intro.h"
 
 /*
@@ -170,7 +170,7 @@ void BeginIntermission (edict_t *targ)
 	{
 		ent = g_edicts + 1 + i;
 		if (ent->inuse && !ent->bot_client)
-			sl_LogHookStats(&gi, level, ent);
+			StatsLogHooks(ent);
 	}
 
 	// move all clients to the intermission point

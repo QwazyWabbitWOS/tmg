@@ -13,9 +13,8 @@
 #include "highscore.h"
 #include "log_manager.h"
 #include "intro.h"
+#include "statslog.h"
 
-//RAV
-#include "gslog.h"	//	StdLog - Mark Davies
 //
 field_t fields[] = {
 	{"classname", FOFS(classname), F_LSTRING},
@@ -435,6 +434,9 @@ void InitGame (void)
 	ffa_cfg_file = gi.cvar ("ffa_cfgfile", "ffa.cfg", 0);
 	ctf_cfg_file = gi.cvar ("ctf_cfgfile", "railwarz.cfg", 0);
 
+	//QW// Initialize cvars pertaining to stats logs
+	StatsInitVars();
+
 	/*
 	 allow_lasermines = gi.cvar ("allow_lasermines", "0", CVAR_LATCH);
 	 allow_energy_lasers = gi.cvar ("allow_energy_lasers", "1", CVAR_SERVERINFO);
@@ -513,11 +515,10 @@ void InitGame (void)
 
 	CheckOpFile(NULL, "*@*.*.*.*", false);
 
-	// StdLog - Mark Davies (Only required to set patch name)
 	if(ctf->value)
-		sl_Logging( &gi, "TMG_MOD CTF" );
+		StatsLog("MODE: %s %s\n", "TMG_MOD CTF", MOD_VERSION );
 	else
-		sl_Logging( &gi, "TMG_MOD Deathmatch" );
+		StatsLog("MODE: %s %s\n", "TMG_MOD Deathmatch", MOD_VERSION );
 
 	if(use_bots->value)
 		Load_BotInfo();

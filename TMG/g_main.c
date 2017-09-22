@@ -12,12 +12,11 @@
 #include "p_hud.h"
 #include "bot.h"
 #include "runes.h"
-#include "stdlog.h"	//	StdLog - Mark Davies
-#include "gslog.h"	//	StdLog - Mark Davies. Depends on level_locals_t
 #include "highscore.h"
 #include "hud.h"
 #include "maplist.h"
 #include "log_manager.h"
+#include "statslog.h"
 
 game_locals_t	game;
 level_locals_t	level;
@@ -312,13 +311,14 @@ void ShutdownGame (void)
 		{
 			ent = g_edicts + 1 + i;
 			if (ent->inuse && !ent->bot_client)
-				sl_LogHookStats(&gi, level, ent);
+				StatsLogHooks(ent);
 		}
 	}
 
-	//RAV
-	sl_GameEnd( &gi, level );	// StdLog - Mark Davies
-	//
+	StatsLog("DOWN: %s\\%.1f\n", level.mapname, level.time);
+	if (pStatsfile)
+		fclose(pStatsfile);
+
 	if (mdsoft_map)
 		free(mdsoft_map);
 
@@ -449,7 +449,7 @@ The timelimit or fraglimit has been exceeded
 void EndDMLevel (void)
 {
 	edict_t		*ent = NULL;
- 	int	votedmap = NO_MAPVOTES;
+	int	votedmap = NO_MAPVOTES;
 
 	// stay on same level flag
 	if (dmflag & DF_SAME_LEVEL)
@@ -508,11 +508,11 @@ void EndDMLevel (void)
     }
     /* New code - END - mdavies */
 
-    if( !ent )                          /* added line - mdavies */
-    {                                   /* added line - mdavies */
+    if( !ent )
+    {
         DbgPrintf("mdsoft_NextMap returned NULL!\n");
 		assert(ent); // ent must never be NULL
-		if (level.nextmap[0])           /* changed else if to if - mdavies */
+		if (level.nextmap[0])
         {   // go to a specific map
             ent = G_Spawn ();
             ent->classname = "target_changelevel";
@@ -534,6 +534,9 @@ void EndDMLevel (void)
     }
 	if(use_bots->value)
 		Load_BotInfo();
+
+	StatsLogPlayerStats();
+
 }
 
 
@@ -698,7 +701,10 @@ void G_RunFrame (void)
 	if (level.framenum % 10 == 0)
 	{
 		if (Log_CheckLocalMidnight())
+		{
 			Log_RenameConsoleLog();
+			StatsLogRename();
+		}
 	}
 
 	level.framenum++;

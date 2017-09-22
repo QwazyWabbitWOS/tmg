@@ -1,0 +1,155 @@
+This describes the stats log used by TMG_MOD as of version 0.2.38.
+
+The log is streamed into game_dir/stats/stats.log by default.
+
+Cvars controlling stats log:
+statslog 0 | 1 disables and enables logging all stats (change anytime)
+statslog is 1 by default at startup, set statslog 0 in your server
+configuration if you don't want stats logging.
+statsfile "stats.log" by default.
+If 
+
+statsfile_rename 0 = never, 1 = daily, 2 = weekly, 3 = monthly
+game_dir is set to current game directory by InitGame
+and stats directory must exist at startup.
+
+The stats file is closed momentarily and renamed at
+local midnight on the schedule set by the value of
+statsfile_rename. The file name is prepended with the
+current date and the newly named file is moved to game_dir/logs/
+and this folder must exist at startup.
+
+Format of the stats output
+
+Each line of stats is stamped with current date and time of the
+output something like this:
+
+09/21/2017 10:48:49 : MODE: TMG_MOD CTF 0.2.38
+09/21/2017 10:48:49 : START: q2dm1\0.0
+09/21/2017 10:49:03 : CONN: QwazyWabbit\13.8
+09/21/2017 10:49:04 : SPEC: QwazyWabbit\15.2
+
+Your stats parser can ignore or use the timestamp as you see fit.
+Stats begin with a four or five letter class name followed by
+a colon and space. All other data is backslash delimited.
+
+MODE: "TMG_MOD CTF" | "TMG_MOD Deathmatch" depending on whether
+the game was started in CTF or DEATHMATCH. The current version of
+the mod code follows the mode string. This message is posted once
+at game start.
+
+START: mapname\level.time
+This marks the start of a new level. level.time is always zero
+at this time.
+
+DOWN: mapname\level.time
+Server was shut down.
+
+CONN: netname\level.time
+This logs a player connection to the server and the time in
+the current level.
+
+SPEC: netname\level.time
+This marks the player moving to spectator mode. You can use
+this along with SIDE and JOIN to calculate the time the player
+spent in spectator vs playing the game.
+
+SIDE: netname\team\level.time
+Player changed sides and moved from team 1 to 2 or 2 to 1.
+Team 1 is RED, Team 2 is BLUE.
+
+JOIN: netname\team\level.time
+Player moved from spectator to team 1 or 2.
+
+OBIT: Victim_name\killer_name\victim ping\killer ping\mod\location\level.time
+ZigBots always have zero ping.
+Location is always null in the current version. There can be some stats on
+headshot vs body vs legs but it's not implemented at this time.
+
+mod = means of death, enumerated in g_local.h.
+
+// means of death
+#define MOD_UNKNOWN			0
+#define MOD_BLASTER			1
+#define MOD_SHOTGUN			2
+#define MOD_SSHOTGUN		3
+#define MOD_MACHINEGUN		4
+#define MOD_CHAINGUN		5
+#define MOD_GRENADE			6
+#define MOD_G_SPLASH		7
+#define MOD_ROCKET			8
+#define MOD_R_SPLASH		9
+#define MOD_HYPERBLASTER	10
+#define MOD_RAILGUN			11
+#define MOD_BFG_LASER		12
+#define MOD_BFG_BLAST		13
+#define MOD_BFG_EFFECT		14
+#define MOD_HANDGRENADE		15
+#define MOD_HG_SPLASH		16
+#define MOD_WATER			17
+#define MOD_SLIME			18
+#define MOD_LAVA			19
+#define MOD_CRUSH			20
+#define MOD_TELEFRAG		21
+#define MOD_FALLING			22
+#define MOD_SUICIDE			23
+#define MOD_HELD_GRENADE	24
+#define MOD_EXPLOSIVE		25
+#define MOD_BARREL			26
+#define MOD_BOMB			27
+#define MOD_EXIT			28
+#define MOD_SPLASH			29
+#define MOD_TARGET_LASER	30
+#define MOD_TRIGGER_HURT	31
+#define MOD_HIT				32
+#define MOD_TARGET_BLASTER	33
+#define MOD_GRAPPLE			34
+#define MOD_FRIENDLY_FIRE	0x8000000
+
+KILL: netname\ping\mod\hitlocation\level.time
+Player killed himself somehow.
+hitlocation is always 0 in this version of TMG. 
+
+FLAG: can have several modes:
+
+FLAG: attacker\victim\F def\award\level.time
+Flag was defended. "F def"
+award = points awarded for frag in vicinity of flag.
+
+FLAG: netname\F Pickup\award\level.time
+Flag was picked up by netname "F Pickup".
+award = points added for the pickup.
+
+FLAG: attacker\victim\FC Frag\award\level.time
+Attacker fragged the flag carrier. "FC Frag"
+award = points added for fragging the carrier.
+
+FLAG: netname\F Return\award\level.time
+"F Return" is constant text.
+Playername was awarded award points for returning the flag.
+
+CAPT: netname\F Capture\award\held\level.time
+Player captured the flag. "F Capture"
+award = bonus points awarded
+held = seconds he held the flag
+level.time = time in level the flag was captured.
+
+TEAM: Playername\Team Score\award\level.time
+Team bonus points added to player's score on capture of flag.
+"Team Score" is constant text.
+award = number of points player received.
+
+ASST: netname\F Return Assist\award\level.time OR
+ASST: netname\FC Frag Assist\award\level.time
+Player received award points for flag return assist
+or frag of flag carrier assist.
+
+HOOKS: netname\hooks_landed_count\hooks_deployed_count\level.time
+The number of hooks the player landed and deployed during the level.
+This is posted at the end of the level.
+Note: landed will always equal deployed unless cvar hook_sky is 0.
+
+STAT: netname\score\eff\captures\deaths\fph\ctf_team\mapname\level.time
+Summary stats for each player (never the bots) who remain in game at the
+end of the level, whether by timelimit, fraglimit, capturelimit.
+ 

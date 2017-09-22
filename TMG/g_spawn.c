@@ -7,8 +7,7 @@
 #include "timer.h"
 #include "eavy.h"
 #include "bot.h"
-#include "stdlog.h"	//	StdLog - Mark Davies
-#include "gslog.h"	//	StdLog - Mark Davies. Depends on level_locals_t
+#include "statslog.h"
 #include "highscore.h"
 
 /**
@@ -985,8 +984,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	if(ctf->value && dedicated->value)
 		EAVYCTF_Init();
 
-	sl_GameStart( &gi, level );//stdlog mark
-	//
+	StatsLog("START: %s\\%.1f\n", level.mapname, level.time );
 
 	if (!G_Find(NULL, FOFS(classname), "item_flag_team1"))
 	{	// not a CTF level
