@@ -1,17 +1,22 @@
 This describes the stats log used by TMG_MOD as of version 0.2.38.
 
-The log is streamed into game_dir/stats/stats.log by default.
+The log is streamed into game_dir/stats/stats.log by default. 
+For example, if you use +set game ctf in the command line at server 
+start then this path will be ctf/stats/stats.log.
 
 Cvars controlling stats log:
 statslog 0 | 1 disables and enables logging all stats (change anytime)
 statslog is 1 by default at startup, set statslog 0 in your server
 configuration if you don't want stats logging.
-statsfile "stats.log" by default.
-If 
+statsfile is set to "stats.log" by default.
+
+If statslog is changed in game the stats can be started and stopped
+while the action is going on. The file will be automatically closed
+and opened as needed but there will be discontinuity in the statistics.
 
 statsfile_rename 0 = never, 1 = daily, 2 = weekly, 3 = monthly
 game_dir is set to current game directory by InitGame
-and stats directory must exist at startup.
+and the stats and logs directories must exist at startup.
 
 The stats file is closed momentarily and renamed at
 local midnight on the schedule set by the value of
