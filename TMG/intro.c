@@ -281,7 +281,7 @@ void PrecacheSongs(void)
 
 	song[0] = '\0';
 
-	sprintf(file_name, "%s/%s/%s/intro.txt",
+	Com_sprintf(file_name, sizeof file_name, "%s/%s/%s/intro.txt",
 		basedir->string, game_dir->string, cfgdir->string);
 
 	file = fopen(file_name, "r");
@@ -340,7 +340,7 @@ void PrecacheSongs(void)
 				memset(&names[levels][n_chars], 0, 1);
 				if (levels > 0)
 					//precache here 
-					sprintf(song, "misc/%s.wav", names[levels]);
+					Com_sprintf(song, sizeof song, "misc/%s.wav", names[levels]);
 				if (strlen(song) > 0)
 				{
 					//int i;

@@ -1194,7 +1194,7 @@ int Q_strcasecmp (char *s1, char *s2)
 }
 
 /**
- Safer sprintf uses large buffer
+ Safer, uses large buffer
 */
 void Com_sprintf (char *dest, int size, char *fmt, ...)
 {

@@ -495,7 +495,7 @@ qboolean ModifyOpLevel (int entry, int newlevel)
 	{
 		for (i = 0; i < entriesinopfile+1; i++)
 		{				
-			sprintf (line, "%s\t%d\n", oplist[i].entry, oplist[i].level);
+			Com_sprintf (line, sizeof line, "%s\t%d\n", oplist[i].entry, oplist[i].level);
 			fputs(line, opfile);
 		}
 	}
@@ -519,7 +519,7 @@ int AddOperator (char entry[IP_LENGTH], int level, char pass[16])
 
 	if ((opfile = tn_open("user_o.txt", "a+")))
 	{
-		sprintf (line, "%s\t%d\t%s\n", entry, level, pass);
+		Com_sprintf (line, sizeof line, "%s\t%d\t%s\n", entry, level, pass);
 		fputs(line, opfile);
 		fclose(opfile);
 		CheckOpFile(NULL, "*@*.*.*.*", false);
@@ -619,7 +619,7 @@ void LogConnect (edict_t *ent, qboolean connect)
 	char file_name[256];
 	char client[256];
 
-	sprintf(file_name, "%s/%s/%s/logs/connect.log",
+	Com_sprintf(file_name, sizeof file_name, "%s/%s/%s/logs/connect.log",
 			basedir->string, game_dir->string, cfgdir->string);
 
 	if (!ent)
@@ -639,7 +639,7 @@ void LogConnect (edict_t *ent, qboolean connect)
 	if (ent->bot_client)
 		return;
 
-	sprintf(client, "%s [%s] %s", sys_date, sys_time, NameAndIp(ent));
+	Com_sprintf(client, sizeof client, "%s [%s] %s", sys_date, sys_time, NameAndIp(ent));
 
 	if (connect)
 		strcat(client, " connected\n");
@@ -669,10 +669,10 @@ void LogChat (char *text)
 		return;
 	}
 
-	sprintf(file_name, "%s/%s/%s/logs/%schat.log",
+	Com_sprintf(file_name, sizeof file_name, "%s/%s/%s/logs/%schat.log",
 			basedir->string, game_dir->string, cfgdir->string, sys_date);
 
-	sprintf(entry, "%s [%s] %s", sys_date, sys_time, text);
+	Com_sprintf(entry, sizeof entry, "%s [%s] %s", sys_date, sys_time, text);
 	white_text(entry, entry);
 	
 	if ((file=fopen(file_name, "a")))

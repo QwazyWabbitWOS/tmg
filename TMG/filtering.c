@@ -354,7 +354,7 @@ void LoadTextFilterInfo(void)
 	PurgeTextFilterInfo();
 
 	// Create the pathname to the filter file.
-	sprintf(szFile, "%s/%s/%s/textfilter.cfg",
+	Com_sprintf(szFile, sizeof szFile, "%s/%s/%s/textfilter.cfg",
 			basedir->string, game_dir->string, cfgdir->string);
 
 	// Try to open the filter file.

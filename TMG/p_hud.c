@@ -88,7 +88,7 @@ void BeginIntermission (edict_t *targ)
 		{
 			gi.cvar_set("wav", nextwav);
 			//set up the songtoplay cvar
-			sprintf(sound, "misc/%s.wav", nextwav);
+			Com_sprintf(sound, sizeof sound, "misc/%s.wav", nextwav);
 			gi.cvar_set("song", sound);
 		}
 	}
@@ -444,8 +444,8 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 			{
 				cl = &game.clients[sorted[i]];
 				cl_ent = g_edicts + 1 + sorted[i];
-				sprintf(entry, "yv %d ", -30 + i * 8);
-				sprintf(entry + strlen(entry),
+				Com_sprintf(entry, sizeof entry, "yv %d ", -30 + i * 8);
+				Com_sprintf(entry + strlen(entry), sizeof entry,
 					"xv -125 %s \"%3d  %3d  %3d %3d %3d    %s\"",
 					(cl_ent == ent) ? "string2" : "string",
 					cl->resp.score,
@@ -464,7 +464,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 
 		// Show how many didn't fit
 		if (total - last > 1)
-			sprintf(string + strlen(string), 
+			Com_sprintf(string + strlen(string), sizeof string, 
 			"xv 108 yv %d string2 \"& %d more\" ",
 			-30 + (last + 1) * 8, total - last - 1);
 
@@ -478,7 +478,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 				cl = &game.clients[i];
 				if (cl_ent->inuse && cl_ent->client->pers.pl_state == PL_SPECTATOR)
 				{
-					Com_sprintf(entry, sizeof(entry),
+					Com_sprintf(entry, sizeof entry,
 						"xv 195 yv %d %s \"%s\" " // spectator name
 						"xv 300 yv %d %s \"<%s>\" ", // who he's chasing
 						j, (cl_ent == ent) ? "string2" : "string", cl->pers.netname,
@@ -532,7 +532,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 	{
 		string[0] = 0;
 		stringlength = strlen(string);
-		Com_sprintf (entry, sizeof(entry), ShowHud(ent));
+		Com_sprintf (entry, sizeof entry, ShowHud(ent));
 		j = strlen(entry);
 		if (!(stringlength + j > 1400))
 		{

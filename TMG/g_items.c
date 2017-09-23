@@ -202,14 +202,6 @@ qboolean Pickup_Powerup (edict_t *ent, edict_t *other)
 
 	if (Q_stricmp(ent->classname, "item_quad") == 0 && ((int)quad_notify->value & QUAD_NOTIFY_TAKEN))
 	{
-		//if(other->client->resp.ctf_team == CTF_TEAM1)
-			//sprintf(p, "<RED> %s picked up a quad", other->client->pers.netname);
-		//if(other->client->resp.ctf_team == CTF_TEAM1)
-			//sprintf(p, "<BLUE> %s picked up a quad", other->client->pers.netname);
-
-//		CTFSay_Team_Location(other, q);
-//		gi.dprintf("netname was %s\n", other->client->pers.netname);
-
 		for (i = 1; i <= maxclients->value; i++)
 		{
 			e = g_edicts + i;
@@ -229,9 +221,7 @@ qboolean Pickup_Powerup (edict_t *ent, edict_t *other)
 				gi.sound (e, CHAN_AUTO, gi.soundindex ("items/quadtake.wav"), 1, ATTN_NONE, 0);
 			}
 		}
-//		gi.dprintf("a quad was picked up!\n");
 	}
-
 	return true;
 }
 

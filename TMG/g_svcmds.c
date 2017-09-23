@@ -40,7 +40,7 @@ static void SaveChain(void)
 		return;
 	}
 
-	sprintf(name,"%s/%s/%s/nav/%s.nav",
+	Com_sprintf(name, sizeof name, "%s/%s/%s/nav/%s.nav",
 			basedir->string, game_dir->string,
 			cfgdir->string,level.mapname);
 

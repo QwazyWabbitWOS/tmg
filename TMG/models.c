@@ -10,7 +10,7 @@ qboolean CheckModel(edict_t *ent, char *s)
 	if(!check_models->value)
 		return true;
 
-	sprintf(file_name, "%s/%s/%s/models.txt", basedir->string, game_dir->string, cfgdir->string);
+	Com_sprintf(file_name, sizeof file_name, "%s/%s/%s/models.txt", basedir->string, game_dir->string, cfgdir->string);
 
 	if ( (banlist = fopen(file_name, "r")) )
 	{

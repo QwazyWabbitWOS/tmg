@@ -409,7 +409,7 @@ void Load_BotInfo(void)
 	for(i = 0; i < MAXBOTS; i++)
 	{
 		//netname
-		sprintf(Buff,"TMGBot[%i]", i);
+		Com_sprintf(Buff, sizeof Buff, "TMGBot[%i]", i);
 		strcpy(Bot[i].netname, Buff);
 		//model
 		strcpy(Bot[i].model, "female");
@@ -438,7 +438,7 @@ void Load_BotInfo(void)
 	botlist = gi.cvar ("botlist", "default", CVAR_LATCH);
 
 	//load info
-	sprintf(Buff, "%s/%s/%s/TMGBot.cfg", 
+	Com_sprintf(Buff, sizeof Buff, "%s/%s/%s/TMGBot.cfg", 
 		basedir->string, game_dir->string, cfgdir->string);
 
 	fp = fopen(Buff, "rt");
@@ -476,7 +476,7 @@ MESS_NOTFOUND:
 		//if(botlist->string == NULL) 
 		//	strcpy(MessageSection, BOTLIST_SECTION_DM);
 		//else
-		sprintf(MessageSection, "[%s]", botlist->string);
+		Com_sprintf(MessageSection, sizeof MessageSection, "[%s]", botlist->string);
 		fseek( fp, 0, SEEK_SET);
 		while(1)
 		{
@@ -778,7 +778,7 @@ void InitializeBot (edict_t *ent, int botindex)
 	client->zc.botindex = botindex;
 	client->resp.enterframe = level.framenum;
 
-	sprintf(pinfo,"\\rate\\25000\\msg\\1\\fov\\90\\skin\\%s/%s\\name\\%s\\hand\\0",
+	Com_sprintf(pinfo, sizeof pinfo, "\\rate\\25000\\msg\\1\\fov\\90\\skin\\%s/%s\\name\\%s\\hand\\0",
 		Bot[botindex].model, Bot[botindex].skin, Bot[botindex].netname);
 
 	if(ctf->value)

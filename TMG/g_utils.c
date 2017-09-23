@@ -608,10 +608,11 @@ void AddModelSkin (char *modelfile, char *skinname)
 	FILE	*f, *out;
 	int		buffer_int;
 	size_t	i = 0;
-	char	filename[MAX_QPATH], infilename[MAX_QPATH];
+	char	filename[MAX_QPATH];
+	char	infilename[MAX_QPATH];
 	char	buffer;
 
-	sprintf(infilename, "%s", modelfile);
+	Com_sprintf(infilename, sizeof infilename, "%s", modelfile);
 
 	f = fopen (infilename, "rb");
 

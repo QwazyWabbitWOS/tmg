@@ -270,13 +270,13 @@ OnBotDetection(edict_t *ent, char *msg)
 	if(strcmp(name, ent->client->pers.netname))
 		log = 1; // if name doesn't match after conversion
 
-	sprintf(user, "%s@%s",
+	Com_sprintf(user, sizeof user, "%s@%s",
 			ent->client->pers.netname,
 			Info_ValueForKey (ent->client->pers.userinfo, "ip"));
 
-	sprintf(userip, "*@%s", Info_ValueForKey (ent->client->pers.userinfo, "ip"));
+	Com_sprintf(userip, sizeof userip, "*@%s", Info_ValueForKey (ent->client->pers.userinfo, "ip"));
 
-	sprintf(logged, "%s@%s@%s@%8s@%10s",
+	Com_sprintf(logged, sizeof logged, "%s@%s@%s@%8s@%10s",
 			ent->client->pers.netname,
 			Info_ValueForKey (ent->client->pers.userinfo, "ip"),
 			msg, sys_time, sys_date);
@@ -315,7 +315,7 @@ InitBotDetection(void)
 {
 	char fname[PATH_MAX];
 
-	sprintf(fname, "%s/%s/%s/bot_detected.log",
+	Com_sprintf(fname, sizeof fname, "%s/%s/%s/bot_detected.log",
 			basedir->string, game_dir->string, cfgdir->string);
 
 	fpBot = fopen(fname, "a");

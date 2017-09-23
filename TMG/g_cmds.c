@@ -1240,7 +1240,7 @@ void Say_Op(edict_t *who, char *msg)
 
 	*p = 0;
 
-	sprintf(msg2, "<OPCHAT> %s: %s\n", who->client->pers.netname, outmsg);
+	Com_sprintf(msg2, sizeof msg2, "<OPCHAT> %s: %s\n", who->client->pers.netname, outmsg);
 	if (dedicated->value)
 	{
 		gi.dprintf(msg2);
@@ -1477,43 +1477,34 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 	
 	if(ctf->value)
 	{
-		//raven adds prefix to chat message in dm/ctf
-		//JSW
 		if (action)
 		{
-			sprintf(text2, "%s", text);
+			Com_sprintf(text2, sizeof text2, "%s", text);
 		}
-		//end
 		else if ((ctf->value) && (ent->client->resp.ctf_team == CTF_TEAM1))
 		{
 			if(ent->client->pers.oplevel)
-				//sprintf(text2, "<OP_RED> %s", text);
-				sprintf(text2, "<RED> %s", text);
+				Com_sprintf(text2, sizeof text2, "<RED> %s", text);
 			else
-				sprintf(text2, "<RED> %s", text);
+				Com_sprintf(text2, sizeof text2, "<RED> %s", text);
 		}
 		else if ((ctf->value) && (ent->client->resp.ctf_team == CTF_TEAM2))
 		{
 			if(ent->client->pers.oplevel)
-				//sprintf(text2, "<OP_BLUE> %s", text);
-				sprintf(text2, "<BLUE> %s", text);
+				Com_sprintf(text2, sizeof text2, "<BLUE> %s", text);
 			else
-				sprintf(text2, "<BLUE> %s", text);
+				Com_sprintf(text2, sizeof text2, "<BLUE> %s", text);
 		}
 		else if (ent->client->pers.pl_state == PL_SPECTATOR)
 		{
 			if(ent->client->pers.oplevel != OP_NAMEPASS && ent->client->pers.oplevel != 0)
-				//sprintf(text2, "<OP_SPEC> %s", text);
-				sprintf(text2, "<SPEC> %s", text);
+				Com_sprintf(text2, sizeof text2, "<SPEC> %s", text);
 			else
-				sprintf(text2, "<SPEC> %s", text);
+				Com_sprintf(text2, sizeof text2, "<SPEC> %s", text);
 		}
 		else
 		{
-			//if(ent->client->pers.oplevel)
-			//	sprintf(text2, "<OP> %s", text);
-			//else
-				sprintf(text2, "%s", text);
+			Com_sprintf(text2, sizeof text2, "%s", text);
 		}
 	}
 	else
@@ -1521,17 +1512,13 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 		if (ent->client->pers.pl_state == PL_SPECTATOR)
 		{
 			if(ent->client->pers.oplevel != OP_NAMEPASS && ent->client->pers.oplevel != 0)
-				//sprintf(text2, "<OP_SPEC> %s", text);
-				sprintf(text2, "<SPEC> %s", text);
+				Com_sprintf(text2, sizeof text2, "<SPEC> %s", text);
 			else
-				sprintf(text2, "<SPEC> %s", text);
+				Com_sprintf(text2, sizeof text2, "<SPEC> %s", text);
 		}
 		else
 		{
-			//if(ent->client->pers.oplevel)
-			//	sprintf(text2, "<OP> %s", text);
-			//else
-				sprintf(text2, "%s", text);
+			Com_sprintf(text2, sizeof text2, "%s", text);
 		}
 	}
 	

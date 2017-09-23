@@ -63,7 +63,7 @@ void StatsLog(const char *fmt, ... )
 		ar_st->tm_sec, 
 		ar_tmp); 
 
-	sprintf(logpath, "%s/stats/%s", game_dir->string, statsfile->string);
+	Com_sprintf(logpath, sizeof logpath, "%s/stats/%s", game_dir->string, statsfile->string);
 
 	if (!pStatsfile) 
 	{
@@ -97,8 +97,8 @@ void StatsLogRename(void)
 		|| (statsfile_rename->value == 2 && ltime->tm_wday == 0)	// sundays
 		|| (statsfile_rename->value == 3 && ltime->tm_mday == 1))	// 1st of month
 	{
-		sprintf(logpath, "%s/%s", gamedir->string, statsfile->string);
-		sprintf(newname, "%s/stats/%02i%02i%02i-%s", 
+		Com_sprintf(logpath, sizeof logpath, "%s/%s", gamedir->string, statsfile->string);
+		Com_sprintf(newname, sizeof newname, "%s/stats/%02i%02i%02i-%s", 
 			gamedir->string,
 			ltime->tm_year + 1900, 
 			ltime->tm_mon + 1, 

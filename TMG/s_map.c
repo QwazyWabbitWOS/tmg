@@ -325,10 +325,10 @@ void MaplistInit( void )
 	strcat( mapfile, game_dir->string );
 
 	if(ctf->value)
-		sprintf(mapfile, "%s/%s/%s/maps_ctf.txt",
+		Com_sprintf(mapfile, sizeof mapfile, "%s/%s/%s/maps_ctf.txt",
 		basedir->string, game_dir->string, cfgdir->string);
 	else
-		sprintf(mapfile, "%s/%s/%s/maps_dm.txt",
+		Com_sprintf(mapfile, sizeof mapfile, "%s/%s/%s/maps_dm.txt",
 		basedir->string, game_dir->string, cfgdir->string);
 
 	fpFile = fopen( pFileName, "r" );

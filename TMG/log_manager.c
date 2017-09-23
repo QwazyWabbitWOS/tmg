@@ -61,8 +61,8 @@ void Log_RenameConsoleLog(void)
 		logval = logfile->string;			// save current mode
 		gi.cvar_forceset("logfile", "0");	// turn off logging
 		gi.dprintf("Backing up logfile\n");	// post a message to force log closure
-		sprintf(logpath, "%s/%s", game_dir->string, logfile_name->string);
-		sprintf(newname, "%s/logs/%02i%02i%02i-%s", 
+		Com_sprintf(logpath, sizeof logpath, "%s/%s", game_dir->string, logfile_name->string);
+		Com_sprintf(newname, sizeof newname, "%s/logs/%02i%02i%02i-%s", 
 			game_dir->string,
 			ltime->tm_year + 1900, 
 			ltime->tm_mon + 1, 

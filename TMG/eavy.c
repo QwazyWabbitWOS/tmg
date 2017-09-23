@@ -38,7 +38,7 @@ char *EAVYLoadEntities(char *mapname, char *entities)
 	int    i;
 	size_t islefn;
   
-	sprintf(entfilename, "./%s/%s/ent/", game_dir->string, cfgdir->string);
+	Com_sprintf(entfilename, sizeof entfilename, "./%s/%s/ent/", game_dir->string, cfgdir->string);
 	  
 	islefn = strlen(entfilename);
     for (i=0; mapname[i]; i++)
