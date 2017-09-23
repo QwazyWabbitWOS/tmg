@@ -97,7 +97,7 @@ void PMenu_Update(edict_t *ent)
 		}
 
 		//WF - made inventory screen larger
-		Com_sprintf(string + strlen(string), sizeof string, "yv %d ", 32 + i * 8);
+		sprintf(string + strlen(string),"yv %d ", 32 + i * 8);
 		if (p->align == PMENU_ALIGN_CENTER)
 			x = 196/2 - (int) strlen(t)*4 + 64;
 //			x = 240/2 - strlen(t)*4 + 64;
@@ -107,15 +107,15 @@ void PMenu_Update(edict_t *ent)
 		else
 			x = 64;
 
-		Com_sprintf(string + strlen(string), sizeof string, "xv %d ",
+		sprintf(string + strlen(string), "xv %d ",
 			x - ((hnd->cur == i) ? 8 : 0));
 
 		if (hnd->cur == i)
-			Com_sprintf(string + strlen(string), sizeof string, "string2 \"\x0d%s\" ", t);
+			sprintf(string + strlen(string), "string2 \"\x0d%s\" ", t);
 		else if (alt)
-			Com_sprintf(string + strlen(string), sizeof string, "string2 \"%s\" ", t);
+			sprintf(string + strlen(string), "string2 \"%s\" ", t);
 		else
-			Com_sprintf(string + strlen(string), sizeof string, "string \"%s\" ", t);
+			sprintf(string + strlen(string), "string \"%s\" ", t);
 		alt = false;
 	}
 
