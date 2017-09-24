@@ -1904,7 +1904,7 @@ int entriesinopfile;
 
 typedef struct ctfgame_s
 {
-	int team1, team2;
+	int team1, team2;	// capture counters
 	int total1, total2; // these are only set when going into intermission!
 	int players1;	// team1 count
 	int players2;	// team2 count

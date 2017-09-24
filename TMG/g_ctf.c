@@ -1355,6 +1355,10 @@ void CTFCalcScores(void)
 		else if (game.clients[i].resp.ctf_team == CTF_TEAM2)
 			ctfgame.total2 += game.clients[i].resp.score;
 	}
+	StatsLog("TEAM: Totals\\RED\\%d\\%d\\%d\\BLUE\\%d\\%d\\%d\\%s\\%.1f\n", 
+		ctfgame.total1, ctfgame.team1, ctfgame.players1,
+		ctfgame.total2, ctfgame.team2, ctfgame.players2,
+		level.mapname, level.time);
 }
 
 //JSW
@@ -2382,7 +2386,7 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 				   ctfgame.specs);
 		ent->client->pers.pl_state = PL_PLAYING;
 		ent->client->resp.spectator = 0;
-		StatsLog("JOIN1: %s\\%d\\%.1f\n", ent->client->pers.netname, ent->client->resp.ctf_team, level.time);
+		StatsLog("JOIN: %s\\%d\\%.1f\n", ent->client->pers.netname, ent->client->resp.ctf_team, level.time);
 		return;
 	}
 
@@ -3878,8 +3882,6 @@ void JoinGame(edict_t *ent, pmenu_t *menu)
 			   "%s Has a DeathWish. (%d players, %d spectators)\n",
 			   ent->client->pers.netname, ctfgame.players_total, ctfgame.specs);
 	
-	StatsLog("JOIN: %s\\%.1f\n", ent->client->pers.netname, level.time);
-
 	if(!ent->bot_client)
 	{
 		////RAV

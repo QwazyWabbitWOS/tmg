@@ -106,7 +106,10 @@ void StatsLogRename(void)
 			statsfile->string); 
 
 		if (pStatsfile)
+		{
+			fflush(pStatsfile);
 			fclose(pStatsfile);
+		}
 
 		if (rename(logpath, newname))
 		{
