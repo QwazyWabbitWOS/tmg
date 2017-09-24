@@ -40,8 +40,6 @@ void StatsLog(const char *fmt, ... )
 	struct	tm	*ar_st; 
 	char	logpath [MAX_QPATH];
 
-	//START_PERFORMANCE_TIMER;
-
 	va_start(argptr, fmt); 
 	vsprintf(ar_tmp, fmt, argptr); 
 	va_end(argptr); 
@@ -84,8 +82,6 @@ void StatsLog(const char *fmt, ... )
 			pStatsfile = NULL;
 		}
 	}
-	//OutputDebugString(ar_string);
-	//_STOP_PERFORMANCE_TIMER(__func__);
 } 
 
 // this renames the stats file from lox/stats.log (or whatever)

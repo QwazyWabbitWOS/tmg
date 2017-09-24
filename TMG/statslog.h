@@ -10,7 +10,7 @@ extern cvar_t	*statsfile;			// the name of the stats log file ("stats.log")
 extern cvar_t	*statsfile_rename;	// how often we rename the file
 
 // global pointer to the stats file
-FILE	*pStatsfile; 
+static FILE	*pStatsfile = NULL; 
 
 void StatsLog(const char *fmt, ... ) ;
 void StatsLogRename(void);

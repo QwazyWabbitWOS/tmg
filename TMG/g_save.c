@@ -434,9 +434,6 @@ void InitGame (void)
 	ffa_cfg_file = gi.cvar ("ffa_cfgfile", "ffa.cfg", 0);
 	ctf_cfg_file = gi.cvar ("ctf_cfgfile", "railwarz.cfg", 0);
 
-	//QW// Initialize cvars pertaining to stats logs
-	StatsInitVars();
-
 	/*
 	 allow_lasermines = gi.cvar ("allow_lasermines", "0", CVAR_LATCH);
 	 allow_energy_lasers = gi.cvar ("allow_energy_lasers", "1", CVAR_SERVERINFO);
@@ -515,6 +512,13 @@ void InitGame (void)
 
 	CheckOpFile(NULL, "*@*.*.*.*", false);
 
+	// For the logs
+	GetDate();
+	GetTime();
+
+	//QW// Initialize cvars pertaining to stats logs
+	StatsInitVars();
+
 	if(ctf->value)
 		StatsLog("MODE: %s %s\n", "TMG_MOD CTF", MOD_VERSION );
 	else
@@ -522,10 +526,6 @@ void InitGame (void)
 
 	if(use_bots->value)
 		Load_BotInfo();
-
-	// For the logs
-	GetDate();
-	GetTime();
 
 	if(log_connect->value)
 		LogConnect(NULL, false);
