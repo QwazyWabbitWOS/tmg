@@ -84,7 +84,7 @@ void StatsLog(const char *fmt, ... )
 			pStatsfile = NULL;
 		}
 	}
-	OutputDebugString(ar_string);
+	//OutputDebugString(ar_string);
 	//_STOP_PERFORMANCE_TIMER(__func__);
 } 
 
