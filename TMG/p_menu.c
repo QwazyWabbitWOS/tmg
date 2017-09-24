@@ -79,7 +79,6 @@ void PMenu_Update(edict_t *ent)
 	}
 
 	hnd = ent->client->menu;
-	//JR Disabled this to slow down overflows//Nope added it back since it didn't work right then
 	
 	if (hnd->ShowBackground)
 		strcpy(string, "xv 32 yv 8 picn inventory ");

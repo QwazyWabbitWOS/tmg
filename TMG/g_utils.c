@@ -622,14 +622,7 @@ void AddModelSkin (char *modelfile, char *skinname)
 		return;
 	}
 
-	i =  sprintf(filename, "./");
-	i += sprintf(filename + i, MOD);
-	i += sprintf(filename + i, "/");
-	i += sprintf(filename + i, "%s", modelfile);
-	i += sprintf(filename + i, "new");
-
-	if (i <= 0)
-		gi.dprintf("Error formatting filename in %s\n", __func__);
+	Com_sprintf(filename, sizeof filename, "./"MOD"/%snew", modelfile);
 
 	out = fopen (filename, "wb");
 

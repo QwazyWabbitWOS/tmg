@@ -467,7 +467,7 @@ void TimerThink (void)
 				if( ( 90 < iNumber ) &&
 				   ( 97 > iNumber ) )
 					iNumber += 6;
-				sprintf(ch, "%i", iNumber);
+				Com_sprintf(ch, sizeof ch, "%i", iNumber);
 				strcat (buff, ch);
 			}
 			strcat (buff, "\0");

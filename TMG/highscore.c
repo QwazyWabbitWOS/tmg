@@ -47,19 +47,12 @@ void SaveHighScores (void)
 
 	if (DEBUG_HSCORES) 
 		DbgPrintf("%s entered\n", __func__);
-	i =  sprintf(binfile, "./");
-	i += sprintf(binfile + i, "%s/%s", game_dir->string, cfgdir->string);
-	i += sprintf(binfile + i, "/hs/%s_hs.bin", level.mapname);
+	
+	Com_sprintf(binfile, sizeof binfile, "./%s/%s/hs/%s_hs.bin", 
+		game_dir->string, cfgdir->string, level.mapname);
 
-	if(i <= 0)
-		gi.dprintf("Error building binfile name in %s\n", __func__);
-
-	i =  sprintf(txtfile, "./");
-	i += sprintf(txtfile + i, "%s/%s", game_dir->string, cfgdir->string);
-	i += sprintf(txtfile + i, "/hs/%s_hs.txt", level.mapname);
-
-	if(i <= 0)
-		gi.dprintf("Error building txtfile name in %s\n", __func__);
+	Com_sprintf(txtfile, sizeof txtfile, "./%s/%s/hs/%s_hs.txt", 
+		game_dir->string, cfgdir->string, level.mapname);
 
 	if (DEBUG_HSCORES) 
 		DbgPrintf("Opened for reading %s\n", binfile);
@@ -152,7 +145,9 @@ void SaveHighScores (void)
 	HS_file = fopen(txtfile, "wt");
 	if (HS_file)
 	{
-		sprintf(string, "    Top %d Scores for %s\n\n", KEEP, level.mapname);
+		Com_sprintf(string, sizeof string, 
+			"    Top %d Scores for %s\n\n", 
+			KEEP, level.mapname);
 		highlight_text(string, string);
 		fprintf(HS_file, "%s", string);
 
@@ -188,11 +183,8 @@ void LoadHighScores (void)
 	char    filename[MAX_QPATH];
 	char    line[80];
 
-	i =  sprintf(filename, "./");
-	i += sprintf(filename + i, "%s/%s", game_dir->string, cfgdir->string);
-	i += sprintf(filename + i, "/hs/%s_hs.txt", level.mapname);
-	if(i < 0)
-		gi.dprintf("Error building filename in %s\n", __func__);
+	Com_sprintf(filename, sizeof filename, "./%s/%s/hs/%s_hs.txt", 
+		game_dir->string, cfgdir->string, level.mapname);
 
 	if (!(motd_file = fopen(filename, "r")))
 	{
@@ -207,7 +199,7 @@ void LoadHighScores (void)
 	{
 		if (strstr (line, sys_date))
 			highlight_text(line, NULL); // white -> green
-		Com_sprintf (entry, sizeof(entry),
+		Com_sprintf (entry, sizeof entry,
 					 "xv 2 yv %i string \"%s\" ", i*8 + 24, line);
 		j = strlen(entry);
 		if (stringlength + j > 1400)
@@ -226,7 +218,7 @@ void LoadHighScores (void)
 	}
 	if (stringlength > sizeof string)
 		DbgPrintf("%s Warning! Highscore stringlength too big!", __FUNCTION__);
-	Com_sprintf (hscores, sizeof(hscores), string);
+	Com_sprintf (hscores, sizeof hscores, string);
 }
 
 // used for the qsort algorithm

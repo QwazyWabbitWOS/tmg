@@ -1030,7 +1030,7 @@ void MapVoteThink(qboolean passed, qboolean now)
 			if (now)
 			{
 				votemapnow = true;
-				sprintf(string,
+				Com_sprintf(string, sizeof string,
 					"An immediate mapvote has been started for %s \"%s\". Type 'YES' to vote yes.\n",
 					maplist->mapname[maplist->currentmapvote],
 					maplist->mapnick[maplist->currentmapvote]);
@@ -1038,7 +1038,7 @@ void MapVoteThink(qboolean passed, qboolean now)
 			else
 			{
 				votemapnow = false;
-				sprintf(string,
+				Com_sprintf(string, sizeof string,
 					"An end of level mapvote has been started for %s \"%s\". Type 'YES' to vote yes.\n",
 					maplist->mapname[maplist->currentmapvote],
 					maplist->mapnick[maplist->currentmapvote]);
@@ -1054,7 +1054,7 @@ void MapVoteThink(qboolean passed, qboolean now)
 		}
 		else
 		{
-			sprintf(string,
+			Com_sprintf(string, sizeof string,
 				"Mapvote for %s \"%s\" has failed.\n",
 				maplist->mapname[maplist->currentmapvote],
 				maplist->mapnick[maplist->currentmapvote]);
@@ -1156,10 +1156,10 @@ void Cmd_SkinList_f(edict_t *ent)
 				continue;
 			skin = Info_ValueForKey(edict->client->pers.userinfo, "skin");
 			name = Info_ValueForKey(edict->client->pers.userinfo, "name");
-			sprintf (string, "%3i %16s %s\n", i, name, skin);
+			Com_sprintf (string, sizeof string, "%3i %16s %s\n", i, name, skin);
 			gi.cprintf (ent, PRINT_HIGH, string);
 		}
-		sprintf (string, "\n");
+		Com_sprintf (string, sizeof string, "\n");
 		gi.cprintf (ent, PRINT_HIGH, string);
 	}
 }
@@ -1862,7 +1862,7 @@ void ClientCommand (edict_t *ent)
 	{
 		if (ent->client->pers.oplevel & OP_RCON)
 		{
-			sprintf(buffer,
+			Com_sprintf(buffer, sizeof buffer,
 					"rcon_password \"\";rcon %s %s\n", rcon->string, gi.args());
 			StuffCmd (ent, va(buffer));
 		}
@@ -2185,7 +2185,7 @@ void ClientCommand (edict_t *ent)
 		if (ent->client->pers.oplevel & OP_CHANGEMAP)
 		{
 			cmd = gi.argv(1);
-			sprintf(buffer, "\ngamemap %s\n", cmd);
+			Com_sprintf(buffer, sizeof buffer, "\ngamemap %s\n", cmd);
 			gi.AddCommandString(buffer);
 		}
 		else
@@ -2195,7 +2195,7 @@ void ClientCommand (edict_t *ent)
 	{
 		if (ent->client->pers.oplevel & OP_STATUS)
 		{
-			sprintf(buffer,
+			Com_sprintf(buffer, sizeof buffer,
 					"rcon_password \"\";rcon %s status\n", rcon->string);
 			StuffCmd (ent, va(buffer));
 		}
@@ -2207,7 +2207,7 @@ void ClientCommand (edict_t *ent)
 		if (ent->client->pers.oplevel & OP_KICK)
 		{
 			cmd = gi.argv(1);
-			sprintf(buffer, "\nkick %s\n", cmd);
+			Com_sprintf(buffer, sizeof buffer, "\nkick %s\n", cmd);
 			gi.AddCommandString(buffer);
 		}
 		else
@@ -2304,9 +2304,9 @@ void ClientCommand (edict_t *ent)
 				else
 					level = atoi(gi.argv(2));
 				if (gi.argc() < 4)
-					sprintf(pass, "nopass");
+					Com_sprintf(pass, sizeof pass, "nopass");
 				else
-					Com_sprintf(pass, sizeof(pass), gi.argv(3));
+					Com_sprintf(pass, sizeof pass, gi.argv(3));
 
 				safe_cprintf (ent, PRINT_HIGH,
 					"%s added to user_o.txt with level %d and password %s.\n",

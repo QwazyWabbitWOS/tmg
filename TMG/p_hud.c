@@ -372,10 +372,8 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 	char    filename[MAX_QPATH];
 	char    line[80];
 
-	p =  sprintf(filename, "./");
-	p += sprintf(filename + p, "%s/%s", game_dir->string, cfgdir->string);
-	p += sprintf(filename + p, "/hs/%s_hs.txt", level.mapname);
-	//end
+	Com_sprintf(filename, sizeof filename, "./%s/%s/hs/%s_hs.txt", 
+		game_dir->string, cfgdir->string, level.mapname);
 
 	string[0] = 0;
 	stringlength = strlen(string);
@@ -424,7 +422,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 		}
 
 		// print level name & header
-		Com_sprintf(string, sizeof(string),
+		Com_sprintf(string, sizeof string,
 			//"xv 0 yv -100 cstring2 \"%s\" "
 			"xv 0 yv -90 cstring2 \"MAP: %s\" "
 			"xv 0 yv -70 cstring2 \"%s %s\" "
@@ -445,7 +443,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 				cl = &game.clients[sorted[i]];
 				cl_ent = g_edicts + 1 + sorted[i];
 				Com_sprintf(entry, sizeof entry, "yv %d ", -30 + i * 8);
-				Com_sprintf(entry + strlen(entry), sizeof entry,
+				sprintf(entry + strlen(entry),
 					"xv -125 %s \"%3d  %3d  %3d %3d %3d    %s\"",
 					(cl_ent == ent) ? "string2" : "string",
 					cl->resp.score,
@@ -464,7 +462,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 
 		// Show how many didn't fit
 		if (total - last > 1)
-			Com_sprintf(string + strlen(string), sizeof string, 
+			sprintf(string + strlen(string), 
 			"xv 108 yv %d string2 \"& %d more\" ",
 			-30 + (last + 1) * 8, total - last - 1);
 
@@ -504,7 +502,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 				i = 0;
 				while ( fgets(line, 80, hs_file) )
 				{
-					Com_sprintf (entry, sizeof(entry),
+					Com_sprintf (entry, sizeof entry,
 						"xv 2 yv %i string \"%s\"",
 						i * 8 + 24, line);
 					j = strlen(entry);
