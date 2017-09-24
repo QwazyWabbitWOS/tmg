@@ -998,8 +998,8 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 					other->client->resp.captures++;
 
 					// Log Flag Capture
-					StatsLog( "CAPT: %s\\%s\\%.0f\\%.1f\\%.1f\n", 
-						other->client->pers.netname,
+					StatsLog( "CAPT: %s\\%d\\%s\\%.0f\\%.1f\\%.1f\n", 
+						other->client->pers.netname, other->client->resp.ctf_team,
 						"F Capture", CTF_CAPTURE_BONUS, held_time, level.time );
 
 					other->client->pers.inventory[ITEM_INDEX(enemy_flag_item)] = 0;
@@ -1080,8 +1080,9 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 				   CTFTeamName(ctf_team));
 
 		// Log Flag Recover
-		StatsLog( "FLAG: %s\\%s\\%.0f\\%.1f\n", 
-			other->client->pers.netname,
+		StatsLog( "FLAG: %s\\%d\\%s\\%.0f\\%.1f\n", 
+			other->client->pers.netname, 
+			other->client->resp.ctf_team,
 			"F Return", 
 			CTF_RECOVERY_BONUS,
 			level.time );
@@ -1101,8 +1102,9 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 	other->client->resp.score += CTF_FLAG_BONUS;
 
 	// Log Flag Pickup
-	StatsLog( "FLAG: %s\\%s\\%.0f\\%.1f\n", 
+	StatsLog( "FLAG: %s\\%d\\%s\\%.0f\\%.1f\n", 
 		other->client->pers.netname,
+		other->client->resp.ctf_team,
 		"F Pickup",
 		CTF_FLAG_BONUS, 
 		level.time );

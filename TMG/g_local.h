@@ -1904,8 +1904,11 @@ int entriesinopfile;
 
 typedef struct ctfgame_s
 {
-	int team1, team2;	// capture counters
-	int total1, total2; // these are only set when going into intermission!
+	int	team1; // RED capture count
+	int	team2; // BLUE capture count
+	//These are only set when going into intermission!
+	int total1; // RED total points
+	int total2; // BLUE total points
 	int players1;	// team1 count
 	int players2;	// team2 count
 	int players_total;	// total player count

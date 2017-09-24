@@ -41,7 +41,7 @@
 // basic maplist handling
 //cvar_t *maplist;		//line pointer
 cvar_t *maplistfile;	// the file name when not load sensing
-cvar_t *gamedir;		// our mod dir
+cvar_t *game_dir;		// our mod dir
 cvar_t *basedir;		// our root dir
 cvar_t *mymaplistfile;	// the working maplist
 

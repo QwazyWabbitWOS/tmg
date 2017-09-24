@@ -59,20 +59,7 @@ static char *stockmaps[48] =
 // instantiate cvars for maplists and set defaults
 void Maplist_InitVars(void)
 {
-	//QW// custom maplist cvars
-	// when maplistvaries = 0, maplist.txt is used for rotation
-//	maplist = gi.cvar ("maplist", "0", 0); // current line
-	//maplist1 = gi.cvar ("maplist1", "1", 0); // secondary counters (low)
-	//maplist2 = gi.cvar ("maplist2", "1", 0); // med
-	//maplist3 = gi.cvar ("maplist3", "1", 0); // high
-	//maplistfile = gi.cvar ("maplistfile", "maplist.txt", 0); // standard maplist
-	//maplistfile1 = gi.cvar ("maplistfile1", "maplist_low.txt", 0); // low player count maps
-	//maplistfile2 = gi.cvar ("maplistfile2", "maplist_med.txt", 0);	// medium load maps
-	//maplistfile3 = gi.cvar ("maplistfile3", "maplist_high.txt", 0);	// lots of players
-	//maplistvaries = gi.cvar ("maplistvaries", "0", 0);	// maplist file changes with load or per month
-	//map_lowcount = gi.cvar ("map_lowcount", "6", 0);	// default low load upper threshold
-	//map_medcount = gi.cvar ("map_medcount", "12", 0);	// default medium load upper threshold
-	gamedir = gi.cvar ("gamedir", "", CVAR_NOSET);	// created by engine, we need to expose it for mod
+//	gamedir = gi.cvar ("gamedir", "", CVAR_NOSET);	// created by engine, we need to expose it for mod
 	basedir = gi.cvar ("basedir", "", CVAR_NOSET);	// strictly read-only
 }
 

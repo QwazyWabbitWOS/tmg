@@ -315,9 +315,9 @@ void ShutdownGame (void)
 		}
 	}
 
+	// turn off stats logging & force closure
+	gi.cvar_forceset("statslog", "0");
 	StatsLog("DOWN: %s\\%.1f\n", level.mapname, level.time);
-	if (pStatsfile)
-		fclose(pStatsfile);
 
 	if (mdsoft_map)
 		free(mdsoft_map);
