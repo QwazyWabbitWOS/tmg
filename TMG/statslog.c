@@ -66,7 +66,8 @@ void StatsLog(const char *fmt, ... )
 			gi.dprintf("Error writing to %s\n", statsfile->string);
 	}
 	else
-		fprintf(pStatsfile, "%s", ar_string);
+		if (pStatsfile)
+			fprintf(pStatsfile, "%s", ar_string);
 
 	// if not logging, flush and close
 	if (statslog->value == 0)
