@@ -58,8 +58,9 @@ void StatsLog(const char *fmt, ... )
 
 	Com_sprintf(logpath, sizeof logpath, "%s/stats/%s", game_dir->string, statsfile->string);
 
+	return;
 	// if not open and we want logging, open the log
-	if (!pStatsfile && statslog->value) 
+	if (!pStatsfile && statslog->value == 1) 
 	{
 		if((pStatsfile = fopen(logpath, "a")) != NULL) 
 		{
@@ -68,7 +69,7 @@ void StatsLog(const char *fmt, ... )
 		else
 			gi.dprintf("Error writing to %s\n", statsfile->string);
 	}
-	else
+	if (statslog->value == 1)
 		fprintf(pStatsfile, "%s", ar_string);
 
 	// if not logging, flush and close
