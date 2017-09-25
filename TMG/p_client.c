@@ -226,25 +226,22 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 	if (!G_EntExists(self))
 		return;
 
-	if (statslog->value)
-	{
-		if (attacker->client != self->client && attacker->client != NULL) 
-			StatsLog("OBIT: %s\\%s\\%d\\%d\\%d\\%d\\%.1f\n", //a player fragged another player
-			self->client->pers.netname, //victim
-			attacker->client->pers.netname, //attacker
-			self->client->ping, 
-			attacker->client->ping, 
-			mod, //means of death
-			/*hitLocation*/NULL,
-			level.time); 
-		else 
-			StatsLog("KILL: %s\\%d\\%d\\%d\\%.1f\n",	// a player killed himself
-			self->client->pers.netname, 
-			self->client->ping, 
-			mod, 
-			/*hitLocation*/NULL,
-			level.time); 
-	}
+	if (attacker->client != self->client && attacker->client != NULL) 
+		StatsLog("OBIT: %s\\%s\\%d\\%d\\%d\\%d\\%.1f\n", //a player fragged another player
+		self->client->pers.netname, //victim
+		attacker->client->pers.netname, //attacker
+		self->client->ping, 
+		attacker->client->ping, 
+		mod, //means of death
+		/*hitLocation*/NULL,
+		level.time); 
+	else 
+		StatsLog("KILL: %s\\%d\\%d\\%d\\%.1f\n",	// a player killed himself
+		self->client->pers.netname, 
+		self->client->ping, 
+		mod, 
+		/*hitLocation*/NULL,
+		level.time); 
 
 	for (i = 0; i < 16; i++)
 	{

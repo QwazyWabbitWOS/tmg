@@ -9,12 +9,9 @@
 #include <stdlib.h>
 #include <errno.h>
 
-cvar_t	*statslog;			// Enable player stats summary to qconsole.log (default = 1)
+cvar_t	*statslog;			// Enable player stats summary to stats log (default = 1)
 cvar_t	*statsfile;			// the name of the stats log file ("stats.log" by default)
 cvar_t	*statsfile_rename;	// how often we rename the file
-cvar_t	*logfile_name;		// the server or qconsole.log file
-cvar_t	*logfile;			// the logfile mode control
-cvar_t	*logfile_rename;	// how often we rename the server log file
 cvar_t	*statslog_tmp;		// temp storage for statslog value during rename
 
 void StatsInitVars(void)
@@ -58,9 +55,8 @@ void StatsLog(const char *fmt, ... )
 
 	Com_sprintf(logpath, sizeof logpath, "%s/stats/%s", game_dir->string, statsfile->string);
 
-	return;
 	// if not open and we want logging, open the log
-	if (!pStatsfile && statslog->value == 1) 
+	if (!pStatsfile && statslog->value) 
 	{
 		if((pStatsfile = fopen(logpath, "a")) != NULL) 
 		{
@@ -69,7 +65,7 @@ void StatsLog(const char *fmt, ... )
 		else
 			gi.dprintf("Error writing to %s\n", statsfile->string);
 	}
-	if (statslog->value == 1)
+	else
 		fprintf(pStatsfile, "%s", ar_string);
 
 	// if not logging, flush and close
