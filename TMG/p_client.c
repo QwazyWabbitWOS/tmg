@@ -2432,6 +2432,8 @@ void ClientPrintMOTD (edict_t *ent)
 		len3--;
 	}
 
+	highlight_text(gMOTD, gMOTD);
+
 	// Now append the MOTD file.  Null-terminate the string.
 	if (in)
 	{
@@ -2453,11 +2455,7 @@ void ClientPrintMOTD (edict_t *ent)
 
 	// Print the message.
 	if (!ent->bot_client)
-	{
-		highlight_text(gMOTD, gMOTD);
 		gi.centerprintf (ent, "%s", gMOTD);
-	}
-	return;
 }
 
 /*
