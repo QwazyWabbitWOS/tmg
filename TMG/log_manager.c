@@ -5,10 +5,10 @@
 #include <stdlib.h>
 #include <errno.h>
 
-cvar_t	*logfile_name;		// the server or qconsole.log file
-cvar_t	*logfile;			// the logfile mode control
-cvar_t	*logfile_rename;	// how often we rename the server log file
-cvar_t	*logfile_tmp;			// temp storage of logfile mode
+cvar_t	*logfile;           // the logfile mode control
+cvar_t	*logfile_name;      // the server log file
+cvar_t	*logfile_rename;    // how often we rename the server log file
+cvar_t	*logfile_tmp;       // temp storage of logfile mode
 
 /**
 Initialize the default values for the cvars we use.
@@ -21,7 +21,7 @@ Initialize the default values for the cvars we use.
 void Log_Init_vars (void)
 {
 	logfile_name = gi.cvar ("logfile_name", "server.log", CVAR_NOSET);
-	logfile_rename = gi.cvar ("logfile_rename", "2", 0);
+	logfile_rename = gi.cvar ("logfile_rename", "1", 0);
 	logfile_tmp = gi.cvar ("logfile_tmp", "0", 0);
 }
 
@@ -43,7 +43,7 @@ int	Log_CheckLocalMidnight(void)
 }
 
 //QW// rename server.log once per day | week | month
-// depending on value of logfile_rename, default is weekly.
+// depending on value of logfile_rename, default is daily.
 void Log_RenameConsoleLog(void)
 {
 	char	logpath [MAX_QPATH], newname[MAX_QPATH];
@@ -60,7 +60,7 @@ void Log_RenameConsoleLog(void)
 		logfile = gi.cvar("logfile", "", CVAR_NOSET);	//expose the variables
 		logfile_name = gi.cvar("logfile_name", "", CVAR_NOSET);
 		gi.cvar_set("logfile_tmp", logfile->string);			// save current mode
-		gi.cvar_set("logfile", "0");	// turn off logging
+		gi.cvar_forceset("logfile", "0");	// turn off logging
 		gi.dprintf("Backing up logfile\n");	// post a message to force log closure
 		Com_sprintf(logpath, sizeof logpath, "%s/%s", game_dir->string, logfile_name->string);
 		Com_sprintf(newname, sizeof newname, "%s/logs/%02i%02i%02i-%s", 
@@ -82,7 +82,7 @@ void Log_RenameConsoleLog(void)
 			}
 		}
 		
-		gi.cvar_set("logfile", logfile_tmp->string);	// restore previous mode
+		gi.cvar_forceset("logfile", logfile_tmp->string);	// restore previous mode
 		gi.dprintf("Logfile backup complete.\n"); //announce and reopen
 	}
 }

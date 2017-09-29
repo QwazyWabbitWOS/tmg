@@ -67,19 +67,20 @@ void StatsLog(const char *fmt, ... )
 	}
 	else
 		if (pStatsfile)
-			fprintf(pStatsfile, "%s", ar_string);
-
-	// if not logging, flush and close
-	if (statslog->value == 0)
-	{
-		if (pStatsfile)
 		{
-			// if open, flush and close it
-			fflush(pStatsfile);
-			fclose(pStatsfile);
-			pStatsfile = NULL;
+			fprintf(pStatsfile, "%s", ar_string);
 		}
-	}
+		// if not logging, flush and close
+		if (statslog->value == 0)
+		{
+			if (pStatsfile)
+			{
+				// if open, flush and close it
+				fflush(pStatsfile);
+				fclose(pStatsfile);
+				pStatsfile = NULL;
+			}
+		}
 } 
 
 // this renames the stats file from lox/stats.log (or whatever)
@@ -123,7 +124,7 @@ void StatsLogRename(void)
 				gi.dprintf("Error renaming %s, it doesn't exist.\n", oldname);
 			}
 		}
-		gi.cvar_set("statslog", statslog_tmp->string);	// restore previous mode
+		gi.cvar_forceset("statslog", statslog_tmp->string);	// restore previous mode
 		gi.dprintf("Statsfile backup complete.\n");
 		StatsLog("CONT: %s\\%.1f\n", level.mapname, level.time);
 		if(ctf->value)
@@ -150,6 +151,11 @@ void StatsLogHooks(edict_t *ent)
 		level.time);
 }
 
+/**
+Output stats to log if one is open
+flush it at this time.
+Called by EndDMLevel.
+*/
 void StatsLogPlayerStats(void)
 {
 	edict_t	*player;
@@ -171,4 +177,6 @@ void StatsLogPlayerStats(void)
 			level.mapname,
 			level.time);
 	}
+	if (pStatsfile && statslog->value)
+		fflush(pStatsfile);
 }
