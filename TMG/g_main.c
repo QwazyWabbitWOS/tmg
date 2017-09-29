@@ -302,7 +302,7 @@ void ShutdownGame (void)
 {
 	int i;
 	edict_t	*ent;
-	gi.dprintf ("==== ShutdownGame ====\n");
+	gi.dprintf ("==== ShutdownGame (TMG "MOD_VERSION") ====\n");
 
 	//QW// logging of hook stats per player
 	if (g_edicts != NULL) // in case we bomb before they're allocated
