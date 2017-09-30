@@ -611,6 +611,7 @@ void AddModelSkin (char *modelfile, char *skinname)
 	char	filename[MAX_QPATH];
 	char	infilename[MAX_QPATH];
 	char	buffer;
+	size_t	count;
 
 	Com_sprintf(infilename, sizeof infilename, "%s", modelfile);
 
@@ -632,30 +633,30 @@ void AddModelSkin (char *modelfile, char *skinname)
 	// mirror header stuff before skinnum
 	for (i=0; i<5; i++)
 	{
-		fread(&buffer_int, sizeof(buffer_int), 1, f);
+		count = fread(&buffer_int, sizeof(buffer_int), 1, f);
 		fwrite(&buffer_int, sizeof(buffer_int), 1, out);
 	}
 
 	// increment skinnum
-	fread(&buffer_int, sizeof(buffer_int), 1, f);
+	count = fread(&buffer_int, sizeof(buffer_int), 1, f);
 	++buffer_int;
 	fwrite(&buffer_int, sizeof(buffer_int), 1, out);
 
 	// mirror header stuff before skin_ofs
 	for (i=0; i<5; i++)
 	{
-		fread(&buffer_int, sizeof(buffer_int), 1, f);
+		count = fread(&buffer_int, sizeof(buffer_int), 1, f);
 		fwrite(&buffer_int, sizeof(buffer_int), 1, out);
 	}
 
 	// copy the skins offset value, since it doesn't change
-	fread(&buffer_int, sizeof(buffer_int), 1, f);
+	count = fread(&buffer_int, sizeof(buffer_int), 1, f);
 	fwrite(&buffer_int, sizeof(buffer_int), 1, out);
 
 	// increment all offsets by 64 to make way for new skin
 	for (i=0; i<5; i++)
 	{
-		fread(&buffer_int, sizeof(buffer_int), 1, f);
+		count = fread(&buffer_int, sizeof(buffer_int), 1, f);
 		buffer_int += 64;
 		fwrite(&buffer_int, sizeof(buffer_int), 1, out);
 	}
@@ -678,11 +679,11 @@ void AddModelSkin (char *modelfile, char *skinname)
 	}
 
 	// copy the rest of the file
-	fread(&buffer, sizeof(buffer), 1, f);
+	count = fread(&buffer, sizeof(buffer), 1, f);
 	while (!feof(f))
 	{
 		fwrite(&buffer, sizeof(buffer), 1, out);
-		fread(&buffer, sizeof(buffer), 1, f);
+		count = fread(&buffer, sizeof(buffer), 1, f);
 	}
 
 	fclose (f);
@@ -710,12 +711,12 @@ void my_bprintf (int printlevel, char *fmt, ...)
 	// Highlighted text to players
 	gi.bprintf(printlevel, "%s", buffer);
 
-	//QW// delete this - not needed. gi.bprintf does it already,
-	//if (dedicated->value)
-	//{
-	//	white_text(buffer, buffer);
-	//	gi.dprintf ("%s", buffer); // White text to log/console
-	//}
+	//QW// This is needed for Wallfly
+	if (dedicated->value)
+	{
+		white_text(buffer, buffer);
+		gi.dprintf ("%s", buffer); // White text to log/console
+	}
 }
 
 //======================================================================
