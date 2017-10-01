@@ -986,7 +986,7 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 				//JSW - Other no longer has flag
 				other->hasflag = 0;
 				held_time = level.time - other->client->resp.ctf_flagsince;
-				sprintf(heldtime, "(held %.1f seconds)", held_time);
+				Com_sprintf(heldtime, sizeof heldtime, "(held %.1f seconds)", held_time);
 				//end
 				if (other->client->pers.inventory[ITEM_INDEX(enemy_flag_item)])
 				{
@@ -1346,8 +1346,6 @@ void CTFCalcScores(void)
 {
 	int i;
 
-	if (DEBUG_HSCORES) 
-		DbgPrintf("%s entered\n", __func__);
 	ctfgame.total1 = ctfgame.total2 = 0;
 	for (i = 0; i < maxclients->value; i++) {
 		if (!g_edicts[i+1].inuse)
@@ -2451,9 +2449,6 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 	int team;
 	int maxsize = MAX_MSGLEN;
 
-	if (DEBUG_HSCORES) 
-		DbgPrintf("%s entered\n", __func__);
-
 	if (highscores->value && ent->client->showhighscores)
 	{
 		LoadHighScores(); // the message is fully formed
@@ -2499,7 +2494,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 		*string = 0;
 
 		// Red & blue team plates with total scores and caps
-		sprintf(string, 
+		Com_sprintf(string, sizeof string,
 			"if 24 xv 8 yv 8 pic 24 endif "		// 24 = red plate
 			"xv 40 yv 28 string \"%4d/%-3d\" "	// total score/total players red
 			"xv 98 yv 12 num 2 18 "				// 18 = total caps red
@@ -2594,7 +2589,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 				if (trap == 0)
 				{
 					trap = 1;
-					sprintf(entry, "xv 0 yv %d string2 \"Spectators\" ", j);
+					Com_sprintf(entry, sizeof entry, "xv 0 yv %d string2 \"Spectators\" ", j);
 					len = strlen(string);
 					j += 8;
 				}
@@ -2659,9 +2654,6 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 	int team;
 	int maxsize = MAX_MSGLEN;
 
-	if (DEBUG_HSCORES) 
-		DbgPrintf("%s entered\n", __func__);
-
 	if (highscores->value && ent->client->showhighscores)
 	{
 		LoadHighScores(); // the message is fully formed
@@ -2707,7 +2699,7 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 		*string = 0;
 
 		// Red & blue team plates with total scores and caps
-		sprintf(string, 
+		Com_sprintf(string, sizeof string,
 			"if 24 xv -32 yv 8 pic 24 endif "	// 24 = red plate
 			"xv 0 yv 28 string \"%4d/%-3d\" "	// total score/total players red
 			"xv 56 yv 12 num 2 18 "				// 18 = total caps red
@@ -2726,7 +2718,7 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 				break; // we're done
 
 			// set up y
-			sprintf(entry, "yv %d ", 42 + i * 8);
+			Com_sprintf(entry, sizeof entry, "yv %d ", 42 + i * 8);
 			if (maxsize - len > strlen(entry))
 			{
 				strcat(string, entry);
@@ -2808,7 +2800,7 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 				if (trap == 0)	// write this only once per message
 				{
 					trap = 1;
-					sprintf(entry, "xv 0 yv %d string2 \"Spectators\" ", j);
+					Com_sprintf(entry, sizeof entry, "xv 0 yv %d string2 \"Spectators\" ", j);
 					len = strlen(string);
 					j += 8;
 				}
@@ -2946,26 +2938,23 @@ static edict_t *FindTechSpawnCTF(int whichteam)
 	int i = rand() % 16;
 	char team[20];
 
-	//gi.dprintf("whichteam is %d\n", whichteam);
 	if (whichteam == 1)
 	{
 		if (teamtechs->value == 1)
-			sprintf (team, "info_player_team1");
+			Com_sprintf (team, sizeof team, "info_player_team1");
 		else if (teamtechs->value == 2)
-			sprintf(team, "item_flag_team1");
+			Com_sprintf(team, sizeof team, "item_flag_team1");
 		else
 			gi.dprintf("ERROR spawning techs! Check your teamtechs CVAR!\n");
-		//		gi.dprintf("red spawn chosen\n");
 	}
 	else
 	{
 		if (teamtechs->value == 1)
-			sprintf (team, "info_player_team2");
+			Com_sprintf (team, sizeof team, "info_player_team2");
 		else if (teamtechs->value == 2)
-			sprintf(team, "item_flag_team2");
+			Com_sprintf(team, sizeof team, "item_flag_team2");
 		else
 			gi.dprintf("ERROR spawning techs! Check your teamtechs CVAR!\n");
-		//		gi.dprintf("blue spawn chosen\n");
 	}
 
 	while (i--)
@@ -3411,7 +3400,7 @@ SAY_TEAM
 */
 // This array is in 'importance order', it indicates what items are
 // more important when reporting their names.
-struct
+struct prioritylist_s
 {
 	char *classname;
 	int priority;
@@ -3592,7 +3581,7 @@ static void CTFSay_Team_Health(edict_t *who, char *buf)
 	if (who->health <= 0)
 		strcpy(buf, "dead");
 	else
-		sprintf(buf, "%i health", who->health);
+		Com_sprintf(buf, sizeof buf, "%i health", who->health);
 }
 
 static void CTFSay_Team_Tech(edict_t *who, char *buf)
@@ -3611,7 +3600,7 @@ static void CTFSay_Team_Tech(edict_t *who, char *buf)
 			{
 				if ((rune = FindItem(rune_namefornum[i])) != NULL &&
 					who->client->pers.inventory[ITEM_INDEX(rune)])
-					sprintf(buf, "the %s", rune->pickup_name);
+					Com_sprintf(buf, sizeof buf, "the %s", rune->pickup_name);
 				return;
 			}
 		}
@@ -3623,7 +3612,7 @@ static void CTFSay_Team_Tech(edict_t *who, char *buf)
 		if ((tech = FindItemByClassname(tnames[i])) != NULL &&
 			who->client->pers.inventory[ITEM_INDEX(tech)]) 
 		{
-				sprintf(buf, "the %s", tech->pickup_name);
+				Com_sprintf(buf, sizeof buf, "the %s", tech->pickup_name);
 				return;
 		}
 		i++;
@@ -3762,7 +3751,7 @@ void CTFSay_Team(edict_t *who, char *msg)
 
 	*p = 0;
 
-	sprintf(msg2, "(%s): %s\n", who->client->pers.netname, outmsg);
+	Com_sprintf(msg2, sizeof msg2, "(%s): %s\n", who->client->pers.netname, outmsg);
 
 	if (log_chat->value)
 	{
@@ -4040,7 +4029,7 @@ void OpExecFFAConfig (edict_t *ent, pmenu_t *menu)
 {
 	char buffer[100];
 	PMenu_Close(ent);
-	sprintf(buffer, "\nexec %s\n", ffa_cfg_file->string);
+	Com_sprintf(buffer, sizeof buffer, "\nexec %s\n", ffa_cfg_file->string);
 	gi.AddCommandString(buffer);
 }
 
@@ -4048,7 +4037,7 @@ void OpExecCTFConfig (edict_t *ent, pmenu_t *menu)
 {
 	char buffer[100];
 	PMenu_Close(ent);
-	sprintf(buffer, "\nexec %s\n", ctf_cfg_file->string);
+	Com_sprintf(buffer, sizeof buffer, "\nexec %s\n", ctf_cfg_file->string);
 	gi.AddCommandString(buffer);
 }
 
@@ -4799,10 +4788,6 @@ void VoteMapNames3(void)
 				i + 1,
 				maplist->mapname[i],
 				maplist->mapnick[i]);
-//		sprintf(menustring[pos],
-//				"%s: %-19.19s",
-//				maplist->mapname[i],
-//				maplist->mapnick[i]);
 		menustring[pos][45] = '\0';
 		votemapmenu3[pos].text = menustring[pos];
 		votemapmenu3[pos].SelectFunc = VoteChangeMap;
@@ -4849,10 +4834,6 @@ void VoteMapNames2(void)
 				i + 1,
 				maplist->mapname[i],
 				maplist->mapnick[i]);
-//		sprintf(menustring[pos],
-//				"%s: %-19.19s",
-//				maplist->mapname[i],
-//				maplist->mapnick[i]);
 		menustring[pos][45] = '\0';
 		votemapmenu2[pos].text = menustring[pos];
 		votemapmenu2[pos].SelectFunc = VoteChangeMap;
@@ -4908,8 +4889,6 @@ void VoteMapNames(void)
 				"%d. %s - %s", pos,
 				maplist->mapname[i],
 				maplist->mapnick[i]);
-		//sprintf(menustring[pos],"%s: %-19.19s", maplist->mapname[i], maplist->mapnick[i]);
-		//strncpy(menustring[pos], string, 24);
 		menustring[pos][45] = '\0';
 		votemapmenu[pos].text = menustring[pos];
 		votemapmenu[pos].SelectFunc = VoteChangeMap;
@@ -4979,7 +4958,7 @@ char *GetIpOp(edict_t *ent)
 	if (!G_EntExists(ent))
 		return (0);
 
-	sprintf(entry, "%s@%s", ent->client->pers.netname, ent->client->pers.ip);
+	Com_sprintf(entry, sizeof entry, "%s@%s", ent->client->pers.netname, ent->client->pers.ip);
 	j = 0;
 	ec = 0;
 	while (!strchr("@", entry[ec]))
