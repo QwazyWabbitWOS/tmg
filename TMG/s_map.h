@@ -3,7 +3,7 @@
 
 #define MAX_MAPS 300
 
-typedef struct
+typedef struct map_entry_s
 {
     char   aFile[MAX_QPATH];
     char   aName[MAX_QPATH];
@@ -12,7 +12,7 @@ typedef struct
     int    fVisited;
 } MAP_ENTRY;
 
-typedef struct
+typedef struct maplist_s
 {
 	int  nummaps;          // number of maps in list
 	char mapname[MAX_MAPS][MAX_QPATH];

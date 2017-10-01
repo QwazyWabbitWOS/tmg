@@ -86,7 +86,7 @@ struct edict_s
 //
 // functions provided by the main engine
 //
-typedef struct
+typedef struct game_import_s
 {
 	// special messages
 	void	(*bprintf) (int printlevel, char *fmt, ...);
@@ -167,7 +167,7 @@ typedef struct
 //
 // functions exported by the game subsystem
 //
-typedef struct
+typedef struct game_export_s
 {
 	int			apiversion;
 

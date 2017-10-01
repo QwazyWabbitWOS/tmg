@@ -13,7 +13,7 @@
 /**
  Entity name and corresponding spawn function
  */
-typedef struct
+typedef struct spawn_s
 {
 	char	*name;
 	void	(*spawn)(edict_t *ent);

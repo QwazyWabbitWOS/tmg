@@ -452,7 +452,7 @@ void Load_BotInfo(void)
 	{
 		strcpy(filename, Buff);
 		fseek( fp, 0, SEEK_SET);
-		while(1)
+		for(;;)
 		{
 			if(fgets( Buff, sizeof(Buff), fp ) == NULL) 
 				goto MESS_NOTFOUND;
@@ -460,7 +460,7 @@ void Load_BotInfo(void)
 				break;
 		}
 
-		while(1)
+		for(;;)
 		{
 			if(fgets( Buff, sizeof(Buff), fp ) == NULL) 
 				goto MESS_NOTFOUND;
@@ -478,7 +478,7 @@ MESS_NOTFOUND:
 		//else
 		Com_sprintf(MessageSection, sizeof MessageSection, "[%s]", botlist->string);
 		fseek( fp, 0, SEEK_SET);
-		while(1)
+		for(;;)
 		{
 			if(fgets( Buff, sizeof(Buff), fp ) == NULL)
 			{
@@ -493,7 +493,7 @@ MESS_NOTFOUND:
 		{
 			strcpy(MessageSection, BOTLIST_SECTION_DM);
 			fseek( fp, 0, SEEK_SET);
-			while(1)
+			for(;;)
 			{
 				if(fgets( Buff, sizeof(Buff), fp ) == NULL) 
 					goto BOTLIST_NOTFOUND;

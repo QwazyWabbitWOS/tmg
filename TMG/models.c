@@ -12,7 +12,8 @@ qboolean CheckModel(edict_t *ent, char *s)
 
 	Com_sprintf(file_name, sizeof file_name, "%s/%s/%s/models.txt", basedir->string, game_dir->string, cfgdir->string);
 
-	if ( (banlist = fopen(file_name, "r")) )
+	banlist = fopen(file_name, "r");
+	if (banlist)
 	{
 		while ( fgets(line, sizeof line, banlist) )
 		{

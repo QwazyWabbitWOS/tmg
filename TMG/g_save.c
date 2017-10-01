@@ -1007,7 +1007,8 @@ void ReadLevel (char *filename)
 	// load all the entities
 	while (1)
 	{
-		if ((count = fread (&entnum, sizeof(entnum), 1, f) != 1))
+		count = fread (&entnum, sizeof(entnum), 1, f);
+		if (count != 1)
 		{
 			fclose (f);
 			gi.error ("ReadLevel: failed to read entnum");

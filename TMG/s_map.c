@@ -6,8 +6,9 @@ MAP_ENTRY   *mdsoft_map = NULL;
 
 maplist_t	*maplist;
 
-static unsigned int mdsoft_map_size  = 0;
-static unsigned int mdsoft_map_last  = 0;
+//QW// thise were originally unsigned. (WTF?)
+static int mdsoft_map_size = 0;
+static int mdsoft_map_last = 0;
 
 static int parse_line(FILE	*fpFile, 
 	char *pFile, char *pName, 
@@ -195,10 +196,11 @@ void ClearVisited(void)
 {
 	int i;
 
+	// don't clear if any one of them is not visited
 	for(i = 0; i < mdsoft_map_size; i++ )
 	{
 		if (!mdsoft_map[i].fVisited)
-			return; // if any one of them is not visited
+			return; 
 	}
 
 	if(debug_smap->value)

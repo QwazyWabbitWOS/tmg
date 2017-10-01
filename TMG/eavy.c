@@ -9,7 +9,8 @@ char *ReadTextFile(char *filename)
     long int	i;
     int         ch;
 
-    while (true) {
+    for (;;) 
+	{
         fp = fopen(filename, "r");
         if (!fp) break;
 
@@ -22,18 +23,15 @@ char *ReadTextFile(char *filename)
         for (i=0; (ch = fgetc(fp)) != EOF; i++)
             filestring[i] = ch;
         filestring[i] = '\0';
-
         break;
     }
-
     if (fp) fclose(fp);
-
     return(filestring);
 }
 
 char *EAVYLoadEntities(char *mapname, char *entities)
 {
-    char   entfilename[256] = "";
+    char   entfilename[MAX_QPATH] = "";
     char   *newentities;
 	int    i;
 	size_t islefn;

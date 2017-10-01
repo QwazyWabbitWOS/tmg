@@ -8,6 +8,11 @@
 #include "botstr.h"
 #include "g_func.h"
 
+#ifdef _WIN32
+#pragma warning(push)
+#pragma warning(disable : 4127)	// conditional expression is constant
+#endif
+
 qboolean	pickup_pri;
 void RandomChat(edict_t *ent);
 int			targetindex;		//debugtarget
@@ -1231,14 +1236,14 @@ int Bot_Watermove ( edict_t *ent,vec3_t pos,float dist,float upd)
 	VectorCopy(rs_trace.endpos,pos);
 	return true;
 
-
+/* //QW// Unreachable code
 	VectorCopy(rs_trace.plane.normal,trmin);
 	trmin[2] = 0;
 	VectorNormalize(trmin);
 	VectorAdd(trmax,trmin,trmax);
 	for(i = 1.0;i < dist;i += 1.0)
 	{
-		rs_trace = gi.trace (trmax, ent->mins, ent->maxs,trmax,ent, MASK_BOTSOLIDX/*MASK_PLAYERSOLID*/);
+		rs_trace = gi.trace (trmax, ent->mins, ent->maxs,trmax,ent, MASK_BOTSOLIDX);//MASK_PLAYERSOLID);
 		if(!rs_trace.allsolid && !rs_trace.startsolid)
 		{
 			VectorCopy(trmax,pos);
@@ -1248,6 +1253,7 @@ int Bot_Watermove ( edict_t *ent,vec3_t pos,float dist,float upd)
 	}
 	//	gi.bprintf(PRINT_HIGH,"failed2\n");
 	return false;
+*/
 }
 
 static
@@ -5972,4 +5978,9 @@ VCHCANSEL_L:
 		RandomChat(ent);
 	
 }
+
+#ifdef _WIN32
+#pragma warning(pop)
+#endif
+
 

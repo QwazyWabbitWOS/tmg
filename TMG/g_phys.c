@@ -461,7 +461,7 @@ retry:
 }					
 
 
-typedef struct
+typedef struct pushed_s
 {
 	edict_t	*ent;
 	vec3_t	origin;

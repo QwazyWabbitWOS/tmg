@@ -827,7 +827,8 @@ void G_RunFrame (void)
 
 			for (i = 1; i <= maxclients->value; i++)
 			{
-				if ((e = &g_edicts[i]) && e && e->inuse && !e->bot_client)
+				e = &g_edicts[i];
+				if (e && e->inuse && !e->bot_client)
 				{
 					// display it for all to view!!
 					StuffCmd(e, "cmd hscore\n");

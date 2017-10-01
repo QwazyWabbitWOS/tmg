@@ -509,7 +509,8 @@ static void
 			//gi.dprintf("A quad damage has expired!\n");
 			for (i = 1; i <= maxclients->value; i++)
 			{
-				if ((e = &g_edicts[i]) && e && e->inuse && !e->bot_client)
+				e = &g_edicts[i];
+				if (e && e->inuse && !e->bot_client)
 					//safe_centerprintf(e, "A quad damage has expired!\n");
 					gi.sound (e, CHAN_AUTO,
 					gi.soundindex("items/quadexp.wav"), 1, ATTN_NONE, 0);

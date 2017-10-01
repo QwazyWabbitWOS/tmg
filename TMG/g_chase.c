@@ -250,7 +250,8 @@ void ChaseRemoveTarget(edict_t *target)
 
 	for (i = 1; i <= maxclients->value; i++)
 	{
-		if ((ent = &g_edicts[i]) && ent && ent->inuse && !ent->bot_client)
+		ent = &g_edicts[i];
+		if (ent && ent->inuse && !ent->bot_client)
 		{
 			// chasing this target ?
 			if (ent->client->chase_target == target)

@@ -236,7 +236,7 @@ MOVETYPE_BOUNCE
 
 
 
-typedef struct
+typedef struct gitem_armor_s
 {
 	int		base_count;
 	int		max_count;
@@ -315,7 +315,7 @@ typedef struct gitem_s
 // it should be initialized at dll load time, and read/written to
 // the server.ssv file for savegames
 //
-typedef struct
+typedef struct game_locals_s
 {
 	char		helpmessage1[512];
 	char		helpmessage2[512];
@@ -347,7 +347,7 @@ typedef struct
 // this structure is cleared as each map is entered
 // it is read/written to the level.sav file for savegames
 //
-typedef struct
+typedef struct level_locals_s
 {
 	int			framenum;
 	float		time;
@@ -399,7 +399,7 @@ typedef struct
 // spawn_temp_t is only used to hold entity field values that
 // can be set from the editor, but aren't actualy present
 // in edict_t during gameplay
-typedef struct
+typedef struct spawn_temp_s
 {
 	// world vars
 	char		*sky;
@@ -422,7 +422,7 @@ typedef struct
 } spawn_temp_t;
 
 
-typedef struct
+typedef struct moveinfo_s
 {
 	// fixed data
 	vec3_t		start_origin;
@@ -453,14 +453,14 @@ typedef struct
 } moveinfo_t;
 
 
-typedef struct
+typedef struct mframe_s
 {
 	void	(*aifunc)(edict_t *self, float dist);
 	float	dist;
 	void	(*thinkfunc)(edict_t *self);
 } mframe_t;
 
-typedef struct
+typedef struct mmove_s
 {
 	int			firstframe;
 	int			lastframe;
@@ -468,7 +468,7 @@ typedef struct
 	void		(*endfunc)(edict_t *self);
 } mmove_t;
 
-typedef struct
+typedef struct monsterinfo_s
 {
 	mmove_t		*currentmove;
 	int			aiflags;
@@ -891,7 +891,7 @@ typedef enum fieldtype_n {
 	F_IGNORE
 } fieldtype_t;
 
-typedef struct
+typedef struct field_s
 {
 	char	*name;
 	int		ofs;
@@ -1887,7 +1887,7 @@ void BotEndServerFrame (edict_t *ent);
 qboolean mapvotefilled;
 
 
-typedef struct 
+typedef struct oplist_s
 {
 	int	level;
     int	newlevel;

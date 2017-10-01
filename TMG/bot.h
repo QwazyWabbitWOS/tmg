@@ -316,7 +316,12 @@ void AirStrike_Think(edict_t *ent);
 #define CTF_FLAG1_FLAG		0x0000
 #define CTF_FLAG2_FLAG		0x8000
 
-typedef struct
+#ifdef _WIN32
+#pragma warning(push)
+#pragma warning(disable : 4201) // anonymous union
+#endif
+
+typedef struct route_s
 {
 	vec3_t	Pt;		//target point
 	union
@@ -328,6 +333,10 @@ typedef struct
 	short	index;	//index num
 	short	state;	//targetstate
 } route_t;
+
+#ifdef _WIN32
+#pragma warning(pop)
+#endif
 
 //----------------------------------------------------------------
 //bot info struct
@@ -352,7 +361,7 @@ typedef struct
 #define BOP_NOSTHRWATER	14	//can't see through water
 #define BOP_TEAMWORK	15	//teamwork
 
-typedef	struct
+typedef	struct botinfo_s
 {
 	char	netname[21];		//netname
 	char	model[21];			//model

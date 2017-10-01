@@ -15,9 +15,10 @@ edict_t *Find_Player_Edict_t (char *s)
 {
 	int i;
 	edict_t *player;
-	for(i=1;i<=maxclients->value;i++)
+	for(i = 1; i <= maxclients->value; i++)
 	{
-		if ((player=&g_edicts[i]) && player->inuse && (Q_stricmp(s, player->client->pers.netname) == 0))
+		player = &g_edicts[i];
+		if (player->inuse && (Q_stricmp(s, player->client->pers.netname) == 0))
 			return player;
 	}
 	return NULL;
@@ -882,7 +883,7 @@ void highlight_text (char *src, char *dest)
 {
 	if (dest == NULL)
 		dest = src;
-	convert_string(src, 0, 127, (char) 128, dest); // white -> green
+	convert_string(src, 0, 0x7f, 0x80, dest); // white -> green
 }
 
 /**
@@ -895,7 +896,7 @@ void white_text (char *src, char *dest)
 {
 	if (dest == NULL)
 		dest = src;
-	convert_string(src, (char) 128, (char) 255, -128, dest); // green -> white
+	convert_string(src, 0x80, 0xff, -128, dest); // green -> white
 }
 
 /**

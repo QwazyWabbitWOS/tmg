@@ -87,7 +87,7 @@ typedef struct cmdque_s
   char *str;
 } cmdqueue;
 
-typedef struct
+typedef struct proxyinfo_s
 {
   unsigned char retries;
   unsigned char rbotretries;
@@ -125,7 +125,7 @@ typedef struct
   char			firstport[5];
 } proxyinfo_t;
 
-typedef struct
+typedef struct proxyreconnectinfo_s
 {
   byte          inuse;
   char			name[16];
@@ -194,7 +194,7 @@ enum commands_n
 typedef void CMDRUNFUNC(int startarg, edict_t *ent, int client);
 typedef void CMDINITFUNC(char *arg);
 
-typedef struct 
+typedef struct zbotcmd_s
 {
   char *cmdname;
   byte  cmdwhere;
@@ -252,7 +252,7 @@ extern int reconnect_checklevel;
 
 extern int entity_classname_offset;
 
-typedef struct
+typedef struct reconnect_info_s
 {
   long          reconnecttimeout;
   int           retrylistidx;
@@ -260,7 +260,7 @@ typedef struct
 
 } reconnect_info;
 
-typedef struct
+typedef struct retrylist_info_s
 {
   long          retry;
   char  	    ip[MAX_INFO_STRING];

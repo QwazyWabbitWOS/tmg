@@ -5,6 +5,11 @@
 #include "bot.h"
 #include "botstr.h"
 
+#ifdef _WIN32
+#pragma warning(push)
+#pragma warning(disable : 4127)	// because hacks!
+#endif
+
 static void Get_AimAngle(edict_t *ent, float aim, float dist, int weapon)
 {
 	edict_t *target;
@@ -633,7 +638,6 @@ static qboolean B_UseHyperBlaster(edict_t *ent, edict_t *target,
 static qboolean B_UseRocket(edict_t *ent, edict_t *target,
 	int enewep, float aim, float distance, int skill)
 {
-	int k;
 	int mywep;
 	zgcl_t		*zc;
 	gclient_t	*client;
@@ -641,7 +645,7 @@ static qboolean B_UseRocket(edict_t *ent, edict_t *target,
 	client = ent->client;
 	zc = &client->zc;
 
-	if((k = CanUsewep(ent, WEAP_ROCKETLAUNCHER)))
+	if(CanUsewep(ent, WEAP_ROCKETLAUNCHER))
 	{
 		mywep = Get_KindWeapon(client->pers.weapon);
 		Get_AimAngle(ent,aim,distance,mywep);
@@ -725,12 +729,12 @@ static qboolean B_UseRocket(edict_t *ent, edict_t *target,
 static qboolean B_UseRailgun(edict_t *ent, edict_t *target,
 	int enewep,	float aim, float distance, int skill)
 {
-	int k, mywep;
+	int mywep;
 	gclient_t	*client;
 
 	client = ent->client;
 
-	if((k = CanUsewep(ent, WEAP_RAILGUN)))
+	if(CanUsewep(ent, WEAP_RAILGUN))
 	{
 		mywep = Get_KindWeapon(client->pers.weapon);
 		Get_AimAngle(ent, aim, distance, mywep);
@@ -750,7 +754,6 @@ static qboolean B_UseRailgun(edict_t *ent, edict_t *target,
 static qboolean B_UseGrenadeLauncher(edict_t *ent, edict_t *target,
 	int enewep,	float aim, float distance, int skill)
 {
-	int k;
 	int mywep;
 	zgcl_t		*zc;
 	gclient_t	*client;
@@ -758,7 +761,7 @@ static qboolean B_UseGrenadeLauncher(edict_t *ent, edict_t *target,
 	client = ent->client;
 	zc = &client->zc;
 
-	if((k = CanUsewep(ent, WEAP_GRENADELAUNCHER)))
+	if(CanUsewep(ent, WEAP_GRENADELAUNCHER))
 	{
 		mywep = Get_KindWeapon(client->pers.weapon);
 
@@ -808,13 +811,12 @@ static qboolean B_UseGrenadeLauncher(edict_t *ent, edict_t *target,
 static qboolean B_UseChainGun(edict_t *ent, edict_t *target,
 	int enewep, float aim, float distance, int skill)
 {
-	int k;
 	int mywep;
 	gclient_t	*client;
 
 	client = ent->client;
 
-	if((k = CanUsewep(ent,WEAP_CHAINGUN)))
+	if(CanUsewep(ent,WEAP_CHAINGUN))
 	{
 		mywep = Get_KindWeapon(client->pers.weapon);
 		Get_AimAngle(ent, aim, distance, mywep);
@@ -835,18 +837,16 @@ static qboolean B_UseChainGun(edict_t *ent, edict_t *target,
 static qboolean B_UseMachineGun(edict_t *ent, edict_t *target,
 	int enewep, float aim, float distance, int skill)
 {
-	int k;
 	int mywep;
 	gclient_t	*client;
 
 	client = ent->client;
 
-	if((k = CanUsewep(ent, WEAP_MACHINEGUN)))
+	if(CanUsewep(ent, WEAP_MACHINEGUN))
 	{
 		mywep = Get_KindWeapon(client->pers.weapon);
 		Get_AimAngle(ent, aim, distance, mywep);
-		if(k == true)
-			client->buttons |= BUTTON_ATTACK;
+		client->buttons |= BUTTON_ATTACK;
 		if(trace_priority < TRP_ANGLEKEEP)
 			trace_priority = TRP_ANGLEKEEP;
 		return true;
@@ -862,13 +862,12 @@ static qboolean B_UseMachineGun(edict_t *ent, edict_t *target,
 static qboolean B_UseSuperShotgun(edict_t *ent, edict_t *target,
 	int enewep, float aim, float distance, int skill)
 {
-	int k;
 	int mywep;
 	gclient_t	*client;
 
 	client = ent->client;
 
-	if((k = CanUsewep(ent,WEAP_SUPERSHOTGUN)))
+	if(CanUsewep(ent,WEAP_SUPERSHOTGUN))
 	{
 		mywep = Get_KindWeapon(client->pers.weapon);
 		Get_AimAngle(ent, aim, distance, mywep);
@@ -888,13 +887,12 @@ static qboolean B_UseSuperShotgun(edict_t *ent, edict_t *target,
 static qboolean B_UseShotgun(edict_t *ent, edict_t *target,
 	int enewep, float aim, float distance, int skill)
 {
-	int k;
 	int mywep;
 	gclient_t	*client;
 
 	client = ent->client;
 
-	if((k = CanUsewep(ent,WEAP_SHOTGUN)))
+	if(CanUsewep(ent,WEAP_SHOTGUN))
 	{
 		mywep = Get_KindWeapon(client->pers.weapon);
 		Get_AimAngle(ent, aim, distance, mywep);
@@ -914,13 +912,12 @@ static qboolean B_UseShotgun(edict_t *ent, edict_t *target,
 static qboolean B_UseHandGrenade(edict_t *ent, edict_t *target,
 	int enewep, float aim, float distance, int skill)
 {
-	int k;
 	int mywep;
 	gclient_t	*client;
 
 	client = ent->client;
 
-	if((k = CanUsewep(ent,WEAP_GRENADES)))
+	if(CanUsewep(ent,WEAP_GRENADES))
 	{
 		mywep = Get_KindWeapon(client->pers.weapon);
 		Get_AimAngle(ent, aim, distance, mywep);
@@ -943,13 +940,12 @@ static qboolean B_UseHandGrenade(edict_t *ent, edict_t *target,
 static qboolean B_UseBlaster(edict_t *ent, edict_t *target,
 	int enewep, float aim, float distance, int skill)
 {
-	int k;
 	int mywep;
 	gclient_t	*client;
 
 	client = ent->client;
 
-	if((k = CanUsewep(ent,WEAP_BLASTER)))
+	if(CanUsewep(ent,WEAP_BLASTER))
 	{
 		mywep = Get_KindWeapon(client->pers.weapon);
 		Get_AimAngle(ent, aim, distance, mywep);
@@ -968,7 +964,8 @@ void Combat_LevelX(edict_t *ent, int foundedenemy,
 	gclient_t	*client;
 	zgcl_t		*zc;
 	edict_t		*target;
-	int			mywep,k;
+	int			mywep;
+	int			k;
 	vec3_t		v;
 
 	client = ent->client;
@@ -1811,3 +1808,6 @@ void UpdateExplIndex(edict_t* ent)
 	}
 }
 
+#ifdef _WIN32
+#pragma warning(pop)
+#endif

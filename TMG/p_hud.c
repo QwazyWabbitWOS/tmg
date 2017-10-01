@@ -84,7 +84,7 @@ void BeginIntermission (edict_t *targ)
 		char *nextwav;
 		char sound[MAX_QPATH];
 
-		if ((nextwav = Wav_Mod_Next()))
+		if ((nextwav = Wav_Mod_Next()) != NULL)
 		{
 			gi.cvar_set("wav", nextwav);
 			//set up the songtoplay cvar
@@ -357,7 +357,8 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 	char	string[MAX_MSGLEN]; // The scoreboard message
 	size_t	len;
 	int		i;
-	size_t	j, k;
+	int		j;
+	int		k;
 	int		sorted[MAX_CLIENTS];
 	int		sortedscores[MAX_CLIENTS];
 	int		score, total;
@@ -497,7 +498,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 		//DB Highscores
 		if (ent->client->showhighscores)
 		{
-			if ((hs_file = fopen(filename, "r")))
+			if ((hs_file = fopen(filename, "r")) != NULL)
 			{
 				i = 0;
 				while ( fgets(line, 80, hs_file) )
