@@ -20,7 +20,8 @@ qboolean hs_show;
 
 static int MP_Sort(const void *a, const void *b);
 
-typedef struct {
+typedef struct highscore_s 
+{
 	char	netname[16];
 	int		score;
 	char  	date[12];
@@ -45,17 +46,12 @@ void SaveHighScores (void)
 	char	string[128];
 	size_t	count = 0;
 
-	if (DEBUG_HSCORES) 
-		DbgPrintf("%s entered\n", __func__);
-	
 	Com_sprintf(binfile, sizeof binfile, "./%s/%s/hs/%s_hs.bin", 
 		game_dir->string, cfgdir->string, level.mapname);
 
 	Com_sprintf(txtfile, sizeof txtfile, "./%s/%s/hs/%s_hs.txt", 
 		game_dir->string, cfgdir->string, level.mapname);
 
-	if (DEBUG_HSCORES) 
-		DbgPrintf("Opened for reading %s\n", binfile);
 	HS_file = fopen(binfile, "rb");
 	
 	if(HS_file)
@@ -85,10 +81,6 @@ void SaveHighScores (void)
 				my_bprintf (PRINT_HIGH, "High scores changed\n");
 				strcpy(g_TopScores[KEEP-1].netname, ent->client->pers.netname);
 				g_TopScores[KEEP-1].score = ent->client->resp.score;
-				if (DEBUG_HSCORES) 
-					DbgPrintf("Keeping %s - %d\n", 
-					g_TopScores[KEEP-1].netname, 
-					g_TopScores[KEEP-1].score);
 				strcpy(g_TopScores[KEEP-1].date, sys_date);
 				// sort it
 				qsort(g_TopScores, sizeof(g_TopScores)/sizeof(g_TopScores[0]),
@@ -130,18 +122,13 @@ void SaveHighScores (void)
 	{
 		fwrite(g_TopScores, sizeof(g_TopScores[0]), KEEP, HS_file);
 		fclose(HS_file);
-		if (DEBUG_HSCORES) 
-			DbgPrintf("File written %s\n", binfile);
 	}
 	else
 	{
-		if (DEBUG_HSCORES) 
-			DbgPrintf("Can't write %s\n", binfile);
+		gi.dprintf("Can't write %s\n", binfile);
 	}
 	
 	// print top scores to a man-readable file
-	if (DEBUG_HSCORES) 
-		DbgPrintf("Opened for writing %s\n", txtfile);
 	HS_file = fopen(txtfile, "wt");
 	if (HS_file)
 	{
@@ -162,8 +149,6 @@ void SaveHighScores (void)
 		fprintf(HS_file,"\n     %s  %s\n", MOD, MOD_VERSION);
 		fprintf(HS_file,"              www.railwarz.com");
 		fclose(HS_file);
-		if (DEBUG_HSCORES) 
-			DbgPrintf("File written %s\n", txtfile);
 	}
 	else
 	{
@@ -179,23 +164,23 @@ void LoadHighScores (void)
 	size_t	stringlength;
 	int		i;
 	size_t	j;
-	FILE    *motd_file;
+	FILE    *hs_file;
 	char    filename[MAX_QPATH];
 	char    line[80];
 
 	Com_sprintf(filename, sizeof filename, "./%s/%s/hs/%s_hs.txt", 
 		game_dir->string, cfgdir->string, level.mapname);
 
-	if (!(motd_file = fopen(filename, "r")))
+	hs_file = fopen(filename, "r");
+	if (!hs_file)
 	{
-		if (DEBUG_HSCORES) 
-			DbgPrintf("Can't open highscores using %s\n", filename);
+		gi.dprintf("Can't open highscores using %s\n", filename);
 		return;
 	}
 	string[0] = 0;
 	stringlength = strlen(string);
 	i = 0;
-	while ( fgets(line, 80, motd_file) )
+	while ( fgets(line, 80, hs_file) )
 	{
 		if (strstr (line, sys_date))
 			highlight_text(line, NULL); // white -> green
@@ -209,7 +194,7 @@ void LoadHighScores (void)
 		i++;
 	}
 
-	fclose(motd_file);
+	fclose(hs_file);
 	j = strlen(entry);
 	if (stringlength + j < 1400)
 	{
