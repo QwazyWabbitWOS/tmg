@@ -3882,7 +3882,7 @@ void JoinGame(edict_t *ent, pmenu_t *menu)
 		ent->spec_warned = false;
 		ent->speccheck = false;
 		//set up the no delta value
-		StuffCmd(ent, "set cl_notelta $cl_nodelta u\n");
+		StuffCmd(ent, "set cl_nodelta $cl_nodelta u\n");
 	}
 	PMenu_Close(ent);
 }
@@ -4783,9 +4783,8 @@ void VoteMapNames3(void)
 
 	for (i = 28; i < maplist->nummaps && pos < MAX_MENU_MAPS+1; ++i)
 	{
-		sprintf(menustring[pos],
-				"%d. %s - %s",
-				i + 1,
+		Com_sprintf(menustring[pos], sizeof menustring[pos],
+				"%d. %s - %s", i + 1,
 				maplist->mapname[i],
 				maplist->mapnick[i]);
 		menustring[pos][45] = '\0';
@@ -4795,7 +4794,7 @@ void VoteMapNames3(void)
 		++pos;
 	}
 
-	sprintf(menustring[pos],"..Back");
+	Com_sprintf(menustring[pos], sizeof menustring[pos], "..Back");
 	votemapmenu3[pos].text = menustring[pos];
 	votemapmenu3[pos].SelectFunc = VoteMap;
 	votemapmenu3[pos].arg = i;
@@ -4829,9 +4828,8 @@ void VoteMapNames2(void)
 
 	for (i = 14; i < maplist->nummaps && pos < MAX_MENU_MAPS+1; ++i)
 	{
-		sprintf(menustring[pos],
-				"%d. %s - %s",
-				i + 1,
+		Com_sprintf(menustring[pos], sizeof menustring[pos],
+				"%d. %s - %s", i + 1,
 				maplist->mapname[i],
 				maplist->mapnick[i]);
 		menustring[pos][45] = '\0';
@@ -4843,7 +4841,7 @@ void VoteMapNames2(void)
 
 	if (maplist->nummaps >= MAX_MENU_MAPS*2)
 	{
-		sprintf(menustring[pos],"More Maps..");
+		Com_sprintf(menustring[pos], sizeof menustring[pos], "More Maps..");
 		votemapmenu2[pos].text = menustring[pos];
 		votemapmenu2[pos].SelectFunc = VoteMap3;
 		votemapmenu2[pos].arg = i;
@@ -4851,7 +4849,7 @@ void VoteMapNames2(void)
 	}
 	else
 	{
-		sprintf(menustring[pos],"..Back");
+		Com_sprintf(menustring[pos], sizeof menustring[pos], "..Back");
 		votemapmenu2[pos].text = menustring[pos];
 		votemapmenu2[pos].SelectFunc = VoteMap;
 		votemapmenu2[pos].arg = i;
@@ -4885,7 +4883,7 @@ void VoteMapNames(void)
 
 	for (i = 0; i < maplist->nummaps && pos < MAX_MENU_MAPS+1; ++i)
 	{
-		sprintf(menustring[pos],
+		Com_sprintf(menustring[pos], sizeof menustring[pos],
 				"%d. %s - %s", pos,
 				maplist->mapname[i],
 				maplist->mapnick[i]);
@@ -4898,7 +4896,7 @@ void VoteMapNames(void)
 
 	if (maplist->nummaps >= MAX_MENU_MAPS)
 	{
-		sprintf(menustring[pos],"More Maps..");
+		Com_sprintf(menustring[pos], sizeof menustring[pos], "More Maps..");
 		votemapmenu[pos].text = menustring[pos];
 		votemapmenu[pos].SelectFunc = VoteMap2;
 		//votemapmenu[pos].arg = i;
@@ -4930,7 +4928,7 @@ void VoteMap(edict_t *ent, pmenu_t *p)
 	if (mapvoteactive == true)
 	{
 		string[0] = '*';
-		sprintf(string + 1,
+		Com_sprintf(string + 1, sizeof string,
 				"%s - %s",
 				maplist->mapname[maplist->currentmapvote],
 				maplist->mapnick[maplist->currentmapvote]);
@@ -4999,7 +4997,7 @@ char *GetIpOp(edict_t *ent)
 		j++;
 		ec++;
 	}
-	sprintf (modif,
+	Com_sprintf (modif, sizeof modif,
 			 "%s@%s.%s.%s.*",
 			 ent->client->pers.netname,
 			 ipp1, ipp2, ipp3);
@@ -5018,7 +5016,8 @@ void List_Op(edict_t *ent)
 		e = g_edicts + 1 + i;
 		if (!G_EntExists(e))
 			continue;
-		sprintf(menustring[pos],"%d. %s", pos, e->client->pers.netname);
+		Com_sprintf(menustring[pos], sizeof menustring[pos],
+			"%d. %s", pos, e->client->pers.netname);
 		promotemenu[pos].text = menustring[pos];
 		if(e->client->pers.oplevel)
 			promotemenu[pos].SelectFunc = NULL;
@@ -5061,7 +5060,7 @@ void OpMe(edict_t *ent, pmenu_t *p)
 	if (!G_EntExists(e))
 		return;
 
-	sprintf(entry, "addop %s %d nopass",
+	Com_sprintf(entry, sizeof entry, "addop %s %d nopass",
 			GetIp(e), (int)defaultoplevel->value);
 	StuffCmd (ent, entry);
 }
@@ -5115,13 +5114,16 @@ void List_Switch(edict_t *ent)
 			continue;
 
 		if(e->client->resp.ctf_team < 1)
-			sprintf(menustring[pos],"%d. %s <SPEC>", pos, e->client->pers.netname);
+			Com_sprintf(menustring[pos], sizeof menustring[pos],
+			"%d. %s <SPEC>", pos, e->client->pers.netname);
 		else
 		{
 			if(e->client->resp.ctf_team == 2)
-				sprintf(menustring[pos],"%d. %s <Blue>", pos, e->client->pers.netname);
+				Com_sprintf(menustring[pos], sizeof menustring[pos],
+				"%d. %s <Blue>", pos, e->client->pers.netname);
 			else
-				sprintf(menustring[pos],"%d. %s <Red>", pos, e->client->pers.netname);
+				Com_sprintf(menustring[pos], sizeof menustring[pos],
+				"%d. %s <Red>", pos, e->client->pers.netname);
 		}
 		switchmenu[pos].text = menustring[pos];
 
@@ -5227,7 +5229,7 @@ void List_Spec(edict_t *ent)
 		e = g_edicts + 1 + i;
 		if (!G_EntExists(e))
 			continue;
-		sprintf(menustring[pos],"%d. %s", pos, e->client->pers.netname);
+		Com_sprintf(menustring[pos], sizeof menustring[pos], "%d. %s", pos, e->client->pers.netname);
 		specmenu[pos].text = menustring[pos];
 		if(e->client->pers.oplevel & OP_PROTECTED || e->is_muted)
 			specmenu[pos].SelectFunc = NULL;
@@ -5269,7 +5271,8 @@ void List_UnSilence(edict_t *ent)
 		e = g_edicts + 1 + i;
 		if (!G_EntExists(e))
 			continue;
-		sprintf(menustring[pos],"%d. %s", pos, e->client->pers.netname);
+		Com_sprintf(menustring[pos], sizeof menustring[pos], 
+			"%d. %s", pos, e->client->pers.netname);
 		unsilencemenu[pos].text = menustring[pos];
 		if(!e->is_muted)
 			unsilencemenu[pos].SelectFunc = NULL;
@@ -5326,7 +5329,8 @@ void List_Silence(edict_t *ent)
 		e = g_edicts + 1 + i;
 		if (!G_EntExists(e))
 			continue;
-		sprintf(menustring[pos],"%d. %s", pos, e->client->pers.netname);
+		Com_sprintf(menustring[pos], sizeof menustring[pos], 
+			"%d. %s", pos, e->client->pers.netname);
 		silencemenu[pos].text = menustring[pos];
 		if(e->client->pers.oplevel & OP_PROTECTED || e->is_muted)
 			silencemenu[pos].SelectFunc = NULL;
@@ -5373,7 +5377,8 @@ char *GetIp(edict_t *ent)
 	char entry[32], namep[20], ipp1[3],ipp2[3],ipp3[3],ipp4[3];
 	int ec, j;
 
-	sprintf(entry, "%s@%s", ent->client->pers.netname, ent->client->pers.ip);
+	Com_sprintf(entry, sizeof entry, "%s@%s", 
+		ent->client->pers.netname, ent->client->pers.ip);
 	j = 0;
 	ec = 0;
 	while (!strchr("@", entry[ec]))
@@ -5414,7 +5419,7 @@ char *GetIp(edict_t *ent)
 		j++;
 		ec++;
 	}
-	sprintf (modif, "*@%s.%s.%s.*",  ipp1, ipp2, ipp3);
+	Com_sprintf (modif, sizeof modif, "*@%s.%s.%s.*",  ipp1, ipp2, ipp3);
 	return (modif);
 }
 
@@ -5457,12 +5462,13 @@ void List_KickBan(edict_t *ent)
 	edict_t *e;
 
 	pos = 1;
-	for (i = 0; i < maxclients->value && pos < 1+CountConnectedClients (); ++i)
+	for (i = 0; i < maxclients->value && pos < 1 + CountConnectedClients (); ++i)
 	{
 		e = g_edicts + 1 + i;
 		if (!G_EntExists(e))
 			continue;
-		sprintf(menustring[pos],"%d. %s", pos, e->client->pers.netname);
+		Com_sprintf(menustring[pos], sizeof menustring[pos], "%d. %s", 
+			pos, e->client->pers.netname);
 		kicknbanmenu[pos].text = menustring[pos];
 
 		if(e->client->pers.oplevel & OP_BAN)
@@ -5504,9 +5510,9 @@ void KicknBanMe(edict_t *ent, pmenu_t *p)
 	PMenu_Close(ent);
 	if (!G_EntExists(e))
 		return;
-	sprintf(cmd, "%s\n",  GetIp(e));
+	Com_sprintf(cmd, sizeof cmd, "%s\n",  GetIp(e));
 	AddEntry("ip_banned.txt", cmd);
-	sprintf(cmd1, "\nkick %d\n",  i);
+	Com_sprintf(cmd1, sizeof cmd1, "\nkick %d\n",  i);
 	gi.AddCommandString(cmd1);
 }
 
@@ -5522,7 +5528,7 @@ void BanMe(edict_t *ent, pmenu_t *p)
 	if (!G_EntExists(e))
 		return;
 
-	sprintf(cmd, "%s\n",  GetIp(e));
+	Com_sprintf(cmd, sizeof cmd, "%s\n",  GetIp(e));
 	AddEntry("ip_banned.txt", cmd);
 }
 
@@ -5539,7 +5545,8 @@ void List_Ban(edict_t *ent)
 		e = g_edicts + 1 + i;
 		if (!G_EntExists(e))
 			continue;
-		sprintf(menustring[pos],"%d. %s", pos, e->client->pers.netname);
+		Com_sprintf(menustring[pos], sizeof menustring[pos], 
+			"%d. %s", pos, e->client->pers.netname);
 		banmenu[pos].text = menustring[pos];
 
 		if(e->client->pers.oplevel & OP_BAN)
@@ -5590,16 +5597,11 @@ void OpMapNames3(void)
 
 	for (i = 28; i < maplist->nummaps && pos < MAX_MENU_MAPS+1; ++i)
 	{
-		sprintf(menustring[pos],
-				"%d. %s - %s",
+		Com_sprintf(menustring[pos], sizeof menustring[pos], 
+				"%d. %s - %s", // was:	"%s: %-19.19s",
 				i + 1,
 				maplist->mapname[i],
 				maplist->mapnick[i]);
-
-		//sprintf(menustring[pos],
-		//		"%s: %-19.19s",
-		//		maplist->mapname[i],
-		//		maplist->mapnick[i]);
 
 		menustring[pos][45] = '\0';
 		opmapmenu3[pos].text = menustring[pos];
@@ -5608,7 +5610,7 @@ void OpMapNames3(void)
 		++pos;
 	}
 
-	sprintf(menustring[pos],"..Back");
+	Com_sprintf(menustring[pos], sizeof menustring[pos], "..Back");
 	opmapmenu3[pos].text = menustring[pos];
 	opmapmenu3[pos].SelectFunc = OpMap;
 	opmapmenu3[pos].arg = i;
@@ -5642,15 +5644,12 @@ void OpMapNames2(void)
 
 	for (i = 14; i < maplist->nummaps && pos < MAX_MENU_MAPS+1; ++i)
 	{
-		sprintf(menustring[pos],
+		Com_sprintf(menustring[pos], sizeof menustring[pos], 
 				"%d. %s - %s",
 				i + 1,
 				maplist->mapname[i],
 				maplist->mapnick[i]);
-		//		sprintf(menustring[pos],
-		//				"%s: %-19.19s",
-		//				maplist->mapname[i],
-		//				maplist->mapnick[i]);
+
 		menustring[pos][45] = '\0';
 		opmapmenu2[pos].text = menustring[pos];
 		opmapmenu2[pos].SelectFunc = OpChangeMap;
@@ -5660,7 +5659,7 @@ void OpMapNames2(void)
 
 	if (maplist->nummaps >= MAX_MENU_MAPS*2)
 	{
-		sprintf(menustring[pos],"More Maps..");
+		Com_sprintf(menustring[pos], sizeof menustring[pos], "More Maps..");
 		opmapmenu2[pos].text = menustring[pos];
 		opmapmenu2[pos].SelectFunc = OpMap3;
 		opmapmenu2[pos].arg = i;
@@ -5668,7 +5667,7 @@ void OpMapNames2(void)
 	}
 	else
 	{
-		sprintf(menustring[pos],"..Back");
+		Com_sprintf(menustring[pos], sizeof menustring[pos], "..Back");
 		opmapmenu2[pos].text = menustring[pos];
 		opmapmenu2[pos].SelectFunc = OpMap;
 		opmapmenu2[pos].arg = i;
@@ -5702,15 +5701,12 @@ void OpMapNames(void)
 
 	for (i = 0; i < maplist->nummaps && pos < MAX_MENU_MAPS+1; ++i)
 	{
-//		sprintf(menustring[pos],
-//				"%s: %-19.19s",
-//				maplist->mapname[i],
-//				maplist->mapnick[i]);
-		sprintf(menustring[pos],
+		Com_sprintf(menustring[pos], sizeof menustring[pos], 
 				"%d. %s - %s",
 				i + 1,
 				maplist->mapname[i],
 				maplist->mapnick[i]);
+
 		menustring[pos][45] = '\0';
 		opmapmenu[pos].text = menustring[pos];
 		opmapmenu[pos].SelectFunc = OpChangeMap;
@@ -5720,7 +5716,7 @@ void OpMapNames(void)
 
 	if (maplist->nummaps >= MAX_MENU_MAPS)
 	{
-		sprintf(menustring[pos],"More Maps..");
+		Com_sprintf(menustring[pos], sizeof menustring[pos], "More Maps..");
 		opmapmenu[pos].text = menustring[pos];
 		opmapmenu[pos].SelectFunc = OpMap2;
 		opmapmenu[pos].arg = i;
@@ -5753,7 +5749,7 @@ void KickMe(edict_t *ent, pmenu_t *p)
 
 	i = p->arg;
 	PMenu_Close(ent);
-	sprintf(cmd, "\nkick %d\n",  i);
+	Com_sprintf(cmd, sizeof cmd, "\nkick %d\n",  i);
 	gi.AddCommandString(cmd);
 }
 
@@ -5771,7 +5767,9 @@ void List_Kick(edict_t *ent)
 		e = g_edicts + 1 + i;
 		if (!G_EntExists(e))
 			continue;
-		sprintf(menustring[pos],"%d. %s", pos, e->client->pers.netname);
+
+		Com_sprintf(menustring[pos], sizeof menustring[pos], 
+			"%d. %s", pos, e->client->pers.netname);
 		kickmenu[pos].text = menustring[pos];
 
 		if(e->client->pers.oplevel & OP_KICK)
@@ -5856,7 +5854,7 @@ void UpdateBotMenu(edict_t *ent)
 	pos = startpos;
 	while (token != NULL)
 	{
-		sprintf(menustring[pos], "%s", token);
+		Com_sprintf(menustring[pos],  sizeof menustring[pos], "%s", token);
 		token = strtok (NULL, seps);
 		entries++;
 		pos++;
@@ -5956,7 +5954,7 @@ void UpdateOpMenu(edict_t *ent)
 	pos = startpos;
 	while (token != NULL)
 	{
-		sprintf(menustring[pos], "%s", token);
+		Com_sprintf(menustring[pos],  sizeof menustring[pos], "%s", token);
 		token = strtok (NULL, seps);
 		entries++;
 		pos++;
@@ -6021,7 +6019,7 @@ void UpdatePlayerMenu(edict_t *ent)
 	token = strtok (str, seps);
 	while (token != NULL)
 	{
-		sprintf(menustring[pos], "%s", token);
+		Com_sprintf(menustring[pos], sizeof menustring[pos], "%s", token);
 		token = strtok (NULL, seps);
 		entries++;
 		pos++;
@@ -6078,7 +6076,8 @@ void List_Players(edict_t *ent)
 		if (!G_EntExists(e))
 			continue;
 
-		sprintf(menustring[pos],"%d. %s %s", pos, e->client->pers.netname, 
+		Com_sprintf(menustring[pos], sizeof menustring[pos], 
+			"%d. %s %s", pos, e->client->pers.netname, 
 			Info_ValueForKey (e->client->pers.userinfo, "ip"));
 		playerlistmenu[pos].text = menustring[pos];
 		playerlistmenu[pos].SelectFunc = NULL;
@@ -6168,11 +6167,11 @@ void FillMapNames(void)
 				m=i;
 		}
 
-		sprintf(menustring[pos],
-				"%d. %s - %s",
-				pos,
-				maplist->mapname[i],
-				maplist->mapnick[i]);
+		Com_sprintf(menustring[pos], 
+			sizeof menustring[pos],
+			"%d. %s - %s", pos,
+			maplist->mapname[i],
+			maplist->mapnick[i]);
 		tmgmapvote[pos].text = menustring[pos];
 		tmgmapvote[pos].SelectFunc = PickMap;
 		tmgmapvote[pos].arg = i;
@@ -6216,7 +6215,7 @@ void PickMap(edict_t *ent, pmenu_t *p)
 		ent->client->pers.HasVoted = true;
 		name = ent->client->pers.netname;
 		highlight_text(name, name);
-		sprintf (text,
+		Com_sprintf (text, sizeof text,
 				 "%s voted for %s \"%s\"\n",
 				 name,
 				 maplist->mapname[i],
@@ -6324,8 +6323,8 @@ int CTFUpdateJoinMenu(edict_t *ent)
 			num2++;
 	}
 
-	sprintf(team1players, "  (%d players)", num1);
-	sprintf(team2players, "  (%d players)", num2);
+	Com_sprintf(team1players, sizeof team1players, "  (%d players)", num1);
+	Com_sprintf(team2players, sizeof team2players, "  (%d players)", num2);
 	joinmenu[2].text = levelname;
 
 	if (joinmenu[4].text)

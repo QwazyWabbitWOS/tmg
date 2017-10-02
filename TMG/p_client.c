@@ -2387,7 +2387,8 @@ void ClientPrintMOTD (edict_t *ent)
 	len3 = strlen(s3);
 
 	// Generate the path to the MOTD file.
-	sprintf (motdPath, "./%s/%s", game_dir->string, motdfile->string);
+	Com_sprintf (motdPath, sizeof motdPath, 
+		"./%s/%s", game_dir->string, motdfile->string);
 
 	// Open the file.
 	motdBytes = 0;
@@ -2480,11 +2481,11 @@ void ClientBeginDeathmatch (edict_t *ent)
 	highlight_text(name, name);
 
 	if (ctf->value)
-		sprintf (text,
+		Com_sprintf (text, sizeof text,
 		"%s entered the game (%d red, %d blue, %d spectators)\n",
 		name, ctfgame.players1, ctfgame.players2, ctfgame.specs);
 	else
-		sprintf (text,
+		Com_sprintf (text, sizeof text,
 		"%s entered the game (%d players, %d spectators)\n",
 		name, ctfgame.players_total, ctfgame.specs);
 
@@ -3017,10 +3018,11 @@ void RavenDisconnect (edict_t *ent)
 char *GetPort(edict_t *ent,char *ip)
 {
 	static char modif[40];
-	char entry[32], ipp1[3],ipp2[3],ipp3[3],ipp4[3],ipp5[5];
+	char entry[32];
+	char ipp1[3],ipp2[3],ipp3[3],ipp4[3],ipp5[5];
 	int ec, j;
 
-	sprintf(entry, "%sX", ip);
+	Com_sprintf(entry, sizeof entry, "%sX", ip);
 
 	j = 0;
 	ec = 0;
@@ -3064,7 +3066,7 @@ char *GetPort(edict_t *ent,char *ip)
 		j++;
 		ec++;
 	}
-	sprintf (modif, "%s",ipp5);
+	Com_sprintf (modif, sizeof modif, "%s",ipp5);
 
 	return (modif);
 }
@@ -3396,9 +3398,17 @@ void ClientDisconnect (edict_t *ent)
 
 	CheckPlayers();
 	if (ctf->value)
-		sprintf (text, "%s has left the server. (%d red, %d blue, %d spectators remaining)\n", name, ctfgame.players1, ctfgame.players2, ctfgame.specs);
+	{
+		Com_sprintf (text, sizeof text, 
+		"%s has left the server. (%d red, %d blue, %d spectators remaining)\n",
+		name, ctfgame.players1, ctfgame.players2, ctfgame.specs);
+	}
 	else
-		sprintf (text, "%s has left the server. (%d players, %d spectators remaining)\n", name, ctfgame.players_total, ctfgame.specs);
+	{	Com_sprintf (text, sizeof text, 
+		"%s has left the server. (%d players, %d spectators remaining)\n",
+		name, ctfgame.players_total, ctfgame.specs);
+	}
+	
 	my_bprintf (PRINT_HIGH, text);
 	if (ctfgame.players1 + ctfgame.players2 + ctfgame.players_total + ctfgame.specs == 0)
 		locked_teams = false;

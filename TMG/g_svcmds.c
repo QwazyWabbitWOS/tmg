@@ -206,7 +206,7 @@ static void Svcmd_Stuff (void)
 
 	s = gi.args();
 	stuff = s +  strlen(gi.argv(1)) + strlen(gi.argv(2)) + 2;
-	sprintf (buff, "%s\n", stuff);
+	Com_sprintf (buff, sizeof buff, "%s\n", stuff);
 	gi.dprintf ("stuffing to client: %s\n", ent->client->pers.netname);
 	gi.cprintf (ent, PRINT_HIGH, "You were stuffed the following "
 				"command by the server admin: %s\n", buff);

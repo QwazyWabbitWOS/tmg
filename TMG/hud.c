@@ -27,7 +27,8 @@ void GetDate(void)
 	month = ltime->tm_mon + 1;
 	day = ltime->tm_mday;
 	year = ltime->tm_year + 1900;
-	sprintf(sys_date, "%02i-%02i-%4i", month, day, year);
+	Com_sprintf(sys_date, sizeof sys_date, 
+		"%02i-%02i-%4i", month, day, year);
 }
 
 /*
@@ -157,6 +158,7 @@ static char *tn_id (edict_t *ent)
 	return (stats); 
 }
 
+
 /*
 char *tn_vote_msg (edict_t *ent)
 {
@@ -164,23 +166,32 @@ char *tn_vote_msg (edict_t *ent)
 	static char line1[64], line2[64];
 	int xv1, xv2;
 
-	if (Q_stricmp(vote_cmd,"map")==0)
-		sprintf (line1, "%s : change map to %s.", votestarter->client->pers.netname, vote_entry);
+	if (Q_stricmp(vote_cmd, "map") == 0)
+		Com_sprintf (line1, sizeof line1, "%s : change map to %s.", 
+			votestarter->client->pers.netname, vote_entry);
 	else
 	if (Q_stricmp(vote_cmd,"cycle")==0)
-		sprintf (line1, "%s : change cycle to %s.", votestarter->client->pers.netname, vote_entry);
+		Com_sprintf (line1, sizeof line1, "%s : change cycle to %s.", 
+			votestarter->client->pers.netname, vote_entry);
 	else
 	if (Q_stricmp(vote_cmd,"promote")==0)
-		sprintf (line1, "%s : promote %s.", votestarter->client->pers.netname, votetarget->client->pers.netname );
+		Com_sprintf (line1, sizeof line1, "%s : promote %s.", 
+			votestarter->client->pers.netname, 
+			votetarget->client->pers.netname );
 	else
 	if (Q_stricmp(vote_cmd,"demote")==0)
-		sprintf (line1, "%s : demote %s.", votestarter->client->pers.netname, votetarget->client->pers.netname );
-	sprintf (line2, "Agree? Go to Consol and type (yes/no)");
+		Com_sprintf (line1, sizeof line1, "%s : demote %s.", 
+			votestarter->client->pers.netname, 
+			votetarget->client->pers.netname );
+	Com_sprintf (line2, sizeof line2, 
+		"Agree? Go to Console and type (yes/no)");
  
 	xv1 = 160-(strlen(line1)*4);
 	xv2 = 160-(strlen(line2)*4);
 
-	sprintf (stats, "xv %d yb -90 string2 \"%s\" xv %d yb -180 string \"%s\" ", xv1, line1, xv2, line2);
+	Com_sprintf (stats, sizeof stats, 
+		"xv %d yb -90 string2 \"%s\" xv %d yb -180 string \"%s\" ", 
+		xv1, line1, xv2, line2);
 
 	return (stats);
 }
@@ -190,10 +201,12 @@ char *tn_votewait (edict_t *ent)
 	static char stats[200];
 	static char line1[64];
 	int xv1;
-	sprintf (line1, "Waiting for vote results...");
+	Com_sprintf (line1, sizeof line1, 
+		"Waiting for vote results...");
 
 	xv1 = 160-(strlen(line1)*4);
-	sprintf (stats, "xv %d yb -90 string2 \"%s\" ", xv1, line1);
+	Com_sprintf (stats, sizeof stats, 
+		"xv %d yb -90 string2 \"%s\" ", xv1, line1);
 
 	return (stats);
 }
