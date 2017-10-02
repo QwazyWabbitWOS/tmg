@@ -6779,7 +6779,7 @@ void SP_info_teleport_destination (edict_t *ent)
 void CTFSetupNavSpawn(void)
 {
 	FILE	*fpout;
-	char	name[256];
+	char	name[MAX_QPATH];
 	char	code[8];
 	char	SRCcode[8];
 	int	i, j;

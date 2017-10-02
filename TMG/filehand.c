@@ -616,7 +616,7 @@ void ShowFile(edict_t *ent, char *filename)
 void LogConnect (edict_t *ent, qboolean connect)
 {
 	FILE *file;
-	char file_name[256];
+	char file_name[MAX_QPATH];
 	char client[256];
 
 	Com_sprintf(file_name, sizeof file_name, "%s/%s/%s/logs/connect.log",
