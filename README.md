@@ -6,7 +6,7 @@
 
 * On Linux, clone the repo and 'make all' then copy the dynamic library to your quake2/ctf folder. 
 * The code compiles on Linux and OS X as a 32-bit shared library. Run it with the 32-bit Q2 engine. 
-* As of 0.2.35 this code compiles as 64-bit code.
+* As of 0.2.35 this code compiles as 64-bit code and will require a 64-bit engine.
 * Use the make file to build on Linux/OS X. (GNUmakefile and BSDmakefile provided)
 * Use the VS2010 project to build on Windows.
 * TMG is CTF by default and can be played with or without player bots.
