@@ -161,8 +161,7 @@
       <Optimization>Full</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;BUILDING_REF_GL;ERASER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -174,7 +173,6 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <TargetMachine>MachineX86</TargetMachine>
       <ModuleDefinitionFile>game.def</ModuleDefinitionFile>
     </Link>
     <Bscmake>

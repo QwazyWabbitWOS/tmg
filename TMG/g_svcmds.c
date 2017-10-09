@@ -30,38 +30,40 @@ void Move_LastRouteIndex(void)
 
 static void SaveChain(void)
 {
-	char name[256];
+	char name[MAX_QPATH];
 	FILE *fpout;
 	unsigned int size;
 
 	if(!chedit->value)
 	{
-		gi.cprintf (NULL, PRINT_HIGH, "Not a chaining mode.\n");
+		gi.cprintf (NULL, PRINT_HIGH, "Not in chaining mode.\n");
 		return;
 	}
 
-	Com_sprintf(name, sizeof name, "%s/%s/%s/nav/%s.nav",
+	if(ctf->value)
+		Com_sprintf(name, sizeof name, "%s/%s/%s/chctf/%s.chf",
 			basedir->string, game_dir->string,
-			cfgdir->string,level.mapname);
+			cfgdir->string, level.mapname);
+	else
+		Com_sprintf(name, sizeof name, "%s/%s/%s/ctdtm/%s.chn",
+			basedir->string, game_dir->string,
+			cfgdir->string, level.mapname);
 
-	fpout = fopen(name,"wb");
+	fpout = fopen(name, "wb");
 
 	if(fpout == NULL)
-		gi.cprintf(NULL,PRINT_HIGH,"Can't open %s\n",name);
+		gi.cprintf(NULL, PRINT_HIGH, "Can't open %s\n", name);
 	else
 	{
 		if(!ctf->value)
-			fwrite("3ZBRGDTM",sizeof(char),8,fpout);
+			fwrite("3ZBRGDTM", sizeof(char), 8, fpout);
 		else
-			fwrite("3ZBRGCTF",sizeof(char),8,fpout);
+			fwrite("3ZBRGCTF", sizeof(char), 8, fpout);
 
-		fwrite(&CurrentIndex,sizeof(int),1,fpout);
-
+		fwrite(&CurrentIndex, sizeof(int), 1, fpout);
 		size = (unsigned int)CurrentIndex * sizeof(route_t);
-
-		fwrite(Route,size,1,fpout);
-
-		gi.cprintf (NULL, PRINT_HIGH,"%s Saving done.\n",name);
+		fwrite(Route, size, 1, fpout);
+		gi.cprintf (NULL, PRINT_HIGH,"%s Saving done.\n", name);
 		fclose(fpout);
 	}
 }

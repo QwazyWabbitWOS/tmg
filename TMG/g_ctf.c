@@ -594,7 +594,7 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 			edict_t *farspot;
 			farspot = SelectFarthestDeathmatchSpawnPoint ();
 			if(debug_spawn->value)
-				DbgPrintf("1 %s returning %s for %s\n at %f %f %f\n", __func__, 
+				DbgPrintf("1 %s returning farthest %s for %s at\n%f %f %f\n", __func__, 
 					farspot->classname, ent->client->pers.netname,
 					farspot->s.origin[0], 
 					farspot->s.origin[1], 
@@ -606,7 +606,7 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 			edict_t *randspot;
 			randspot = SelectRandomDeathmatchSpawnPoint ();
 			if(debug_spawn->value)
-				DbgPrintf("2 %s returning %s for %s\nat %f %f %f\n", __func__, 
+				DbgPrintf("2 %s returning random %s for %s at\n%f %f %f\n", __func__, 
 					randspot->classname, ent->client->pers.netname,
 					randspot->s.origin[0], 
 					randspot->s.origin[1], 
@@ -668,7 +668,7 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 	selection = rand() % count;
 	spot = NULL;
 	if(debug_spawn->value)
-		DbgPrintf("5 %s count= %d\n", __FUNCTION__, count);
+		DbgPrintf("5 %s count = %d\n", __FUNCTION__, count);
 
 	do
 	{
@@ -679,7 +679,7 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 
 	assert(spot != NULL);
 	if(debug_spawn->value)
-		DbgPrintf("6 %s returning %s for %s\nat %f %f %f\n", __func__, 
+		DbgPrintf("6 %s returning %s for %s at\n%f %f %f\n", __func__, 
 			spot->classname, ent->client->pers.netname,
 			spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
 	return spot;
@@ -6796,27 +6796,26 @@ void CTFSetupNavSpawn(void)
 	memset(Route,0,sizeof(Route));
 	memset(code,0,8);
 
-	if(!ctf->value)
-		sprintf(name, "./%s/%s/nav/%s.nav",
+	//QW// Implement separation of chaining files per original 3zb2
+	if(ctf->value)
+		Com_sprintf(name, sizeof name, "./%s/%s/chctf/%s.chf",
 				game_dir->string, cfgdir->string, level.mapname);
 	else
-		sprintf(name, "./%s/%s/nav/%s.nav",
+		Com_sprintf(name, sizeof name, "./%s/%s/chdtm/%s.chn",
 				game_dir->string, cfgdir->string, level.mapname);
 
-	fpout = fopen(name,"rb");
+	fpout = fopen(name, "rb");
 	if(fpout == NULL)
 	{
-		if(!ctf->value)
-			gi.dprintf("Chaining: file %s.nav not found.\n",level.mapname);
-		else
-			gi.dprintf("Chaining: file %s.nav not found.\n",level.mapname);
+		gi.dprintf("Chaining: file %s not found.\n", name);
 	}
 	else
 	{
 		count = fread(code, sizeof(char), 8, fpout);
 		if (count != 8)
-			gi.dprintf("Error reading NAV code in %s\n", __FUNCTION__);
-
+		{
+			gi.dprintf("Error reading chainfile code in %s\n", __FUNCTION__);
+		}
 		if(!ctf->value)
 			strncpy(SRCcode,"3ZBRGDTM", 8);
 		else
@@ -6825,20 +6824,21 @@ void CTFSetupNavSpawn(void)
 		if(strncmp(code, SRCcode, 8))
 		{
 			CurrentIndex = 0;
-			gi.dprintf("Chaining: %s.nav is not a chaining file.\n",level.mapname);
+			gi.dprintf("Chaining: %s is not a chaining file.\n", name);
+			gi.dprintf("%s was looking for %s, found %s\n", __FUNCTION__, SRCcode, code);
 			fclose(fpout);
 			return;
 		}
-		gi.dprintf("Chaining: %s.nav found.\n", level.mapname);
+		gi.dprintf("Chaining: %s found.\n", name);
 
 		count = fread(&CurrentIndex, sizeof(int), 1, fpout);
 		if (count != 1)
-			gi.dprintf("Error reading NAV file index in %s\n", __FUNCTION__);
+			gi.dprintf("Error reading chaining file index in %s\n", __FUNCTION__);
 
 		size = (unsigned int)CurrentIndex * sizeof(route_t);
 		count = fread(Route, size, 1, fpout);
 		if (count != 1)
-			gi.dprintf("Error reading NAV file Route in %s\n", __FUNCTION__);
+			gi.dprintf("Error reading chaining file Route in %s\n", __FUNCTION__);
 
 		for(i = 0; i < CurrentIndex; i++)
 		{
@@ -6848,7 +6848,7 @@ void CTFSetupNavSpawn(void)
 				|| Route[i].state == GRS_REDFLAG || Route[i].state == GRS_BLUEFLAG)
 			{
 				other = &g_edicts[(int)maxclients->value+1];
-				for ( j=maxclients->value+1 ; j<globals.num_edicts ; j++, other++)
+				for ( j=maxclients->value + 1; j<globals.num_edicts; j++, other++)
 				{
 					if (other->inuse)
 					{
@@ -6924,12 +6924,13 @@ void CTFSetupNavSpawn(void)
 				   (Route[i].state == GRS_ITEMS ||
 					Route[i].state == GRS_REDFLAG ||
 					Route[i].state == GRS_BLUEFLAG))
-						gi.dprintf("kicked item\n");
+					//gi.dprintf("kicked item: %d \n", Route[i].state);
 
 				if(j >= globals.num_edicts) Route[i].state = GRS_NORMAL;
 			}
 		}
-		gi.dprintf("Chaining: Total %i chaining pod assigned.\n",CurrentIndex);
+		gi.dprintf("Chaining: Total %i chaining pod assigned.\n", CurrentIndex);
+		gi.dprintf("Chaining: File load complete: %s\n", name);
 		fclose(fpout);
 	}
 	return;

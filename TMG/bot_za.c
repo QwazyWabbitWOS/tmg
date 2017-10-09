@@ -2318,12 +2318,13 @@ void Bots_Move_NORM (edict_t *ent)
 	*/
 
 	//Solid Check
-	if (gi.pointcontents (ent->s.origin) & CONTENTS_SOLID)
+	if ( !(ent->deadflag) && InsideWall(ent) )
+//	if (gi.pointcontents (ent->s.origin) & CONTENTS_SOLID)
 	{
 		ent->nextthink = level.time + FRAMETIME;
 		if(debug_botspawn->value)
-			gi.dprintf("%s %s %s at %f %f %f\n", __func__, 
-				ent->client->pers.netname, "Position",
+			DbgPrintf("%s found %s %s at\n%f %f %f\n", __func__, 
+				ent->client->pers.netname, "positioned inside wall",
 				ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
 		
 		Cmd_Kill_f(ent); // silent suicide mod=23

@@ -483,8 +483,10 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 			message[6] = "tried to BFG-jump unsuccesfully";
 			break;
 		default:
-			DbgPrintf("%s %s has MOD %d %f %f %f\n", __func__, self->client->pers.netname, mod,
-				self->s.origin[0], self->s.origin[1], self->s.origin[2]);
+			if (debug_spawn)
+				gi.dprintf("%s %s has MOD %d \n%f %f %f\n", __func__, 
+					self->client->pers.netname, mod,
+					self->s.origin[0], self->s.origin[1], self->s.origin[2]);
 			message[1] = "commited suicide";
 			message[2] = "went the way of the dodo";
 			message[3] = "thought 'kill' was a funny console command";
@@ -1014,7 +1016,7 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 
 	self->maxs[2] = -8;
 
-	//	self->solid = SOLID_NOT;
+	self->solid = SOLID_NOT;
 	self->svflags |= SVF_DEADMONSTER;
 
 	if (!self->deadflag)
@@ -1440,8 +1442,11 @@ edict_t *SelectRandomDeathmatchSpawnPoint (void)
 	}
 
 	if (!count)
+	{
+		if(debug_spawn->value)
+			DbgPrintf("%s is returning NULL\n", __func__);
 		return NULL;
-
+	}
 	if (count <= 2)
 	{
 		spot1 = spot2 = NULL;
@@ -1458,6 +1463,10 @@ edict_t *SelectRandomDeathmatchSpawnPoint (void)
 		if (spot == spot1 || spot == spot2)
 			selection++;
 	} while(selection--);
+
+	if(debug_spawn->value)
+		DbgPrintf("%s returning %s at\n%f %f %f\n", __func__,
+		spot->classname, spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]);
 	return spot;
 }
 
@@ -1494,18 +1503,15 @@ edict_t *SelectFarthestDeathmatchSpawnPoint (void)
 	if (bestspot)
 	{
 		if(debug_spawn->value)
-			DbgPrintf("Bestspot %s returning %s \nat %f %f %f\n", __func__, bestspot->classname,
+			DbgPrintf("Bestspot: %s returning %s \nat %f %f %f\n", __func__, bestspot->classname,
 			bestspot->s.origin[0], bestspot->s.origin[1], bestspot->s.origin[2]); 
 		return bestspot;
 	}
-
 	// if there is a player just spawned on each and every start spot
 	// we have no choice to turn one into a telefrag meltdown
-
 	spot = G_Find (NULL, FOFS(classname), "info_player_deathmatch");
-
 	if(debug_spawn->value)
-		DbgPrintf("Telefrag %s returning %s \nat %f %f %f\n", __func__, spot->classname,
+		DbgPrintf("Telefrag: %s returning %s \nat %f %f %f\n", __func__, spot->classname,
 		spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
 
 	return spot;
@@ -1533,6 +1539,7 @@ edict_t *SpawnNearFlag (edict_t *ent)
 		teamspawn = "info_player_team2";
 	else
 		teamspawn = "info_player_deathmatch";
+	
 	while ((spot = G_Find (spot, FOFS(classname), teamspawn)) != NULL)
 	{
 		bestplayerdistance = PlayersRangeFromSpot (spot);
@@ -1542,17 +1549,22 @@ edict_t *SpawnNearFlag (edict_t *ent)
 			bestdistance = bestplayerdistance;
 		}
 	}
+	
 	if (bestspot)
 	{
+		if(debug_spawn->value)	
+			gi.dprintf("%s returning %s for %s\nat %f %f %f\n", __func__, 
+			spot->classname, ent->client->pers.netname,
+			spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
 		return bestspot;
 	}
-
+	else
 	// if there is a player just spawned on each and every start spot
 	// we have no choice to turn one into a telefrag meltdown
 	spot = G_Find (NULL, FOFS(classname), teamspawn);
 
 	if(debug_spawn->value)	
-		DbgPrintf("8888 %s returning %s for %s\nat %f %f %f\n", __func__, 
+		gi.dprintf("%s returning %s for %s\nat %f %f %f\n", __func__, 
 		spot->classname, ent->client->pers.netname,
 		spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
 
@@ -1564,16 +1576,24 @@ edict_t *SelectDeathmatchSpawnPoint (void)
 	edict_t *spot;
 
 	if(debug_spawn->value)
-		DbgPrintf("%s\n", __FUNCTION__);
+		gi.dprintf("%s\n", __FUNCTION__);
 
 	if ( (int)(dmflags->value) & DF_SPAWN_FARTHEST)
 	{
 		spot = SelectFarthestDeathmatchSpawnPoint ();
+		if(debug_spawn->value)	
+			gi.dprintf("%s returning %s at %f %f %f\n", __func__, 
+			spot->classname, "farthest",
+			spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
 		return spot;
 	}
 	else
 	{
 		spot = SelectRandomDeathmatchSpawnPoint ();
+		if(debug_spawn->value)	
+			gi.dprintf("%s returning %s at %f %f %f\n", __func__, 
+			spot->classname, "random",
+			spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
 		return spot;
 	}
 }
@@ -2368,7 +2388,7 @@ cvar_t *motdfile;
 void ClientPrintMOTD (edict_t *ent)
 {
 	FILE *in;
-	char motdPath[MAX_QPATH + 1];
+	char motdPath[MAX_QPATH];
 	int c;
 	int motdBytes;
 	char *here;
@@ -2378,9 +2398,7 @@ void ClientPrintMOTD (edict_t *ent)
 	int len1, len2, len3;
 	char *p2 = s2;
 
-	strcat (s2, "Welcome to ");
-	strncat(s2, hostname->string, sizeof s2 - strlen(s2) - 2);
-	strcat (s2, "\n\n");
+	Com_sprintf(s2, sizeof s2, "Welcome to %s \n\n", hostname->string);
 
 	len1 = strlen(s1);
 	len2 = strlen(s2);
@@ -2407,7 +2425,7 @@ void ClientPrintMOTD (edict_t *ent)
 	// Make space for that many bytes.
 	gMOTD = gi.TagMalloc (motdBytes + 1, TAG_GAME);
 	gi.dprintf("Allocating %i bytes for MOTD\n", motdBytes + 1);
-	here = gMOTD; //extra pointer for writing into gMOTD
+	here = gMOTD;
 
 	//Combine the strings into a banner block
 	while (len1)
@@ -2451,11 +2469,9 @@ void ClientPrintMOTD (edict_t *ent)
 
 	*here = '\0';
 
-	// If anything went wrong, warn the console.
 	if (motdBytes != 0)
 		gi.dprintf ("MOTD error: off by %d bytes", motdBytes);
 
-	// Print the message.
 	if (!ent->bot_client)
 		gi.centerprintf (ent, "%s", gMOTD);
 }

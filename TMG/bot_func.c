@@ -316,7 +316,7 @@ qboolean InsideWall(edict_t *ent)
 	torigin[1] += 10.0;
 	if (gi.pointcontents(torigin) & CONTENTS_SOLID && ent->client)
 	{
-		DbgPrintf("1 %s %s\n", ent->client->pers.netname, __FUNCTION__);
+		DbgPrintf("1111 %s %s\n", ent->client->pers.netname, __FUNCTION__);
 		return true;
 	}
 
@@ -325,7 +325,7 @@ qboolean InsideWall(edict_t *ent)
 	torigin[1] -= 10.0;
 	if (gi.pointcontents(torigin) & CONTENTS_SOLID && ent->client)
 	{
-		DbgPrintf("2 %s %s\n", ent->client->pers.netname, __FUNCTION__);
+		DbgPrintf("2222 %s %s\n", ent->client->pers.netname, __FUNCTION__);
 		return true;
 	}
 
@@ -334,7 +334,7 @@ qboolean InsideWall(edict_t *ent)
 	torigin[1] += 10.0;
 	if (gi.pointcontents(torigin) & CONTENTS_SOLID && ent->client)
 	{
-		DbgPrintf("3 %s %s\n", ent->client->pers.netname, __FUNCTION__);
+		DbgPrintf("3333 %s %s\n", ent->client->pers.netname, __FUNCTION__);
 		return true;
 	}
 
@@ -343,7 +343,7 @@ qboolean InsideWall(edict_t *ent)
 	torigin[1] -= 10.0;
 	if (gi.pointcontents(torigin) & CONTENTS_SOLID && ent->client)
 	{
-		DbgPrintf("4 %s %s\n", ent->client->pers.netname, __FUNCTION__);
+		DbgPrintf("4444 %s %s\n", ent->client->pers.netname, __FUNCTION__);
 		return true;
 	}
 
@@ -681,12 +681,12 @@ void Bot_Think (edict_t *self)
 	if(match_state != STATE_PLAYING)
 		return;	
 
-	// Check if bot stuck in wall..
+	// If bot is not dead but stuck in wall
 	if (!((int)level.time % 10))
-		if (InsideWall(self))
+		if ( !(self->deadflag) && InsideWall(self) )
 		{
-			gi.dprintf("7777 %s spawned inside wall: %f %f %f\n", 
-				self->client->pers.netname,
+			DbgPrintf("7777 %s spawned inside wall %s \n%f %f %f\n", 
+				self->client->pers.netname, level.mapname,
 				self->s.origin[0], self->s.origin[1], self->s.origin[2]); 
 			Cmd_Kill_f(self); // suicide
 			self->nextthink = level.time + FRAMETIME;
@@ -1407,6 +1407,10 @@ qboolean SpawnBot(int i)
 		gi.WriteShort (bot-g_edicts);
 		gi.WriteByte (MZ_LOGIN);
 		gi.multicast (bot->s.origin, MULTICAST_PVS);
+		if(debug_spawn->value)
+			DbgPrintf("222 %s bot %s at %f %f %f\n", __func__, 
+			bot->client->pers.netname, 
+			bot->s.origin[0], bot->s.origin[1], bot->s.origin[2]);
 
 		ent = &g_edicts[1];
 		if(ent->inuse && ent->client && !(ent->bot_client))

@@ -623,12 +623,6 @@ char *ShowHud (edict_t *ent)
 			j += sprintf (layout+j, "xr -70 yt 162 string \"%i \" ", captures);
 		}
 
-		// show player location just below crosshair if "location" is toggled on
-		if (ent->client->resp.locationactive)
-			j += sprintf(layout+j, "xv 60 yv 140 string2 \"%4.0f %4.0f %4.0f Angle %3.0f\" ", 
-				ent->s.origin[0], ent->s.origin[1], ent->s.origin[2],
-				ent->client->ps.viewangles[1]);
-
 		//only show if hud is active
 		//stuff on lower left hand area
 		if(ent->client->pers.db_hud)
@@ -661,6 +655,13 @@ char *ShowHud (edict_t *ent)
 				j += sprintf (layout+j, "xl 340 yb -220 string \"Even Teams Please!\" ");
 		}
 	}	// End player HUD
+
+	/* ALL HUDS */
+	// show player location just below crosshair if "location" is toggled on
+	if (ent->client->resp.locationactive)
+		j += sprintf(layout+j, "xv 60 yv 140 string2 \"%4.0f %4.0f %4.0f Angle %3.0f\" ", 
+			ent->s.origin[0], ent->s.origin[1], ent->s.origin[2],
+			ent->client->ps.viewangles[1]);
 
 	s = strlen(layout);
 	if ( s > sizeof (layout))

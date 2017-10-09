@@ -433,9 +433,9 @@ edict_t *G_Spawn (void)
 	
 	G_InitEdict (e);
 
-	if(debug_spawn->value)
-		DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
-			__FUNCTION__, e->movetype, e->inuse, e->classname, level.time);
+	//if(debug_spawn->value)
+	//	DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
+	//		__FUNCTION__, e->movetype, e->inuse, e->classname, level.time);
 
 	return e;
 }
@@ -457,9 +457,9 @@ void G_FreeEdict (edict_t *ed)
 		return;
 	}
 	
-	if(debug_spawn->value)
-		DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
-			__func__, ed->movetype, ed->inuse, ed->classname, level.time);
+	//if(debug_spawn->value)
+	//	DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
+	//		__func__, ed->movetype, ed->inuse, ed->classname, level.time);
 
 	memset (ed, 0, sizeof(*ed));
 	ed->classname = "freed";
@@ -863,11 +863,12 @@ qboolean G_ClientInGame(edict_t *ent)
  Source text must be a valid C string.
  */
 //QwazyWabbit// A pointer version to eliminate undefined behavior.
+// Cover both line endings in case Windows file ends up on *nix server.
 void convert_string(char *src, char start, char end, char add, char *dest)
 {
 	while ((*dest = *src))
 	{
-		if ((*dest >= start) && (*dest <= end) && (*dest != '\n'))
+		if ( (*dest >= start) && (*dest <= end) && (*dest != '\n') && (*dest != '\r') )
 			*dest += add;
 		src++, dest++;
 	}
