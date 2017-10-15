@@ -449,7 +449,7 @@ char *ShowHud (edict_t *ent)
 		ent->client->pers.pl_state == PL_SPECTATOR) && 
 		(ent->client->pers.motd == false))
 	{
-		if (ent->client->chase_mode == 0)
+		if (ent->client->chase_mode == CHASE_FREECAM)
 		{
 			j += sprintf (layout+j, "xv 0 yb -90 cstring \"%s\" ", rectangle);
 			j += sprintf (layout+j, "xv 0 yb -94 cstring \"\nFreeCam\" ");
