@@ -41,7 +41,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.39"
+#define MOD_VERSION "0.2.40"
 #define MOD "TMG_MOD"
 
 #ifndef _DEBUG
@@ -1295,7 +1295,6 @@ typedef struct client_persistent_s
 	int pitchspeed;
 	int anglespeed;
 	int glmonolightmap;
-	qboolean	in_game;
 	qboolean	HasVoted;
 	char ip[24];
 	//only allow one vote for a map per client per map !
@@ -1681,7 +1680,6 @@ float   flastime;//flashlight timer (stops laggers)
 	qboolean is_muted;
 	qboolean is_blocked; // For HUD
 	qboolean busted;
-	int		display;
 	float   pausetime;
 //
 	//JSW

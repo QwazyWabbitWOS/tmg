@@ -1298,9 +1298,6 @@ void PutBotInServer (edict_t *ent)
 	ent->deadflag = DEAD_NO;
 	ent->svflags &= ~SVF_DEADMONSTER;
 
-
-	ent->client->pers.in_game = true;
-
 	zc->waitin_obj = NULL;
 	zc->first_target = NULL;
 	zc->first_target = NULL;

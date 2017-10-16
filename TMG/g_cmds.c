@@ -1759,10 +1759,6 @@ void ClientCommand (edict_t *ent)
 	if ( strstr(cmd, "%" ))
 		return;
 	
-	//RAv be sure players are connected 
-	if(!ent->client->pers.in_game)
-		return;
-	
 	//RAV bot user !
 	if(ent->client->pers.pl_state == PL_CHEATBOT)
 	{
@@ -1823,20 +1819,6 @@ void ClientCommand (edict_t *ent)
 			NoAccess(ent);
 		return;
 	}
-
-/* FIXMEJSW: need to rewrite the command
-	if (Q_stricmp (cmd, "opbroadcast") == 0)
-	{
-		if (ent->client->pers.oplevel)
-		{
-			ent->client->pers.saytype = 2;
-			StuffCmd (ent, "echo \"Op Broadcast enabled\";messagemode");
-		}
-		else
-			NoAccess(ent);
-		return;
-	}
-*/
 
 	if (Q_stricmp (cmd, "rconmode") == 0)
 	{
@@ -1995,11 +1977,6 @@ void ClientCommand (edict_t *ent)
 			JoinGame(ent, NULL);
 	}
 	
-	//QW// This is interesting. Case insensitive string comparisons
-	//     using mixed case strings? Set all to lower case, changed
-	//     Q_stricmp to Q_strcasecmp and changed parentheses to match
-	//     what I think it's supposed to be doing and to silence clang.
-	//RAVEN
 	else if (Q_strcasecmp (cmd, "spec") == 0
 			  || Q_strcasecmp (cmd, "spectator") == 0
 			  || Q_strcasecmp (cmd, "chase") == 0
@@ -2016,7 +1993,7 @@ void ClientCommand (edict_t *ent)
 			return;
 		}
 
-		if(CountConnectedClients()+2 >= (maxclients->value - (int)reserved_slots->value))
+		if(CountConnectedClients() + 2 >= (maxclients->value - (int)reserved_slots->value))
 		{
 			if(op_specs->value || max_specs->value)
 			{
@@ -2040,15 +2017,12 @@ void ClientCommand (edict_t *ent)
 						  "You must be ALIVE to go Spectator\n");
 			return;
 		}
-		ent->client->pers.pl_state = PL_SPECTATOR;
-		ent->client->resp.spectator = 1;
-
 		if (ent->client->menu)
 			PMenu_Close(ent);
 
-		Spectate (ent, NULL);
+		ent->client->pers.pl_state = PL_SPECTATOR;
+		ent->client->resp.spectator = 1;
 		CTFChaseCam(ent, NULL);
-		//player_set_observer (ent, true);
 
 		CheckPlayers();
 		if (ctf->value)

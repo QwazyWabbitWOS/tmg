@@ -485,8 +485,8 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 		default:
 			if (debug_spawn)
 				gi.dprintf("%s %s has MOD %d \n%f %f %f\n", __func__, 
-					self->client->pers.netname, mod,
-					self->s.origin[0], self->s.origin[1], self->s.origin[2]);
+				self->client->pers.netname, mod,
+				self->s.origin[0], self->s.origin[1], self->s.origin[2]);
 			message[1] = "commited suicide";
 			message[2] = "went the way of the dodo";
 			message[3] = "thought 'kill' was a funny console command";
@@ -1130,7 +1130,7 @@ void InitClientPersistant (gclient_t *client)
 	int plstate, mapvoted, oplevel;
 	char namepass[16];
 	//
-	qboolean motd,ig;
+	qboolean motd;
 	int	motd_seen;
 	char userip[24], namecg[18], skinn[24];
 
@@ -1140,7 +1140,6 @@ void InitClientPersistant (gclient_t *client)
 	plstate = client->pers.pl_state;
 	motd = client->pers.motd;
 	motd_seen = client->pers.motd_seen;
-	ig = client->pers.in_game;
 	strcpy (userip,client->pers.ip);
 	strcpy (namecg,client->pers.name_change);
 	strcpy (skinn,client->pers.skin_change);
@@ -1155,7 +1154,6 @@ void InitClientPersistant (gclient_t *client)
 	strcpy(client->pers.namepass, namepass);
 	client->pers.motd = motd;
 	client->pers.motd_seen = motd_seen;
-	client->pers.in_game = ig;
 	strcpy (client->pers.ip, userip);
 	strcpy (client->pers.name_change, namecg);
 	strcpy (client->pers.skin_change, skinn);
@@ -1539,7 +1537,7 @@ edict_t *SpawnNearFlag (edict_t *ent)
 		teamspawn = "info_player_team2";
 	else
 		teamspawn = "info_player_deathmatch";
-	
+
 	while ((spot = G_Find (spot, FOFS(classname), teamspawn)) != NULL)
 	{
 		bestplayerdistance = PlayersRangeFromSpot (spot);
@@ -1549,7 +1547,7 @@ edict_t *SpawnNearFlag (edict_t *ent)
 			bestdistance = bestplayerdistance;
 		}
 	}
-	
+
 	if (bestspot)
 	{
 		if(debug_spawn->value)	
@@ -1559,9 +1557,9 @@ edict_t *SpawnNearFlag (edict_t *ent)
 		return bestspot;
 	}
 	else
-	// if there is a player just spawned on each and every start spot
-	// we have no choice to turn one into a telefrag meltdown
-	spot = G_Find (NULL, FOFS(classname), teamspawn);
+		// if there is a player just spawned on each and every start spot
+		// we have no choice to turn one into a telefrag meltdown
+		spot = G_Find (NULL, FOFS(classname), teamspawn);
 
 	if(debug_spawn->value)	
 		gi.dprintf("%s returning %s for %s\nat %f %f %f\n", __func__, 
@@ -2377,7 +2375,6 @@ void Connect (edict_t *ent)
 	gi.linkentity (ent);
 	ent->client->pers.db_hud = true;
 	ent->client->pers.motd = true;
-	ent->client->pers.in_game = false;
 }
 //end
 
@@ -2487,13 +2484,13 @@ deathmatch mode, so clear everything out before starting them.
 void ClientBeginDeathmatch (edict_t *ent)
 {
 	char text[80];
-	char *name;
+	char name[32];
 
 	G_InitEdict (ent);
 
 	//jsw
 	CheckPlayers();
-	name = ent->client->pers.netname;
+	Com_sprintf(name, sizeof name, ent->client->pers.netname);
 	highlight_text(name, name);
 
 	if (ctf->value)
@@ -2509,10 +2506,6 @@ void ClientBeginDeathmatch (edict_t *ent)
 
 	InitClientResp (ent->client);
 
-	//raven gzspace bug chase	
-	ent->display = 0;
-	// zgcl clear
-	//	memset (&ent->client->zc,0,sizeof(zgcl_t));
 	if(ent->client->pers.pl_state < PL_PLAYING )
 		Connect(ent);
 	else
@@ -3109,7 +3102,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	qboolean is_bot = false;
 	char *name;
 	char *ip;
-	char player[30];
+	char player[64];
 	int i;
 	qboolean emptyname;
 
@@ -3153,13 +3146,11 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 		return false;
 	}
 
+	Com_sprintf(player, sizeof player, "%s@%s", name, ip);
 
-	strcpy(player, "/0");
-	strcpy(player, name);
-	strcat(player, "@");
-	strcat(player, ip);
-
-	strcpy(ent->client->pers.namepass, Info_ValueForKey(userinfo, "namepass"));
+	Com_sprintf(ent->client->pers.namepass, 
+		sizeof ent->client->pers.namepass, "%s", 
+		Info_ValueForKey(userinfo, "namepass"));
 	CheckOpFile(ent, player, true);
 
 	if (serverlocked && !(ent->client->pers.oplevel & OP_LOCKSERVER))
@@ -3324,11 +3315,9 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	}
 
 	// do real client specific stuff
-	ent->client->pers.in_game = false;
 	ent->client->pers.pl_state = PL_SPECTATOR; //spec
 	ent->client->pers.oplevel = 0;
 	ent->client->pers.motd = true;
-	ent->client->pers.in_game = false;
 
 	ClientUserinfoChanged (ent, userinfo);
 
@@ -3359,7 +3348,7 @@ void ClientDisconnect (edict_t *ent)
 {
 	int		playernum;
 	char text[80];
-	char *name;
+	char name[32];
 
 	// Safety check...
 	if (!G_EntExists(ent))
@@ -3388,7 +3377,7 @@ void ClientDisconnect (edict_t *ent)
 	strcpy (ent->client->pers.skin_change, " ");
 	ent->client->pers.vote_times = 0;
 
-	name = ent->client->pers.netname;
+	Com_sprintf(name, sizeof name, ent->client->pers.netname);
 	highlight_text(name, name);
 
 	if ( ent->flashlight )
@@ -3416,15 +3405,15 @@ void ClientDisconnect (edict_t *ent)
 	if (ctf->value)
 	{
 		Com_sprintf (text, sizeof text, 
-		"%s has left the server. (%d red, %d blue, %d spectators remaining)\n",
-		name, ctfgame.players1, ctfgame.players2, ctfgame.specs);
+			"%s has left the server. (%d red, %d blue, %d spectators remaining)\n",
+			name, ctfgame.players1, ctfgame.players2, ctfgame.specs);
 	}
 	else
 	{	Com_sprintf (text, sizeof text, 
-		"%s has left the server. (%d players, %d spectators remaining)\n",
-		name, ctfgame.players_total, ctfgame.specs);
+	"%s has left the server. (%d players, %d spectators remaining)\n",
+	name, ctfgame.players_total, ctfgame.specs);
 	}
-	
+
 	my_bprintf (PRINT_HIGH, text);
 	if (ctfgame.players1 + ctfgame.players2 + ctfgame.players_total + ctfgame.specs == 0)
 		locked_teams = false;
@@ -4452,9 +4441,6 @@ void ClientBeginServerFrame (edict_t *ent)
 
 	if(ent->command == 1 && ent->pausetime < level.time )
 	{
-		//raven gzspace bug chase
-		ent->display = 0;
-		//	ent->inuse = false;
 		if(ent->flags & FL_SPECIAL)
 			StuffCmd (ent, va("reconnect\n"));
 		else
@@ -4551,36 +4537,28 @@ void ClientBeginServerFrame (edict_t *ent)
 
 		//remove Hud and statusbar
 		//SendStatusBar (ent, "\0");
-		//raven gzspace bug chase
-		ent->display = 0;
 
-		if (ent->client->buttons & BUTTON_ANY)
+		//		if (1);//ent->client->buttons & BUTTON_ANY)
+		//		{
+		//if(ent->client->resp.enterframe + 33 > level.framenum)
+		//	return;
+		//if (ent->client->buttons & BUTTON_ATTACK)
+		//	return;
+		ent->client->pers.motd_seen = true;
+		ent->client->pers.motd = false;
+		ent->client->pers.pl_state = PL_SPECTATOR;
+		ent->reset_time = level.time + 10;
+		respawn(ent, true);
+
+		//play the intro song if used
+		if(wavs->value && !ent->bot_client)
 		{
-			if(ent->client->resp.enterframe + 33 > level.framenum)
-				return;
-			if (ent->client->buttons & BUTTON_ATTACK)
-				return;
-			ent->client->pers.motd_seen = true;
-			ent->client->pers.in_game = true;
-			ent->client->pers.motd = false;
-			ent->client->pers.pl_state = PL_SPECTATOR;
-			ent->reset_time = level.time + 10;
-			respawn(ent, true);
-
-			//raven gzspace bug chase
-			ent->display = 1;
-
-			//play the intro song if used
-			if(wavs->value && !ent->bot_client)
-			{
-				Com_sprintf(song, sizeof(song), songtoplay->string);
-				//gi.sound (ent, CHAN_AUTO, gi.soundindex (song), 1, ATTN_NORM, 0);
-				StuffCmd(ent, va("play %s\n", song));
-			}
+			Com_sprintf(song, sizeof(song), songtoplay->string);
+			//gi.sound (ent, CHAN_AUTO, gi.soundindex (song), 1, ATTN_NORM, 0);
+			StuffCmd(ent, va("play %s\n", song));
 		}
+		//		}
 	}
-
-	//
 
 	//RAV chasecam!
 	if(ent->client->pers.pl_state == PL_SPECTATOR)
@@ -4590,24 +4568,6 @@ void ClientBeginServerFrame (edict_t *ent)
 		else
 			ent->client->ps.pmove.pm_type = PM_FREEZE;	
 	}
-
-	//RAV
-	//GZ_SPACE  overflow check
-
-	//if(ent->client->checkpingtime == level.time && !GET_AVG_PING(ent))
-	//	ent->client->overflowed = true;
-	//	else
-	//	ent->client->overflowed = false;
-
-	//Check For Cheaters
-	//if (!ent->bot_client)
-	//	StuffCmd(ent, "mm_fps $cl_maxfps\n");//max fps
-	//if(ent->client->checkframe == level.framenum && !ent->bot_client)
-	//{
-	//	//StuffCmd(ent, "mm_fps $cl_maxfps\n");//max fps
-	//	StuffCmd(ent, "mm_ts $timescale\n");//timescale hack
-	//	ent->client->checkframe = level.framenum+40;
-	//}
 
 	//RAV	anti camper mod
 	if (camper_check->value && ent->client->check_camping && !ent->bot_client)

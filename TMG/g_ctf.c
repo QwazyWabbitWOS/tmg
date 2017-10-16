@@ -3889,12 +3889,13 @@ void JoinGame(edict_t *ent, pmenu_t *menu)
 
 void Spectate(edict_t *ent, pmenu_t *menu)
 {
-	//drop techs and such
+	//drop techs and such if CTF
 	CTFDeadDropFlag(ent);
 	CTFDeadDropTech(ent);
 
 	// drop the rune if we have one
 	runes_drop(ent);
+	
 	if ( ent->flashlight )
 	{
 		G_FreeEdict(ent->flashlight);
@@ -3906,8 +3907,12 @@ void Spectate(edict_t *ent, pmenu_t *menu)
 	ent->solid = SOLID_NOT;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->client->pers.pl_state = PL_SPECTATOR;
+	ent->client->ps.pmove.pm_flags &= PMF_NO_PREDICTION;
+	ent->client->ps.pmove.pm_type = PM_SPECTATOR;
 	ent->client->pers.db_hud = true;
 	ent->client->ps.gunindex = 0;
+	//ent->client->resp.spectator = 1;
+	
 	if(ctf->value)
 		ent->client->resp.ctf_team = CTF_NOTEAM;
 	gi.linkentity (ent);

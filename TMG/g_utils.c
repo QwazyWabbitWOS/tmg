@@ -730,8 +730,7 @@ void safe_cprintf (edict_t *ent, int printlevel, char *fmt, ...)
 	va_list	argptr;
 
 	if (!ent || !ent->inuse || 
-		ent->bot_client || 
-		!ent->client->pers.in_game)
+		ent->bot_client)
 		return;
 
 	va_start (argptr, fmt);
@@ -751,8 +750,7 @@ void safe_centerprintf (edict_t *ent, char *fmt, ...)
 	va_list	argptr;
 
 	if (!ent->inuse || 
-		ent->bot_client || 
-		!ent->client->pers.in_game)
+		ent->bot_client)
 		return;
 
 	va_start (argptr, fmt);
@@ -783,7 +781,7 @@ void safe_bprintf (int printlevel, char *fmt, ...)
 	{
 		cl_ent = g_edicts + 1 + i;
 
-	if (G_EntExists(cl_ent) && !cl_ent->bot_client && cl_ent->client->pers.in_game)
+	if (G_EntExists(cl_ent) && !cl_ent->bot_client)
 			gi.cprintf(cl_ent, printlevel, "%s", buffer);
 	}
 
