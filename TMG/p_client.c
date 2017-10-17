@@ -1462,7 +1462,7 @@ edict_t *SelectRandomDeathmatchSpawnPoint (void)
 			selection++;
 	} while(selection--);
 
-	if(debug_spawn->value)
+	if(debug_spawn->value && spot != NULL)
 		DbgPrintf("%s returning %s at\n%f %f %f\n", __func__,
 		spot->classname, spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]);
 	return spot;
@@ -1500,7 +1500,7 @@ edict_t *SelectFarthestDeathmatchSpawnPoint (void)
 
 	if (bestspot)
 	{
-		if(debug_spawn->value)
+		if(debug_spawn->value && bestspot != NULL)
 			DbgPrintf("Bestspot: %s returning %s \nat %f %f %f\n", __func__, bestspot->classname,
 			bestspot->s.origin[0], bestspot->s.origin[1], bestspot->s.origin[2]); 
 		return bestspot;
@@ -1508,7 +1508,7 @@ edict_t *SelectFarthestDeathmatchSpawnPoint (void)
 	// if there is a player just spawned on each and every start spot
 	// we have no choice to turn one into a telefrag meltdown
 	spot = G_Find (NULL, FOFS(classname), "info_player_deathmatch");
-	if(debug_spawn->value)
+	if(debug_spawn->value && spot != NULL)
 		DbgPrintf("Telefrag: %s returning %s \nat %f %f %f\n", __func__, spot->classname,
 		spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
 
