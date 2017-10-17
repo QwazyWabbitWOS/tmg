@@ -1552,8 +1552,8 @@ edict_t *SpawnNearFlag (edict_t *ent)
 	{
 		if(debug_spawn->value)	
 			gi.dprintf("%s returning %s for %s\nat %f %f %f\n", __func__, 
-			spot->classname, ent->client->pers.netname,
-			spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
+			bestspot->classname, ent->client->pers.netname,
+			bestspot->s.origin[0], bestspot->s.origin[1], bestspot->s.origin[2]); 
 		return bestspot;
 	}
 	else
@@ -2665,7 +2665,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	char	*s, *value;
 	int		playernum;
 	int rate, delta;//RAV
-	char player[40];
+	char player[MAX_QPATH];
 	qboolean emptyname = 0;
 	int i;
 	char	*namepass;
@@ -2942,7 +2942,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 		else
 		{
 			//skin has changed
-			if ( strcmp(ent->client->pers.skin_change, s)!= 0)
+			if ( strcmp(ent->client->pers.skin_change, s) != 0 )
 			{
 				if(ent->client->skintime > level.time)
 				{
@@ -2984,19 +2984,15 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 		ent->client->pers.hand = atoi(s);
 	}
 
-	//RAV operators
-	strcpy(player, "/0");
-	strcpy(player, ent->client->pers.name_change);
-	strcat(player, "@");
-	strcat(player, ent->client->pers.ip);
+	Com_sprintf(player, sizeof player, "%s@%s",
+		ent->client->pers.name_change,
+		ent->client->pers.ip);
 
-	//JSW
 	CheckOpFile(ent, player, true);
-	//end
 
 	// save off the userinfo in case we want to check something later
-	strncpy(ent->client->pers.userinfo, 
-		userinfo, sizeof(ent->client->pers.userinfo) - 1);
+	Com_sprintf(ent->client->pers.userinfo,
+		sizeof ent->client->pers.userinfo, "%s", userinfo);
 }
 
 /*
@@ -3102,7 +3098,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	qboolean is_bot = false;
 	char *name;
 	char *ip;
-	char player[64];
+	char player[MAX_QPATH];
 	int i;
 	qboolean emptyname;
 
