@@ -1635,12 +1635,6 @@ edict_t *SelectCoopSpawnPoint (edict_t *ent)
 			}
 		}
 	}
-	if(debug_spawn->value && spot != NULL)	
-		gi.dprintf("%s returning %s at %f %f %f\n", __func__, 
-		spot->classname, "coop",
-		spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
-
-	return spot;
 }
 
 /*
