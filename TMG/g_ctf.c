@@ -593,7 +593,7 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 		{	
 			edict_t *farspot;
 			farspot = SelectFarthestDeathmatchSpawnPoint ();
-			if(debug_spawn->value)
+			if(debug_spawn->value && farspot != NULL)
 				DbgPrintf("1 %s returning farthest %s for %s at\n%f %f %f\n", __func__, 
 					farspot->classname, ent->client->pers.netname,
 					farspot->s.origin[0], 
@@ -605,7 +605,7 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 		{
 			edict_t *randspot;
 			randspot = SelectRandomDeathmatchSpawnPoint ();
-			if(debug_spawn->value)
+			if(debug_spawn->value && randspot != NULL)
 				DbgPrintf("2 %s returning random %s for %s at\n%f %f %f\n", __func__, 
 					randspot->classname, ent->client->pers.netname,
 					randspot->s.origin[0], 
@@ -677,8 +677,7 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 			selection++;
 	} while(selection--);
 
-	assert(spot != NULL);
-	if(debug_spawn->value)
+	if(debug_spawn->value && spot != NULL)
 		DbgPrintf("6 %s returning %s for %s at\n%f %f %f\n", __func__, 
 			spot->classname, ent->client->pers.netname,
 			spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 

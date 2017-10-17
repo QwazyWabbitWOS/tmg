@@ -1404,7 +1404,7 @@ qboolean SpawnBot(int i)
 		gi.WriteShort (bot-g_edicts);
 		gi.WriteByte (MZ_LOGIN);
 		gi.multicast (bot->s.origin, MULTICAST_PVS);
-		if(debug_spawn->value)
+		if(debug_spawn->value && bot != NULL)
 			DbgPrintf("222 %s bot %s at %f %f %f\n", __func__, 
 			bot->client->pers.netname, 
 			bot->s.origin[0], bot->s.origin[1], bot->s.origin[2]);

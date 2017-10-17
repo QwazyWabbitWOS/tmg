@@ -496,7 +496,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BSDmakefile" />
-    <None Include="ClassDiagram1.cd" />
     <None Include="game.def" />
     <None Include="changelog.txt" />
     <None Include="GNUmakefile" />

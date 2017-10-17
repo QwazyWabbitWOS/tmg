@@ -2316,10 +2316,12 @@ void Bots_Move_NORM (edict_t *ent)
 	get better results on the spawn-death bug. 
 	This is temporary unless proven beneficial. QW
 	*/
+	
+	// -552.130127 469.441559 80.685349 in rtctf1a
 
 	//Solid Check
-	if ( !(ent->deadflag) && InsideWall(ent) )
-//	if (gi.pointcontents (ent->s.origin) & CONTENTS_SOLID)
+//	if ( !(ent->deadflag) && InsideWall(ent) )
+	if (gi.pointcontents (ent->s.origin) & CONTENTS_SOLID)
 	{
 		ent->nextthink = level.time + FRAMETIME;
 		if(debug_botspawn->value)

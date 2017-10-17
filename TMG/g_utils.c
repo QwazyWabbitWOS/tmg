@@ -433,7 +433,7 @@ edict_t *G_Spawn (void)
 	
 	G_InitEdict (e);
 
-	//if(debug_spawn->value)
+	//if(debug_spawn->value && e != NULL)
 	//	DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
 	//		__FUNCTION__, e->movetype, e->inuse, e->classname, level.time);
 
@@ -457,7 +457,7 @@ void G_FreeEdict (edict_t *ed)
 		return;
 	}
 	
-	//if(debug_spawn->value)
+	//if(debug_spawn->value && ed != NULL)
 	//	DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
 	//		__func__, ed->movetype, ed->inuse, ed->classname, level.time);
 

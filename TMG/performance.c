@@ -69,12 +69,13 @@ void DbgPrintf (char *msg, ...)
 	va_start (argptr, msg);
 	vsnprintf (text, sizeof(text), msg, argptr);
 	va_end (argptr);
-#ifdef _WIN32
+
 #ifdef DEBUG
+#ifdef _WIN32
 	OutputDebugString(text);
-#endif /* _DEBUG */
-#else // Not WIN32
+#endif /* _WIN32 */
+#else // not WIN32 or DEBUG
 	if(developer->value)
 		gi.dprintf(text);
-#endif /* _WIN32 */
+#endif /* _DEBUG */
 }

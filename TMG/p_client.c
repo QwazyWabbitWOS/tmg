@@ -1550,7 +1550,7 @@ edict_t *SpawnNearFlag (edict_t *ent)
 
 	if (bestspot)
 	{
-		if(debug_spawn->value)	
+		if(debug_spawn->value && bestspot != NULL)	
 			gi.dprintf("%s returning %s for %s\nat %f %f %f\n", __func__, 
 			bestspot->classname, ent->client->pers.netname,
 			bestspot->s.origin[0], bestspot->s.origin[1], bestspot->s.origin[2]); 
@@ -1561,7 +1561,7 @@ edict_t *SpawnNearFlag (edict_t *ent)
 		// we have no choice to turn one into a telefrag meltdown
 		spot = G_Find (NULL, FOFS(classname), teamspawn);
 
-	if(debug_spawn->value)	
+	if(debug_spawn->value && spot != NULL)	
 		gi.dprintf("%s returning %s for %s\nat %f %f %f\n", __func__, 
 		spot->classname, ent->client->pers.netname,
 		spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
@@ -1579,7 +1579,7 @@ edict_t *SelectDeathmatchSpawnPoint (void)
 	if ( (int)(dmflags->value) & DF_SPAWN_FARTHEST)
 	{
 		spot = SelectFarthestDeathmatchSpawnPoint ();
-		if(debug_spawn->value)	
+		if(debug_spawn->value && spot != NULL)	
 			gi.dprintf("%s returning %s at %f %f %f\n", __func__, 
 			spot->classname, "farthest",
 			spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
@@ -1588,7 +1588,7 @@ edict_t *SelectDeathmatchSpawnPoint (void)
 	else
 	{
 		spot = SelectRandomDeathmatchSpawnPoint ();
-		if(debug_spawn->value)	
+		if(debug_spawn->value && spot != NULL)	
 			gi.dprintf("%s returning %s at %f %f %f\n", __func__, 
 			spot->classname, "random",
 			spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
@@ -1600,8 +1600,8 @@ edict_t *SelectDeathmatchSpawnPoint (void)
 edict_t *SelectCoopSpawnPoint (edict_t *ent)
 {
 	int		index;
-	edict_t	*spot = NULL;
 	char	*target;
+	edict_t	*spot = NULL;
 
 	index = ent->client - game.clients;
 
@@ -1609,15 +1609,16 @@ edict_t *SelectCoopSpawnPoint (edict_t *ent)
 	if (!index)
 		return NULL;
 
-	spot = NULL;
-
 	// assume there are four coop spots at each spawnpoint
 	while (1)
 	{
 		spot = G_Find (spot, FOFS(classname), "info_player_coop");
 		if (!spot)
+		{
+			if(debug_spawn->value)
+				DbgPrintf("%s is returning NULL\n", __func__);
 			return NULL;	// we didn't have enough...
-
+		}
 		target = spot->targetname;
 		if (!target)
 			target = "";
@@ -1625,9 +1626,20 @@ edict_t *SelectCoopSpawnPoint (edict_t *ent)
 		{	// this is a coop spawn point for one of the clients here
 			index--;
 			if (!index)
+			{
+				if(debug_spawn->value && spot != NULL)	
+					gi.dprintf("%s returning %s at %f %f %f\n", __func__, 
+					spot->classname, "coop",
+					spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
 				return spot;		// this is it
+			}
 		}
 	}
+	if(debug_spawn->value && spot != NULL)	
+		gi.dprintf("%s returning %s at %f %f %f\n", __func__, 
+		spot->classname, "coop",
+		spot->s.origin[0], spot->s.origin[1], spot->s.origin[2]); 
+
 	return spot;
 }
 
