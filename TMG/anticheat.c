@@ -8,8 +8,6 @@
 #include "runes.h"
 #include "filehand.h"
 
-//qboolean getLogicalValue(char *arg);
-
 //global
 int botdetection;
 
@@ -29,8 +27,7 @@ int proxy_bwproxy = 1;
 int proxy_nitro2 = 1;
 int lframenum;
 float	l_time;
-char moddir[256];
-char buffer2[256];
+char moddir[MAX_QPATH];
 char buffer[0x10000];
 char reconnect_address[256] = { 0 };
 qboolean nameChangeFloodProtect = false;
@@ -103,8 +100,7 @@ void InitAnticheat(void)
 		strcat(reconnect_address, server_ip->string);
 	}
 
-	q2a_strcpy(moddir, game_dir->string);
-	
+	Com_sprintf(moddir, sizeof moddir, "%s", game_dir->string);
 }
 
 void
@@ -127,34 +123,37 @@ BotDetection(edict_t *ent, usercmd_t *ucmd)
 	}
 }
 
-FILE *tn_open (const char *filename, const char *t)
+FILE *tn_open (const char *filename, const char *mode)
 {
 	FILE *fd;
 	char path[PATH_MAX];
 
 	strcpy (path, game_dir->string);
-	if (Q_stricmp (path, "\0") == 0)
+	if (Q_stricmp (path, "") == 0)
 		strcpy (path, "baseq2");
 
 	strcat (path, "/");
 	strcat (path, cfgdir->string);
 	strcat (path, "/");
 	strcat (path, filename);
-	fd=fopen (path, t);
+	fd = fopen (path, mode);
 	return (fd);
 }
 
-void AddLogEntry (char *filename, char ip[IP_LENGTH])
+void AddLogEntry (char *filename, char *text)
 {
 	FILE *ipfile;
 
-	// add user to file
-	strcat (ip, "\n");
-
-	if ((ipfile = tn_open(filename, "a+")))
+	ipfile = tn_open(filename, "a+");
+	if (ipfile)
 	{
-		fputs(ip, ipfile);
+		fputs(text, ipfile);
+		fputs("\n", ipfile);
 		fclose (ipfile);
+	}
+	else
+	{
+		gi.dprintf("ERROR opening %s for logging\n", filename);
 	}
 }
 
@@ -249,8 +248,8 @@ void
 OnBotDetection(edict_t *ent, char *msg)
 {
 	int log = 0;
-	char user[32];
-	char logged[80];
+	char user[80];
+	char logged[MAX_INFO_STRING];
 	char userip[80];
 	char name[40];
 
@@ -276,10 +275,8 @@ OnBotDetection(edict_t *ent, char *msg)
 
 	Com_sprintf(userip, sizeof userip, "*@%s", Info_ValueForKey (ent->client->pers.userinfo, "ip"));
 
-	Com_sprintf(logged, sizeof logged, "%s@%s@%s@%8s@%10s",
-			ent->client->pers.netname,
-			Info_ValueForKey (ent->client->pers.userinfo, "ip"),
-			msg, sys_time, sys_date);
+	Com_sprintf(logged, sizeof logged, "%s@%s@%8s@%10s",
+			user, msg, sys_time, sys_date);
 
 	// When name doesn't match converted name
 	if (log && botdetection & BOT_LOG)

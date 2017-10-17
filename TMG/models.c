@@ -4,7 +4,7 @@
 qboolean CheckModel(edict_t *ent, char *s)
 {
 	FILE    *banlist;
-	char    line[IP_LENGTH];
+	char    line[MAX_QPATH];
 	char	file_name[256];
 
 	if(!check_models->value)

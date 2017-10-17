@@ -22,7 +22,7 @@ int global_lights = 0;
 char *ClientTeam1 (edict_t *ent)
 {
 	char		*p;
-	static char	value[512];
+	static char	value[MAX_INFO_STRING];
 
 	value[0] = 0;
 

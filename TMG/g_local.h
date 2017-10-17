@@ -32,9 +32,6 @@
 #define	GAME_INCLUDE
 #include "game.h"
 
-// FIXME: this should be defined elsewhere
-#define IP_LENGTH 40
-
 #include "botstr.h"
 
 //RAV
@@ -1889,10 +1886,10 @@ typedef struct oplist_s
 {
 	int	level;
     int	newlevel;
-	char	entry[IP_LENGTH];
+	char	entry[MAX_QPATH];
 	char	namepass[16];
-	char	name[IP_LENGTH];
-	char	ip[IP_LENGTH];
+	char	name[MAX_QPATH];
+	char	ip[MAX_QPATH];
 	qboolean	flagged;
 } oplist_t;
 

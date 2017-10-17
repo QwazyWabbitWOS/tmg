@@ -2,11 +2,10 @@
 #include "g_local.h"
 #include <ctype.h>
 #include <string.h>
-
 #include "filehand.h"
-#include "anticheat.h" // for IP_LENGTH
+#include "anticheat.h"
 
-qboolean lessGeneral(char line[IP_LENGTH], char comp[IP_LENGTH])
+qboolean lessGeneral(char *line, char *comp)
 {
 	if (strcspn (line, "*") > strcspn(comp, "*"))
 		return true;
@@ -17,49 +16,44 @@ qboolean lessGeneral(char line[IP_LENGTH], char comp[IP_LENGTH])
 int checkAllowed (char *userinfo)
 {
 	FILE *ipfile;
-	char line[IP_LENGTH], ip[IP_LENGTH], aline[IP_LENGTH];
+	char line[MAX_QPATH], ip[MAX_QPATH], aline[MAX_QPATH];
 	int stop;
 
 	// let loopback match.
 	if (strcmp(Info_ValueForKey (userinfo, "ip"), "loopback") == 0)
 		return (0);
 
-	strcpy(ip, Info_ValueForKey (userinfo, "name"));
-	strcat(ip, "@");
-	strcat(ip, Info_ValueForKey (userinfo, "ip"));
+	Com_sprintf(ip, sizeof ip, "%s@%s",
+		Info_ValueForKey (userinfo, "name"),
+		Info_ValueForKey (userinfo, "ip"));
 
-	stop=1;
-	if ((ipfile = tn_open("ip_allowed.txt","r")))
+	stop = 1;
+	if ((ipfile = tn_open("ip_allowed.txt", "r")))
 	{
-		while ((fgets(aline,IP_LENGTH,ipfile)) && (stop==1))
+		while ((fgets(aline, MAX_QPATH, ipfile)) && (stop == 1))
 		{
-			if (!strchr("#",*aline))
+			if (!strchr("#", *aline))
 			{
-				if (IPMatch(ip,aline)==1)
-				{
-					stop=0;
-				}
+				if (IPMatch(ip, aline) == 1)
+					stop = 0;
 			}
 		}
 		fclose(ipfile);
-	} else
-	{
-		stop=0;
-	}
+	} 
+	else
+		stop = 0;
 
-	if (stop==1)
+	if (stop == 1)
 		return (1);
 
-	if ((ipfile = tn_open("ip_banned.txt","r")))
+	if ((ipfile = tn_open("ip_banned.txt", "r")))
 	{
-		while (fgets(line,IP_LENGTH,ipfile) && stop == 0)
+		while (fgets(line, MAX_QPATH, ipfile) && stop == 0)
 		{
-			if (!strchr("#",*line))
+			if (!strchr("#", *line))
 			{
-				if (IPMatch(ip,line)==1)
-				{
-					stop=1;
-				}
+				if (IPMatch(ip, line) == 1)
+					stop = 1;
 			}
 		}
 		fclose(ipfile);
@@ -69,7 +63,7 @@ int checkAllowed (char *userinfo)
 	{
 		if ((ipfile = tn_open("ip_allowed.txt","r")))
 		{
-			while ((fgets(aline,IP_LENGTH,ipfile)) && (stop==1))
+			while ((fgets(aline,MAX_QPATH,ipfile)) && (stop==1))
 			{
 				if (!strchr("#",*aline))
 				{
@@ -90,18 +84,16 @@ int checkAllowed (char *userinfo)
 
 char *NameAndIp (edict_t *ent)
 {
-	static char ip[IP_LENGTH];
+	static char ip[MAX_QPATH];
 	int  j;
-//raven 12-16-99 changed for  extended name stuff
-	strcpy (ip, "/0");
-	strcpy(ip, ent->client->pers.netname);
-	strcat(ip, "@");
-	strcat(ip, Info_ValueForKey (ent->client->pers.userinfo, "ip"));
+	
+	Com_sprintf(ip, sizeof ip, "%s@%s",  
+		ent->client->pers.netname,
+		Info_ValueForKey (ent->client->pers.userinfo, "ip"));
 
 	j = 0;
 	while (!strchr(":", ip[j])) j++;
 	ip[j] = '\0';
-//	gi.dprintf("nameandip returned %s\n", ip);
 	return ip;
 	
 }
@@ -183,17 +175,17 @@ int IPMatch (char *clientIP, char *maskIP)
 	return (match); // 1 if IP's match, otherwise 0.	
 }
 
-qboolean entryInFile (char *filename, char ip[IP_LENGTH])
+qboolean entryInFile (char *filename, char ip[MAX_QPATH])
 {
 	FILE *thefile;
-	char line[IP_LENGTH];
+	char line[MAX_QPATH];
 	qboolean inFile;
 
 	inFile = false;
 
 	if ((thefile = tn_open(filename, "r")))
 	{
-		while (fgets(line, IP_LENGTH, thefile))
+		while (fgets(line, MAX_QPATH, thefile))
 		{
 			if (IPMatch(ip, line))
 			{
@@ -205,12 +197,13 @@ qboolean entryInFile (char *filename, char ip[IP_LENGTH])
 	return inFile;
 }
 
-int CheckOpFile (edict_t *ent, char ip[IP_LENGTH], qboolean returnindex)
+int CheckOpFile (edict_t *ent, char ip[MAX_QPATH], qboolean returnindex)
 {
 	FILE *opfile;
-	char line[IP_LENGTH];
+	char line[MAX_QPATH];
 	qboolean inFile;
-	int i = 0, flagged = -1;
+	int i = 0;
+	int flagged = -1;
 	int a;
 	char *result = NULL;
 	inFile = false;
@@ -221,7 +214,7 @@ int CheckOpFile (edict_t *ent, char ip[IP_LENGTH], qboolean returnindex)
 		{
 			if (!feof(opfile))
 			{
-				while(fgets(line, IP_LENGTH, opfile) != NULL )
+				while(fgets(line, MAX_QPATH, opfile) != NULL )
 				{
 					oplist[i].flagged = 0;
 					a = 1;
@@ -382,11 +375,11 @@ int CheckOpFile (edict_t *ent, char ip[IP_LENGTH], qboolean returnindex)
 //	return NULL;
 //}
 
-qboolean CheckNameProtect (char name[IP_LENGTH], char namepass[IP_LENGTH])
+qboolean CheckNameProtect (char name[MAX_QPATH], char namepass[MAX_QPATH])
 {
 
 	FILE *opfile;
-	char line[IP_LENGTH];
+	char line[MAX_QPATH];
 	qboolean inFile;
 	int i = 0;
 	int a;
@@ -403,7 +396,7 @@ qboolean CheckNameProtect (char name[IP_LENGTH], char namepass[IP_LENGTH])
 		{
 			if (!feof(opfile))
 			{
-				while(fgets(line, IP_LENGTH, opfile) != NULL )
+				while(fgets(line, MAX_QPATH, opfile) != NULL )
 				{
 					oplist[i].flagged = 0;
 					a = 1;
@@ -485,7 +478,7 @@ qboolean ModifyOpLevel (int entry, int newlevel)
 {
 	FILE *opfile;
 	int i = 0;
-	char line[IP_LENGTH];
+	char line[MAX_QPATH];
 
 	if (entry < 0)
 		return false;
@@ -493,9 +486,10 @@ qboolean ModifyOpLevel (int entry, int newlevel)
 	oplist[entry].level = newlevel;
 	if ((opfile = tn_open("user_o.txt", "w")))
 	{
-		for (i = 0; i < entriesinopfile+1; i++)
+		for (i = 0; i < entriesinopfile + 1; i++)
 		{				
-			Com_sprintf (line, sizeof line, "%s\t%d\n", oplist[i].entry, oplist[i].level);
+			Com_sprintf (line, sizeof line, 
+				"%s\t%d\n", oplist[i].entry, oplist[i].level);
 			fputs(line, opfile);
 		}
 	}
@@ -512,10 +506,10 @@ qboolean ModifyOpLevel (int entry, int newlevel)
 /* Add operator access level for named user @ IP address
    if user_o.txt file doesn't exist, create it.
 */
-int AddOperator (char entry[IP_LENGTH], int level, char pass[16])
+int AddOperator (char entry[MAX_QPATH], int level, char pass[16])
 {
 	FILE *opfile;
-	char line[IP_LENGTH];
+	char line[MAX_QPATH];
 
 	if ((opfile = tn_open("user_o.txt", "a+")))
 	{
@@ -531,27 +525,29 @@ int AddOperator (char entry[IP_LENGTH], int level, char pass[16])
 
 /// Add IP of client to the file if he's not
 /// already in it. If file doesn't exist, create one.
-void AddEntry (char *filename, char ip[IP_LENGTH])
+void AddEntry (char *filename, char *text)
 {
 	FILE *ipfile;
 	
 	// First, check to see that client isn't already in the file
-	if (entryInFile (filename, ip))
+	if (entryInFile (filename, text))
 		return;
-
-	// add user to file
-	strcat (ip, "\n");
 
 	if ((ipfile = tn_open(filename, "a+")))
 	{
-		fputs(ip, ipfile);
+		fputs(text, ipfile);
+		fputs("\n", ipfile);
 		fclose (ipfile);
+	}
+	else
+	{
+		gi.dprintf("ERROR opening %s in %s\n", filename, __FUNCTION__);
 	}
 }
 
 void sv_ban_ip (edict_t *ent)
 {
-	char banned[IP_LENGTH];
+	char banned[MAX_QPATH];
 
 	if ((ent == NULL) || (ent->client->pers.oplevel & OP_BAN))
 	{
@@ -582,9 +578,9 @@ void ShowFile(edict_t *ent, char *filename)
 	FILE	*file;
 	int c;	// variable to hold temporary file data
 
-	if ((file = tn_open(filename, "r")) == NULL)
-	{	// test to see if file opened
-		// file did not load
+	file = tn_open(filename, "r");
+	if (file == NULL)
+	{	// file did not open
 		if (ent == NULL)
 			gi.dprintf("Could not load file %s.\n", filename);
 		else
@@ -639,7 +635,9 @@ void LogConnect (edict_t *ent, qboolean connect)
 	if (ent->bot_client)
 		return;
 
-	Com_sprintf(client, sizeof client, "%s [%s] %s", sys_date, sys_time, NameAndIp(ent));
+	Com_sprintf(client, sizeof client, 
+		"%s [%s] %s", sys_date, 
+		sys_time, NameAndIp(ent));
 
 	if (connect)
 		strcat(client, " connected\n");

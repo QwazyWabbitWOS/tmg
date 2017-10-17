@@ -41,8 +41,8 @@ void BotDetection(edict_t *ent, usercmd_t *ucmd);
 void OnBotDetection(edict_t *ent, char *msg);
 void InitBotDetection(void);
 void EndBotDetection(void);
-void AddLogEntry (char *filename, char ip[IP_LENGTH]);
-FILE *tn_open (const char *filename, const char *t);
+void AddLogEntry (char *filename, char *text);
+FILE *tn_open (const char *filename, const char *mode);
 
 #define RANDCHAR()		(random() < 0.3) ? '0' + (int)(9.9 * random()) : 'A' + (int)(26.9 * random())
 #define DEFAULTUSERDISPLAY "%s is using a client side proxy!!!"
@@ -209,7 +209,6 @@ extern int proxy_bwproxy;
 extern int proxy_nitro2;
 
 extern char buffer[0x10000];
-extern char buffer2[256];
 
 extern char customServerCmd[256];
 extern char customClientCmd[256];
@@ -368,7 +367,7 @@ qboolean checkReconnectList(char *username);
 
 #define LEVELCHANGE_KEEP			(CCMD_SCSILENCE | CCMD_ZBOTDETECTED | CCMD_NITRO2PROXY | CCMD_ZBOTCLEAR | CCMD_RBOTCLEAR | CCMD_RECONNECT)
 
-extern char moddir[256];
+extern char moddir[MAX_QPATH];
 
 #endif //ANTICHEAT_H
 
