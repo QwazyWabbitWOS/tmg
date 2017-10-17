@@ -75,7 +75,7 @@ void DbgPrintf (char *msg, ...)
 	OutputDebugString(text);
 #endif /* _WIN32 */
 #else // not WIN32 or DEBUG
-	if(developer->value)
+	if(gamedebug->value)
 		gi.dprintf(text);
 #endif /* _DEBUG */
 }

@@ -238,6 +238,7 @@ cvar_t	*punish_suicide;
 cvar_t	*console_chat;
 cvar_t	*no_hum;
 cvar_t	*developer;
+cvar_t	*gamedebug;
 qboolean	serverlocked;
 cvar_t	*basedir;
 cvar_t	*hook_carrierspeed;

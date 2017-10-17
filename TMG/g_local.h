@@ -764,6 +764,7 @@ extern	cvar_t	*punish_suicide;
 extern	cvar_t	*console_chat;
 extern	cvar_t	*no_hum;
 extern  cvar_t	*developer;
+extern  cvar_t	*gamedebug;
 extern	qboolean	serverlocked;
 extern	cvar_t	*basedir;
 extern	cvar_t	*hook_carrierspeed;
