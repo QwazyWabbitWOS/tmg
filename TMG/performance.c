@@ -59,7 +59,7 @@ Outputs to the debugger and allows
 us to write: DbgPrintf("%s was called.\n", __func__);
 Use Quake 2's gi.dprintf to output to the Quake 2 console.
 In Linux, this function becomes a call to gi.dprintf but
-it outputs only if developer cvar is set.
+it outputs only if gamedebug cvar is set.
 */
 void DbgPrintf (char *msg, ...)
 {
