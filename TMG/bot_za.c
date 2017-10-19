@@ -5697,6 +5697,7 @@ GOMOVE:
 			{
 				trmax[0] = (it_ent->absmin[0] + it_ent->absmax[0]) / 2;
 				trmax[1] = (it_ent->absmin[1] + it_ent->absmax[1]) / 2;
+				trmax[2] = (it_ent->absmin[2] + it_ent->absmax[2]) / 2;
 				VectorSubtract(trmax,ent->s.origin,temppos);
 				if(trace_priority < TRP_ANGLEKEEP) ent->s.angles[YAW] = Get_yaw(temppos);
 			}
