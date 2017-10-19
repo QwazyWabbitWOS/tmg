@@ -405,7 +405,6 @@ void InitGame (void)
 	damage_locate = gi.cvar("damage_locate", "0",CVAR_LATCH);
 	damage_display = gi.cvar("damage_display", "1", 0);
 
-	//JSW
 	nokill = gi.cvar("nokill", "0", CVAR_ARCHIVE);
 	punish_suicide = gi.cvar("punish_suicide", "0", CVAR_ARCHIVE);
 	console_chat = gi.cvar("console_chat", "1", 0);
@@ -425,6 +424,7 @@ void InitGame (void)
 	grapple_damage = gi.cvar("grapple_damage", "10", 0);
 	log_connect = gi.cvar ("log_connect", "1", 0);
 	log_chat = gi.cvar ("log_chat", "0", 0);
+	use_navfiles = gi.cvar("use_navfiles", "1", 0);
 
 	//QW// Set these for debugging output
 	debug_spawn = gi.cvar ("debug_spawn", "0", 0);

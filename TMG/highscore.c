@@ -46,11 +46,11 @@ void SaveHighScores (void)
 	char	string[128];
 	size_t	count = 0;
 
-	Com_sprintf(binfile, sizeof binfile, "./%s/%s/hs/%s_hs.bin", 
-		game_dir->string, cfgdir->string, level.mapname);
+	Com_sprintf(binfile, sizeof binfile, "%s/%s/%s/hs/%s_hs.bin", 
+		basedir->string, game_dir->string, cfgdir->string, level.mapname);
 
-	Com_sprintf(txtfile, sizeof txtfile, "./%s/%s/hs/%s_hs.txt", 
-		game_dir->string, cfgdir->string, level.mapname);
+	Com_sprintf(txtfile, sizeof txtfile, "%s/%s/%s/hs/%s_hs.txt", 
+		basedir->string, game_dir->string, cfgdir->string, level.mapname);
 
 	HS_file = fopen(binfile, "rb");
 	
@@ -168,8 +168,8 @@ void LoadHighScores (void)
 	char    filename[MAX_QPATH];
 	char    line[80];
 
-	Com_sprintf(filename, sizeof filename, "./%s/%s/hs/%s_hs.txt", 
-		game_dir->string, cfgdir->string, level.mapname);
+	Com_sprintf(filename, sizeof filename, "%s/%s/%s/hs/%s_hs.txt", 
+		basedir->string, game_dir->string, cfgdir->string, level.mapname);
 
 	hs_file = fopen(filename, "r");
 	if (!hs_file)

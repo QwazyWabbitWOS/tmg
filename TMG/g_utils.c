@@ -624,7 +624,7 @@ void AddModelSkin (char *modelfile, char *skinname)
 		return;
 	}
 
-	Com_sprintf(filename, sizeof filename, "./"MOD"/%snew", modelfile);
+	Com_sprintf(filename, sizeof filename, "%s/"MOD"/%snew", basedir->string, modelfile);
 
 	out = fopen (filename, "wb");
 

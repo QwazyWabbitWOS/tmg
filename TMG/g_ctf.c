@@ -6784,8 +6784,8 @@ void CTFSetupNavSpawn(void)
 {
 	FILE	*fpout;
 	char	name[MAX_QPATH];
-	char	code[8];
-	char	SRCcode[8];
+	char	code[9];
+	char	SRCcode[9];
 	int	i, j;
 	vec3_t	v;
 	edict_t		*other;
@@ -6797,16 +6797,25 @@ void CTFSetupNavSpawn(void)
 	spawncycle = level.time + FRAMETIME * 100;
 	//PONKO
 	CurrentIndex = 0;
-	memset(Route,0,sizeof(Route));
-	memset(code,0,8);
+	memset(Route, 0, sizeof(Route));
+	memset(code, 0, sizeof code);
 
 	//QW// Implement separation of chaining files per original 3zb2
 	if(ctf->value)
-		Com_sprintf(name, sizeof name, "./%s/%s/chctf/%s.chf",
-				game_dir->string, cfgdir->string, level.mapname);
+		Com_sprintf(name, sizeof name, "%s/%s/%s/chctf/%s.chf",
+			basedir->string, game_dir->string,
+			cfgdir->string, level.mapname);
 	else
-		Com_sprintf(name, sizeof name, "./%s/%s/chdtm/%s.chn",
-				game_dir->string, cfgdir->string, level.mapname);
+		Com_sprintf(name, sizeof name, "%s/%s/%s/chdtm/%s.chn",
+			basedir->string, game_dir->string,
+			cfgdir->string, level.mapname);
+
+	if(use_navfiles->value)	// use nav files per earlier TMG versions
+	{
+		Com_sprintf(name, sizeof name, "%s/%s/%s/nav/%s.nav",
+			basedir->string, game_dir->string,
+			cfgdir->string, level.mapname);
+	}
 
 	fpout = fopen(name, "rb");
 	if(fpout == NULL)
@@ -6820,7 +6829,7 @@ void CTFSetupNavSpawn(void)
 		{
 			gi.dprintf("Error reading chainfile code in %s\n", __FUNCTION__);
 		}
-		if(!ctf->value)
+		if(!ctf->value || use_navfiles->value)
 			strncpy(SRCcode,"3ZBRGDTM", 8);
 		else
 			strncpy(SRCcode,"3ZBRGCTF", 8);
@@ -6828,7 +6837,7 @@ void CTFSetupNavSpawn(void)
 		if(strncmp(code, SRCcode, 8))
 		{
 			CurrentIndex = 0;
-			gi.dprintf("Chaining: %s is not a chaining file.\n", name);
+			gi.dprintf("Chaining: %s is not a chaining file for this mode.\n", name);
 			gi.dprintf("%s was looking for %s, found %s\n", __FUNCTION__, SRCcode, code);
 			fclose(fpout);
 			return;

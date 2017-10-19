@@ -49,13 +49,20 @@ static void SaveChain(void)
 			basedir->string, game_dir->string,
 			cfgdir->string, level.mapname);
 
+	if(use_navfiles->value)	// use nav files per earlier TMG versions
+	{
+		Com_sprintf(name, sizeof name, "%s/%s/%s/nav/%s.nav",
+			basedir->string, game_dir->string,
+			cfgdir->string,level.mapname);
+	}
+
 	fpout = fopen(name, "wb");
 
 	if(fpout == NULL)
 		gi.cprintf(NULL, PRINT_HIGH, "Can't open %s\n", name);
 	else
 	{
-		if(!ctf->value)
+		if(!ctf->value || use_navfiles->value)
 			fwrite("3ZBRGDTM", sizeof(char), 8, fpout);
 		else
 			fwrite("3ZBRGCTF", sizeof(char), 8, fpout);

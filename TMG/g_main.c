@@ -220,11 +220,11 @@ cvar_t	*ctf_forcejoin;
 //ponpoko
 cvar_t	*chedit;
 cvar_t	*vwep;
-//cvar_t	*maplist1;
 cvar_t	*botlist;
 cvar_t	*autospawn;
 cvar_t	*zigmode;
 float	spawncycle;
+cvar_t	*use_navfiles;
 float	ctfjob_update;
 
 cvar_t  *spec_check;

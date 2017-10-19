@@ -373,8 +373,8 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 	char    filename[MAX_QPATH];
 	char    line[80];
 
-	Com_sprintf(filename, sizeof filename, "./%s/%s/hs/%s_hs.txt", 
-		game_dir->string, cfgdir->string, level.mapname);
+	Com_sprintf(filename, sizeof filename, "%s/%s/%s/hs/%s_hs.txt", 
+		basedir->string, game_dir->string, cfgdir->string, level.mapname);
 
 	string[0] = 0;
 	stringlength = strlen(string);

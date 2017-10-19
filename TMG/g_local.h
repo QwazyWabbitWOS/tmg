@@ -748,11 +748,11 @@ extern	cvar_t	*ctf_forcejoin;
 //3ZB
 extern	cvar_t	*chedit;
 extern	cvar_t	*vwep;
-//extern	cvar_t	*maplist1;
 extern	cvar_t	*botlist;
 extern	cvar_t	*autospawn;
 extern	cvar_t	*zigmode;
 extern	float	spawncycle;
+extern	cvar_t	*use_navfiles;	// override normal chain file names
 
 extern	cvar_t	*lan;
 extern  cvar_t  *spec_check;
