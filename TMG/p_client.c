@@ -483,7 +483,8 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 			message[6] = "tried to BFG-jump unsuccesfully";
 			break;
 		default:
-			if (debug_spawn)
+			//-552.130127 469.441559 80.685349 in rtctf1a
+			if (debug_spawn->value)
 				gi.dprintf("%s %s has MOD %d \n%f %f %f\n", __func__, 
 				self->client->pers.netname, mod,
 				self->s.origin[0], self->s.origin[1], self->s.origin[2]);
@@ -1021,8 +1022,9 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 
 	if (!self->deadflag)
 	{
-		self->client->respawn_time = level.time + 1.0;
 		LookAtKiller (self, inflictor, attacker);
+		self->nextthink = level.time + FRAMETIME;
+		self->client->respawn_time = level.time + 1.0f;
 		self->client->ps.pmove.pm_type = PM_DEAD;
 		ClientObituary (self, inflictor, attacker);
 		//ZOID
@@ -1105,7 +1107,10 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 		}
 	}
 	self->deadflag = DEAD_DEAD;
-
+	if (debug_spawn->value)
+		DbgPrintf("%s %s in %s at location\n%f %f %f\n",
+			__func__, self->client->pers.netname, level.mapname,
+			self->s.origin[0], self->s.origin[1], self->s.origin[2]);
 	//routing last index move
 	if(chedit->value && self == &g_edicts[1]) 
 		Move_LastRouteIndex();
@@ -2409,7 +2414,7 @@ void ClientPrintMOTD (edict_t *ent)
 
 	// Generate the path to the MOTD file.
 	Com_sprintf (motdPath, sizeof motdPath, 
-		"./%s/%s", game_dir->string, motdfile->string);
+		"%s/%s/%s", basedir->string, game_dir->string, motdfile->string);
 
 	// Open the file.
 	motdBytes = 0;

@@ -2321,7 +2321,7 @@ void Bots_Move_NORM (edict_t *ent)
 
 	//Solid Check
 //	if ( !(ent->deadflag) && InsideWall(ent) )
-	if (gi.pointcontents (ent->s.origin) & CONTENTS_SOLID)
+	if (!(ent->deadflag) && gi.pointcontents (ent->s.origin) & CONTENTS_SOLID)
 	{
 		ent->nextthink = level.time + FRAMETIME;
 		if(debug_botspawn->value)
@@ -2578,13 +2578,17 @@ void Bots_Move_NORM (edict_t *ent)
 			it = NULL;
 			if(ent->client->resp.ctf_team == CTF_TEAM1)
 			{
-				if(zc->ctfstate == CTFS_DEFENDER || zc->ctfstate == CTFS_CARRIER) it = bot_team_flag1->item;
-				else if(zc->ctfstate == CTFS_OFFENCER) it = bot_team_flag2->item;
+				if(zc->ctfstate == CTFS_DEFENDER || zc->ctfstate == CTFS_CARRIER)
+					it = bot_team_flag1->item;
+				else if(zc->ctfstate == CTFS_OFFENCER)
+					it = bot_team_flag2->item;
 			}
 			else if(ent->client->resp.ctf_team == CTF_TEAM2)
 			{
-				if(zc->ctfstate == CTFS_DEFENDER || zc->ctfstate == CTFS_CARRIER) it = bot_team_flag2->item;
-				else if(zc->ctfstate == CTFS_OFFENCER) it = bot_team_flag1->item;
+				if(zc->ctfstate == CTFS_DEFENDER || zc->ctfstate == CTFS_CARRIER)
+					it = bot_team_flag2->item;
+				else if(zc->ctfstate == CTFS_OFFENCER)
+					it = bot_team_flag1->item;
 			}
 			if(Route[zc->targetindex].ent->item != it)
 			{

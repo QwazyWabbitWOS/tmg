@@ -677,80 +677,82 @@ void Bot_Think (edict_t *self)
 
 	if(!self ||!self->client)
 		return;
+
 	//Dont move if the level is over !!!!
-	if(match_state != STATE_PLAYING)
+	if(match_state != STATE_PLAYING || level.intermissiontime)
 		return;	
+
+	if (self->linkcount != self->monsterinfo.linkcount)
+	{
+		M_CheckGround (self);
+	}
 
 	// If bot is not dead but stuck in wall
 	if (!((int)level.time % 10))
-		if ( !(self->deadflag) && InsideWall(self) )
-		{
-			DbgPrintf("7777 %s spawned inside wall %s \n%f %f %f\n", 
-				self->client->pers.netname, level.mapname,
-				self->s.origin[0], self->s.origin[1], self->s.origin[2]); 
-			Cmd_Kill_f(self); // suicide
-			self->nextthink = level.time + FRAMETIME;
-			return;
-		}
-
-		if (self->linkcount != self->monsterinfo.linkcount)
-		{
-			M_CheckGround (self);
-		}
-
-		if(self->deadflag)
-		{
-			if(self->client->ctf_grapple)
-				CTFPlayerResetGrapple(self);
-
-
-			if(self->s.modelindex == skullindex || self->s.modelindex == headindex) self->s.frame = 0;
-			else if(self->s.frame < FRAME_crdeath1 && self->s.frame != 0) self->s.frame = FRAME_death308;
-			self->s.modelindex2 = 0;	// remove linked weapon model
-			//ZOID
-			self->s.modelindex3 = 0;	// remove linked ctf flag
-			//ZOID
-
-			self->client->zc.route_trace = false;
-			if(self->client->respawn_time <= level.time)
-			{
-				if(self->svflags & SVF_MONSTER)
-				{
-					self->client->respawn_time = level.time;
-					CopyToBodyQue (self);
-					PutBotInServer(self);
-				}
-			}
-		}
-		else
-		{
-			Bots_Move_NORM (self);
-			if(!self->inuse) //QW// This never traps. Is it needed?
-				return;			//removed botself
-
-			ClientBeginServerFrame (self);
-		}
-		if (self->linkcount != self->monsterinfo.linkcount)
-		{
-			M_CheckGround (self);
-		}
-
-		for (i = 1; i <= maxclients->value; i++)
-		{
-			other = g_edicts + i;
-			if (other->inuse && other->client->chase_target == self)
-				UpdateChaseCam(other);
-		}
-
-		if(self->client->resp.shots != 0)
-		{
-			self->client->resp.eff = 100 * self->client->resp.frags / self->client->resp.shots;
-		}
-
-		M_CategorizePosition (self);
-		BotEndServerFrame (self);
+	{
+		//if ( !(self->deadflag) && InsideWall(self) )
+	if (!(self->deadflag) && gi.pointcontents (self->s.origin) & CONTENTS_SOLID)
+	{
+		DbgPrintf("%s %s spawned inside wall %s \n%f %f %f\n", 
+			__func__, self->client->pers.netname, level.mapname,
+			self->s.origin[0], self->s.origin[1], self->s.origin[2]); 
+		Cmd_Kill_f(self); // suicide
 		self->nextthink = level.time + FRAMETIME;
 		return;
+	}
+	}
+	if(self->deadflag)
+	{
+		if(self->client->ctf_grapple)
+			CTFPlayerResetGrapple(self);
+
+		if(self->s.modelindex == skullindex || self->s.modelindex == headindex) self->s.frame = 0;
+		else if(self->s.frame < FRAME_crdeath1 && self->s.frame != 0) self->s.frame = FRAME_death308;
+		self->s.modelindex2 = 0;	// remove linked weapon model
+		//ZOID
+		self->s.modelindex3 = 0;	// remove linked ctf flag
+		//ZOID
+
+		self->client->zc.route_trace = false;
+		if(self->client->respawn_time <= level.time)
+		{
+			if(self->svflags & SVF_MONSTER)
+			{
+				self->client->respawn_time = level.time;
+				CopyToBodyQue (self);
+				PutBotInServer(self);
+			}
+		}
+	}
+	else
+	{
+		Bots_Move_NORM (self);
+		if(!self->inuse) //QW// This never traps. Is it needed?
+			return;			//removed botself
+
+		ClientBeginServerFrame (self);
+	}
+	if (self->linkcount != self->monsterinfo.linkcount)
+	{
+		M_CheckGround (self);
+	}
+
+	for (i = 1; i <= maxclients->value; i++)
+	{
+		other = g_edicts + i;
+		if (other->inuse && other->client->chase_target == self)
+			UpdateChaseCam(other);
+	}
+
+	if(self->client->resp.shots != 0)
+	{
+		self->client->resp.eff = 100 * self->client->resp.frags / self->client->resp.shots;
+	}
+
+	M_CategorizePosition (self);
+	BotEndServerFrame (self);
+	self->nextthink = level.time + FRAMETIME;
+	return;
 }
 
 //----------------------------------------------------------------

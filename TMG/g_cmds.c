@@ -858,7 +858,6 @@ void Cmd_Kill_f (edict_t *ent)
 	player_die (ent, ent, ent, 100000, vec3_origin);
 	// don't even bother waiting for death frames
 	ent->deadflag = DEAD_DEAD;
-	respawn (ent,false);
 }
 
 void Cmd_Location_f(edict_t *ent)
