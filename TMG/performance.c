@@ -47,9 +47,6 @@ void _STOP_PERFORMANCE_TIMER (char* str)
 #endif
 #endif
 
-#ifdef _DEBUG
-#define DEBUG
-#endif
 
 //QW//
 /* Use this function to trace execution or whatever.
