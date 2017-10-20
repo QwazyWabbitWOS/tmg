@@ -1206,7 +1206,13 @@ void Com_sprintf (char *dest, int size, char *fmt, ...)
 	len = vsprintf (bigbuffer, fmt, argptr);
 	va_end (argptr);
 	if (len >= size)
-		Com_Printf ("ERROR! Com_sprintf: overflow of %i in %i\n", len, size);
+#ifdef DEBUG
+		Sys_Error("ERROR! %s: destination buffer overflow of len %i, size %i\n"
+		"Input was: %s", __FUNCTION__, len, size, bigbuffer);
+#else
+		Com_Printf("ERROR! %s: destination buffer overflow of len %i, size %i\n"
+		"Input was: %s", __FUNCTION__, len, size, bigbuffer);
+#endif
 	strncpy (dest, bigbuffer, size-1);
 }
 
