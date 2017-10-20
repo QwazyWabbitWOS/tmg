@@ -105,7 +105,8 @@ void BotAssignTeamCtf(gclient_t *who)
 {
 	edict_t *player;
 	int i;
-	int team1count = 0, team2count = 0;
+	int team1count = 0;
+	int team2count = 0;
 
 	for (i = 1; i <= maxclients->value; i++)
 	{
@@ -691,15 +692,15 @@ void Bot_Think (edict_t *self)
 	if (!((int)level.time % 10))
 	{
 		//if ( !(self->deadflag) && InsideWall(self) )
-	if (!(self->deadflag) && gi.pointcontents (self->s.origin) & CONTENTS_SOLID)
-	{
-		DbgPrintf("%s %s spawned inside wall %s \n%f %f %f\n", 
-			__func__, self->client->pers.netname, level.mapname,
-			self->s.origin[0], self->s.origin[1], self->s.origin[2]); 
-		Cmd_Kill_f(self); // suicide
-		self->nextthink = level.time + FRAMETIME;
-		return;
-	}
+		if (!(self->deadflag) && gi.pointcontents (self->s.origin) & CONTENTS_SOLID)
+		{
+			DbgPrintf("%s %s spawned inside wall %s \n%f %f %f\n", 
+				__func__, self->client->pers.netname, level.mapname,
+				self->s.origin[0], self->s.origin[1], self->s.origin[2]); 
+			Cmd_Kill_f(self); // suicide
+			self->nextthink = level.time + FRAMETIME;
+			return;
+		}
 	}
 	if(self->deadflag)
 	{
@@ -755,17 +756,10 @@ void Bot_Think (edict_t *self)
 	return;
 }
 
-//----------------------------------------------------------------
-//Initialize Bot
-//
-// Initialize bot edict
-//
-//----------------------------------------------------------------
-
 void InitializeBot (edict_t *ent, int botindex)
 {
 	gclient_t	*client;
-	char		pinfo[200];
+	char		pinfo[MAX_INFO_STRING];
 	int			index;
 
 	index = ent - g_edicts - 1;
@@ -780,11 +774,28 @@ void InitializeBot (edict_t *ent, int botindex)
 	client->zc.botindex = botindex;
 	client->resp.enterframe = level.framenum;
 
+	if(ctf->value)
+	{
+		// initialize bot skins to red/blue per teams
+		// rather than from the bot configuration files.
+
+		BotAssignTeamCtf(ent->client);
+
+		switch (ent->client->resp.ctf_team)
+		{
+		case CTF_TEAM1: 
+			Com_sprintf(Bot[botindex].skin,
+				sizeof Bot[botindex].skin, "%s", "ctf_r");
+			break;
+		case CTF_TEAM2: 
+			Com_sprintf(Bot[botindex].skin,
+				sizeof Bot[botindex].skin, "%s", "ctf_b");
+			break;
+		}
+	}
+
 	Com_sprintf(pinfo, sizeof pinfo, "\\rate\\25000\\msg\\1\\fov\\90\\skin\\%s/%s\\name\\%s\\hand\\0",
 		Bot[botindex].model, Bot[botindex].skin, Bot[botindex].netname);
-
-	if(ctf->value)
-		BotAssignTeamCtf(ent->client);
 
 	ClientUserinfoChanged (ent, pinfo);
 

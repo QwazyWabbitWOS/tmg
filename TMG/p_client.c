@@ -4415,9 +4415,10 @@ void ClientBeginServerFrame (edict_t *ent)
 {
 	gclient_t	*client;
 	int			buttonMask;
+	char		buffer[MAX_QPATH];
 
 	//RAV
-	char song[80];
+	char song[MAX_QPATH];
 	int clts = ent-g_edicts-1;
 
 	// Make sure ent exists!
@@ -4452,9 +4453,10 @@ void ClientBeginServerFrame (edict_t *ent)
 			StuffCmd (ent, va("reconnect\n"));
 		else
 		{
-			sprintf(buffer, "\nconnect %s\n", reconnect_address);
+			Com_sprintf(buffer, sizeof buffer,
+				"\nconnect %s\n", reconnect_address);
 			ent->bust_time = 0;
-			StuffCmd (ent, va("%s\n",buffer));
+			StuffCmd (ent, va("%s\n", buffer));
 		}
 		ent->command = 0;
 		ent->pausetime = 0;
