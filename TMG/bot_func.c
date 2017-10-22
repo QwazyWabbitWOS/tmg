@@ -698,7 +698,7 @@ void Bot_Think (edict_t *self)
 				__func__, self->client->pers.netname, level.mapname,
 				self->s.origin[0], self->s.origin[1], self->s.origin[2]); 
 			Cmd_Kill_f(self); // suicide
-			self->nextthink = level.time + FRAMETIME;
+			self->nextthink = level.time + FRAMETIME * 10; // chill for 1 sec.
 			return;
 		}
 	}
@@ -707,8 +707,10 @@ void Bot_Think (edict_t *self)
 		if(self->client->ctf_grapple)
 			CTFPlayerResetGrapple(self);
 
-		if(self->s.modelindex == skullindex || self->s.modelindex == headindex) self->s.frame = 0;
-		else if(self->s.frame < FRAME_crdeath1 && self->s.frame != 0) self->s.frame = FRAME_death308;
+		if(self->s.modelindex == skullindex || self->s.modelindex == headindex)
+			self->s.frame = 0;
+		else if(self->s.frame < FRAME_crdeath1 && self->s.frame != 0)
+			self->s.frame = FRAME_death308;
 		self->s.modelindex2 = 0;	// remove linked weapon model
 		//ZOID
 		self->s.modelindex3 = 0;	// remove linked ctf flag
@@ -775,24 +777,7 @@ void InitializeBot (edict_t *ent, int botindex)
 	client->resp.enterframe = level.framenum;
 
 	if(ctf->value)
-	{
-		// initialize bot skins to red/blue per teams
-		// rather than from the bot configuration files.
-
 		BotAssignTeamCtf(ent->client);
-
-		switch (ent->client->resp.ctf_team)
-		{
-		case CTF_TEAM1: 
-			Com_sprintf(Bot[botindex].skin,
-				sizeof Bot[botindex].skin, "%s", "ctf_r");
-			break;
-		case CTF_TEAM2: 
-			Com_sprintf(Bot[botindex].skin,
-				sizeof Bot[botindex].skin, "%s", "ctf_b");
-			break;
-		}
-	}
 
 	Com_sprintf(pinfo, sizeof pinfo, "\\rate\\25000\\msg\\1\\fov\\90\\skin\\%s/%s\\name\\%s\\hand\\0",
 		Bot[botindex].model, Bot[botindex].skin, Bot[botindex].netname);
@@ -1272,7 +1257,7 @@ void PutBotInServer (edict_t *ent)
 
 	ent->prethink = NULL;
 	ent->think = Bot_Think;
-	ent->nextthink = level.time + FRAMETIME * 5;	//QW// hold for 1/2 second
+	ent->nextthink = level.time + FRAMETIME * 10;	//QW// hold for 1 second
 	ent->svflags /*|*/= SVF_MONSTER ;
 	ent->s.renderfx = 0;
 	ent->s.effects = 0;
