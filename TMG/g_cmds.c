@@ -22,7 +22,7 @@ int global_lights = 0;
 char *ClientTeam1 (edict_t *ent)
 {
 	char		*p;
-	static char	value[MAX_INFO_STRING];
+	static char	value[MAX_INFO_VALUE];
 
 	value[0] = 0;
 
@@ -75,8 +75,8 @@ int ClientPermTeam (edict_t *ent)
 //
 qboolean OnSameTeam (edict_t *ent1, edict_t *ent2)
 {
-	char	ent1Team [512];
-	char	ent2Team [512];
+	char	ent1Team [MAX_INFO_STRING];
+	char	ent2Team [MAX_INFO_STRING];
 
 	//RAV
 	if (!ent1->client || !ent2->client)
@@ -104,9 +104,10 @@ qboolean OnSameTeam (edict_t *ent1, edict_t *ent2)
 
 void SelectNextItem (edict_t *ent, int itflags)
 {
+	int		i;
+	int		index;
+	gitem_t	*it;
 	gclient_t	*cl;
-	int			i, index;
-	gitem_t		*it;
 
 	cl = ent->client;
 
@@ -120,12 +121,10 @@ void SelectNextItem (edict_t *ent, int itflags)
 	}
 //ZOID
 
-	cl = ent->client;
-
 	// scan  for the next valid one
 	for (i=1 ; i<=MAX_ITEMS ; i++)
 	{
-		index = (cl->pers.selected_item + i)%MAX_ITEMS;
+		index = (cl->pers.selected_item + i) % MAX_ITEMS;
 		if (!cl->pers.inventory[index])
 			continue;
 		it = &itemlist[index];
@@ -856,8 +855,6 @@ void Cmd_Kill_f (edict_t *ent)
 	ent->health = 0;
 	meansOfDeath = MOD_SUICIDE;
 	player_die (ent, ent, ent, 100000, vec3_origin);
-	// don't even bother waiting for death frames
-	ent->deadflag = DEAD_DEAD;
 }
 
 void Cmd_Location_f(edict_t *ent)
@@ -1277,22 +1274,19 @@ Cmd_Say_f
 */
 void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 {
-	int		j;
-	//DB
 	int		i;
-	//DB
+	int		j;
 	edict_t	*other;
 	char	*p;
 	char	text[2048];
 	char	text2[2048];
-	//JSW
 	qboolean action = 0;
 	char *separator;
 	int place;
 	char *pdest;
 	int  result;
 	char banned[64] = "sv ban ";
-	//end
+	char buffer[2048];
 
 	//RAV
 	//turn off camping if chatting

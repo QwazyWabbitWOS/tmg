@@ -232,9 +232,6 @@ void Drop_General (edict_t *ent, gitem_t *item)
 	ValidateSelectedItem (ent);
 }
 
-float Get_yaw (vec3_t vec);
-//edict_t *GetBotFlag1();	//チーム1の旗
-//edict_t *GetBotFlag2();  //チーム2の旗
 //======================================================================
 qboolean Pickup_Navi (edict_t *ent, edict_t *other)
 {
@@ -268,7 +265,7 @@ qboolean Pickup_Navi (edict_t *ent, edict_t *other)
 					|| ent->union_ent->moveinfo.state == PSTATE_BOTTOM) other->client->zc.zcstate |= STS_W_ONDOORUP;
 			}
 			//j = other->client->zc.routeindex - 10;
-			//ルートのアップデート
+
 			for(i =  - MAX_DOORSEARCH; i <  MAX_DOORSEARCH  ;i++)
 			{
 				if(i <= 0) j = other->client->zc.routeindex - (MAX_DOORSEARCH - i) ;
@@ -324,10 +321,9 @@ qboolean Pickup_Navi (edict_t *ent, edict_t *other)
 		SetRespawn (ent, 1000000);
 		ent->solid = SOLID_NOT;
 	}
-	//roamnavi やめた
+	//roamnavi
 	else if( ent->classname[6] == '2')
 	{
-		//ルートのアップデート
 		for(i = 0;i < 10;i++)
 		{
 			if((other->client->zc.routeindex + i) >= CurrentIndex) break;

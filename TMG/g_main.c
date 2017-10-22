@@ -258,21 +258,6 @@ cvar_t	*debug_spawn;
 cvar_t	*debug_botspawn;
 cvar_t	*debug_ops;
 
-/*
-cvar_t	*allow_lasermines;
-cvar_t	*allow_energy_lasers;
-cvar_t	*energylaser_time;
-cvar_t	*energylaser_damage;
-cvar_t	*energylaser_cells;
-cvar_t	*energylaser_mdamage;
-cvar_t	*energylaser_mradius;
-cvar_t	*allownuke;
-cvar_t	*nuke_cells;
-cvar_t	*nuke_slugs;
-cvar_t	*nuke_radius;
-cvar_t	*nuke_radius2;
-cvar_t	*lasermine_timeout;
-*/
 
 cvar_t	*runes4all;
 cvar_t	*quad_notify;
@@ -288,15 +273,6 @@ cvar_t	*cfgdir;
 cvar_t	*modversion;
 cvar_t	*doors_stay_open;
 //end
-
-//
-void ClientBegin (edict_t *ent);
-void RunEntity (edict_t *ent);
-void WriteGame (char *filename, qboolean autosave);
-void ReadGame (char *filename);
-void WriteLevel (char *filename);
-void ReadLevel (char *filename);
-void InitGame (void);
 
 //===================================================================
 void ShutdownGame (void)
@@ -316,15 +292,14 @@ void ShutdownGame (void)
 		}
 	}
 
-	StatsLog("DOWN: %s\\%.1f\n", level.mapname, level.time);
+	if(statsfile) // guard against a failed initialization
+		StatsLog("DOWN: %s\\%.1f\n", level.mapname, level.time);
 
 	if (mdsoft_map)
 		free(mdsoft_map);
 
 	gi.FreeTags (TAG_LEVEL);
 	gi.FreeTags (TAG_GAME);
-	SetBotFlag1(NULL);
-	SetBotFlag2(NULL);
 
 #ifdef _WIN32
 	OutputDebugString("ShutdownGame() was called.\n");

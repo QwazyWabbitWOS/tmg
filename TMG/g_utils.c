@@ -432,11 +432,6 @@ edict_t *G_Spawn (void)
 	globals.num_edicts++;
 	
 	G_InitEdict (e);
-
-	//if(debug_spawn->value && e != NULL)
-	//	DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
-	//		__FUNCTION__, e->movetype, e->inuse, e->classname, level.time);
-
 	return e;
 }
 
@@ -457,9 +452,9 @@ void G_FreeEdict (edict_t *ed)
 		return;
 	}
 	
-	//if(debug_spawn->value && ed != NULL)
-	//	DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
-	//		__func__, ed->movetype, ed->inuse, ed->classname, level.time);
+	if(debug_spawn->value && ed != NULL)
+		DbgPrintf ("%s movetype %d inuse %d linkcount %d classname %s time: %.1f\n",
+		__func__, ed->movetype, ed->inuse, ed->linkcount, ed->classname, level.time);
 
 	memset (ed, 0, sizeof(*ed));
 	ed->classname = "freed";
@@ -543,21 +538,14 @@ qboolean KillBox (edict_t *ent)
 
   while (1)
   {
-    tr = gi.trace (ent->s.origin,
-				   ent->mins,
-				   ent->maxs,
+    tr = gi.trace (ent->s.origin, ent->mins, ent->maxs,
 				   ent->s.origin, NULL, MASK_PLAYERSOLID);
     if (!tr.ent)
       break;
 
     // nail it
-    T_Damage (tr.ent,
-			  ent,
-			  ent,
-			  vec3_origin,
-			  ent->s.origin,
-			  vec3_origin,
-			  100000, 0, DAMAGE_NO_PROTECTION, MOD_TELEFRAG);
+    T_Damage (tr.ent, ent, ent, vec3_origin, ent->s.origin,
+			  vec3_origin, 100000, 0, DAMAGE_NO_PROTECTION, MOD_TELEFRAG);
 
     // if we didn't kill it, fail
     if (tr.ent->solid)

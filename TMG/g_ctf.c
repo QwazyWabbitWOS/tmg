@@ -503,7 +503,8 @@ void CTFAssignSkin(edict_t *ent, char *s)
 	if ((p = strrchr(t, '/')) != NULL)
 	{
 		p[1] = 0;
-		if (strlen(t) <= 1) strcpy(t, "male/");
+		if (strlen(t) <= 1)
+			strcpy(t, "male/");
 	}
 	else
 		strcpy(t, "male/");
@@ -2271,7 +2272,7 @@ void RaV_unhook (edict_t *ent)
 void CTFTeam_f (edict_t *ent, int desired_team)
 {
 	char *t, *s;
-	//int desired_team;
+
 	if (!ctf->value)
 		return;
 

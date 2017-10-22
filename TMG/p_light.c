@@ -25,7 +25,8 @@ void FL_make(edict_t *self)
 	AngleVectors (self->client->v_angle, forward, right, NULL);
 	VectorSet(end, 100, 0, 0);
 	G_ProjectSource (self->s.origin, end, forward, right, start);
-	self->flashlight = G_Spawn ();	self->flashlight->owner = self;
+	self->flashlight = G_Spawn ();
+	self->flashlight->owner = self;
 	self->flashlight->movetype = MOVETYPE_NOCLIP;
 	self->flashlight->solid = SOLID_NOT;
 	self->flashlight->classname = "flashlight";
