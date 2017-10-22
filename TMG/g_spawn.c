@@ -721,7 +721,7 @@ void G_FindRouteLink(edict_t *ent)
 
 
 
-gi.dprintf("Linking routes...\n");
+	gi.dprintf("Linking routes...\n");
 
 	//get JumpMax
 	if(JumpMax == 0)
@@ -817,7 +817,7 @@ gi.dprintf("Linking routes...\n");
 		}
 	}
 
-gi.dprintf("Total %i linking done.\n",total);
+	gi.dprintf("Total %i linking done.\n", total);
 	G_FreeEdict (ent);
 }
 
@@ -833,7 +833,8 @@ static void G_SpawnRouteLink(void)
 	if(CurrentIndex <= 0) return;
 
 	e = G_Spawn();
-
+	
+	e->classname = "route";
 	e->nextthink = level.time + FRAMETIME * 2;
 	e->think = G_FindRouteLink;
 }

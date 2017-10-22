@@ -1030,7 +1030,6 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 		//ZOID
 		if (!OnSameTeam(self, attacker)) //JSW
 			CTFFragBonuses(self, inflictor, attacker);
-
 		//ZOID
 
 		if(voosh->value == 0)
@@ -1040,7 +1039,6 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 			self->client->resp.deaths++;
 
 		self->client->resp.spree = 0;
-		//		
 
 		//ZOID
 		CTFPlayerResetGrapple(self);
@@ -1062,16 +1060,17 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 	memset(self->client->pers.inventory, 0, sizeof(self->client->pers.inventory));
 
 	// minimal gibs if railserver
-	if (self->health < -40 || voosh->value)
+	if (self->health <= 0 || voosh->value)
 	{	// gib
 		gi.sound (self, CHAN_BODY, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
-		for (n = 0; n < 3; n++)
+		for (n = 0; n < 2; n++)
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
 
-		// An empty name here caused GAME WARNING in SV_FindIndex
-		// so throw another gib model instead.
-		//gi.setmodel(self, "models/objects/gibs/sm_meat/tris.md2");
-		gi.setmodel(self, "");
+		// This sets the player model properly.
+		gi.setmodel(self, "models/objects/gibs/sm_meat/tris.md2");
+		//ThrowClientHead (self, damage); // Removed to stop bots from lerping //QW//
+		self->client->anim_priority = ANIM_DEATH;
+		self->client->anim_end = 0;
 		self->takedamage = DAMAGE_NO;
 	}
 	else
@@ -1107,10 +1106,7 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 		}
 	}
 	self->deadflag = DEAD_DEAD;
-	if (debug_spawn->value)
-		DbgPrintf("%s %s in %s at location\n%f %f %f\n",
-			__func__, self->client->pers.netname, level.mapname,
-			self->s.origin[0], self->s.origin[1], self->s.origin[2]);
+
 	//routing last index move
 	if(chedit->value && self == &g_edicts[1]) 
 		Move_LastRouteIndex();
@@ -1869,6 +1865,7 @@ void respawn (edict_t *self, qboolean spawn)
 		PutBotInServer(self);
 	else
 		PutClientInServer (self);
+	
 	// add a teleportation effect
 	self->s.event = EV_PLAYER_TELEPORT;
 	// hold in place briefly
@@ -3425,7 +3422,7 @@ void ClientDisconnect (edict_t *ent)
 	if (ctfgame.players1 + ctfgame.players2 + ctfgame.players_total + ctfgame.specs == 0)
 		locked_teams = false;
 
-	gi.configstring (CS_PLAYERSKINS+playernum, "");
+	gi.configstring (CS_PLAYERSKINS + playernum, "");
 }
 
 

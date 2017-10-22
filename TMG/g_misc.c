@@ -144,6 +144,7 @@ ThrowGib (edict_t *self, char *gibname, int damage, int type)
 	gib->s.origin[2] = origin[2] + crandom() * size[2];
 
 	gi.setmodel (gib, gibname);
+	gib->classname = "gib";
 	gib->solid = SOLID_NOT;
 	gib->s.effects |= EF_GIB;
 	gib->flags |= FL_NO_KNOCKBACK;
@@ -188,6 +189,7 @@ ThrowHead (edict_t *self, char *gibname, int damage, int type)
 
 	self->s.modelindex2 = 0;
 	gi.setmodel (self, gibname);
+	self->classname = "head";
 	self->solid = SOLID_NOT;
 	self->s.effects |= EF_GIB;
 	self->s.effects &= ~EF_FLIES;
@@ -241,7 +243,9 @@ ThrowClientHead (edict_t *self, int damage)
 
 	self->s.origin[2] += 32;
 	self->s.frame = 0;
+	self->s.modelindex2 = 0;
 	gi.setmodel (self, gibname);
+	self->classname = "skull";
 	VectorSet (self->mins, -16, -16, 0);
 	VectorSet (self->maxs, 16, 16, 16);
 
@@ -251,7 +255,6 @@ ThrowClientHead (edict_t *self, int damage)
 	self->s.sound = 0;
 	self->flags |= FL_NO_KNOCKBACK;
 
-
 	self->movetype = MOVETYPE_BOUNCE;
 	VelocityForDamage (damage, vd);
 	VectorAdd (self->velocity, vd, self->velocity);
@@ -260,6 +263,11 @@ ThrowClientHead (edict_t *self, int damage)
 	{
 		self->client->anim_priority = ANIM_DEATH;
 		self->client->anim_end = self->s.frame;
+	}
+	else
+	{
+		self->think = NULL;
+		self->nextthink = 0;
 	}
 
 	gi.linkentity (self);
