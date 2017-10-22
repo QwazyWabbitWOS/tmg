@@ -157,7 +157,7 @@ ASST: netname\FC Frag Assist\award\level.time
 Player received award points for flag return assist
 or frag of flag carrier assist.
 
-HOOKS: netname\hooks_landed_count\hooks_deployed_count\level.time
+HOOKS: netname\hooks_landed_count\hooks_deployed_count\mapname\level.time
 The number of hooks the player landed and deployed during the level.
 This is posted at the end of the level.
 Note: landed will always equal deployed unless cvar hook_sky is 0.
