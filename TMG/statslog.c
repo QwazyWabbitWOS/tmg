@@ -56,31 +56,32 @@ void StatsLog(const char *fmt, ... )
 	Com_sprintf(logpath, sizeof logpath, "%s/stats/%s", game_dir->string, statsfile->string);
 
 	// if not open and we want logging, open the log
-	if (!pStatsfile && statslog->value) 
+	if (statslog->value)
 	{
-		if((pStatsfile = fopen(logpath, "a")) != NULL) 
+		if (!pStatsfile) 
 		{
-			fprintf(pStatsfile, "%s", ar_string); 
+			pStatsfile = fopen(logpath, "a");
+			if(pStatsfile) 
+			{
+				fprintf(pStatsfile, "%s", ar_string); 
+			}
+			else
+				gi.dprintf("Error writing to %s\n", statsfile->string);
 		}
 		else
-			gi.dprintf("Error writing to %s\n", statsfile->string);
-	}
-	else
-		if (pStatsfile)
 		{
 			fprintf(pStatsfile, "%s", ar_string);
 		}
-		// if not logging, flush and close
-		if (statslog->value == 0)
+	}
+	else // not logging, flush and close
+	{
+		if (pStatsfile)
 		{
-			if (pStatsfile)
-			{
-				// if open, flush and close it
-				fflush(pStatsfile);
-				fclose(pStatsfile);
-				pStatsfile = NULL;
-			}
+			fflush(pStatsfile);
+			fclose(pStatsfile);
+			pStatsfile = NULL;
 		}
+	}
 } 
 
 // this renames the stats file from lox/stats.log (or whatever)
@@ -144,11 +145,11 @@ they're cleared by PutClientInServer on the next level change.
 */
 void StatsLogHooks(edict_t *ent)
 {
-	StatsLog("HOOKS: %s\\%ld\\%ld\\%.1f\n", 
+	StatsLog("HOOKS: %s\\%ld\\%ld\\\\%s\\%.1f\n", 
 		ent->client->pers.netname,
 		ent->client->resp.hooks_landed_count,
 		ent->client->resp.hooks_deployed_count,
-		level.time);
+		level.mapname, level.time);
 }
 
 /**
