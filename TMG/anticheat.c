@@ -35,7 +35,7 @@ char reconnect_address[256] = { 0 };
 //char skinChangeFloodProtectMsg[256];
 //
 
-static FILE *fpBot;
+//static FILE *fpBot;
 
 /**********************************************
 new bot detection
