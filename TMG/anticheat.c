@@ -12,8 +12,6 @@
 int botdetection;
 
 //RAV
-int reconnect_time = 60;
-int reconnect_checklevel = 0;
 proxyinfo_t *proxyinfo;
 proxyinfo_t *proxyinfoBase;
 oplist_t	*oplist;
@@ -21,26 +19,20 @@ oplist_t	*oplistBase;
 proxyreconnectinfo_t *reconnectproxyinfo;
 reconnect_info* reconnectlist;
 retrylist_info* retrylist;
-int maxReconnectList = 0;
-int maxretryList = 0;
-int proxy_bwproxy = 1;
-int proxy_nitro2 = 1;
-int lframenum;
-float	l_time;
 char moddir[MAX_QPATH];
 char buffer[0x10000];
 char reconnect_address[256] = { 0 };
-qboolean nameChangeFloodProtect = false;
-int nameChangeFloodProtectNum = 5;
-int nameChangeFloodProtectSec = 2;
-int nameChangeFloodProtectSilence = 10;
-char nameChangeFloodProtectMsg[256];
-
-qboolean skinChangeFloodProtect = false;
-int skinChangeFloodProtectNum = 5;
-int skinChangeFloodProtectSec = 2;
-int skinChangeFloodProtectSilence = 10;
-char skinChangeFloodProtectMsg[256];
+//qboolean nameChangeFloodProtect = false;
+//int nameChangeFloodProtectNum = 5;
+//int nameChangeFloodProtectSec = 2;
+//int nameChangeFloodProtectSilence = 10;
+//char nameChangeFloodProtectMsg[256];
+//
+//qboolean skinChangeFloodProtect = false;
+//int skinChangeFloodProtectNum = 5;
+//int skinChangeFloodProtectSec = 2;
+//int skinChangeFloodProtectSilence = 10;
+//char skinChangeFloodProtectMsg[256];
 //
 
 static FILE *fpBot;
@@ -72,11 +64,8 @@ void InitAnticheat(void)
 	q2a_memset(reconnectproxyinfo, 0x0, maxclients->value * sizeof(proxyreconnectinfo_t));
 
 	reconnectlist = (reconnect_info *)gi.TagMalloc (maxclients->value * sizeof(reconnect_info), TAG_GAME);
-	maxReconnectList = 0;
 
 	retrylist = (retrylist_info *)gi.TagMalloc (maxclients->value * sizeof(retrylist_info), TAG_GAME);
-	maxretryList = 0;
-	reconnect_time = 60;
 
 	for( i = -1; i < maxclients->value; i++)
 	{
@@ -94,8 +83,7 @@ void InitAnticheat(void)
 	if(!lan->value)
 	{
 		//if server_ip is not set, stop the server
-		strcat(serverip, server_ip->string);
-		if (strcmp (serverip, "") == 0)
+		if (strcmp(server_ip->string, "") == 0)
 			gi.error ("You must set server_ip, e.g.: set server_ip 216.112.2.12:27910");
 		strcat(reconnect_address, server_ip->string);
 	}
@@ -103,25 +91,25 @@ void InitAnticheat(void)
 	Com_sprintf(moddir, sizeof moddir, "%s", game_dir->string);
 }
 
-void
-BotDetection(edict_t *ent, usercmd_t *ucmd)
-{
-	static gclient_t *cl;
-
-	cl = ent->client;
-
-	if (ent->client->pers.pl_state == PL_CHEATBOT)
-		return;
-
-	if (ucmd->impulse != 6)
-	{
-		if (botdetection & BOT_IMPULSE)
-		{
-			OnBotDetection(ent, va("impulse %d", ucmd->impulse));
-			return;
-		}
-	}
-}
+//void
+//BotDetection(edict_t *ent, usercmd_t *ucmd)
+//{
+//	static gclient_t *cl;
+//
+//	cl = ent->client;
+//
+//	if (ent->client->pers.pl_state == PL_CHEATBOT)
+//		return;
+//
+//	if (ucmd->impulse != 6)
+//	{
+//		if (botdetection & BOT_IMPULSE)
+//		{
+//			OnBotDetection(ent, va("impulse %d", ucmd->impulse));
+//			return;
+//		}
+//	}
+//}
 
 FILE *tn_open (const char *filename, const char *mode)
 {
@@ -270,13 +258,14 @@ OnBotDetection(edict_t *ent, char *msg)
 		log = 1; // if name doesn't match after conversion
 
 	Com_sprintf(user, sizeof user, "%s@%s",
-			ent->client->pers.netname,
-			Info_ValueForKey (ent->client->pers.userinfo, "ip"));
+				ent->client->pers.netname,
+				Info_ValueForKey (ent->client->pers.userinfo, "ip"));
 
-	Com_sprintf(userip, sizeof userip, "*@%s", Info_ValueForKey (ent->client->pers.userinfo, "ip"));
+	Com_sprintf(userip, sizeof userip, "*@%s", 
+				Info_ValueForKey (ent->client->pers.userinfo, "ip"));
 
 	Com_sprintf(logged, sizeof logged, "%s@%s@%8s@%10s",
-			user, msg, sys_time, sys_date);
+				user, msg, sys_time, sys_date);
 
 	// When name doesn't match converted name
 	if (log && botdetection & BOT_LOG)
@@ -307,48 +296,48 @@ OnBotDetection(edict_t *ent, char *msg)
 	return;
 }
 
-void
-InitBotDetection(void)
-{
-	char fname[PATH_MAX];
-
-	Com_sprintf(fname, sizeof fname, "%s/%s/%s/bot_detected.log",
-			basedir->string, game_dir->string, cfgdir->string);
-
-	fpBot = fopen(fname, "a");
-}
-
-void
-EndBotDetection(void)
-{
-	if (fpBot)
-		fclose(fpBot);
-}
-
-int isBlank(char *buff1)
-{
-	while(*buff1 == ' ')
-	{
-		buff1++;
-	}
-	return !(*buff1);
-}
-
-qboolean CheckForConnection(edict_t *player)
-{
-	int i;
-	edict_t	*ent;
-
-	for (i=0 ; i<maxclients->value ; i++)
-	{
-		ent = g_edicts + 1 + i;
-		if (!ent->inuse || !ent->client)
-			continue;
-
-		if(strcmp(Info_ValueForKey (player->client->pers.userinfo, "ip[13]"),
-				  Info_ValueForKey (ent->client->pers.userinfo, "ip[13]")) == 0)
-			return true;
-	}
-
-	return false;
-}
+//void
+//InitBotDetection(void)
+//{
+//	char fname[PATH_MAX];
+//
+//	Com_sprintf(fname, sizeof fname, "%s/%s/%s/bot_detected.log",
+//			basedir->string, game_dir->string, cfgdir->string);
+//
+//	fpBot = fopen(fname, "a");
+//}
+//
+////void
+//EndBotDetection(void)
+//{
+//	if (fpBot)
+//		fclose(fpBot);
+//}
+//
+//int isBlank(char *buff1)
+//{
+//	while(*buff1 == ' ')
+//	{
+//		buff1++;
+//	}
+//	return !(*buff1);
+//}
+//
+//qboolean CheckForConnection(edict_t *player)
+//{
+//	int i;
+//	edict_t	*ent;
+//
+//	for (i=0 ; i<maxclients->value ; i++)
+//	{
+//		ent = g_edicts + 1 + i;
+//		if (!ent->inuse || !ent->client)
+//			continue;
+//
+//		if(strcmp(Info_ValueForKey (player->client->pers.userinfo, "ip[13]"),
+//				  Info_ValueForKey (ent->client->pers.userinfo, "ip[13]")) == 0)
+//			return true;
+//	}
+//
+//	return false;
+//}
