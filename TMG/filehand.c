@@ -5,6 +5,9 @@
 #include "filehand.h"
 #include "anticheat.h"
 
+oplist_t	*oplist;
+oplist_t	*oplistBase;
+
 qboolean lessGeneral(char *line, char *comp)
 {
 	if (strcspn (line, "*") > strcspn(comp, "*"))
@@ -28,7 +31,8 @@ int checkAllowed (char *userinfo)
 		Info_ValueForKey (userinfo, "ip"));
 
 	stop = 1;
-	if ((ipfile = tn_open("ip_allowed.txt", "r")))
+	ipfile = tn_open("ip_allowed.txt", "r");
+	if (ipfile)
 	{
 		while ((fgets(aline, MAX_QPATH, ipfile)) && (stop == 1))
 		{
@@ -46,7 +50,8 @@ int checkAllowed (char *userinfo)
 	if (stop == 1)
 		return (1);
 
-	if ((ipfile = tn_open("ip_banned.txt", "r")))
+	ipfile = tn_open("ip_banned.txt", "r");
+	if (ipfile)
 	{
 		while (fgets(line, MAX_QPATH, ipfile) && stop == 0)
 		{
@@ -61,17 +66,19 @@ int checkAllowed (char *userinfo)
 
 	if (stop == 1)
 	{
-		if ((ipfile = tn_open("ip_allowed.txt","r")))
+		ipfile = tn_open("ip_allowed.txt","r");
+		if (ipfile)
 		{
-			while ((fgets(aline,MAX_QPATH,ipfile)) && (stop==1))
+			while ((fgets(aline, MAX_QPATH, ipfile)) && (stop == 1))
 			{
-				if (!strchr("#",*aline))
+				if (!strchr("#", *aline))
 				{
-					if (IPMatch(ip,aline)==1 && lessGeneral(aline,line))
+					if (IPMatch(ip, aline) == 1 && lessGeneral(aline,line))
 					{
-						gi.dprintf ("*** IPControl - Letting %s in:\nless general than %s.\n", aline, line);
+						gi.dprintf ("*** IPControl - Letting %s in:\n"
+							"less general than %s.\n", aline, line);
 						// gi.dprintf ("%s, %s <->%s\n", ip, aline, line);
-						stop=0;
+						stop = 0;
 					}
 				}
 			}
@@ -86,8 +93,8 @@ char *NameAndIp (edict_t *ent)
 {
 	static char ip[MAX_QPATH];
 	int  j;
-	
-	Com_sprintf(ip, sizeof ip, "%s@%s",  
+
+	Com_sprintf(ip, sizeof ip, "%s@%s",
 		ent->client->pers.netname,
 		Info_ValueForKey (ent->client->pers.userinfo, "ip"));
 
@@ -95,7 +102,7 @@ char *NameAndIp (edict_t *ent)
 	while (!strchr(":", ip[j])) j++;
 	ip[j] = '\0';
 	return ip;
-	
+
 }
 
 // IP checking function
@@ -103,15 +110,12 @@ char *NameAndIp (edict_t *ent)
 //
 int IPMatch (char *clientIP, char *maskIP)
 {
-	int match;
-	qboolean OK, psd;
-	char *cp, *mp, *chop;
-
-	OK = true;
-	psd = false;
-	match = 1;
-	cp = clientIP;
-	mp = maskIP;
+	int match = 1;
+	qboolean OK = true;
+	qboolean psd = false;
+	char *cp = clientIP;
+	char *mp = maskIP;
+	char *chop;
 
 	// Remove \n
 	for (chop = mp; *chop; chop++)
@@ -131,24 +135,31 @@ int IPMatch (char *clientIP, char *maskIP)
 		{
 			while ((!strchr("@", *mp)) && (!strchr("\0", *mp)) && (!strchr("\n", *mp))) mp++;
 			while ((!strchr("@", *cp)) && (!strchr("\0", *cp)) && (!strchr("\n", *cp))) cp++;
-			if (strchr("\n", *mp)) OK=false;
+			if (strchr("\n", *mp))
+				OK = false;
 		} 
 		if (OK) 
 		{
 			if (strchr("@", *cp)) 
 			{
-				psd=true;
+				psd = true;
 				if (!strchr("@", *mp))
 					match = 0;
 			}
 			else
 			{
-				if ((*cp != *mp) && (!strchr ("?", *mp))) { match=0; /*safe_bprintf(PRINT_HIGH,"(%c <> %c)\n",*cp, *mp);*/ }
+				if ((*cp != *mp) && (!strchr ("?", *mp)))
+				{
+					match = 0;
+					/*safe_bprintf(PRINT_HIGH, "(%c <> %c)\n", *cp, *mp);*/
+				}
 				cp++;
 				mp++;
+
 				if ((strchr("\0", *mp)) && (!strchr("\0", *cp)) && (!strchr(":", *cp))) { match=0; }
 				if ((strchr("\0", *cp)) && ((!strchr("\0", *mp)) || (!strchr("\n", *mp)))) match=0;
-				if (match!=1) OK=false;
+				if (match != 1)
+					OK = false;
 			}
 		}
 	}
@@ -160,11 +171,16 @@ int IPMatch (char *clientIP, char *maskIP)
 		{
 			while ((!strchr(".", *mp)) && (!strchr("\0", *mp)) && (!strchr("\n", *mp))) mp++;
 			while ((!strchr(".", *cp)) && (!strchr("\0", *cp)) && (!strchr("\n", *cp))) cp++;
-			if (strchr("\n", *mp)) OK=false;
+			if (strchr("\n", *mp))
+				OK = false;
 		} 
 		if (OK) 
 		{
-			if ((*cp != *mp) && (!strchr ("?", *mp))) { match=0; /*safe_bprintf(PRINT_HIGH,"(%c <> %c)\n",*cp, *mp);*/ }
+			if ((*cp != *mp) && (!strchr ("?", *mp)))
+			{
+				match = 0;
+				/*safe_bprintf(PRINT_HIGH,"(%c <> %c)\n",*cp, *mp);*/
+			}
 			cp++;
 			mp++;
 			if ((strchr("\0", *mp)) && (!strchr("\0", *cp)) && (!strchr(":", *cp))) { match=0; }
@@ -183,7 +199,8 @@ qboolean entryInFile (char *filename, char ip[MAX_QPATH])
 
 	inFile = false;
 
-	if ((thefile = tn_open(filename, "r")))
+	thefile = tn_open(filename, "r");
+	if (thefile)
 	{
 		while (fgets(line, MAX_QPATH, thefile))
 		{
@@ -197,6 +214,38 @@ qboolean entryInFile (char *filename, char ip[MAX_QPATH])
 	return inFile;
 }
 
+/**
+ QwazyWabbit says:
+ This is one of those "does everything" functions.
+
+ Called from InitGame to initialize the oplist:
+	CheckOpFile(NULL, "*@*.*.*.*", false);
+
+ It has 3 phases where it passes over the oplist file tokens.
+ 1. Fill the oplist entry with the operators name and IP.
+ 2. Fill the oplist entry with the operator permissions.
+ 3. Fill the oplist entry with the operators password.
+ Repeat for all lines in the operator file to a max
+ of 64 operator entries. (See oplistBase allocation.)
+ However, this function seems to not care how many
+ entries are available in the oplist array. Returns 0
+ on completion.
+ 
+ It takes a non-null entity pointer and a client IP string and
+ matches the name and ip range to the entry in the OP file. 
+ If a match is found it alters the ent->client->pers.oplevel
+ for that client and returns 1.
+  
+ If returnindex is 1, it returns the index to their 
+ place in the file if the file exists and if they're in it.
+ If returnindex is 0, it returns 1 if found, 0 if not found,
+ -1 on error. Jeezus.
+
+ For all other cases it sets ent->client->pers.oplevel = 0 and 
+ returns 0 for not found.
+
+ Returns -1 if oplist file could not be opened.
+ */
 int CheckOpFile (edict_t *ent, char ip[MAX_QPATH], qboolean returnindex)
 {
 	FILE *opfile;
@@ -208,7 +257,13 @@ int CheckOpFile (edict_t *ent, char ip[MAX_QPATH], qboolean returnindex)
 	char *result = NULL;
 	inFile = false;
 
-	if ((opfile = tn_open("user_o.txt", "r")))
+	opfile = tn_open("user_o.txt", "r");
+	if (!opfile)
+	{
+		gi.dprintf("ERROR: Could not open operator file.\n");
+		return -1;
+	}
+	else
 	{
 		do
 		{
@@ -218,15 +273,15 @@ int CheckOpFile (edict_t *ent, char ip[MAX_QPATH], qboolean returnindex)
 				{
 					oplist[i].flagged = 0;
 					a = 1;
-					for (result = strtok(line," \t\n");result != NULL; result = strtok(NULL," \t\n"))
+					for (result = strtok(line," \t\n"); result != NULL; result = strtok(NULL," \t\n"))
 					{
 						if (debug_ops->value)
 							DbgPrintf("%s result is .%s.\n", __func__, result);
 						if (a == 1)
 						{
 							strcpy(oplist[i].entry, result);
-						if (debug_ops->value)
-							DbgPrintf("%d oplist entry added for %s\n", i, oplist[i].entry);
+							if (debug_ops->value)
+								DbgPrintf("%d oplist entry added for %s\n", i, oplist[i].entry);
 						}
 						else if (a == 2 && atoi(result))
 						{
@@ -240,7 +295,7 @@ int CheckOpFile (edict_t *ent, char ip[MAX_QPATH], qboolean returnindex)
 							if (debug_ops->value)
 								DbgPrintf("%d oplist namepass added for %s\n", i, oplist[i].namepass);
 						}
-	
+
 						if (IPMatch(ip, oplist[i].entry))
 						{
 							if (ent != NULL)
@@ -255,15 +310,16 @@ int CheckOpFile (edict_t *ent, char ip[MAX_QPATH], qboolean returnindex)
 						}
 						a++;
 					}
+
 					if (ent != NULL)
 					{
 						if (debug_ops->value)
-							DbgPrintf("pass in file is %s, namepass is %s, "
-								"strlen of namepass is %d, "
-								"strlen is %d in file\n",
-								oplist[i].namepass, ent->client->pers.namepass,
-								strlen(ent->client->pers.namepass),
-								strlen(oplist[i].namepass));
+							DbgPrintf("%d pass in file is %s, namepass is %s, "
+							"strlen of namepass is %d, "
+							"strlen is %d in file\n",
+							i, oplist[i].namepass, ent->client->pers.namepass,
+							strlen(ent->client->pers.namepass),
+							strlen(oplist[i].namepass));
 					}
 					i++;
 					entriesinopfile = i;
@@ -271,7 +327,7 @@ int CheckOpFile (edict_t *ent, char ip[MAX_QPATH], qboolean returnindex)
 			}
 			else
 				result = NULL;
-		}while (result != NULL);
+		} while (result != NULL);
 
 		fclose (opfile);
 		if (ent == NULL)
@@ -292,23 +348,19 @@ int CheckOpFile (edict_t *ent, char ip[MAX_QPATH], qboolean returnindex)
 			}
 		}
 	}
-	else
-	{
-		gi.dprintf("ERROR: Could not open operator file.\n");
-		return -1;
-	}
 
 	if (debug_ops->value)
 	{
 		gi.dprintf("%d entries in user_o.txt\n", entriesinopfile);
-		for (i = 0; i < entriesinopfile+1; i++)
+		for (i = 0; i < entriesinopfile + 1; i++)
 		{
 			gi.dprintf("Entry #%d: [%s] Level: [%d] "
 				"Password: [%s] Flagged: [%d]\nFlagged = %d\n", 
-				i+1, oplist[i].entry, oplist[i].level, 
+				i + 1, oplist[i].entry, oplist[i].level, 
 				oplist[i].namepass, oplist[i].flagged, flagged);
 		}
 	}
+
 	if (flagged < 0)
 	{
 		ent->client->pers.oplevel = 0;
@@ -320,8 +372,8 @@ int CheckOpFile (edict_t *ent, char ip[MAX_QPATH], qboolean returnindex)
 	}
 	if (debug_ops->value && flagged != -1)
 		gi.dprintf ("Player %s matches entry %s, level = %d\n", 
-			ent->client->pers.netname, 
-			oplist[flagged].entry, oplist[flagged].level);
+		ent->client->pers.netname, 
+		oplist[flagged].entry, oplist[flagged].level);
 
 	return flagged;
 }
@@ -390,7 +442,8 @@ qboolean CheckNameProtect (char name[MAX_QPATH], char namepass[MAX_QPATH])
 	namepassMatches = false;
 	i = 0;
 
-	if ((opfile = tn_open("user_o.txt", "r")))
+	opfile = tn_open("user_o.txt", "r");
+	if (opfile)
 	{
 		do
 		{
@@ -484,7 +537,8 @@ qboolean ModifyOpLevel (int entry, int newlevel)
 		return false;
 
 	oplist[entry].level = newlevel;
-	if ((opfile = tn_open("user_o.txt", "w")))
+	opfile = tn_open("user_o.txt", "w");
+	if (opfile)
 	{
 		for (i = 0; i < entriesinopfile + 1; i++)
 		{				
@@ -511,7 +565,8 @@ int AddOperator (char entry[MAX_QPATH], int level, char pass[16])
 	FILE *opfile;
 	char line[MAX_QPATH];
 
-	if ((opfile = tn_open("user_o.txt", "a+")))
+	opfile = tn_open("user_o.txt", "a+");
+	if (opfile)
 	{
 		Com_sprintf (line, sizeof line, "%s\t%d\t%s\n", entry, level, pass);
 		fputs(line, opfile);
@@ -533,7 +588,8 @@ void AddEntry (char *filename, char *text)
 	if (entryInFile (filename, text))
 		return;
 
-	if ((ipfile = tn_open(filename, "a+")))
+	ipfile = tn_open(filename, "a+");
+	if (ipfile)
 	{
 		fputs(text, ipfile);
 		fputs("\n", ipfile);
@@ -584,15 +640,18 @@ void ShowFile(edict_t *ent, char *filename)
 		if (ent == NULL)
 			gi.dprintf("Could not load file %s.\n", filename);
 		else
-			gi.cprintf (ent, PRINT_HIGH, "Could not load file %s.\n", filename);
+			gi.cprintf (ent, PRINT_HIGH, 
+			"Could not load file %s.\n", filename);
 		return;
 	}
 	else
 		// file did load
 		if (ent == NULL)
-			gi.dprintf("\nLoading %s...\n\n------------------------------\n\n", filename);
+			gi.dprintf("\nLoading %s...\n"
+			"\n------------------------------\n\n", filename);
 		else
-			gi.cprintf(ent, PRINT_HIGH, "\nLoading %s...\n\n------------------------------\n\n", filename);
+			gi.cprintf(ent, PRINT_HIGH, "\nLoading %s...\n"
+			"\n------------------------------\n\n", filename);
 
 	while ((c = fgetc(file)) != EOF)
 	{
@@ -603,9 +662,13 @@ void ShowFile(edict_t *ent, char *filename)
 	}
 
 	if (ent == NULL)
-		gi.dprintf("\n------------------------------\n\nEnd of %s\n\n", filename);
+		gi.dprintf(
+		"\n------------------------------\n"
+		"\nEnd of %s\n\n", filename);
 	else
-		gi.cprintf(ent, PRINT_HIGH, "\n------------------------------\n\nEnd of %s\n\n", filename);
+		gi.cprintf(ent, PRINT_HIGH, 
+		"\n------------------------------\n"
+		"\nEnd of %s\n\n", filename);
 	fclose(file);
 }
 
@@ -620,10 +683,9 @@ void LogConnect (edict_t *ent, qboolean connect)
 
 	if (!ent)
 	{
-		if ((file = fopen(file_name, "a")))
-		{
+		file = fopen(file_name, "a");
+		if (file)
 			fclose (file);
-		}
 		else
 		{
 			gi.dprintf("Error opening/creating %s!\n", file_name);
@@ -645,7 +707,8 @@ void LogConnect (edict_t *ent, qboolean connect)
 		strcat(client, " disconnected\n");
 	
 
-	if ((file = fopen(file_name, "a")))
+	file = fopen(file_name, "a");
+	if (file)
 	{
 		fputs(client, file);
 		fclose (file);
@@ -673,7 +736,8 @@ void LogChat (char *text)
 	Com_sprintf(entry, sizeof entry, "%s [%s] %s", sys_date, sys_time, text);
 	white_text(entry, entry);
 	
-	if ((file=fopen(file_name, "a")))
+	file = fopen(file_name, "a");
+	if (file)
 	{
 		fputs(entry, file);
 		fclose (file);

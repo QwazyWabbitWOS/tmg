@@ -70,7 +70,7 @@ edict_t *EAVYFindFarthestFlagPosition(edict_t *flag)
 
     bestspot = G_Find (NULL, FOFS(classname), "info_player_deathmatch");
 
-    while((spot = G_Find (spot, FOFS(classname), "info_player_deathmatch")))
+    while((spot = G_Find (spot, FOFS(classname), "info_player_deathmatch")) != NULL)
     {
         VectorSubtract (spot->s.origin, flag->s.origin, v);
         bestdistance = VectorLength(v);
@@ -126,7 +126,7 @@ void EAVYSpawnTeamNearFlagCheck(void)
     vec3_t  v;
 
     flag = G_Find (NULL, FOFS(classname), "item_flag_team1");
-    while((spot = G_Find (spot, FOFS(classname), "info_player_team2")))
+    while((spot = G_Find (spot, FOFS(classname), "info_player_team2")) != NULL)
     {
         VectorSubtract (spot->s.origin, flag->s.origin, v);
         dist = VectorLength (v);
@@ -141,7 +141,7 @@ void EAVYSpawnTeamNearFlagCheck(void)
         }
     }
     flag = G_Find (NULL, FOFS(classname), "item_flag_team2");
-    while((spot = G_Find (spot, FOFS(classname), "info_player_team1")))
+    while((spot = G_Find (spot, FOFS(classname), "info_player_team1")) != NULL)
     {
         VectorSubtract (spot->s.origin, flag->s.origin, v);
         dist = VectorLength (v);
@@ -163,7 +163,7 @@ void EAVYSpawnTeamNearFlag(edict_t *flag)
     float   dist;
     vec3_t  v;
 
-    while((spot = G_Find (spot, FOFS(classname), "info_player_deathmatch")))
+    while((spot = G_Find (spot, FOFS(classname), "info_player_deathmatch")) != NULL)
     {
         VectorSubtract (spot->s.origin, flag->s.origin, v);
         dist = VectorLength (v);

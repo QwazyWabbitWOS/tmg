@@ -900,7 +900,7 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 		dist += inc;
 	}
 
-	VectorSubtract(tr.endpos, start, end);
+	VectorSubtract(from, start, end);
 	if (VectorLength(end) > 1024)
 	{
 		VectorNormalize2(end, end);

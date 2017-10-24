@@ -14,28 +14,12 @@ int botdetection;
 //RAV
 proxyinfo_t *proxyinfo;
 proxyinfo_t *proxyinfoBase;
-oplist_t	*oplist;
-oplist_t	*oplistBase;
 proxyreconnectinfo_t *reconnectproxyinfo;
 reconnect_info* reconnectlist;
 retrylist_info* retrylist;
 char moddir[MAX_QPATH];
 char buffer[0x10000];
 char reconnect_address[256] = { 0 };
-//qboolean nameChangeFloodProtect = false;
-//int nameChangeFloodProtectNum = 5;
-//int nameChangeFloodProtectSec = 2;
-//int nameChangeFloodProtectSilence = 10;
-//char nameChangeFloodProtectMsg[256];
-//
-//qboolean skinChangeFloodProtect = false;
-//int skinChangeFloodProtectNum = 5;
-//int skinChangeFloodProtectSec = 2;
-//int skinChangeFloodProtectSilence = 10;
-//char skinChangeFloodProtectMsg[256];
-//
-
-//static FILE *fpBot;
 
 /**********************************************
 new bot detection
@@ -153,37 +137,33 @@ char *ConvertName(char *name)
 	// Note: escapes needed for \ and "
 	char *forbidden = "~!@#$%^&*()=|?,.<>[]{}:;/-";
 
-	int i, j;
+	size_t i;
+	size_t j;
 
 	for(i = 0; i < strlen(forbidden); i++)
 	{
 		for (j = 0; j < strlen(name); j++)
 		{
 			if(forbidden[i] == name[j])
-			{
 				name[j] = 'x';
-			}
 		}
 	}
 	return (name);
 }
 
 /**
- This could probably replace ConvertName
- without all its complexity and it also
- catches " ' + \ _ ` and DEL characters
- but I think space and _ were intended to
- be allowed and the others were an oversight.
- */
+This should probably replace ConvertName
+because it also catches " ' + \ _ ` and DEL
+characters. */
 char *ConvertNameA(char *name)
 {
-	int i;
+	size_t i;
 
 	for(i = 0; i < strlen(name); i++ )
 	{
 		if(!isalnum(name[i])
-		   && name[i] != ' '
-		   && name[i] != '_')
+			&& name[i] != ' '
+			&& name[i] != '_')
 		{
 			name[i] = 'x';
 		}
@@ -232,8 +212,7 @@ void BadPlayer(edict_t *ent)
 
 }
 
-void
-OnBotDetection(edict_t *ent, char *msg)
+void OnBotDetection(edict_t *ent, char *msg)
 {
 	int log = 0;
 	char user[80];
@@ -258,14 +237,14 @@ OnBotDetection(edict_t *ent, char *msg)
 		log = 1; // if name doesn't match after conversion
 
 	Com_sprintf(user, sizeof user, "%s@%s",
-				ent->client->pers.netname,
-				Info_ValueForKey (ent->client->pers.userinfo, "ip"));
+		ent->client->pers.netname,
+		Info_ValueForKey (ent->client->pers.userinfo, "ip"));
 
 	Com_sprintf(userip, sizeof userip, "*@%s", 
-				Info_ValueForKey (ent->client->pers.userinfo, "ip"));
+		Info_ValueForKey (ent->client->pers.userinfo, "ip"));
 
 	Com_sprintf(logged, sizeof logged, "%s@%s@%8s@%10s",
-				user, msg, sys_time, sys_date);
+		user, msg, sys_time, sys_date);
 
 	// When name doesn't match converted name
 	if (log && botdetection & BOT_LOG)
@@ -276,7 +255,7 @@ OnBotDetection(edict_t *ent, char *msg)
 	if (botdetection & BOT_NOTIFY)
 	{
 		safe_bprintf(PRINT_HIGH, "%s %s\n",
-					 user,"was Busted By -=BOtCRuSher=-");
+			user,"was Busted By -=BOtCRuSher=-");
 	}
 
 	if(botdetection & BOT_BAN)

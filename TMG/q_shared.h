@@ -5,16 +5,13 @@
 #define Q_SHARED_H
 
 #ifdef _WIN32
-// unknown pragmas are SUPPOSED to be ignored, but....
-#pragma warning(disable : 4244)     // MIPS
-#pragma warning(disable : 4136)     // X86
-#pragma warning(disable : 4051)     // ALPHA
-
-#pragma warning(disable : 4018)     // signed/unsigned mismatch
+#pragma warning(disable : 4244)     // conversion from 'type1' to 'type2', possible loss of data
 #pragma warning(disable : 4305)		// truncation from const double to float
-#pragma warning(disable : 4996)		// unsafe functions
 #pragma warning(disable : 4100)		// unreferenced formal parameter
-
+#pragma warning(disable : 4127)		// conditional expression is constant
+#if _MSC_VER > 1500
+#pragma warning(disable : 4996)		// unsafe CRT functions (_CRT_SECURE_NO_WARNINGS).
+#endif
 #endif
 
 #include <assert.h>

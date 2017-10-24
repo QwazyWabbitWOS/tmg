@@ -238,6 +238,7 @@ void InitGame (void)
 		gi.cvar_set("hook_carrierspeed", hook_pullspeed->string);
 
 	sv_botdetection = gi.cvar("sv_botdetection", "29", 0);
+	
 	server_ip =  gi.cvar("server_ip", "", CVAR_LATCH);
 	lan = gi.cvar ("lan", "0", CVAR_LATCH);
 
@@ -287,6 +288,7 @@ void InitGame (void)
 
 	InitHighScores();
 	Log_Init_vars();
+	
 	mapvote = gi.cvar("mapvote", "1", 0);
 
 	rcon = gi.cvar ("rcon_password", "", 0);
@@ -414,9 +416,6 @@ void InitGame (void)
 	basedir = gi.cvar("basedir", "", CVAR_NOSET);	//established by engine, read-only
 	mercylimit = gi.cvar ("mercylimit", "0", 0);
 	randomrcon = gi.cvar ("randomrcon", "0", CVAR_ARCHIVE);
-	defaultoplevel = gi.cvar ("defaultoplevel", "0", 0);
-	oplistBase = gi.TagMalloc (64 * sizeof(oplist_t), TAG_GAME);
-	oplist = oplistBase + 1;
 	minfps = gi.cvar ("minfps", "25", CVAR_LATCH);
 	use_grapple = gi.cvar ("use_grapple", "1", CVAR_SERVERINFO);
 	grapple_speed = gi.cvar("grapple_speed", "650", 0);
@@ -425,6 +424,11 @@ void InitGame (void)
 	log_connect = gi.cvar ("log_connect", "1", 0);
 	log_chat = gi.cvar ("log_chat", "0", 0);
 	use_navfiles = gi.cvar("use_navfiles", "1", 0);
+
+	// operator list management
+	defaultoplevel = gi.cvar ("defaultoplevel", "0", 0);
+	oplistBase = gi.TagMalloc (64 * sizeof(oplist_t), TAG_GAME);
+	oplist = oplistBase + 1;
 
 	//QW// Set these for debugging output
 	debug_spawn = gi.cvar ("debug_spawn", "0", 0);
@@ -916,7 +920,7 @@ void WriteLevel (char *filename)
 	int		i;
 	edict_t	*ent;
 	FILE	*f;
-	void	*base;
+	void	(*base)(void);
 
 	f = fopen (filename, "wb");
 	if (!f)
@@ -927,7 +931,7 @@ void WriteLevel (char *filename)
 	fwrite (&i, sizeof(i), 1, f);
 
 	// write out a function pointer for checking
-	base = (void *)InitGame;
+	base = InitGame;
 	fwrite (&base, sizeof(base), 1, f);
 
 	// write out level_locals_t
@@ -970,7 +974,7 @@ void ReadLevel (char *filename)
 	int		entnum;
 	FILE	*f;
 	int		i;
-	void	*base;
+	void	(*base)(void);
 	edict_t	*ent;
 	size_t	count;
 
@@ -996,7 +1000,7 @@ void ReadLevel (char *filename)
 
 	// check function pointer base address
 	count = fread (&base, sizeof(base), 1, f);
-	if (base != (void *)InitGame)
+	if (base != InitGame)
 	{
 		fclose (f);
 		gi.error ("ReadLevel: function pointers have moved");

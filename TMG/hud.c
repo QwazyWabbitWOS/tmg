@@ -532,13 +532,13 @@ char *ShowHud (edict_t *ent)
 			j += sprintf (layout+j, "xr -70 yt 2 string2 \"Score\" ");
 			j += sprintf (layout+j, "xr -70 yt 10 string \"%i\" ", score);
 			//ping
-			j += sprintf (layout+j, "xr -70 yt 18 string2 \"Lag\" ");
+			j += sprintf (layout+j, "xr -70 yt 18 string2 \"Ping\" ");
 			j += sprintf (layout+j, "xr -70 yt 26 string \"%i\" ", ping);
 			//fph
 			j += sprintf (layout+j, "xr -70 yt 34 string2 \"FPH\" ");
 			j += sprintf (layout+j, "xr -70 yt 42 string \"%i\" ", fph);
 			//Efficiency
-			j += sprintf (layout+j, "xr -70 yt 50 string2 \"Eff\" ");
+			j += sprintf (layout+j, "xr -70 yt 50 string2 \"Acc\" ");
 			j += sprintf (layout+j, "xr -70 yt 58 string \"%i%%%%\" ", eff);
 			j += sprintf (layout+j, "xr -70 yt 66 string \"%i/%i\" ", frags, shots);
 			//rank
@@ -592,13 +592,13 @@ char *ShowHud (edict_t *ent)
 		j += sprintf (layout+j, "xr -70 yt 2 string2 \"Score\" ");
 		j += sprintf (layout+j, "xr -70 yt 10 string \"%i\" ", score);
 		//ping
-		j += sprintf (layout+j, "xr -70 yt 18 string2 \"Lag\" ");
+		j += sprintf (layout+j, "xr -70 yt 18 string2 \"Ping\" ");
 		j += sprintf (layout+j, "xr -70 yt 26 string \"%i\" ", ping);
 		//fph
 		j += sprintf (layout+j, "xr -70 yt 34 string2 \"FPH\" ");
 		j += sprintf (layout+j, "xr -70 yt 42 string \"%i\" ", cl->resp.fph);
 		//Efficiency
-		j += sprintf (layout+j, "xr -70 yt 50 string2 \"Eff\" ");
+		j += sprintf (layout+j, "xr -70 yt 50 string2 \"Acc\" ");
 		j += sprintf (layout+j, "xr -70 yt 58 string \"%i%%%%\" ", eff);
 		j += sprintf (layout+j, "xr -70 yt 66 string \"%i/%i\" ", frags, shots);
 		//rank
@@ -663,17 +663,19 @@ char *ShowHud (edict_t *ent)
 			ent->s.origin[0], ent->s.origin[1], ent->s.origin[2],
 			ent->client->ps.viewangles[1]);
 
-	s = strlen(layout);
-	if ( s > sizeof (layout))
-	{
-		gi.dprintf("%s: Statusbar too big %d\n", __func__, s); //to the log
-		layout[sizeof(layout) - 1] = 0;
-	}
-
 	//id disabling added 12-14-99 raven
 	if ((!ent->client->chase_target) && (ent->client->pers.db_id))
 		j += sprintf (layout+j, "%s", tn_id (ent));
 
+	s = strlen(layout);
+	if ( s > sizeof layout)
+	{
+		gi.dprintf("%s: Statusbar too big %d\n", __func__, s); //to the log
+		layout[sizeof layout - 1] = 0;
+	}
+
+	//DbgPrintf(layout);
+	//DbgPrintf("\n");
 	return (layout);
 }
 

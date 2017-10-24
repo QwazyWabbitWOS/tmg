@@ -207,7 +207,7 @@ void G_UseTargets (edict_t *ent, edict_t *activator)
 	if (ent->killtarget)
 	{
 		t = NULL;
-		while ((t = G_Find (t, FOFS(targetname), ent->killtarget)))
+		while ((t = G_Find (t, FOFS(targetname), ent->killtarget)) != NULL)
 		{
 			G_FreeEdict (t);
 			if (!ent->inuse)
@@ -224,7 +224,7 @@ void G_UseTargets (edict_t *ent, edict_t *activator)
 	if (ent->target)
 	{
 		t = NULL;
-		while ((t = G_Find (t, FOFS(targetname), ent->target)))
+		while ((t = G_Find (t, FOFS(targetname), ent->target)) != NULL)
 		{
 			// doors fire area portals in a specific way
 			if (!Q_stricmp(t->classname, "func_areaportal") &&
@@ -452,9 +452,9 @@ void G_FreeEdict (edict_t *ed)
 		return;
 	}
 	
-	if(debug_spawn->value && ed != NULL)
-		DbgPrintf ("%s movetype %d inuse %d linkcount %d classname %s time: %.1f\n",
-		__func__, ed->movetype, ed->inuse, ed->linkcount, ed->classname, level.time);
+	//if(debug_spawn->value && ed != NULL)
+	//	DbgPrintf ("%s movetype %d inuse %d linkcount %d classname %s time: %.1f\n",
+	//	__func__, ed->movetype, ed->inuse, ed->linkcount, ed->classname, level.time);
 
 	memset (ed, 0, sizeof(*ed));
 	ed->classname = "freed";
@@ -840,6 +840,10 @@ qboolean G_ClientInGame(edict_t *ent)
  */
 
 
+#ifdef _WIN32
+#pragma warning(push)
+#pragma warning(disable : 4706) // assignment within conditional expression
+
 //QW//
 /**
  Replace characters in destination string.
@@ -859,6 +863,9 @@ void convert_string(char *src, char start, char end, char add, char *dest)
 		src++, dest++;
 	}
 }
+
+#pragma warning(pop)
+#endif
 
 /**
  Set msb in specified string characters, copying them to destination. 

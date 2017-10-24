@@ -1149,11 +1149,11 @@ void CTFDropFlagTouch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t 
 
 static void CTFDropFlagThink(edict_t *ent)
 {
-	qboolean iw = 0;
+	qboolean iw = false;
 
+	iw = InsideWall(ent);
 	if ((ent->timestamp + auto_flag_return->value < level.time) ||
-		level.intermissiontime ||
-		(iw = InsideWall(ent)) ||
+		level.intermissiontime || (iw) ||
 		((mapvote->value) && (level.time+(int)menutime->value-1 < votetime)))
 	{
 		if (iw)
@@ -2447,7 +2447,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 	gclient_t	*cl;
 	edict_t		*cl_ent;
 	int team;
-	int maxsize = MAX_MSGLEN;
+	size_t maxsize = MAX_MSGLEN;
 
 	if (highscores->value && ent->client->showhighscores)
 	{
@@ -2652,7 +2652,7 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 	gclient_t	*cl;
 	edict_t		*cl_ent;
 	int team;
-	int maxsize = MAX_MSGLEN;
+	size_t	maxsize = MAX_MSGLEN;
 
 	if (highscores->value && ent->client->showhighscores)
 	{
@@ -5810,9 +5810,9 @@ void UpdateBotMenu(edict_t *ent)
 	char bots_on_off[20];
 	char bot_chat_on_off[25];
 	char bot_insult_on_off[25];
-	int	pos;
-	int	startpos = 3; // title and heading are 0, 1
-	int	entries = 2;  // so we've made 2 entries
+	size_t	pos;
+	size_t	startpos = 3; // title and heading are 0, 1
+	size_t	entries = 2;  // so we've made 2 entries
 	char str[256];
 	char seps[]= "\t";
 	char *token;
@@ -5895,9 +5895,9 @@ void UpdateOpMenu(edict_t *ent)
 {
 	char team_lock_unlock[20];
 	char server_lock_unlock[20];
-	int	pos;
-	int	startpos = 3;
-	int	entries = 2;
+	size_t	pos;
+	size_t	startpos = 3;
+	size_t	entries = 2;
 	char str[256];
 	char seps[]= "\t";
 	char *token;
@@ -6000,8 +6000,8 @@ void UpdateOpMenu(edict_t *ent)
 
 void UpdatePlayerMenu(edict_t *ent)
 {
-	int pos = 2;
-	int entries = 1;
+	size_t pos = 2;
+	size_t entries = 1;
 	char str[256];
 	char seps[]= "\t";
 	char *token;

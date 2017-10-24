@@ -2675,7 +2675,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	int rate, delta;//RAV
 	char player[MAX_QPATH];
 	qboolean emptyname = 0;
-	int i;
+	size_t	i;
 	char	*namepass;
 
 	// check for malformed or illegal info strings
@@ -3107,7 +3107,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	char *name;
 	char *ip;
 	char player[MAX_QPATH];
-	int i;
+	size_t	i;
 	qboolean emptyname;
 
 	if (!ent->client)

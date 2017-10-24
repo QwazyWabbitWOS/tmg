@@ -31,8 +31,8 @@ gitem_t	*GetItemByIndex (int index)
 {
 	if (index == 0 || index >= game.num_items)
 		return NULL;
-
-	return &itemlist[index];
+	else
+		return &itemlist[index];
 }
 
 
@@ -48,7 +48,7 @@ gitem_t	*FindItemByClassname (char *classname)
 	gitem_t	*it;
 
 	it = itemlist;
-	for (i=0 ; i<game.num_items ; i++, it++)
+	for (i = 0; i < game.num_items; i++, it++)
 	{
 		if (!it->classname)
 			continue;
@@ -75,14 +75,14 @@ gitem_t	*FindItem (char *pickup_name)
 	gitem_t	*it;
 
 	it = itemlist;
-	
+
 	if (!Q_stricmp(pickup_name, " "))
 		return NULL;
 
 	if (!Q_stricmp(pickup_name, "NULL"))
 		return NULL;
-		
-		for (i = 0; i < game.num_items; i++, it++)
+
+	for (i = 0; i < game.num_items; i++, it++)
 	{
 		if (!it->pickup_name)
 			continue;
@@ -112,16 +112,17 @@ void DoRespawn (edict_t *ent)
 
 		master = ent->teammaster;
 
-//ZOID
-//in ctf, when we are weapons stay, only the master of a team of weapons
-//is spawned
+		//ZOID
+		// in ctf, when we are weapons stay, only the master
+		// of a team of weapons is spawned
 		if (ctf->value &&
 			((int)dmflags->value & DF_WEAPONS_STAY) &&
 			(dmflag & DF_WEAPONS_STAY) &&
 			master->item && (master->item->flags & IT_WEAPON))
 			ent = master;
-		else {
-//ZOID
+		else 
+		{
+			//ZOID
 			for (count = 0, ent = master; ent; ent = ent->chain, count++)
 				;
 
@@ -140,19 +141,21 @@ void DoRespawn (edict_t *ent)
 
 	if (Q_stricmp(ent->classname, "item_quad") == 0 && ((int)quad_notify->value & QUAD_NOTIFY_SPAWN))
 	{
-//		gi.dprintf("a quad damage was spawned\n");
+		//		gi.dprintf("a quad damage was spawned\n");
 		for (i = 1; i <= maxclients->value; i++)
 		{
 			e = g_edicts + i;
 			if (e && e->inuse && !e->bot_client)
 			{
-//				safe_centerprintf(e, "A quad damage has been spawned!\n");
+				//				safe_centerprintf(e, "A quad damage has been spawned!\n");
 				gi.sound (e, CHAN_AUTO, gi.soundindex ("items/quadspwn.wav"), 1, ATTN_NONE, 0);
 			}
 		}
 	}
 
-	if(ent->classname[0] == 'R') return;
+	if(ent->classname[0] == 'R')
+		return;
+
 	// send an effect
 	ent->s.event = EV_ITEM_RESPAWN;
 }
@@ -175,23 +178,23 @@ qboolean Pickup_Powerup (edict_t *ent, edict_t *other)
 	int		quantity;
 	edict_t	*e;
 	int	i;
-//	char	p[1024];
-//	char	q[1024];
 
 	quantity = other->client->pers.inventory[ITEM_INDEX(ent->item)];
-	if ((skill->value == 1 && quantity >= 2) || (skill->value >= 2 && quantity >= 1))
+	if ((skill->value == 1 && quantity >= 2) ||
+		(skill->value >= 2 && quantity >= 1))
 		return false;
 
-	if ((coop->value || deathmatch->value) && (ent->item->flags & IT_STAY_COOP) && (quantity > 0))
+	if ((coop->value || deathmatch->value) &&
+		(ent->item->flags & IT_STAY_COOP) && (quantity > 0))
 		return false;
 
 	other->client->pers.inventory[ITEM_INDEX(ent->item)]++;
 
 	if (deathmatch->value)
 	{
-		if (!(ent->spawnflags & DROPPED_ITEM) )
+		if ( !(ent->spawnflags & DROPPED_ITEM) )
 			SetRespawn (ent, ent->item->quantity);
-//JSW		if (((int)dmflags->value & DF_INSTANT_ITEMS) || ((ent->item->use == Use_Quad) && (ent->spawnflags & DROPPED_PLAYER_ITEM)))
+//JSW	if (((int)dmflags->value & DF_INSTANT_ITEMS) || ((ent->item->use == Use_Quad) && (ent->spawnflags & DROPPED_PLAYER_ITEM)))
 		if ((dmflag & DF_INSTANT_ITEMS) || ((ent->item->use == Use_Quad) && (ent->spawnflags & DROPPED_PLAYER_ITEM)))
 		{
 			if ((ent->item->use == Use_Quad) && (ent->spawnflags & DROPPED_PLAYER_ITEM))
@@ -241,40 +244,50 @@ qboolean Pickup_Navi (edict_t *ent, edict_t *other)
 	qboolean	flg = false;
 
 	if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
-	if(	ent->item->quantity && ent->classname[6] != 'F') SetRespawn (ent, ent->item->quantity);
+		if(	ent->item->quantity && ent->classname[6] != 'F')
+			SetRespawn (ent, ent->item->quantity);
 
 	//on door(up & down)
 	if( ent->classname[6] == '3' && ent->union_ent)
 	{
 		if(ent->target_ent == other /*->client->zc.second_target == ent*/)
 		{
-//gi.bprintf(PRINT_HIGH,"get target!\n");
+			//gi.bprintf(PRINT_HIGH,"get target!\n");
 			other->client->zc.zcstate &= ~STS_WAITS;
 			other->client->zc.waitin_obj = ent->union_ent;
 			if(ent->union_ent->spawnflags & PDOOR_TOGGLE)
 			{
 				if(ent->union_ent->moveinfo.state == PSTATE_DOWN
-					|| ent->union_ent->moveinfo.state == PSTATE_BOTTOM) other->client->zc.zcstate |= STS_W_ONDOORDWN;
-				else other->client->zc.zcstate |= STS_W_ONDOORUP;
+					|| ent->union_ent->moveinfo.state == PSTATE_BOTTOM)
+					other->client->zc.zcstate |= STS_W_ONDOORDWN;
+				else 
+					other->client->zc.zcstate |= STS_W_ONDOORUP;
 			}
 			else
 			{
 				if(ent->union_ent->moveinfo.state == PSTATE_DOWN
-					|| ent->union_ent->moveinfo.state == PSTATE_TOP) other->client->zc.zcstate |= STS_W_ONDOORDWN;
+					|| ent->union_ent->moveinfo.state == PSTATE_TOP)
+					other->client->zc.zcstate |= STS_W_ONDOORDWN;
 				else if(ent->union_ent->moveinfo.state == PSTATE_UP
-					|| ent->union_ent->moveinfo.state == PSTATE_BOTTOM) other->client->zc.zcstate |= STS_W_ONDOORUP;
+					|| ent->union_ent->moveinfo.state == PSTATE_BOTTOM)
+					other->client->zc.zcstate |= STS_W_ONDOORUP;
 			}
 			//j = other->client->zc.routeindex - 10;
 
 			for(i =  - MAX_DOORSEARCH; i <  MAX_DOORSEARCH  ;i++)
 			{
-				if(i <= 0) j = other->client->zc.routeindex - (MAX_DOORSEARCH - i) ;
-				else j = other->client->zc.routeindex + i;
-				if(j < 0) continue;
-				if(j >= CurrentIndex) continue;
-//			if(!Route[j].index) break;
+				if(i <= 0)
+					j = other->client->zc.routeindex - (MAX_DOORSEARCH - i);
+				else 
+					j = other->client->zc.routeindex + i;
+				if(j < 0)
+					continue;
+				if(j >= CurrentIndex)
+					continue;
+				//	if(!Route[j].index) break;
 				if((Route[j].state == GRS_ONDOOR
-					&& Route[j].ent == ent->union_ent) || Route[j].state == GRS_PUSHBUTTON)
+					&& Route[j].ent == ent->union_ent) ||
+					Route[j].state == GRS_PUSHBUTTON)
 				{
 					k = 1;
 					flg = false;
@@ -282,7 +295,7 @@ qboolean Pickup_Navi (edict_t *ent, edict_t *other)
 					{
 						if((j + k) >= CurrentIndex)
 						{
-//gi.bprintf(PRINT_HIGH,"overflow!!!\n");
+							//gi.bprintf(PRINT_HIGH,"overflow!!!\n");
 							break;
 						}
 						if((j + k) >= other->client->zc.routeindex)
@@ -292,10 +305,12 @@ qboolean Pickup_Navi (edict_t *ent, edict_t *other)
 							{
 								if(/* DISABLES CODE */ (0)/*Route[j].state == GRS_PUSHBUTTON*/)
 								{
-									if(fabs(Route[j].ent->union_ent->s.origin[2] + 8 - other->s.origin[2])< JumpMax) flg = true;
+									if(fabs(Route[j].ent->union_ent->s.origin[2] + 8 - other->s.origin[2])< JumpMax)
+										flg = true;
 								}
-								else flg = true;
-//gi.bprintf(PRINT_HIGH,"hoooo!!!\n");
+								else 
+									flg = true;
+								//gi.bprintf(PRINT_HIGH,"hoooo!!!\n");
 								break;
 							}
 						}
@@ -303,7 +318,7 @@ qboolean Pickup_Navi (edict_t *ent, edict_t *other)
 					}
 					if((j + k) < CurrentIndex && flg)
 					{
-//gi.bprintf(PRINT_HIGH,"set!!!\n");
+						//gi.bprintf(PRINT_HIGH,"set!!!\n");
 						other->client->zc.routeindex = j + k;
 						break;
 					}
@@ -313,11 +328,11 @@ qboolean Pickup_Navi (edict_t *ent, edict_t *other)
 			if(!flg)
 			{
 				other->client->zc.zcstate |= STS_W_DONT;
-//				gi.bprintf(PRINT_HIGH,"failed!\n");
+				//gi.bprintf(PRINT_HIGH,"failed!\n");
 			}
 			ent->target_ent = NULL;
 		}
-//else gi.bprintf(PRINT_HIGH,"not target!\n");
+		//else gi.bprintf(PRINT_HIGH,"not target!\n");
 		SetRespawn (ent, 1000000);
 		ent->solid = SOLID_NOT;
 	}
@@ -326,8 +341,10 @@ qboolean Pickup_Navi (edict_t *ent, edict_t *other)
 	{
 		for(i = 0;i < 10;i++)
 		{
-			if((other->client->zc.routeindex + i) >= CurrentIndex) break;
-			if(!Route[other->client->zc.routeindex + i].index) break;
+			if((other->client->zc.routeindex + i) >= CurrentIndex)
+				break;
+			if(!Route[other->client->zc.routeindex + i].index)
+				break;
 			if(Route[other->client->zc.routeindex + i].state == GRS_PUSHBUTTON
 				&& Route[other->client->zc.routeindex + i].ent == ent->union_ent)
 			{
@@ -337,7 +354,8 @@ qboolean Pickup_Navi (edict_t *ent, edict_t *other)
 		}
 	}
 
-	if(!ctf->value || ent->classname[6] != 'F') return true;
+	if(!ctf->value || ent->classname[6] != 'F')
+		return true;
 	//ctf navi
 	if( ctf->value && ent->classname[6] == 'F')
 	{
@@ -390,8 +408,6 @@ qboolean Pickup_Navi (edict_t *ent, edict_t *other)
 			}
 		}
 	}
-
-
 	return true;
 }
 
@@ -540,7 +556,6 @@ qboolean Pickup_Pack (edict_t *ent, edict_t *other)
 void Use_Quad (edict_t *ent, gitem_t *item)
 {
 	int		timeout;
-//	int	j;
 
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
 	ValidateSelectedItem (ent);
@@ -552,9 +567,6 @@ void Use_Quad (edict_t *ent, gitem_t *item)
 	}
 	else
 	{
-//		srand( (int)time(NULL) );
-//		j = 25+(int) (35.0*rand()/(RAND_MAX+1.0));
-//		gi.dprintf("random timeout would be %d\n", j);
 		timeout = 300;
 	}
 
@@ -564,72 +576,58 @@ void Use_Quad (edict_t *ent, gitem_t *item)
 		ent->client->quad_framenum = level.framenum + timeout;
 
 	gi.sound(ent, CHAN_ITEM, gi.soundindex("items/damage.wav"), 1, ATTN_NORM, 0);
-	//safe_centerprintf(ent, "time left on quad is %d\n", timeout/10);
-
 }
 
 //======================================================================
 
 void Use_Breather (edict_t *ent, gitem_t *item)
 {
-	gclient_t	*client;
-
-	if (ent->client)
-		client = ent->client;
-	else
+	if (!ent->client)
 		return;
 
-	client->pers.inventory[ITEM_INDEX(item)]--;
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
 	ValidateSelectedItem (ent);
 
-	if (client->breather_framenum > level.framenum)
-		client->breather_framenum += 300;
+	if (ent->client->breather_framenum > level.framenum)
+		ent->client->breather_framenum += 300;
 	else
-		client->breather_framenum = level.framenum + 300;
+		ent->client->breather_framenum = level.framenum + 300;
 
-//	gi.sound(ent, CHAN_ITEM, gi.soundindex("items/damage.wav"), 1, ATTN_NORM, 0);
+	//gi.sound(ent, CHAN_ITEM, gi.soundindex("items/damage.wav"), 1, ATTN_NORM, 0);
 }
 
 //======================================================================
 
 void Use_Envirosuit (edict_t *ent, gitem_t *item)
 {
-	gclient_t	*client;
-
-	if (ent->client)
-		client = ent->client;
-	else
+	if (!ent->client)
 		return;
 
-	client->pers.inventory[ITEM_INDEX(item)]--;
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
 	ValidateSelectedItem (ent);
 
-	if (client->enviro_framenum > level.framenum)
-		client->enviro_framenum += 300;
+	if (ent->client->enviro_framenum > level.framenum)
+		ent->client->enviro_framenum += 300;
 	else
-		client->enviro_framenum = level.framenum + 300;
+		ent->client->enviro_framenum = level.framenum + 300;
 
-//	gi.sound(ent, CHAN_ITEM, gi.soundindex("items/damage.wav"), 1, ATTN_NORM, 0);
+	//gi.sound(ent, CHAN_ITEM, gi.soundindex("items/damage.wav"), 1, ATTN_NORM, 0);
 }
 
 //======================================================================
 
 void	Use_Invulnerability (edict_t *ent, gitem_t *item)
 {
-	gclient_t	*client;
-
-	if (ent->client)
-		client = ent->client;
-	else
+	if (!ent->client)
 		return;
 
-	client->pers.inventory[ITEM_INDEX(item)]--;
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
 	ValidateSelectedItem (ent);
 
-	if (client->invincible_framenum > level.framenum)
-		client->invincible_framenum += 300;
+	if (ent->client->invincible_framenum > level.framenum)
+		ent->client->invincible_framenum += 300;
 	else
-		client->invincible_framenum = level.framenum + 300;
+		ent->client->invincible_framenum = level.framenum + 300;
 
 	gi.sound(ent, CHAN_ITEM, gi.soundindex("items/protect.wav"), 1, ATTN_NORM, 0);
 }
@@ -638,18 +636,14 @@ void	Use_Invulnerability (edict_t *ent, gitem_t *item)
 
 void	Use_Silencer (edict_t *ent, gitem_t *item)
 {
-	gclient_t	*client;
-
-	if (ent->client)
-		client = ent->client;
-	else
+	if (!ent->client)
 		return;
 
-	client->pers.inventory[ITEM_INDEX(item)]--;
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
 	ValidateSelectedItem (ent);
-	client->silencer_shots += 30;
+	ent->client->silencer_shots += 30;
 
-//	gi.sound(ent, CHAN_ITEM, gi.soundindex("items/damage.wav"), 1, ATTN_NORM, 0);
+	//gi.sound(ent, CHAN_ITEM, gi.soundindex("items/damage.wav"), 1, ATTN_NORM, 0);
 }
 
 //======================================================================
@@ -666,30 +660,23 @@ qboolean Add_Ammo (edict_t *ent, gitem_t *item, int count)
 {
 	int			index;
 	int			max;
-	gclient_t	*client;
 
 	// Make sure ent exists!
-  if (!G_EntExists(ent))
-	  return false;
-
-
-	if (ent->client)
-		client = ent->client;
-	else
+	if (!G_EntExists(ent))
 		return false;
 
 	if (item->tag == AMMO_BULLETS)
-		max = client->pers.max_bullets;
+		max = ent->client->pers.max_bullets;
 	else if (item->tag == AMMO_SHELLS)
-		max = client->pers.max_shells;
+		max = ent->client->pers.max_shells;
 	else if (item->tag == AMMO_ROCKETS)
-		max = client->pers.max_rockets;
+		max = ent->client->pers.max_rockets;
 	else if (item->tag == AMMO_GRENADES)
-		max = client->pers.max_grenades;
+		max = ent->client->pers.max_grenades;
 	else if (item->tag == AMMO_CELLS)
-		max = client->pers.max_cells;
+		max = ent->client->pers.max_cells;
 	else if (item->tag == AMMO_SLUGS)
-		max = client->pers.max_slugs;
+		max = ent->client->pers.max_slugs;
 	else
 		return false;
 
@@ -700,9 +687,10 @@ qboolean Add_Ammo (edict_t *ent, gitem_t *item, int count)
 
 	ent->client->pers.inventory[index] += count;
 
-//ponko
-	if(chedit->value && ent == &g_edicts[1]) ent->client->pers.inventory[index] = 0;
-//ponko
+	//ponko
+	if(chedit->value && ent == &g_edicts[1])
+		ent->client->pers.inventory[index] = 0;
+	//ponko
 
 	if (ent->client->pers.inventory[index] > max)
 		ent->client->pers.inventory[index] = max;
@@ -729,13 +717,13 @@ qboolean Pickup_Ammo (edict_t *ent, edict_t *other)
 
 	if (!Add_Ammo (other, ent->item, count))
 	{
-	
 		return false;
 	}
 
 	if (weapon && !oldcount)
 	{
-		if (other->client->pers.weapon != ent->item && ( !deathmatch->value || other->client->pers.weapon == FindItem("blaster") ) )
+		if (other->client->pers.weapon != ent->item &&
+			(!deathmatch->value || other->client->pers.weapon == FindItem("blaster")))
 			other->client->newweapon = ent->item;
 	}
 
@@ -748,20 +736,18 @@ void Drop_Ammo (edict_t *ent, gitem_t *item)
 {
 	edict_t	*dropped;
 	int		index;
-	gclient_t	*client;
 
-	if (ent->client)
-		client = ent->client;
-	else
+	if (!ent->client)
 		return;
 
 	index = ITEM_INDEX(item);
 	dropped = Drop_Item (ent, item);
-	if (client->pers.inventory[index] >= item->quantity)
+	if (ent->client->pers.inventory[index] >= item->quantity)
 		dropped->count = item->quantity;
 	else
-		dropped->count = client->pers.inventory[index];
-	client->pers.inventory[index] -= dropped->count;
+		dropped->count = ent->client->pers.inventory[index];
+
+	ent->client->pers.inventory[index] -= dropped->count;
 	ValidateSelectedItem (ent);
 }
 
@@ -771,18 +757,18 @@ void Drop_Ammo (edict_t *ent, gitem_t *item)
 void MegaHealth_think (edict_t *self)
 {
 	if (self->owner->health > self->owner->max_health
-//ZOID
+		//ZOID
 		&& !CTFHasRegeneration(self->owner)
-//ZOID
+		//ZOID
 		)
 	{
 		//RAV
 		if (self->owner->client &&
 			!rune_has_rune(self->owner, RUNE_REGEN))
 		{
-		//
-		self->nextthink = level.time + 1;
-		self->owner->health -= 1;
+			//
+			self->nextthink = level.time + 1.0f;
+			self->owner->health -= 1;
 		}//END
 		return;
 	}
@@ -853,24 +839,17 @@ qboolean Pickup_Health (edict_t *ent, edict_t *other)
 
 int ArmorIndex (edict_t *ent)
 {
-	gclient_t	*client;
-// Make sure ent exists!
-  if (!G_EntExists(ent))
-	  return 0;
+	// Make sure ent exists!
+	if (!G_EntExists(ent))
+		return 0;
 
-
-	if (ent->client)
-		client = ent->client;
-	else
-		return false;
-
-	if (client->pers.inventory[jacket_armor_index] > 0)
+	if (ent->client->pers.inventory[jacket_armor_index] > 0)
 		return jacket_armor_index;
 
-	if (client->pers.inventory[combat_armor_index] > 0)
+	if (ent->client->pers.inventory[combat_armor_index] > 0)
 		return combat_armor_index;
 
-	if (client->pers.inventory[body_armor_index] > 0)
+	if (ent->client->pers.inventory[body_armor_index] > 0)
 		return body_armor_index;
 
 	return 0;
@@ -878,116 +857,108 @@ int ArmorIndex (edict_t *ent)
 
 qboolean Pickup_Armor (edict_t *ent, edict_t *other)
 {
-  int        old_armor_index;
-  gitem_armor_t  *oldinfo;
-  gitem_armor_t  *newinfo;
-  int        newcount;
-  float      salvage;
-  int        salvagecount;
+	int        old_armor_index;
+	gitem_armor_t  *oldinfo;
+	gitem_armor_t  *newinfo;
+	int        newcount;
+	float      salvage;
+	int        salvagecount;
 
-  // get info on new armor
-  newinfo = (gitem_armor_t *)ent->item->info;
+	// get info on new armor
+	newinfo = (gitem_armor_t *)ent->item->info;
 
-  old_armor_index = ArmorIndex (other);
+	old_armor_index = ArmorIndex (other);
 
-  // handle armor shards specially
-  if (ent->item->tag == ARMOR_SHARD)
-  {
-    if (!old_armor_index)
-      other->client->pers.inventory[jacket_armor_index] = 2;
-    else
-      other->client->pers.inventory[old_armor_index] += 2;
-  }
+	// handle armor shards specially
+	if (ent->item->tag == ARMOR_SHARD)
+	{
+		if (!old_armor_index)
+			other->client->pers.inventory[jacket_armor_index] = 2;
+		else
+			other->client->pers.inventory[old_armor_index] += 2;
+	}
 
-  // if player has no armor, just use it
-  else if (!old_armor_index)
-  {
-    other->client->pers.inventory[ITEM_INDEX(ent->item)] = newinfo->base_count;
-  }
+	// if player has no armor, just use it
+	else if (!old_armor_index)
+	{
+		other->client->pers.inventory[ITEM_INDEX(ent->item)] = newinfo->base_count;
+	}
 
-  // use the better armor
-  else
-  {
-    // get info on old armor
-    if (old_armor_index == jacket_armor_index)
-      oldinfo = &jacketarmor_info;
-    else if (old_armor_index == combat_armor_index)
-      oldinfo = &combatarmor_info;
-    else // (old_armor_index == body_armor_index)
-      oldinfo = &bodyarmor_info;
+	// use the better armor
+	else
+	{
+		// get info on old armor
+		if (old_armor_index == jacket_armor_index)
+			oldinfo = &jacketarmor_info;
+		else if (old_armor_index == combat_armor_index)
+			oldinfo = &combatarmor_info;
+		else // (old_armor_index == body_armor_index)
+			oldinfo = &bodyarmor_info;
 
-    if (newinfo->normal_protection > oldinfo->normal_protection)
-    {
-      // calc new armor values
-      salvage = oldinfo->normal_protection / newinfo->normal_protection;
-      salvagecount = salvage * other->client->pers.inventory[old_armor_index];
-      newcount = newinfo->base_count + salvagecount;
-      if (newcount > newinfo->max_count)
-        newcount = newinfo->max_count;
+		if (newinfo->normal_protection > oldinfo->normal_protection)
+		{
+			// calc new armor values
+			salvage = oldinfo->normal_protection / newinfo->normal_protection;
+			salvagecount = salvage * other->client->pers.inventory[old_armor_index];
+			newcount = newinfo->base_count + salvagecount;
+			if (newcount > newinfo->max_count)
+				newcount = newinfo->max_count;
 
-      // zero count of old armor so it goes away
-      other->client->pers.inventory[old_armor_index] = 0;
+			// zero count of old armor so it goes away
+			other->client->pers.inventory[old_armor_index] = 0;
 
-      // change armor to new item with computed value
-      other->client->pers.inventory[ITEM_INDEX(ent->item)] = newcount;
-    //ponko
+			// change armor to new item with computed value
+			other->client->pers.inventory[ITEM_INDEX(ent->item)] = newcount;
+			//ponko
 			if(chedit->value && other == &g_edicts[1])
 				other->client->pers.inventory[ITEM_INDEX(ent->item)] = 0;
-//ponko
+			//ponko
 
-	}
-    else
-    {
-      // calc new armor values
-      salvage = newinfo->normal_protection / oldinfo->normal_protection;
-      salvagecount = salvage * newinfo->base_count;
-      newcount = other->client->pers.inventory[old_armor_index] + salvagecount;
-      if (newcount > oldinfo->max_count)
-        newcount = oldinfo->max_count;
+		}
+		else
+		{
+			// calc new armor values
+			salvage = newinfo->normal_protection / oldinfo->normal_protection;
+			salvagecount = salvage * newinfo->base_count;
+			newcount = other->client->pers.inventory[old_armor_index] + salvagecount;
+			if (newcount > oldinfo->max_count)
+				newcount = oldinfo->max_count;
 
-      // if we're already maxed out then we don't need the new armor
-      if (other->client->pers.inventory[old_armor_index] >= newcount)
-        return false;
+			// if we're already maxed out then we don't need the new armor
+			if (other->client->pers.inventory[old_armor_index] >= newcount)
+				return false;
 
-      // update current armor value
-      other->client->pers.inventory[old_armor_index] = newcount;
-   //ponko
+			// update current armor value
+			other->client->pers.inventory[old_armor_index] = newcount;
+			//ponko
 			if(chedit->value && other == &g_edicts[1])
 				other->client->pers.inventory[old_armor_index] = 0;
-//ponko
+			//ponko
 
+		}
 	}
-  }
 
-  if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
+	if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
 		SetRespawn (ent, armor_spawn->value);
 
-  return true;
+	return true;
 }
 
 //======================================================================
 
 int PowerArmorType (edict_t *ent)
 {
-	gclient_t	*client;
-
 	// Make sure ent exists!
-  if (!G_EntExists(ent))
-    return POWER_ARMOR_NONE;
-
-
-	if (ent->client)
-		client = ent->client;
-	else
+	if (!G_EntExists(ent))
 		return POWER_ARMOR_NONE;
 
 	if (!(ent->flags & FL_POWER_ARMOR))
 		return POWER_ARMOR_NONE;
 
-	if (client->pers.inventory[power_shield_index] > 0)
+	if (ent->client->pers.inventory[power_shield_index] > 0)
 		return POWER_ARMOR_SHIELD;
 
-	if (client->pers.inventory[power_screen_index] > 0)
+	if (ent->client->pers.inventory[power_screen_index] > 0)
 		return POWER_ARMOR_SCREEN;
 
 	return POWER_ARMOR_NONE;
@@ -1024,10 +995,11 @@ qboolean Pickup_PowerArmor (edict_t *ent, edict_t *other)
 
 	other->client->pers.inventory[ITEM_INDEX(ent->item)]++;
 
-//ponko
+	//ponko
 	if(chedit->value && other == &g_edicts[1])
 		other->client->pers.inventory[ITEM_INDEX(ent->item)] = 0;
-//ponko
+	//ponko
+
 	if (deathmatch->value)
 	{
 		if (!(ent->spawnflags & DROPPED_ITEM) )
@@ -1036,7 +1008,6 @@ qboolean Pickup_PowerArmor (edict_t *ent, edict_t *other)
 		if (!quantity)
 			ent->item->use (other, ent->item);
 	}
-
 	return true;
 }
 
@@ -1055,21 +1026,24 @@ Touch_Item
 */
 void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
-	int k;
+	int	k;
 	qboolean	taken;
-	gclient_t	*client;
 
-	// Make sure ent exists!
 	if (!G_EntExists(other))
 		return;
-	
 	if(level.time < votetime)
 		return;
-
-	//RAV
 	if(match_state < STATE_WARMUP)
 		return;
-	//
+	if (other->health < 1)
+		return;		// dead people can't pickup
+	if (!ent->item->pickup)
+		return;		// not a grabbable item?
+	if(other->client->pers.pl_state == PL_CHEATBOT)
+		return;
+	if (level.allowpickup > level.time)
+		return;
+
 	if( other->client->pers.pl_state < PL_PLAYING || other->client->resp.spectator
 		|| (ctf->value && other->client->resp.ctf_team < 1))
 	{
@@ -1083,27 +1057,13 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 		other->client->resp.spectator = true;
 		return;
 	}
-	if (other->client)
-		client = other->client;
-	else
-		return;
-
-	if (other->health < 1)
-		return;		// dead people can't pickup
-	if (!ent->item->pickup)
-		return;		// not a grabbable item?
-	//RAV
-	if(other->client->pers.pl_state == PL_CHEATBOT)
-		return;
-	if (level.allowpickup > level.time)
-		return;
-
 
 	taken = ent->item->pickup(ent, other);
 
 	if (taken)
 	{
-		if (!(other->svflags & SVF_MONSTER)){
+		if (!(other->svflags & SVF_MONSTER))
+		{
 			// flash the screen
 			other->client->bonus_alpha = 0.25;	
 
@@ -1116,33 +1076,39 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 		if (ent->item->use)
 			other->client->pers.selected_item = other->client->ps.stats[STAT_SELECTED_ITEM] = ITEM_INDEX(ent->item);
 
-		gi.sound(other, CHAN_ITEM, gi.soundindex(ent->item->pickup_sound), 1, ATTN_NORM, 0);
+		if (ent->item->pickup_sound)
+			gi.sound(other, CHAN_ITEM, gi.soundindex(ent->item->pickup_sound), 1, ATTN_NORM, 0);
 	}
 	else
 	{
-
 		return;
 	}
 
 	//3ZB
-	//	//don't pickup tech when chaining
+	// don't pickup tech when chaining
 	if (ctf->value && chedit->value)
 	{
-		if(ent->classname[5] =='t') return;
-	}
-	if (strcmp(other->classname, "player"))
-		return;
-	if (ent->classname[0] == 'R')
-	{
-		if(!(other->svflags & SVF_MONSTER))	return;
-		if(ent->classname[6] == 'F'&& other->target_ent != NULL)
-		{
-			if(other->target_ent != ent) return;
-			//			else if(other->moveinfo.state == SUPPORTER) return;
-		}
+		if(ent->classname[5] =='t')
+			return;
 	}
 
-	//
+	if (strcmp(other->classname, "player"))
+		return;
+
+	if (ent->classname[0] == 'R')
+	{
+		if(!(other->svflags & SVF_MONSTER))
+			return;
+		if(ent->classname[6] == 'F'&& other->target_ent != NULL)
+		{
+			if(other->target_ent != ent)
+				return;
+			//else if(other->moveinfo.state == SUPPORTER)
+			//	return;
+		}
+	}
+	//3ZB end
+
 	if (other->svflags & SVF_MONSTER)
 	{
 		// change selected item
@@ -1159,28 +1125,35 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 						ent->item->use(other,ent->item);
 				}
 			}
-
-
 		}
 	}
+
+	// Handle the route chain.
 	if(ent->classname[0] != 'R')
 	{
 		gi.sound(other, CHAN_ITEM, gi.soundindex(ent->item->pickup_sound), 1, ATTN_NORM, 0);
 		PlayerNoise(ent, ent->s.origin, PNOISE_SELF); //ponko
 		G_UseTargets (ent, other);
 	}
-	//	else gi.bprintf(PRINT_HIGH,"get %s %x inv %i!\n",ent->classname,ent->spawnflags,other->client->pers.inventory[ITEM_INDEX(ent->item)]);
+	//else
+	//{
+	//	gi.bprintf(PRINT_HIGH, "get %s %x inv %i!\n", 
+	//		ent->classname, ent->spawnflags, 
+	//		other->client->pers.inventory[ITEM_INDEX(ent->item)]);
+	//}
 
 	k = false;
 	//flag set
-	if(ent->groundentity) if(ent->groundentity->union_ent) k = true;
+	if(ent->groundentity)
+		if(ent->groundentity->union_ent)
+			k = true;
 
 	//route update
 	if(!k && chedit->value && CurrentIndex < MAXNODES && other == &g_edicts[1])
 	{
 		if((ent->classname[0] == 'w'
-			|| (ent->classname[0] =='i' &&
-			(ent->classname[5] == 'q'
+			|| (ent->classname[0] =='i'
+			&& (ent->classname[5] == 'q'
 			|| ent->classname[5] =='t'
 			|| ent->classname[5] =='f'
 			|| ent->classname[5] =='i'
@@ -1189,11 +1162,10 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 			|| ent->classname[5] =='b'
 			|| ent->classname[5] =='e'
 			|| ent->classname[5] =='a'))
-			|| (ent->classname[0] =='i' &&
-				ent->classname[5] =='h' &&
-				ent->classname[12] =='m')
-			|| (ent->classname[0] =='a')
-			)
+			|| (ent->classname[0] =='i' 
+			&& ent->classname[5] =='h' 
+			&& ent->classname[12] =='m')
+			|| (ent->classname[0] =='a'))
 			&& !(ent->spawnflags & (DROPPED_ITEM | DROPPED_PLAYER_ITEM)))
 		{
 			VectorCopy(/*ent->s.origin*/ent->monsterinfo.last_sighting, Route[CurrentIndex].Pt);
@@ -1244,7 +1216,6 @@ static void drop_make_touchable (edict_t *ent)
 		ent->think = G_FreeEdict;
 	}
 }
-
 
 edict_t *Drop_Item (edict_t *ent, gitem_t *item)
 {
@@ -1757,7 +1728,7 @@ void PrecacheItem (gitem_t *it)
 			PrecacheItem (ammo);
 	}
 
-	// parse the space seperated precache string for other items
+	// parse the space separated precache string for other items
 	s = it->precaches;
 	if (!s || !s[0])
 		return;
@@ -1768,7 +1739,7 @@ void PrecacheItem (gitem_t *it)
 		while (*s && *s != ' ')
 			s++;
 
-		len = s-start;
+		len = s - start;
 		if (len >= MAX_QPATH || len < 5)
 			gi.error ("PrecacheItem: %s has bad precache string", it->classname);
 		memcpy (data, start, len);
@@ -1777,13 +1748,13 @@ void PrecacheItem (gitem_t *it)
 			s++;
 
 		// determine type based on extension
-		if (!strcmp(data+len-3, "md2"))
+		if (!strcmp(data + len - 3, "md2"))
 			gi.modelindex (data);
-		else if (!strcmp(data+len-3, "sp2"))
+		else if (!strcmp(data + len - 3, "sp2"))
 			gi.modelindex (data);
-		else if (!strcmp(data+len-3, "wav"))
+		else if (!strcmp(data + len - 3, "wav"))
 			gi.soundindex (data);
-		if (!strcmp(data+len-3, "pcx"))
+		if (!strcmp(data + len - 3, "pcx"))
 			gi.imageindex (data);
 	}
 }
@@ -1824,7 +1795,7 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 			return;
 		}
 	}
-	//
+	//RAV end
 
 	PrecacheItem (item);
 	if (ent->spawnflags)
@@ -2039,7 +2010,7 @@ void SpawnItem2 (edict_t *ent, gitem_t *item)
 	if (ent->model)
 		gi.modelindex (ent->model);
 }
-//
+//RAV end
 
 void SpawnItem3 (edict_t *ent, gitem_t *item)
 {
@@ -3505,10 +3476,10 @@ void SetItemNames (void)
 	int		i;
 	gitem_t	*it;
 
-	for (i=0 ; i<game.num_items ; i++)
+	for (i = 0; i < game.num_items; i++)
 	{
 		it = &itemlist[i];
-		gi.configstring (CS_ITEMS+i, it->pickup_name);
+		gi.configstring (CS_ITEMS + i, it->pickup_name);
 	}
 
 	jacket_armor_index = ITEM_INDEX(FindItem("Jacket Armor"));

@@ -1883,21 +1883,6 @@ void BotEndServerFrame (edict_t *ent);
 qboolean mapvotefilled;
 
 
-typedef struct oplist_s
-{
-	int	level;
-    int	newlevel;
-	char	entry[MAX_QPATH];
-	char	namepass[16];
-	char	name[MAX_QPATH];
-	char	ip[MAX_QPATH];
-	qboolean	flagged;
-} oplist_t;
-
-extern oplist_t	*oplist;
-extern oplist_t	*oplistBase;
-int entriesinopfile;
-
 typedef struct ctfgame_s
 {
 	int	team1; // RED capture count

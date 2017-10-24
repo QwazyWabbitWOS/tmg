@@ -2324,8 +2324,8 @@ void Bots_Move_NORM (edict_t *ent)
 	if (!(ent->deadflag) && gi.pointcontents (ent->s.origin) & CONTENTS_SOLID)
 	{
 		if(debug_botspawn->value)
-			DbgPrintf("%s found %s %s at\n%f %f %f\n", __func__, 
-				ent->client->pers.netname, "positioned inside wall",
+			DbgPrintf("%s found %s %s in map %s\n%f %f %f\n", __func__, 
+			ent->client->pers.netname, "positioned inside wall", level.mapname,
 				ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
 		
 		Cmd_Kill_f(ent); // silent suicide mod=23
