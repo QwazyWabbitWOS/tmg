@@ -843,6 +843,7 @@ qboolean G_ClientInGame(edict_t *ent)
 #ifdef _WIN32
 #pragma warning(push)
 #pragma warning(disable : 4706) // assignment within conditional expression
+#endif
 
 //QW//
 /**
@@ -864,6 +865,7 @@ void convert_string(char *src, char start, char end, char add, char *dest)
 	}
 }
 
+#ifdef _WIN32
 #pragma warning(pop)
 #endif
 
