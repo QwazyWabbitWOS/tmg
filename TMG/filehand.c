@@ -89,20 +89,24 @@ int checkAllowed (char *userinfo)
 	return stop; // 1 if client is banned, otherwise 0.
 }
 
+/**
+ Concatinate name and ip address of
+ designated client, chopping off 
+ the port from the ip address.
+ Return pointer to resulting string.
+*/
 char *NameAndIp (edict_t *ent)
 {
 	static char ip[MAX_QPATH];
-	int  j;
+	char *c;
 
 	Com_sprintf(ip, sizeof ip, "%s@%s",
 		ent->client->pers.netname,
 		Info_ValueForKey (ent->client->pers.userinfo, "ip"));
 
-	j = 0;
-	while (!strchr(":", ip[j])) j++;
-	ip[j] = '\0';
+	c = strchr(ip, ':');
+	*c = '\0';
 	return ip;
-
 }
 
 // IP checking function
@@ -183,9 +187,9 @@ int IPMatch (char *clientIP, char *maskIP)
 			}
 			cp++;
 			mp++;
-			if ((strchr("\0", *mp)) && (!strchr("\0", *cp)) && (!strchr(":", *cp))) { match=0; }
-			if ((strchr("\0", *cp)) && ((!strchr("\0", *mp)) || (!strchr("\n", *mp)))) match=0;
-			if (match!=1) OK=false;
+			if ((strchr("\0", *mp)) && (!strchr("\0", *cp)) && (!strchr(":", *cp))) { match = 0; }
+			if ((strchr("\0", *cp)) && ((!strchr("\0", *mp)) || (!strchr("\n", *mp)))) match = 0;
+			if (match != 1) OK = false;
 		}
 	}
 	return (match); // 1 if IP's match, otherwise 0.	
