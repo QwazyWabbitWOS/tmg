@@ -43,7 +43,7 @@ int checkAllowed (char *userinfo)
 			}
 		}
 		fclose(ipfile);
-	} 
+	}
 	else
 		stop = 0;
 
@@ -128,7 +128,7 @@ int IPMatch (char *clientIP, char *maskIP)
 			*chop = '\0';
 
 	if (*mp == '\0')
-	{ 
+	{
 		OK = false;
 		match = 0;
 	}
@@ -142,10 +142,10 @@ int IPMatch (char *clientIP, char *maskIP)
 			while ((!strchr("@", *cp)) && (!strchr("\0", *cp)) && (!strchr("\n", *cp))) cp++;
 			if (strchr("\n", *mp))
 				OK = false;
-		} 
-		if (OK) 
+		}
+		if (OK)
 		{
-			if (strchr("@", *cp)) 
+			if (strchr("@", *cp))
 			{
 				psd = true;
 				if (!strchr("@", *mp))
@@ -170,7 +170,7 @@ int IPMatch (char *clientIP, char *maskIP)
 	}
 
 	// IP
-	while (OK) 
+	while (OK)
 	{
 		if (strchr("*", *mp)) // asterisk; go to '@' or next '.'
 		{
@@ -178,8 +178,8 @@ int IPMatch (char *clientIP, char *maskIP)
 			while ((!strchr(".", *cp)) && (!strchr("\0", *cp)) && (!strchr("\n", *cp))) cp++;
 			if (strchr("\n", *mp))
 				OK = false;
-		} 
-		if (OK) 
+		}
+		if (OK)
 		{
 			if ((*cp != *mp) && (!strchr ("?", *mp)))
 			{
@@ -193,7 +193,7 @@ int IPMatch (char *clientIP, char *maskIP)
 			if (match != 1) OK = false;
 		}
 	}
-	return (match); // 1 if IP's match, otherwise 0.	
+	return (match); // 1 if IP's match, otherwise 0.
 }
 
 qboolean entryInFile (char *filename, char ip[MAX_QPATH])
@@ -360,8 +360,8 @@ int CheckOpFile (edict_t *ent, char ip[MAX_QPATH], qboolean returnindex)
 		for (i = 0; i < entriesinopfile + 1; i++)
 		{
 			gi.dprintf("Entry #%d: [%s] Level: [%d] "
-				"Password: [%s] Flagged: [%d]\nFlagged = %d\n", 
-				i + 1, oplist[i].entry, oplist[i].level, 
+				"Password: [%s] Flagged: [%d]\nFlagged = %d\n",
+				i + 1, oplist[i].entry, oplist[i].level,
 				oplist[i].namepass, oplist[i].flagged, flagged);
 		}
 	}
@@ -376,8 +376,8 @@ int CheckOpFile (edict_t *ent, char ip[MAX_QPATH], qboolean returnindex)
 		strcpy(ent->client->pers.namepass, oplist[flagged].namepass);
 	}
 	if (debug_ops->value && flagged != -1)
-		gi.dprintf ("Player %s matches entry %s, level = %d\n", 
-		ent->client->pers.netname, 
+		gi.dprintf ("Player %s matches entry %s, level = %d\n",
+		ent->client->pers.netname,
 		oplist[flagged].entry, oplist[flagged].level);
 
 	return flagged;
@@ -485,9 +485,9 @@ qboolean CheckNameProtect (char name[MAX_QPATH], char namepass[MAX_QPATH])
 									"and is in file.\n"
 									"Stricmp returns value %d, "
 									"namepass in oplist is .%s., "
-									"client pass is .%s.\n", name, 
-									oplist[i].name, 
-									stricmp(oplist[i].namepass, namepass), 
+									"client pass is .%s.\n", name,
+									oplist[i].name,
+									stricmp(oplist[i].namepass, namepass),
 									oplist[i].namepass, namepass);
 							if (strnicmp(oplist[i].namepass, namepass, strlen(namepass)) == 0)
 							{
@@ -552,8 +552,8 @@ qboolean ModifyOpLevel (int entry, int newlevel)
 	if (opfile)
 	{
 		for (i = 0; i < entriesinopfile + 1; i++)
-		{				
-			Com_sprintf (line, sizeof line, 
+		{
+			Com_sprintf (line, sizeof line,
 				"%s\t%d\n", oplist[i].entry, oplist[i].level);
 			fputs(line, opfile);
 		}
@@ -597,7 +597,7 @@ int AddOperator (char entry[MAX_QPATH], int level, char pass[16])
 void AddEntry (char *filename, char *text)
 {
 	FILE *ipfile;
-	
+
 	// First, check to see that client isn't already in the file
 	if (entryInFile (filename, text))
 		return;
@@ -654,7 +654,7 @@ void ShowFile(edict_t *ent, char *filename)
 		if (ent == NULL)
 			gi.dprintf("Could not load file %s.\n", filename);
 		else
-			gi.cprintf (ent, PRINT_HIGH, 
+			gi.cprintf (ent, PRINT_HIGH,
 			"Could not load file %s.\n", filename);
 		return;
 	}
@@ -680,7 +680,7 @@ void ShowFile(edict_t *ent, char *filename)
 		"\n------------------------------\n"
 		"\nEnd of %s\n\n", filename);
 	else
-		gi.cprintf(ent, PRINT_HIGH, 
+		gi.cprintf(ent, PRINT_HIGH,
 		"\n------------------------------\n"
 		"\nEnd of %s\n\n", filename);
 	fclose(file);
@@ -711,15 +711,15 @@ void LogConnect (edict_t *ent, qboolean connect)
 	if (ent->bot_client)
 		return;
 
-	Com_sprintf(client, sizeof client, 
-		"%s [%s] %s", sys_date, 
+	Com_sprintf(client, sizeof client,
+		"%s [%s] %s", sys_date,
 		sys_time, NameAndIp(ent));
 
 	if (connect)
 		strcat(client, " connected\n");
 	else
 		strcat(client, " disconnected\n");
-	
+
 
 	file = fopen(file_name, "a");
 	if (file)
@@ -749,7 +749,7 @@ void LogChat (char *text)
 
 	Com_sprintf(entry, sizeof entry, "%s [%s] %s", sys_date, sys_time, text);
 	white_text(entry, entry);
-	
+
 	file = fopen(file_name, "a");
 	if (file)
 	{
