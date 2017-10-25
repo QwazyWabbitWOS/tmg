@@ -8,6 +8,11 @@
 oplist_t	*oplist;
 oplist_t	*oplistBase;
 
+/**
+ Used to decide if whitelist entry is less general
+ than the blacklist entry. If true then checkAllowed
+ decides to let them in.
+ */
 qboolean lessGeneral(char *line, char *comp)
 {
 	if (strcspn (line, "*") > strcspn(comp, "*"))
@@ -16,6 +21,11 @@ qboolean lessGeneral(char *line, char *comp)
 		return false;
 }
 
+/**
+ Matches client IP to whitelist and blacklist files.
+ Returns 1 if not allowed to connect.
+ Returns 0 if he's a goodguy.
+ */
 int checkAllowed (char *userinfo)
 {
 	FILE *ipfile;
@@ -90,7 +100,7 @@ int checkAllowed (char *userinfo)
 }
 
 /**
- Concatinate name and ip address of
+ Concatenate name and ip address of
  designated client, chopping off 
  the port from the ip address.
  Return pointer to resulting string.
@@ -643,6 +653,10 @@ void sv_ban_ip (edict_t *ent)
 }
 
 //JSW
+/**
+ Show the content of the operators list file
+ to the client who requested it.
+ */
 void ShowFile(edict_t *ent, char *filename)
 {
 	FILE	*file;
