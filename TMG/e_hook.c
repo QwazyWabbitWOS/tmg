@@ -522,7 +522,11 @@ void abandon_fire_hook(edict_t *owner, vec3_t start, vec3_t forward)
 	hook->nextthink = level.time + 5;
 	hook->noblock = true;
 
-	gi.setmodel(hook, "");
+	//QW// Deleted, not needed.
+	// Causes GAME WARNING: SV_FindIndex: NULL or empty name, ignored
+	// Note to modders: Empty model names are never welcome.
+	// If you don't want a model, don't set a model.
+	//gi.setmodel(hook, "");
 
 	VectorCopy(start, hook->s.origin);
 	VectorCopy(hook->s.origin, hook->s.old_origin);

@@ -38,6 +38,7 @@ void GetDate(void)
  Set server_time to 0 for no time in HUD, 1 for local time, 2 for GMT.
  Variable ampm contains "", "AM", "PM" or "UTC" per each mode.
 */
+static qboolean initialized = 0;
 void GetTime(void)
 {
 	char ampm[4] = "";
@@ -77,9 +78,11 @@ void GetTime(void)
 	if (Q_stricmp(sys_time, buf) != 0) 
 	{
 		strcpy(sys_time, buf);
-		//QW// Not sure why we're using configstring.
-		// FIXME: Consider removal.
-		gi.configstring (CS_SYSTIME, sys_time);
+		if (initialized)
+		{
+			gi.configstring (CS_SYSTIME, sys_time);
+			initialized = 1;
+		}
 	}
 }
 
