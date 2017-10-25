@@ -105,7 +105,8 @@ char *NameAndIp (edict_t *ent)
 		Info_ValueForKey (ent->client->pers.userinfo, "ip"));
 
 	c = strchr(ip, ':');
-	*c = '\0';
+	if (c)
+		*c = '\0';
 	return ip;
 }
 
