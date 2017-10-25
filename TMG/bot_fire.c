@@ -7,7 +7,7 @@
 
 #ifdef _WIN32
 #pragma warning(push)
-#pragma warning(disable : 4127)	// because hacks!
+#pragma warning(disable : 4127)	// because hacks! (conditional expression is constant)
 #endif
 
 static void Get_AimAngle(edict_t *ent, float aim, float dist, int weapon)
@@ -539,7 +539,8 @@ static qboolean B_UseBfg(edict_t *ent, edict_t *target,
 	client = ent->client;
 	zc = &client->zc;
 
-	if((k = CanUsewep(ent, WEAP_BFG)))
+	k = CanUsewep(ent, WEAP_BFG);
+	if(k)
 	{
 		mywep = Get_KindWeapon(client->pers.weapon);
 
@@ -548,7 +549,8 @@ static qboolean B_UseBfg(edict_t *ent, edict_t *target,
 		if(trace_priority < TRP_ANGLEKEEP)
 			trace_priority = TRP_ANGLEKEEP;
 
-		if((k = Bot_traceS(ent,target)))
+		k = Bot_traceS(ent,target);
+		if(k)
 			VectorCopy(target->s.origin,zc->vtemp);
 
 		if(FFlg[skill] & FIRE_STAYFIRE)
@@ -611,13 +613,12 @@ static qboolean B_UseBfg(edict_t *ent, edict_t *target,
 static qboolean B_UseHyperBlaster(edict_t *ent, edict_t *target,
 	int enewep, float aim, float distance, int skill)
 {
-	int k;
 	int mywep;
 	gclient_t	*client;
 
 	client = ent->client;
 
-	if((k = CanUsewep(ent, WEAP_HYPERBLASTER)))
+	if(CanUsewep(ent, WEAP_HYPERBLASTER))
 	{
 		mywep = Get_KindWeapon(client->pers.weapon);
 		Get_AimAngle(ent, aim, distance, mywep);
@@ -1292,7 +1293,8 @@ void Combat_Level0(edict_t *ent, int foundedenemy,
 		&& (zc->zcstate & STS_WAITSMASK2)
 		&& (target->s.origin[2] - ent->s.origin[2]) < -300)
 	{
-		if((k = CanUsewep(ent,WEAP_GRENADELAUNCHER)))
+		k = CanUsewep(ent,WEAP_GRENADELAUNCHER);
+		if(k)
 		{
 			mywep = Get_KindWeapon(client->pers.weapon);
 			Get_AimAngle(ent, aim, distance, mywep);
@@ -1306,7 +1308,8 @@ void Combat_Level0(edict_t *ent, int foundedenemy,
 			trace_priority = TRP_ANGLEKEEP;
 			return;
 		}
-		if((k = CanUsewep(ent, WEAP_GRENADES)))
+		k = CanUsewep(ent, WEAP_GRENADES);
+		if(k)
 		{
 			mywep = Get_KindWeapon(client->pers.weapon);
 			Get_AimAngle(ent,aim,distance,mywep);
@@ -1396,7 +1399,8 @@ void Combat_Level0(edict_t *ent, int foundedenemy,
 			j = true;
 
 		//Hyper Blaster
-		if((k = CanUsewep(ent, WEAP_HYPERBLASTER)))
+		k = CanUsewep(ent, WEAP_HYPERBLASTER);
+		if(k)
 		{
 			mywep = Get_KindWeapon(client->pers.weapon);
 			Get_AimAngle(ent, aim, distance, mywep);
@@ -1410,7 +1414,8 @@ void Combat_Level0(edict_t *ent, int foundedenemy,
 			return;
 		}
 		//Chain Gun
-		if((k = CanUsewep(ent, WEAP_CHAINGUN)))
+		k = CanUsewep(ent, WEAP_CHAINGUN);
+		if(k)
 		{
 			mywep = Get_KindWeapon(client->pers.weapon);
 			Get_AimAngle(ent, aim, distance, mywep);
@@ -1424,7 +1429,8 @@ void Combat_Level0(edict_t *ent, int foundedenemy,
 			return;
 		}
 		//Machine Gun
-		if((k = CanUsewep(ent,WEAP_MACHINEGUN)))
+		k = CanUsewep(ent,WEAP_MACHINEGUN);
+		if(k)
 		{
 			mywep = Get_KindWeapon(client->pers.weapon);
 			Get_AimAngle(ent, aim, distance, mywep);
@@ -1438,7 +1444,8 @@ void Combat_Level0(edict_t *ent, int foundedenemy,
 			return;
 		}
 		//S-Shotgun
-		if((k = CanUsewep(ent, WEAP_SUPERSHOTGUN)))
+		k = CanUsewep(ent, WEAP_SUPERSHOTGUN);
+		if(k)
 		{
 			mywep = Get_KindWeapon(client->pers.weapon);
 			Get_AimAngle(ent, aim, distance, mywep);

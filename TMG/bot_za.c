@@ -2518,15 +2518,18 @@ void Bots_Move_NORM (edict_t *ent)
 					else if(!ctf->value && Route[i].ent->solid == SOLID_TRIGGER)
 					{
 						//Quad
-						if((j = mpindex[MPI_QUAD]))
+						j = mpindex[MPI_QUAD];
+						if(j)
 							if(Route[i].ent->item == &itemlist[j])
 							{zc->havetarget = true;	break;}
 						//Quad fire
-						if((j = mpindex[MPI_QUADF]))
+						j = mpindex[MPI_QUADF];
+						if(j)
 							if(Route[i].ent->item == &itemlist[j])
 							{zc->havetarget = true;	break;}
 						//Quad fire
-						if((j = mpindex[MPI_PENTA]))
+						j = mpindex[MPI_PENTA];
+						if(j)
 							if(Route[i].ent->item == &itemlist[j])
 							{zc->havetarget = true;	break;}
 					}
@@ -4954,7 +4957,8 @@ GOMOVE:
 			//right trace
 			yaw = zc->moveyaw + x;
 			if(yaw > 180) yaw -= 360;
-			if((j = Bot_moveT (ent,yaw,temppos,dist,&bottom)))
+			j = Bot_moveT (ent,yaw,temppos,dist,&bottom);
+			if(j)
 			{
 				//special
 				if(x == 0 && /*bottom < 20 &&*/ !ent->waterlevel
@@ -5128,7 +5132,8 @@ GOMOVE:
 			//left trace
 			yaw = zc->moveyaw - x;
 			if(yaw < -180) yaw += 360;
-			if((j = Bot_moveT (ent,yaw,temppos,dist,&bottom)))
+			j = Bot_moveT (ent,yaw,temppos,dist,&bottom);
+			if(j)
 			{
 				if(zc->waterstate == WAS_FLOAT) f2 = TOP_LIMIT_WATER;
 				else f2 = JumpMax;
