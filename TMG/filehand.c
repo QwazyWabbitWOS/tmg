@@ -105,7 +105,8 @@ char *NameAndIp (edict_t *ent)
 		Info_ValueForKey (ent->client->pers.userinfo, "ip"));
 
 	c = strchr(ip, ':');
-	*c = '\0';
+	if(c)
+		*c = '\0';
 	return ip;
 }
 
@@ -531,6 +532,12 @@ qboolean CheckNameProtect (char name[MAX_QPATH], char namepass[MAX_QPATH])
 	}
 }
 
+/**
+ Change the operator level of designated player index
+ write the data to the operator file then force
+ reload of the oplist array from the modified file.
+ Returns true on success, otherwise false.
+ */
 qboolean ModifyOpLevel (int entry, int newlevel)
 {
 	FILE *opfile;
@@ -561,8 +568,9 @@ qboolean ModifyOpLevel (int entry, int newlevel)
 	return true;
 }
 
-/* Add operator access level for named user @ IP address
-   if user_o.txt file doesn't exist, create it.
+/**
+ Add operator access level for named user @ IP address
+ if user_o.txt file doesn't exist, create it.
 */
 int AddOperator (char entry[MAX_QPATH], int level, char pass[16])
 {
@@ -582,8 +590,10 @@ int AddOperator (char entry[MAX_QPATH], int level, char pass[16])
 	return 1;
 }
 
-/// Add IP of client to the file if he's not
-/// already in it. If file doesn't exist, create one.
+/**
+ Add IP of client to the file if he's not
+ already in it. If file doesn't exist, create one.
+ */
 void AddEntry (char *filename, char *text)
 {
 	FILE *ipfile;
