@@ -1257,7 +1257,7 @@ void PutBotInServer (edict_t *ent)
 
 	ent->prethink = NULL;
 	ent->think = Bot_Think;
-	ent->nextthink = level.time + FRAMETIME * 10;	//QW// hold for 1 second
+	ent->nextthink = level.time + FRAMETIME * 5;	//QW// chill for 1/2 second
 	ent->svflags /*|*/= SVF_MONSTER ;
 	ent->s.renderfx = 0;
 	ent->s.effects = 0;
