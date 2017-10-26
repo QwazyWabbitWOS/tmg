@@ -460,6 +460,7 @@ char *ShowHud (edict_t *ent)
 				j += sprintf (layout+j, "%s", va ("xv 0 yb -78 cstring \"%s\" ", 
 							ent->client->chase_target->client->pers.netname ));
 			j += sprintf (layout+j, "xv 0 yb -55 cstring \"%s\" ", hudhelp);
+			ent->client->pers.db_id = true;
 		}
 		else if (ent->client->chase_mode == CHASE_FLOATCAM)
 		{
