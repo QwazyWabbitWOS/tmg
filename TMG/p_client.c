@@ -4613,7 +4613,7 @@ void ClientBeginServerFrame (edict_t *ent)
 		ent->movetype = MOVETYPE_STEP;
 	if(ent->client->pers.pl_state == PL_PLAYING)
 	{
-		if((ent->movetype == MOVETYPE_NOCLIP ||	ent->solid & SOLID_NOT
+		if((ent->movetype == MOVETYPE_NOCLIP || ent->solid == SOLID_NOT
 			|| ent->svflags & SVF_NOCLIENT || (!ent->takedamage) & DAMAGE_YES)
 			&& (ent->health > 5 ) /* && !ent->bot_client*/ )
 		{
