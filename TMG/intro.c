@@ -270,10 +270,10 @@ NOTE: First item in the intro list doesn't get precached? Why not?
 levels is 0 on entry, this looks like a bug to me.
 */
 //RAV precache songs
+char names[MAXSONGS][MAX_QPATH];
 void PrecacheSongs(void)
 {
 	FILE *file;
-	char names[MAXSONGS][MAX_QPATH];
 	char file_name[MAX_QPATH];
 	char song[MAX_QPATH];
 	int levels = 0;

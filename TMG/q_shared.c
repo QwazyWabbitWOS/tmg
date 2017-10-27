@@ -1196,11 +1196,11 @@ int Q_strcasecmp (char *s1, char *s2)
 /**
  Safer, uses large buffer
 */
+char	bigbuffer[0x10000];
 void Com_sprintf (char *dest, int size, char *fmt, ...)
 {
 	int		len;
 	va_list		argptr;
-	char	bigbuffer[0x10000];
 
 	va_start (argptr, fmt);
 	len = vsprintf (bigbuffer, fmt, argptr);
@@ -1234,7 +1234,7 @@ key and returns the associated value, or an empty string.
 */
 char *Info_ValueForKey (char *s, char *key)
 {
-	char	pkey[MAX_INFO_STRING];
+	char	pkey[MAX_INFO_STRING] = "";
 	static	char value[2][MAX_INFO_STRING];	// use two buffers so compares
 								// work without stomping on each other
 	static	int	valueindex;
@@ -1277,7 +1277,7 @@ char *Info_ValueForKey (char *s, char *key)
 void Info_RemoveKey (char *s, char *key)
 {
 	char	*start;
-	char	pkey[MAX_INFO_STRING];
+	char	pkey[MAX_INFO_STRING] = "";
 	char	value[MAX_INFO_STRING];
 	char	*o;
 

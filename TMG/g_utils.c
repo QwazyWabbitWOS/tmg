@@ -661,7 +661,7 @@ void AddModelSkin (char *modelfile, char *skinname)
 	{
 		fwrite(&(skinname[i]), 1, 1, out);
 	}
-	
+
 	buffer = '\0';
 	fwrite(&buffer, 1, 1, out);
 	buffer = 'x';
@@ -686,7 +686,9 @@ void AddModelSkin (char *modelfile, char *skinname)
 
 	// copy the new file over the old file
 	remove(infilename);
-	rename(filename, infilename);
+	if (rename(filename, infilename) != 0)
+		gi.dprintf("%s failed changing %s to %s\n", 
+		__func__, infilename, filename);
 
 	gi.dprintf("Model skin added.\n", filename);
 }
@@ -696,7 +698,7 @@ void AddModelSkin (char *modelfile, char *skinname)
 // when running dedicated server
 void my_bprintf (int printlevel, char *fmt, ...)
 {
-	char	buffer[0x10000];
+	char	buffer[0x2000]; //QW// reduced size 8k s/b sufficient
 	va_list		argptr;
 
 	va_start (argptr, fmt);
@@ -720,7 +722,7 @@ void my_bprintf (int printlevel, char *fmt, ...)
 // botsafe cprintf
 void safe_cprintf (edict_t *ent, int printlevel, char *fmt, ...)
 {
-	char	buffer[0x10000];
+	char	buffer[0x2000];
 	va_list	argptr;
 
 	if (!ent || !ent->inuse || 
@@ -740,7 +742,7 @@ void safe_cprintf (edict_t *ent, int printlevel, char *fmt, ...)
 // botsafe centerprintf
 void safe_centerprintf (edict_t *ent, char *fmt, ...)
 {
-	char	buffer[0x10000];
+	char	buffer[0x2000];
 	va_list	argptr;
 
 	if (!ent->inuse || 
@@ -761,7 +763,7 @@ void safe_centerprintf (edict_t *ent, char *fmt, ...)
 void safe_bprintf (int printlevel, char *fmt, ...)
 {
 	int		i;
-	char	buffer[0x10000];
+	char	buffer[0x2000];
 	va_list	argptr;
 	edict_t	*cl_ent;
 

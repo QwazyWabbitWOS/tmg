@@ -159,8 +159,8 @@ void SaveHighScores (void)
 
 void LoadHighScores (void)
 {
-	char	entry[1400];
-	char	string[1400];
+	char	entry[1400] = "";
+	char	string[1400] = "";
 	size_t	stringlength;
 	int		i;
 	size_t	j;
