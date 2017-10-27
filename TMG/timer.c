@@ -386,9 +386,9 @@ void TimerThink (void)
 		yesvotes = 0;
 		novotes = 0;
 
-//		gi.dprintf ("M. map to be voted on is %s %s\n",
-//					maplist->mapname[maplist->currentmapvote],
-//					maplist->mapnick[maplist->currentmapvote]);
+		//gi.dprintf("M. map to be voted on is %s %s\n",
+		//			maplist->mapname[maplist->currentmapvote],
+		//			maplist->mapnick[maplist->currentmapvote]);
 
 		for (i = 1; i <= maxclients->value; i++)
 		{
@@ -420,9 +420,9 @@ void TimerThink (void)
 		}
 		if (mapvoteactive)
 		{
-//			gi.dprintf ("B. map to be voted on is %s %s\n",
-//						maplist->mapname[maplist->currentmapvote],
-//						maplist->mapnick[maplist->currentmapvote]);
+			//gi.dprintf("B. map to be voted on is %s %s\n",
+			//			maplist->mapname[maplist->currentmapvote],
+			//			maplist->mapnick[maplist->currentmapvote]);
 			if (yesvotes + novotes > 0)
 			{
 				if ((yesvotes / (yesvotes + novotes)) >
@@ -448,38 +448,13 @@ void TimerThink (void)
 	// print when they are changed
 	if (dmflagtimer < level.time)
 	{
-		if (randomrcon->value)
-		{
-			char cmd[80];
-			char buff[80];
-			char ch[4];
-			int i;
-			cmd[0] = '\0';
-			strcpy (buff, "");
-			for (i = 0; i < 10; i++)
-			{
-				int iNumber = rand() % 122;
-				if( 48 > iNumber )
-					iNumber += 48;
-				if( ( 57 < iNumber ) &&
-				   ( 65 > iNumber ) )
-					iNumber += 7;
-				if( ( 90 < iNumber ) &&
-				   ( 97 > iNumber ) )
-					iNumber += 6;
-				Com_sprintf(ch, sizeof ch, "%i", iNumber);
-				strcat (buff, ch);
-			}
-			strcat (buff, "\0");
-			Com_sprintf (cmd, sizeof cmd, "rcon_password \"%s\" ", buff);
-			gi.AddCommandString(cmd);
-		}
+		RandomRCON();
 
 		newdmflag = (int)dmflags->value;
 		if (dmflag != newdmflag)
 			my_bprintf (PRINT_CHAT,
-						"DMFlags have been changed from %i to %i.\n",
-						dmflag, newdmflag);
+			"DMFlags have been changed from %i to %i.\n",
+			dmflag, newdmflag);
 
 		dmflagtimer = level.time + 10;
 		dmflag = newdmflag;
@@ -488,7 +463,33 @@ void TimerThink (void)
 		if (even_teams->value == 0)
 			gi.cvar_forceset("even_teams", "100");
 	}
-	//end
-	
 }
 
+void RandomRCON(void)
+{
+	char cmd[80] = "";
+	char buff[80] = "";
+	char ch[4] = "";
+	int i;
+
+	if (randomrcon->value == 0)
+		return;
+
+	for (i = 0; i < 10; i++)
+	{
+		int iNumber = rand() % 122;
+		if( 48 > iNumber )
+			iNumber += 48;
+		if( ( 57 < iNumber ) &&
+			( 65 > iNumber ) )
+			iNumber += 7;
+		if( ( 90 < iNumber ) &&
+			( 97 > iNumber ) )
+			iNumber += 6;
+		Com_sprintf(ch, sizeof ch, "%i", iNumber);
+		strcat (buff, ch);
+	}
+	strcat (buff, "\0");
+	Com_sprintf (cmd, sizeof cmd, "rcon_password \"%s\" ", buff);
+	gi.AddCommandString(cmd);
+}

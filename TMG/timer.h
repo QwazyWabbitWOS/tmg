@@ -23,6 +23,7 @@ extern float match_state_end;
 void ResetItems (void);
 void RestartLevel (void);
 void TimerThink (void);
+void RandomRCON(void);
 
 /**
  returns true if less than 60 seconds left in match
