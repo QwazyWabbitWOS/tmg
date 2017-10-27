@@ -1133,17 +1133,19 @@ void InitClientPersistant (gclient_t *client)
 	//
 	qboolean motd;
 	int	motd_seen;
-	char userip[24], namecg[18], skinn[24];
+	char userip[sizeof client->pers.ip];
+	char namecg[sizeof client->pers.name_change];
+	char skinn[sizeof client->pers.skin_change];
 
 	// Save certain current player state variables
 	oplevel = client->pers.oplevel;
-	strcpy(namepass, client->pers.namepass);
+	memcpy (namepass, client->pers.namepass, sizeof namepass);
 	plstate = client->pers.pl_state;
 	motd = client->pers.motd;
 	motd_seen = client->pers.motd_seen;
-	strcpy (userip,client->pers.ip);
-	strcpy (namecg,client->pers.name_change);
-	strcpy (skinn,client->pers.skin_change);
+	memcpy (userip, client->pers.ip, sizeof userip);
+	memcpy (namecg, client->pers.name_change, sizeof namecg);
+	memcpy (skinn, client->pers.skin_change, sizeof skinn);
 	mapvoted = client->pers.vote_times;
 
 	// Zero this region
@@ -1152,12 +1154,12 @@ void InitClientPersistant (gclient_t *client)
 	// Restore the saved state
 	client->pers.pl_state = plstate;
 	client->pers.oplevel = oplevel;
-	strcpy(client->pers.namepass, namepass);
+	memcpy (client->pers.namepass, namepass, sizeof client->pers.namepass);
 	client->pers.motd = motd;
 	client->pers.motd_seen = motd_seen;
-	strcpy (client->pers.ip, userip);
-	strcpy (client->pers.name_change, namecg);
-	strcpy (client->pers.skin_change, skinn);
+	memcpy (client->pers.ip, userip, sizeof client->pers.ip);
+	memcpy (client->pers.name_change, namecg, sizeof client->pers.name_change);
+	memcpy (client->pers.skin_change, skinn, sizeof client->pers.skin_change);
 	client->pers.vote_times = mapvoted;
 
 	if (voosh->value)
