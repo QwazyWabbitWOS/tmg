@@ -392,7 +392,7 @@ void Load_BotInfo(void)
 	ListedBotCount = 0;
 
 	//init message
-	memset(ClientMessage, 0, sizeof(ClientMessage));
+	memset(ClientMessage, 0, sizeof ClientMessage);
 
 	//set message section
 	if(!ctf->value && chedit->value) 
@@ -439,23 +439,22 @@ void Load_BotInfo(void)
 	botlist = gi.cvar ("botlist", "default", CVAR_LATCH);
 
 	//load info
-	Com_sprintf(Buff, sizeof Buff, "%s/%s/%s/TMGBot.cfg", 
+	Com_sprintf(filename, sizeof filename, "%s/%s/%s/TMGBot.cfg", 
 		basedir->string, game_dir->string, cfgdir->string);
 
-	fp = fopen(Buff, "rt");
+	fp = fopen(filename, "rt");
 	if(fp == NULL)
 	{
-		gi.dprintf("File not found %s\n", Buff);
+		gi.dprintf("File not found %s\n", filename);
 		gi.dprintf("Using default bot configuration.\n");
 		return;
 	}
 	else
 	{
-		strcpy(filename, Buff);
-		fseek( fp, 0, SEEK_SET);
+		fseek(fp, 0, SEEK_SET);
 		for(;;)
 		{
-			if(fgets( Buff, sizeof(Buff), fp ) == NULL) 
+			if(fgets(Buff, sizeof Buff, fp ) == NULL) 
 				goto MESS_NOTFOUND;
 			if(!strnicmp(MessageSection, Buff, strlen(MessageSection))) 
 				break;
@@ -463,7 +462,7 @@ void Load_BotInfo(void)
 
 		for(;;)
 		{
-			if(fgets( Buff, sizeof(Buff), fp ) == NULL) 
+			if(fgets(Buff, sizeof Buff, fp) == NULL) 
 				goto MESS_NOTFOUND;
 			if(Buff[0] == '.' || Buff[0] == '[' || Buff[0] == '#')
 				break;
@@ -481,7 +480,7 @@ MESS_NOTFOUND:
 		fseek( fp, 0, SEEK_SET);
 		for(;;)
 		{
-			if(fgets( Buff, sizeof(Buff), fp ) == NULL)
+			if(fgets( Buff, sizeof Buff, fp ) == NULL)
 			{
 				MessageSection[0] = 0;
 				break;
@@ -496,7 +495,7 @@ MESS_NOTFOUND:
 			fseek( fp, 0, SEEK_SET);
 			for(;;)
 			{
-				if(fgets( Buff, sizeof(Buff), fp ) == NULL) 
+				if(fgets( Buff, sizeof Buff, fp ) == NULL) 
 					goto BOTLIST_NOTFOUND;
 				if(!strnicmp(MessageSection, Buff, strlen(MessageSection))) 
 					break;
@@ -505,7 +504,7 @@ MESS_NOTFOUND:
 
 		for(i = 0; i < MAXBOTS; i++)
 		{
-			if(fgets( Buff, sizeof(Buff), fp ) == NULL)
+			if(fgets( Buff, sizeof Buff, fp ) == NULL)
 				break;
 			if(Buff[0] == '[')
 				break;
@@ -1634,7 +1633,6 @@ void Bot_LevelChange(void)
 static void AirSight_Explode (edict_t *ent)
 {
 	vec3_t		origin;
-	int			mod;
 
 	//	if (ent->owner->client && !(ent->owner->svflags & SVF_DEADMONSTER))
 	//		PlayerNoise(ent->owner, ent->s.origin, PNOISE_IMPACT);
@@ -1642,9 +1640,8 @@ static void AirSight_Explode (edict_t *ent)
 	gi.sound (ent, CHAN_AUTO, gi.soundindex("3zb/airexp.wav"), 1, ATTN_NONE, 0);
 
 	//FIXME: if we are onground then raise our Z just a bit since we are a point?
-	mod = MOD_AIRSTRIKE;
 
-	T_RadiusDamage(ent, ent->owner, ent->dmg, ent->enemy, ent->dmg_radius, mod);
+	T_RadiusDamage(ent, ent->owner, ent->dmg, ent->enemy, ent->dmg_radius, MOD_AIRSTRIKE);
 
 	VectorMA (ent->s.origin, -0.02, ent->velocity, origin);
 	gi.WriteByte (svc_temp_entity);
