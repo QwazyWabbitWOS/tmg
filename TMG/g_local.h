@@ -44,7 +44,7 @@
 #ifndef _DEBUG
 #define BUILD	"Release"
 #else
-#define BUILD	"Debug  "
+#define BUILD	"Debug"
 #endif
 
 // protocol bytes that can be directly added to messages

@@ -24,7 +24,7 @@ edict_t *Find_Player_Edict_t (char *s)
 	return NULL;
 }
 //end
-/*
+/**
 =============
 G_Find
 
@@ -60,7 +60,7 @@ edict_t *G_Find (edict_t *from, int fieldofs, char *match)
 }
 
 
-/*
+/**
 =================
 findradius
 
@@ -444,6 +444,9 @@ Marks the edict as free
 */
 void G_FreeEdict (edict_t *ed)
 {
+	if(gamedebug->value)
+		DbgPrintf("%s %s\n", __func__, ed->classname);
+
 	gi.unlinkentity (ed);		// unlink from world
 
 	if ((ed - g_edicts) <= (maxclients->value + BODY_QUEUE_SIZE))
@@ -532,27 +535,30 @@ of ent.  Ent should be unlinked before calling this!
 */
 qboolean KillBox (edict_t *ent)
 {
-  trace_t    tr;
+	trace_t    tr;
 
-  gi.unlinkentity (ent);
+	if(gamedebug->value)
+		DbgPrintf("%s\n", __func__);
 
-  while (1)
-  {
-    tr = gi.trace (ent->s.origin, ent->mins, ent->maxs,
-				   ent->s.origin, NULL, MASK_PLAYERSOLID);
-    if (!tr.ent)
-      break;
+	//gi.unlinkentity (ent);
 
-    // nail it
-    T_Damage (tr.ent, ent, ent, vec3_origin, ent->s.origin,
-			  vec3_origin, 100000, 0, DAMAGE_NO_PROTECTION, MOD_TELEFRAG);
+	while (1)
+	{
+		tr = gi.trace (ent->s.origin, ent->mins, ent->maxs,
+			ent->s.origin, NULL, MASK_PLAYERSOLID);
+		if (!tr.ent)
+			break;
 
-    // if we didn't kill it, fail
-    if (tr.ent->solid)
-      return false;
-  }
+		// nail it
+		T_Damage (tr.ent, ent, ent, vec3_origin, ent->s.origin,
+			vec3_origin, 100000, 0, DAMAGE_NO_PROTECTION, MOD_TELEFRAG);
 
-  return true;    // all clear
+		// if we didn't kill it, fail
+		if (tr.ent->solid)
+			return false;
+	}
+
+	return true;    // all clear
 }
 
 // Ridah

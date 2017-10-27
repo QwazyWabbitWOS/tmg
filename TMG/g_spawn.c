@@ -1349,7 +1349,8 @@ void SP_worldspawn (edict_t *ent)
 	}
 
 	//QW// for blanking hud text
-	gi.configstring (CS_EMPTYSTRING, va(""));
+	// Not needed, configstrings are born empty.
+	//gi.configstring (CS_EMPTYSTRING, va(""));
 	
 	//---------------
 	

@@ -493,10 +493,9 @@ void CTFAssignSkin(edict_t *ent, char *s)
 
 	if (!ctf->value)
 		return;
-	//RAV
+
 	if(CheckModel (ent, s))
 		Com_sprintf(t, sizeof(t), "%s", s);
-	//RAV
 	else
 		Com_sprintf(t, sizeof(t), "male/");
 
@@ -508,7 +507,7 @@ void CTFAssignSkin(edict_t *ent, char *s)
 	}
 	else
 		strcpy(t, "male/");
-	//
+
 	switch (ent->client->resp.ctf_team)
 	{
 	case CTF_TEAM1:
@@ -1550,14 +1549,21 @@ void SetCTFStats(edict_t *ent)
 	//ent->client->ps.stats[STAT_CTF_ID_VIEW] = 0;
 	//if (ent->client->resp.id_state)
 	//	CTFSetIDView(ent);
+
+	// Set the indexes into the flag carrier's names
+	// stored in CS_GENERAL strings when they connected.
+	// At this point rfc and bfc are the client number
+	// of the flag carrier(s) + 1.
 	if (rfc != 0 )
 		rfc = rfc + (CS_GENERAL - 1);
 	else
 		rfc = CS_EMPTYSTRING;
+	
 	if (bfc != 0 )
 		bfc = bfc + (CS_GENERAL - 1);
 	else
 		bfc = CS_EMPTYSTRING;
+
 	if(show_carrier->value)
 	{
 		ent->client->ps.stats[STAT_CTF_RED_FLAG_CARRIER] = rfc;
@@ -3915,7 +3921,8 @@ void Spectate(edict_t *ent, pmenu_t *menu)
 	
 	if(ctf->value)
 		ent->client->resp.ctf_team = CTF_NOTEAM;
-	gi.linkentity (ent);
+	
+	//gi.linkentity (ent);
 
 	if (ent->inuse)	// not in use on first connect
 		StatsLog("SPEC: %s\\%.1f\n", ent->client->pers.netname, level.time);

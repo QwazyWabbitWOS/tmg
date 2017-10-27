@@ -1831,6 +1831,9 @@ void CopyToBodyQue (edict_t *ent)
 
 	gi.unlinkentity (ent);
 	gi.unlinkentity (body);
+	if(gamedebug->value)
+		DbgPrintf("%s %s\n", __func__, ent->client->pers.netname);
+
 	return;
 
 	//	body->s = ent->s;
@@ -1872,6 +1875,9 @@ void respawn (edict_t *self, qboolean spawn)
 	self->client->ps.pmove.pm_flags = PMF_TIME_TELEPORT;
 	self->client->ps.pmove.pm_time = 14;
 	self->client->respawn_time = level.time;
+	if(gamedebug->value)
+		DbgPrintf("%s %s\n", __func__, self->client->pers.netname);
+
 	return;
 }
 
@@ -2358,8 +2364,12 @@ void PutClientInServer (edict_t *ent)
 	ent->client->checkpingtime = level.time + 25;
 
 	if (debug_spawn->value)
-		DbgPrintf("%s %s entered time: %.1f\n", __func__, ent->client->pers.netname, level.time);
+		DbgPrintf("%s %s entered time: %.1f\n", 
+		__func__, ent->client->pers.netname, level.time);
 
+	if(gamedebug->value)
+		DbgPrintf("%s %s\n", __func__, ent->client->pers.netname);
+	
 	//JSW
 	ent->client->kill = 0;	//Clear kill
 	//end
@@ -2383,6 +2393,8 @@ void Connect (edict_t *ent)
 	gi.linkentity (ent);
 	ent->client->pers.db_hud = true;
 	ent->client->pers.motd = true;
+	if(gamedebug->value)
+		DbgPrintf("%s %s\n", __func__, ent->client->pers.netname);
 }
 //end
 
@@ -2535,6 +2547,9 @@ void ClientBeginDeathmatch (edict_t *ent)
 	*/
 	ClientPrintMOTD(ent);
 
+	if(gamedebug->value)
+		DbgPrintf("%s %s\n", __func__, ent->client->pers.netname);
+
 	if(use_bots->value)
 		gi.centerprintf(ent,ClientMessage);
 	// make sure all view stuff is valid
@@ -2625,11 +2640,18 @@ void ClientBegin (edict_t *ent)
 			gi.multicast (ent->s.origin, MULTICAST_PVS);
 			CheckPlayers();
 			if (ctf->value)
-				my_bprintf (PRINT_HIGH, "%s entered the game (%d red, %d blue, %d spectators)\n", ent->client->pers.netname, ctfgame.players1, ctfgame.players2, ctfgame.specs);
+				my_bprintf (PRINT_HIGH, 
+				"%s entered the game (%d red, %d blue, %d spectators)\n",
+				ent->client->pers.netname, ctfgame.players1, ctfgame.players2, ctfgame.specs);
 			else
-				my_bprintf (PRINT_HIGH, "%s entered the game (%d players, %d spectators)\n", ent->client->pers.netname, ctfgame.players_total, ctfgame.specs);
+				my_bprintf (PRINT_HIGH, 
+				"%s entered the game (%d players, %d spectators)\n",
+				ent->client->pers.netname, ctfgame.players_total, ctfgame.specs);
 		}
 	}
+
+	if(gamedebug->value)
+		DbgPrintf("%s %s %s\n", __func__, ent->classname, ent->client->pers.netname);
 
 	// make sure all view stuff is valid
 	ClientEndServerFrame (ent);
@@ -2677,6 +2699,9 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	qboolean emptyname = 0;
 	size_t	i;
 	char	*namepass;
+
+	if(gamedebug)
+		DbgPrintf("%s\n", __func__);
 
 	// check for malformed or illegal info strings
 	if (!Info_Validate(userinfo))
@@ -2934,9 +2959,10 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	if (ctf->value)
 		CTFAssignSkin(ent, s);
 	else
-		//ZOID
+	//ZOID
 		gi.configstring (CS_PLAYERSKINS + playernum, va("%s\\%s", ent->client->pers.netname, s) );
 
+	// This fills the configstrings with the player names for the flag carrier status
 	gi.configstring (CS_GENERAL + playernum, va("%15s", ent->client->pers.netname) );
 
 	//Skin changers delight
@@ -3124,7 +3150,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	name = Info_ValueForKey (userinfo, "name");
 	ip = Info_ValueForKey (userinfo, "ip");
 
-	if (developer->value)
+	if (gamedebug->value)
 		gi.dprintf ("ClientConnect called by %s@%s\n", name, ip);
 
 	if (ip == NULL)
@@ -3358,9 +3384,6 @@ void ClientDisconnect (edict_t *ent)
 	if (!G_EntExists(ent))
 		return;
 
-	if (!ent->client)
-		return;
-
 	if (log_connect->value)
 		LogConnect(ent, false);
 
@@ -3413,16 +3436,19 @@ void ClientDisconnect (edict_t *ent)
 			name, ctfgame.players1, ctfgame.players2, ctfgame.specs);
 	}
 	else
-	{	Com_sprintf (text, sizeof text, 
-	"%s has left the server. (%d players, %d spectators remaining)\n",
-	name, ctfgame.players_total, ctfgame.specs);
+	{	
+		Com_sprintf (text, sizeof text, 
+			"%s has left the server. (%d players, %d spectators remaining)\n",
+			name, ctfgame.players_total, ctfgame.specs);
 	}
 
 	my_bprintf (PRINT_HIGH, text);
 	if (ctfgame.players1 + ctfgame.players2 + ctfgame.players_total + ctfgame.specs == 0)
 		locked_teams = false;
 
+	gi.configstring (CS_GENERAL + playernum, "");
 	gi.configstring (CS_PLAYERSKINS + playernum, "");
+	G_FreeEdict(ent);
 }
 
 
