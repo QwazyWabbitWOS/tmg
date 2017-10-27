@@ -1860,7 +1860,7 @@ void CopyToBodyQue (edict_t *ent)
 }
 
 
-void respawn (edict_t *self, qboolean spawn)
+void Respawn (edict_t *self, qboolean spawn)
 {
 	if(!spawn)
 		CopyToBodyQue (self);
@@ -1875,7 +1875,7 @@ void respawn (edict_t *self, qboolean spawn)
 	self->client->ps.pmove.pm_flags = PMF_TIME_TELEPORT;
 	self->client->ps.pmove.pm_time = 14;
 	self->client->respawn_time = level.time;
-	if(gamedebug->value)
+	if(debug_spawn->value)
 		DbgPrintf("%s %s\n", __func__, self->client->pers.netname);
 
 	return;
@@ -4580,7 +4580,7 @@ void ClientBeginServerFrame (edict_t *ent)
 		ent->client->pers.motd = false;
 		ent->client->pers.pl_state = PL_SPECTATOR;
 		ent->reset_time = level.time + 10;
-		respawn(ent, true);
+		Respawn(ent, true);
 
 		//play the intro song if used
 		if(wavs->value && !ent->bot_client)
@@ -4654,7 +4654,7 @@ void ClientBeginServerFrame (edict_t *ent)
 			player_die_fast (ent, ent, ent, 100000, vec3_origin);
 			if(ctf->value)
 				ent->client->resp.ctf_state = CTF_STATE_START;
-			respawn(ent, true);
+			Respawn(ent, true);
 			break;
 		case PL_WARMUP:
 			//limbo mode while in level countdown
@@ -4755,7 +4755,7 @@ void ClientBeginServerFrame (edict_t *ent)
 			if ( ( client->latched_buttons & buttonMask )
 				|| (deathmatch->value && (dmflag & DF_FORCE_RESPAWN)))
 			{
-				respawn(ent, false);
+				Respawn(ent, false);
 				client->latched_buttons = 0;
 			}
 		}

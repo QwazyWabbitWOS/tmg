@@ -2431,7 +2431,7 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 
 	// don't even bother waiting for death frames
 	ent->deadflag = DEAD_DEAD;
-	respawn (ent, false);
+	Respawn (ent, false);
 }
 
 /*

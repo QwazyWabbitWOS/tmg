@@ -21,7 +21,7 @@ void player_pain (edict_t *self, edict_t *other, float kick, int damage);
 void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
 void InitClientPersistant (gclient_t *client);
 void PutClientInServer (edict_t *ent);
-void respawn (edict_t *ent,qboolean spawn);
+void Respawn (edict_t *ent,qboolean spawn);
 void InitClientResp (gclient_t *client);
 void InitBodyQue (void);
 void ClientBeginServerFrame (edict_t *ent);

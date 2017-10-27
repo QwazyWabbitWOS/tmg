@@ -102,7 +102,7 @@ void BeginIntermission (edict_t *targ)
 		if (!client->inuse)
 			continue;
 		if (client->health <= 0)
-			respawn(client, false);
+			Respawn(client, false);
 	}
 
 	level.intermissiontime = level.time;

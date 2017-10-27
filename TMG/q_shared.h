@@ -924,8 +924,8 @@ typedef enum
 //QW// Fixed for TMG HUD.
 // We define only one of each of these since they are common to all clients.
 #define CS_EMPTYSTRING		(CS_GENERAL + MAX_CLIENTS)	// 1824
-#define CS_TIMELEFT			(CS_EMPTYSTRING + 1) // match time left
-#define CS_SYSTIME			(CS_TIMELEFT + 1)	// wall clock time
+#define CS_TIMELEFT			(CS_EMPTYSTRING + 1) // match time left (1825)
+#define CS_SYSTIME			(CS_TIMELEFT + 1)	// wall clock time (1826)
 
 //QW// The 2080 magic number comes from q_shared.h of the original game.
 // No game mod can go over this 2080 limit.
