@@ -1422,10 +1422,8 @@ void SetCTFStats(edict_t *ent)
 	int i;
 	int p1, p2;
 	edict_t *e;
-	int rfc;  //red flag carrier
-	int bfc;  //blue flag carrier
-	rfc = 0;
-	bfc = 0;
+	int rfc = 0;  //red flag carrier
+	int bfc = 0;  //blue flag carrier
 
 	// logo headers for the frag display
 	ent->client->ps.stats[STAT_CTF_TEAM1_HEADER] = gi.imageindex ("ctfsb1");
@@ -1477,6 +1475,7 @@ void SetCTFStats(edict_t *ent)
 			// check if on player
 			p1 = gi.imageindex ("i_ctf1d"); // default to dropped
 			for (i = 1; i <= maxclients->value; i++)
+			{
 				if (g_edicts[i].inuse &&
 					g_edicts[i].client->pers.inventory[ITEM_INDEX(flag1_item)])
 				{
@@ -1485,6 +1484,7 @@ void SetCTFStats(edict_t *ent)
 					bfc = i; //
 					break;
 				}
+			}
 		}
 		else if (e->spawnflags & DROPPED_ITEM)
 			p1 = gi.imageindex ("i_ctf1d"); // must be dropped
@@ -1500,6 +1500,7 @@ void SetCTFStats(edict_t *ent)
 			// check if on player
 			p2 = gi.imageindex ("i_ctf2d"); // default to dropped
 			for (i = 1; i <= maxclients->value; i++)
+			{
 				if (g_edicts[i].inuse &&
 					g_edicts[i].client->pers.inventory[ITEM_INDEX(flag2_item)])
 				{
@@ -1508,6 +1509,7 @@ void SetCTFStats(edict_t *ent)
 					rfc = i; //
 					break;
 				}
+			}
 		}
 		else if (e->spawnflags & DROPPED_ITEM)
 			p2 = gi.imageindex ("i_ctf2d"); // must be dropped
@@ -1554,15 +1556,8 @@ void SetCTFStats(edict_t *ent)
 	// stored in CS_GENERAL strings when they connected.
 	// At this point rfc and bfc are the client number
 	// of the flag carrier(s) + 1.
-	if (rfc != 0 )
-		rfc = rfc + (CS_GENERAL - 1);
-	else
-		rfc = CS_EMPTYSTRING;
-	
-	if (bfc != 0 )
-		bfc = bfc + (CS_GENERAL - 1);
-	else
-		bfc = CS_EMPTYSTRING;
+	(rfc != 0) ? (rfc = rfc + (CS_GENERAL - 1)) : (rfc = CS_EMPTYSTRING);
+	(bfc != 0) ? (bfc = bfc + (CS_GENERAL - 1)) : (bfc = CS_EMPTYSTRING);
 
 	if(show_carrier->value)
 	{
