@@ -353,14 +353,14 @@ void BeginIntermission (edict_t *targ)
 
 void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 {
-	char	entry[MAX_MSGLEN];	// Temporary string store
-	char	string[MAX_MSGLEN]; // The scoreboard message
+	char	entry[MAX_MSGLEN] = "";	// Temporary string store
+	char	string[MAX_MSGLEN] = ""; // The scoreboard message
 	size_t	len;
 	int		i;
 	int		j;
 	int		k;
-	int		sorted[MAX_CLIENTS];
-	int		sortedscores[MAX_CLIENTS];
+	int		sorted[MAX_CLIENTS] = {0};
+	int		sortedscores[MAX_CLIENTS] = {0};
 	int		score, total;
 	int		last = 0;
 	gclient_t	*cl;
