@@ -104,7 +104,7 @@ void DoRespawn (edict_t *ent)
 	int	i;
 
 	assert(ent != NULL);
-	if (ent->team)
+	if (ent && ent->team)
 	{
 		edict_t	*master;
 		int	count;
@@ -135,6 +135,7 @@ void DoRespawn (edict_t *ent)
 		}
 	}
 
+	assert(ent != NULL);
 	ent->svflags &= ~SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
 	gi.linkentity (ent);
