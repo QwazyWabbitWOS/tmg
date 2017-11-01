@@ -1470,7 +1470,6 @@ void SetCTFStats(edict_t *ent)
 	{
 		if (e->solid == SOLID_NOT)
 		{
-			int i;
 			// not at base
 			// check if on player
 			p1 = gi.imageindex ("i_ctf1d"); // default to dropped
@@ -1495,7 +1494,6 @@ void SetCTFStats(edict_t *ent)
 	{
 		if (e->solid == SOLID_NOT)
 		{
-			int i;
 			// not at base
 			// check if on player
 			p2 = gi.imageindex ("i_ctf2d"); // default to dropped
