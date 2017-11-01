@@ -3424,7 +3424,6 @@ void ClientDisconnect (edict_t *ent)
 	gi.unlinkentity (ent);
 	ent->s.modelindex = 0;
 	ent->solid = SOLID_NOT;
-	ent->inuse = false;
 	ent->classname = "disconnected";
 	ent->client->pers.connected = false;
 
