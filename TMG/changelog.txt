@@ -42,10 +42,100 @@ is present and debug builds or prints to server console and log file on
 non-Windows systems if developer cvar is set.
 Bumped game version to 2.12.
 
+0.2.15
 Added efficiency stats to HUD in player and chase modes.
-Eff. is displayed as percentage and also as ratio of frags/shots fired.
+Eff is displayed as percentage and also as ratio of frags/shots fired.
 Fixed match countdown timer format so it's always double digits.
 Added flag_bonus and flag_return_time cvars.
+Fix deathmatch join. Fix highscores display at intermission and on command in DM.
+Fixed mapvote. Solo player on a server full of bots can now vote a map change.
+Some bot code maintenance. Removed useless global NumBotsInGame maintenance.
+Improved/renamed GetNumBots().
+Changed names of cvars: map_change, map_randomize, map_once, map_debug.
+Fixed WallFly blockout.
+HUD motd now shows for 3 seconds and then closes, spawning player as spectator.
+Change <SPECTATOR> to <SPEC> for WallFly compatibility. Some code style changes.
+Moved CTFCalcScores and SaveHighScores calls into BeginIntermission
+just prior to moving all clients to intermission.
+
+0.2.16
+Add tracking of flag captures to player HUD. Planning to add captures to scoreboard display.
+
+0.2.17
+Added flag capture count per player to CTF scoreboard. 
+Added cvar support, "newscore" for admin configuration of preferred scoreboard.
+
+0.2.18
+Add server option to display scoreboard on death. Default to off. ctf_deathscores
+
+0.2.19
+Fixed map rotation bugs.
+
+0.2.20
+Added log file management. (log_manager.c)
+Cvars added:
+logfile_name        // the server or qconsole.log file
+logfile            // the logfile mode control
+logfile_rename    // how often we rename the server log file
+0 = never, 1 = daily, 2 = weekly, 3 = monthly, default: 2
+
+0.2.21
+Fixed bot spawn file parser error reporting.
+Various technical code changes.
+
+0.2.22
+Edits to makefiles. Created GNUmakefile & BSDmakefile.
+Added tracking of hooks deployed and hooks landed for stats logging.
+
+0.2.23
+Fix suicide messages.
+Fix hooks crashing server when player kills himself or disconnects while hooking.
+Test code for fixing hook spamming of server.
+Add "ver" command for printing of version and build information in game.
+
+0.2.24
+Add HUD documentation about how HUD placements are determined. (from LOX code)
+Relocate banner to its own header to allow edit and continue in VS.
+Delete banner from g_local.h.
+Eliminate unneeded catching of hook spamming.
+Send message to user if he uses kill command that it's prevented.
+Note: the trapping of kill commands seems to be there to prevent bogus player
+state when switching from active to dead player. The game puts him into
+chase mode instead of dead.
+Fix bot lerping.
+Fix bot wall-spawning and crushing in maps.
+Add some debugging output to the spawnpoint searches.
+
+0.2.25
+Fix portability of line endings and comment blocks in bot config files.
+Added hack to allow doors to remain open after portal tripped.
+Use the cvar "doors_stay_open" to activate this feature.
+
+0.2.26
+OP-file and Op Menu modifications.
+
+0.2.27
+Added CTFScoreboardMessageNew for easier maintenance.
+Fixed bugs in original and new CTFScoreboardMessages.
+Fix ancient bug where "Spectators" block was sent twice in the same scoreboard message.
+Removed OP_* tags in chat names to avoid confusing Wallfly.
+Eliminate cheater checks. Q2admin and r1q2 do our cheat checking.
+Added flag_bonus and flag_return_time cvars.
+Fix bug in mdsoft_NextMap that prevented 0th map in list being selected.
+Other non-functional changes.
+Removed last vestiges of isop, ismop and op variables.
+Now client->pers.oplevel handles all op qualifications. Only one variable to maintain.
+Added bot ON/OFF command to OP_Menu. Operators have this command if they have OP_PLAYERCONTROL permission.
+Fix gi.setmodel call with empty model name in player_die. It was causing warning messages in r1q2 server engine when sv_gamedebug=1.
+Fix bug where highscores weren't showing up in intermission.
+Expanded bot control menu.
+
+0.2.28
+Cleaning up STAT_* constants.
+Trimming size of deathmatch scoreboard message.
+Add "location" command and display the player's location in his HUD.
+Type location in console and the location info toggles on/off.
+
 
 Completed
 2. Player name on freecam was fixed, but I may have to fix it again so it's still on the list.
