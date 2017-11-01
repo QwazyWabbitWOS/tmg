@@ -782,7 +782,7 @@ static void Bot_SearchItems (edict_t *ent)
 					break;
 				}
 				else if(zc->second_target->classname[6] == 'F' &&
-					zc->second_target->classname[6] == 'F')
+						zc->second_target->classname[6] == 'F') //QW// WTF is this about? Should this be 'R'?
 				{
 					target = NULL;
 					continue;
