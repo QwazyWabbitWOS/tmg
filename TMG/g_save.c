@@ -750,12 +750,18 @@ void WriteGame (char *filename, qboolean autosave)
 	int		i;
 	char	str[16];
 
+	if(dedicated->value)
+		return;
+	
 	if (!autosave)
 		SaveClientData ();
 
 	f = fopen (filename, "wb");
-	if (!f)
+	if (!f) 
+	{
 		gi.error ("Couldn't open %s", filename);
+		return;
+	}
 
 	memset (str, 0, sizeof(str));
 	strcpy (str, __DATE__);
@@ -765,7 +771,7 @@ void WriteGame (char *filename, qboolean autosave)
 	fwrite (&game, sizeof(game), 1, f);
 	game.autosaved = false;
 
-	for (i=0 ; i<game.maxclients ; i++)
+	for (i = 0; i < game.maxclients; i++)
 		WriteClient (f, &game.clients[i]);
 
 	fclose (f);
@@ -780,9 +786,15 @@ void ReadGame (char *filename)
 
 	gi.FreeTags (TAG_GAME);
 
+	if(dedicated->value)
+		return;
+	
 	f = fopen (filename, "rb");
 	if (!f)
+	{
 		gi.error ("Couldn't open %s", filename);
+		return;
+	}
 
 	count = fread (str, sizeof(str), 1, f);
 	if (strcmp (str, __DATE__))
@@ -922,9 +934,15 @@ void WriteLevel (char *filename)
 	FILE	*f;
 	void	(*base)(void);
 
+	if(dedicated->value)
+		return;
+
 	f = fopen (filename, "wb");
 	if (!f)
+	{
 		gi.error ("Couldn't open %s", filename);
+		return;
+	}
 
 	// write out edict size for checking
 	i = sizeof(edict_t);
@@ -980,7 +998,10 @@ void ReadLevel (char *filename)
 
 	f = fopen (filename, "rb");
 	if (!f)
+	{
 		gi.error ("Couldn't open %s", filename);
+		return;
+	}
 
 	// free any dynamic memory allocated by loading the level
 	// base state
