@@ -1746,7 +1746,7 @@ qboolean notfairRED; // Used to control HUD messages
 qboolean notfairBLUE;
 float redtime;
 float bluetime;
-char time_left[32];
+char match_time_left[32];
 qboolean techspawn;
 
 //weapon

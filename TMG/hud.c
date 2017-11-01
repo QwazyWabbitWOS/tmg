@@ -110,10 +110,10 @@ void TimeLeft(void)
 	else
 		Com_sprintf (buf, sizeof(buf), "%02i:%02i", min, sec);
 
-	if (strcmp(time_left, buf) != 0)
+	if (strcmp(match_time_left, buf) != 0)
 	{
-		strcpy(time_left, buf);
-		gi.configstring (CS_TIMELEFT, time_left);
+		strcpy(match_time_left, buf);
+		gi.configstring (CS_TIMELEFT, match_time_left);
 	}
 	//track server time
 	if(server_time->value)
@@ -550,7 +550,7 @@ char *ShowHud (edict_t *ent)
 			j += sprintf (layout+j, "xr -50 yt 82 string \"%i/%i \" ", rank, num_ppl);
 			//time
 			j += sprintf (layout+j, "xr -50 yt 90 string2 \"Time\" ");
-			j += sprintf (layout+j, "xr -50 yt 98 string \"%s \" ", time_left);
+			j += sprintf (layout+j, "xr -50 yt 98 string \"%s \" ", match_time_left);
 			//Deaths
 			j += sprintf (layout+j, "xr -50 yt 106 string2 \"Deaths\" ");
 			j += sprintf (layout+j, "xr -50 yt 114 string \"%i \" ", died);
@@ -607,10 +607,10 @@ char *ShowHud (edict_t *ent)
 		j += sprintf (layout+j, "xr -50 yt 66 string \"%i/%i\" ", frags, shots);
 		//rank
 		j += sprintf (layout+j, "xr -50 yt 74 string2 \"Rank\" ");
-		j += sprintf (layout+j, "xr -50 yt 82 string \"%i/%i\" ",rank, num_ppl);
+		j += sprintf (layout+j, "xr -50 yt 82 string \"%i/%i\" ", rank, num_ppl);
 		//time
 		j += sprintf (layout+j, "xr -50 yt 90 string2 \"Time\" ");
-		j += sprintf (layout+j, "xr -50 yt 98 string \"%s \" ", time_left);
+		j += sprintf (layout+j, "xr -50 yt 98 string \"%s \" ", match_time_left);
 		//Deaths
 		j += sprintf (layout+j, "xr -50 yt 106 string2 \"Deaths\" ");
 		j += sprintf (layout+j, "xr -50 yt 114 string \"%i \" ", died);
