@@ -242,7 +242,10 @@ void InitGame (void)
 	server_ip =  gi.cvar("server_ip", "", CVAR_LATCH);
 	lan = gi.cvar ("lan", "0", CVAR_LATCH);
 
-	warmup_time =  gi.cvar("warmup_time", "10", CVAR_LATCH);
+	warmup_time =  gi.cvar("warmup_time", "30", CVAR_LATCH);
+	if (warmup_time->value != 0 && warmup_time->value < 30)
+		gi.cvar_set("warmup_time", "30");
+
 	g_filter =  gi.cvar("filter", "1", CVAR_LATCH);
 
 	// flood control
