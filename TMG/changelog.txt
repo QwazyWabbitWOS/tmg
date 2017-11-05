@@ -133,8 +133,136 @@ Expanded bot control menu.
 0.2.28
 Cleaning up STAT_* constants.
 Trimming size of deathmatch scoreboard message.
-Add "location" command and display the player's location in his HUD.
-Type location in console and the location info toggles on/off.
+Fix broken logic in blank/empty name tests. 
+Remove unneeded code for hook spam catch. Add "location" command and display the player's location in his HUD.
+Type 'location' in console and the location info toggles on/off.
+
+0.2.29
+Remove unneeded code for hook spam catch. 
+Extended the range of railgun tracing. You can now frag players from longer distances.
+Delete <OP> tag from chat messages. It interferes with WallFly. 
+Fixing DM scoreboard message. Still a work in progress, it can malfunction with 20+ players on server. 
+Add space for long names. 
+Added ability for OPs to invoke default configuration files 
+from the Operators menu. Made the bot control menu dynamic. 
+Added cvars for the default config strings so sysop can 
+control the CTF and FFA configurations the operator menu uses.
+Fix a buffer overflow in scoreboard message.
+Faster HUD update rates.
+
+0.2.30
+Refactored FPH and FPM calculations and put the calls 
+into G_SetStats. G_SetStats gets called in ClientEndServerFrame 
+and BotEndServerFrame. FPM is still unused but we do the 
+calculation anyway. The stats are now kept in client respawn struct
+where they belong. HUD doesn't have to do a function call to get them.
+Added UTC mode to HUD server time display. Rectified server_time cvar.
+Rectified configstring overlap introduced by Raven that made 
+"skins" command malfunction and spew bad client numbers on bots and players.
+Fix HUD so it doesn't display caps when not in CTF mode.
+Some other misc. changes removing dead code and some comments.
+Remove unused cvars and clean up some functions.
+More hud work. There's always time for hud work.
+Update BSDMakefile and a comment in g_save.c.
+
+0.2.31
+Removed unused global, "voted".
+Rename stuffcmd to StuffCmd for style consistency. 
+In Q2 code, global functions are camel cased.
+Eliminate some double-double buffering.
+
+0.2.32
+Pulled prototypes out of g_local.h and into g_func.h. Other cosmetic changes.
+Add debugging output to LoadHighScores. Add documentation to DbgPrintf.
+Minor tweak of GetDate & GetTime definitions.
+Fix bugs in LogChat. Cleanup InitGame and fold some initialization into ServerInit.
+
+0.2.33
+Guard against potential null pointer dereference in G_RunFrame.
+Remove more unused variables and operations.
+Fix bug that caused white text where it should have been highlighted.
+Op menu Restart Level now restarts level instead of executing gamemap.
+Refactored s_map code.
+
+0.2.34
+Fix bug in safe_bprintf where highlighting was lost.
+Fix index past end of map list. Fix bug where mdsoft_NextMap 
+entered infinite loop if map_randomize = 0 and map_once = 1. 
+Test and clear fVisited flags on map list when all maps become 
+visited. Restrict cases where mdsoft_NextMap can return NULL.
+
+0.2.35
+Fix bug where the server would not show clients entering server to all clients.
+Eliminate superfluous client counting function.
+Fix my_bprintf/safe_*printf format string hole
+Don't expand printf conversion specifiers twice in my_bprintf or the
+ironically-named safe_{b,c,center}printf functions.
+Fix FPH and FPM to only use resp.frags so caps and other points don't count toward higher frag rates.
+Fix error in showbannedfile command.
+Don't save highscores of 3zb2 bots. Silence Ubuntu's gcc about fread calls.
+Add error reporting to wav_mod_setup function.
+Report error if reading file in SaveHighScores.
+Update BSDmakefile to build and link 32-bit code and libs.
+Eliminate annoying delay for MOTD where server ignores client commands at connect/reconnect.
+Added conditionals for 32 or 64 bit builds.
+Portability to 64-bits.
+
+0.2.36
+Quick hack to allow a longer list of wav files in intro.txt.
+Fix to extend song list. See comments in intro.c.
+Delete call to PrecacheSongs in SP_worldspawn
+Begin refactoring for wav_mod.
+
+0.2.37
+Use constants from game instead of numeric constants. Add debugging info and error checks. 
+Eliminate some dead store per clang static analysis. Some cosmetic changes for consistency of code format.
+Cleanup Wav_Mod_Setup.
+Add support for motd.txt and eliminate HUD-based MOTD.
+Initial spectate mode is still broken, needs fixing. (No tilt.)
+
+0.2.38
+Add support for motd.txt and eliminate HUD-based MOTD.
+Initial spectate mode is still broken, needs fixing. (No tilt.)
+Fix bug in target_laser_think, somehow a line was commented out in the original code inherited by Josh.
+Replace gslog and sl_logging with QwazyWabbit's own StatsLog output.
+
+0.2.39
+Fix semantic issues and stuff spotted by clang.
+Update makefiles for Linux.
+Update stats management document.
+Using Com_sprintf instead of naked sprintf.
+Add team total scores and captures to stats summary.
+Flush stats file before renaming it on schedule.
+Fixes for stats log and console log backups.
+Tidy up the cvars related to stats and console logs.
+
+0.2.40
+Highlight only the banner lines of motd, not the file text. 
+Can't control what's in it and highlighting remaps some chars to different glyphs.
+Changes for Wallfly and suppress warning in Ubuntu.
+Reduce usage of naked sprintf.
+Add note in GNUmakefile on how to build 32-bit dll on x64 systems.
+Fixes for putting client in server. Fix buffer overflow in ClientConnect (player[]).
+Prevent buffer overflows and use manifest constants instead of numeric constants in array sizes.
+Use gamedebug cvar instead of developer for debug output in Windows release builds and on Linux.
+Added support for using .nav files for chain file loads and saves per older versions. Defaults to use_navfiles = 1.
+More fun with trying to fix bot spawning inside walls.
+Rectify bot skins in CTF mode so they have proper team color. More buffer sizing and sprintf replacement.
+Fix logical flow of StatsLog function. Hook logging tells what map we're on.
+Give gibs, heads and routes a classname. Adjust player_die yet again.
+Let BotAssignTeamCtf align the bot skins. 
+Bots wait longer on respawn... troubleshooting bad spawn locations.
+Remove unused/unreferenced cruft from anticheat module.
+Document the added mapname to the HOOKS output.
+Refactored usage of CanUsewep() and other 'assignment within conditional expression' idiomatic usages.
+Stop game from making server do unnecessary work.
+Enable player ID in free cam mode.
+Let bots chill for 1/2 second instead of 1 sec. It didn't help the wall-spawn issue.
+Fix excessive stack usage due to oversizing of buffers.
+Clean up some initializations.
+Move hud data further to the right.
+Set 30 second minimum warmup time.
+
 
 
 Completed
