@@ -1445,7 +1445,7 @@ edict_t *SelectRandomDeathmatchSpawnPoint (void)
 	if (!count)
 	{
 		if(debug_spawn->value)
-			DbgPrintf("%s is returning NULL\n", __func__);
+			DbgPrintf("%s is returning NULL %s\n", __func__, level.mapname);
 		return NULL;
 	}
 	if (count <= 2)
