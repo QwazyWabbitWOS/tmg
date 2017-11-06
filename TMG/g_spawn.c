@@ -877,8 +877,8 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	memset (&level, 0, sizeof(level));
 	memset (g_edicts, 0, game.maxentities * sizeof (g_edicts[0]));
 
-	strncpy (level.mapname, mapname, sizeof(level.mapname)-1);
-	strncpy (game.spawnpoint, spawnpoint, sizeof(game.spawnpoint)-1);
+	Q_strncpy (level.mapname, mapname, sizeof(level.mapname)-1);
+	Q_strncpy (game.spawnpoint, spawnpoint, sizeof(game.spawnpoint)-1);
 
 	//RAV
 

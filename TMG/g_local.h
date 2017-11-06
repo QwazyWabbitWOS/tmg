@@ -279,19 +279,19 @@ typedef struct gitem_armor_s
 typedef struct gitem_s
 {
 	char		*classname;	// spawning name
-	qboolean	(*pickup)(struct edict_s *ent, struct edict_s *other);
-	void		(*use)(struct edict_s *ent, struct gitem_s *item);
-	void		(*drop)(struct edict_s *ent, struct gitem_s *item);
-	void		(*weaponthink)(struct edict_s *ent);
-	char		*pickup_sound;
-	char		*world_model;
-	int			world_model_flags;
+	qboolean	(*pickup)(struct edict_s *ent, struct edict_s *other); // The pickup item function
+	void		(*use)(struct edict_s *ent, struct gitem_s *item); // The use item function
+	void		(*drop)(struct edict_s *ent, struct gitem_s *item); // The item drop function
+	void		(*weaponthink)(struct edict_s *ent); // The weapon think function
+	char		*pickup_sound; // Pickup sound file
+	char		*world_model; // Item model
+	int			world_model_flags; // Item world model flags
 	char		*view_model;
 
 	// client side info
-	char		*icon;
+	char		*icon; // HUD icon for item.
 	char		*pickup_name;	// for printing on pickup
-	int			count_width;		// number of digits to display by icon
+	int			count_width;	// number of digits to display by icon
 
 	int			quantity;		// for ammo how much, for weapons how much is used per shot
 	char		*ammo;			// for weapons
@@ -1704,8 +1704,8 @@ vec3_t redflagnow;
 vec3_t blueflagnow;
 vec3_t redflag_origin;
 vec3_t blueflag_origin;
-qboolean redflaggone;
-qboolean blueflaggone;
+qboolean red_flag_gone;
+qboolean blue_flag_gone;
 //System Time
 void GetTime(void);
 char sys_time[32];
@@ -1890,12 +1890,12 @@ typedef struct ctfgame_s
 	//These are only set when going into intermission!
 	int total1; // RED total points
 	int total2; // BLUE total points
-	int players1;	// team1 count
-	int players2;	// team2 count
-	int players_total;	// total player count
-	int	specs;		// spectator count
-	float last_flag_capture;
-	int last_capture_team;
+	int players1;	// Team1 count
+	int players2;	// Team2 count
+	int players_total;	// Total player count
+	int	specs;		// Spectator count
+	float last_flag_capture; // Time the last flag was capped.
+	int last_capture_team; // Team that last capped a flag. 
 } ctfgame_t;
 ctfgame_t ctfgame;
 

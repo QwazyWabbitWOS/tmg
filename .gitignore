@@ -26,3 +26,5 @@ TMG/Debug
 *.so
 dependencies
 TMG/Release/
+/TMG/.vs/TMG/v15/Browse.VC.opendb
+/TMG/.vs/TMG/v15/Browse.VC.db

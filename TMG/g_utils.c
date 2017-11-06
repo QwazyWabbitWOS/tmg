@@ -397,10 +397,7 @@ void G_InitEdict (edict_t *e)
 	e->nextthink = 0;
 }
 
-//=================
 /**
-G_Spawn
-
  Either finds a free edict, or allocates a new one.
 
  Try to avoid reusing an entity that was recently freed, because it
@@ -408,58 +405,53 @@ G_Spawn
  instead of being removed and recreated, which can cause interpolated
  angles and bad trails.
 */
-//=================
-edict_t *G_Spawn (void)
+edict_t *G_Spawn(void)
 {
 	int			i;
 	edict_t		*e;
 
-	e = &g_edicts[(int)maxclients->value+1];
-	for ( i=maxclients->value+1 ; i<globals.num_edicts ; i++, e++)
+	e = &g_edicts[(int)maxclients->value + 1];
+	for (i = maxclients->value + 1; i < globals.num_edicts; i++, e++)
 	{
 		// the first couple seconds of server time can involve a lot of
 		// freeing and allocating, so relax the replacement policy
-		if (!e->inuse && ( e->freetime < 2 || level.time - e->freetime > 0.5 ) )
+		if (!e->inuse && (e->freetime < 2 || level.time - e->freetime > 0.5))
 		{
-			G_InitEdict (e);
+			G_InitEdict(e);
 			return e;
 		}
 	}
-	
+
 	if (i == game.maxentities)
-		gi.error ("ED_Alloc: no free edicts");
-		
+		gi.error("ED_Alloc: no free edicts");
+
 	globals.num_edicts++;
-	
-	G_InitEdict (e);
+
+	G_InitEdict(e);
 	return e;
 }
 
-/*
-=================
-G_FreeEdict
-
-Marks the edict as free
-=================
+/**
+ Marks the edict as free.
 */
-void G_FreeEdict (edict_t *ed)
+void G_FreeEdict(edict_t *ed)
 {
-	if(gamedebug->value)
+	if (gamedebug->value)
 		DbgPrintf("%s %s\n", __func__, ed->classname);
 
-	gi.unlinkentity (ed);		// unlink from world
+	gi.unlinkentity(ed);	// unlink from world
 
 	if ((ed - g_edicts) <= (maxclients->value + BODY_QUEUE_SIZE))
 	{
 		//gi.drintf("tried to free special edict\n");
 		return;
 	}
-	
+
 	//if(debug_spawn->value && ed != NULL)
 	//	DbgPrintf ("%s movetype %d inuse %d linkcount %d classname %s time: %.1f\n",
 	//	__func__, ed->movetype, ed->inuse, ed->linkcount, ed->classname, level.time);
 
-	memset (ed, 0, sizeof(*ed));
+	memset(ed, 0, sizeof(*ed));
 	ed->classname = "freed";
 	ed->freetime = level.time;
 	ed->inuse = false;

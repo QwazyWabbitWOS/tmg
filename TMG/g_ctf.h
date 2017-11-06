@@ -119,7 +119,7 @@ void VoteNo (edict_t *ent, pmenu_t *menu);
 /**
  Count spectators
  */
-int CountSpecClients (void);
+int CountSpectators (void);
 
 void SP_info_player_team1(edict_t *self);
 void SP_info_player_team2(edict_t *self);
@@ -145,7 +145,7 @@ void CTFDeadDropFlag(edict_t *self);
 void CTFScoreboardMessage (edict_t *ent, edict_t *killer);
 void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer);
 void CTFTeam_f (edict_t *ent, int desired_team);
-void CTFID_f (edict_t *ent);
+//void CTFID_f (edict_t *ent);
 void CTFSay_Team_Location(edict_t *who, char *buf);
 void CTFSay_Team(edict_t *who, char *msg);
 void CTFJoinTeam(edict_t *ent, int desired_team);

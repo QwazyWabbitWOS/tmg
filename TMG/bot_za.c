@@ -378,8 +378,7 @@ static void Bot_SearchItems (edict_t *ent)
 	if( j == 0 )
 	{
 //JSW		if ((int)(dmflags->value) & DF_WEAPONS_STAY) wstayf = true;
-		if (dmflag & DF_WEAPONS_STAY) wstayf = true;
-		else wstayf = false;
+		(dmflag & DF_WEAPONS_STAY) ? (wstayf = true) : (wstayf = false);
 
 		target = NULL;
 		VectorCopy (ent->absmin, touchmin);
@@ -405,9 +404,9 @@ static void Bot_SearchItems (edict_t *ent)
 			touchmax[1] += 300;
 			touchmax[2] += 54;// +290);
 
-			if(ent->health > 70 && ent->client->pers.inventory[ITEM_INDEX(Fdi_ROCKETLAUNCHER/*FindItem("Rocket Launcher")*/)])
+			if(ent->health > 70 && ent->client->pers.inventory[ITEM_INDEX(Fdi_ROCKETLAUNCHER)])
 			{
-				i = ITEM_INDEX(Fdi_ROCKETS/*FindItem("Rockets")*/);
+				i = ITEM_INDEX(Fdi_ROCKETS);
 
 				if(ent->client->pers.inventory[i] > 0)
 				{
@@ -535,41 +534,49 @@ static void Bot_SearchItems (edict_t *ent)
 						}
 						else if(entcln[11] == 'j')	//item_armor_jacket
 						{
-							if( ent->client->pers.inventory[ITEM_INDEX(FindItem("Jacket Armor"))] < 50 ) target = trent;
+							if( ent->client->pers.inventory[ITEM_INDEX(FindItem("Jacket Armor"))] < 50 )
+								target = trent;
 						}
 						else if(entcln[11] == 'c')	//item_armor_combat
 						{
-							if( ent->client->pers.inventory[ITEM_INDEX(FindItem("Combat Armor"))] < 100) target = trent;
+							if( ent->client->pers.inventory[ITEM_INDEX(FindItem("Combat Armor"))] < 100)
+								target = trent;
 						}
 						else if(entcln[11] == 'b')	//item_armor_body
 						{
-							if( ent->client->pers.inventory[ITEM_INDEX(FindItem("Body Armor"))] < 200) target = trent;
+							if( ent->client->pers.inventory[ITEM_INDEX(FindItem("Body Armor"))] < 200)
+								target = trent;
 						}
 						else if(entcln[6] == 'd')	//item_adrenaline
-										target = trent;
+								target = trent;
 						else if(entcln[6] == 'n')	//item_ancient_head
-										target = trent;
+								target = trent;
 					}
 					else if(entcln[5] == 'f')
 					{
-						if( trent->spawnflags & DROPPED_ITEM ) target = trent;
+						if( trent->spawnflags & DROPPED_ITEM )
+							target = trent;
 						else if(entcln[10] == 't' && entcln[14] == '1')
 						{
-							if( ent->client->resp.ctf_team == CTF_TEAM2) target = trent;
-							else if( ent->client->pers.inventory[ITEM_INDEX(FindItem("Blue Flag"))]) target = trent;
+							if( ent->client->resp.ctf_team == CTF_TEAM2)
+								target = trent;
+							else if( ent->client->pers.inventory[ITEM_INDEX(FindItem("Blue Flag"))])
+								target = trent;
 						}
 						else if(entcln[10] == 't' && entcln[14] == '2')
 						{
-							if( ent->client->resp.ctf_team == CTF_TEAM1) target = trent;
-							else if(ent->client->pers.inventory[ITEM_INDEX(FindItem("Red Flag"))]) target = trent;
+							if( ent->client->resp.ctf_team == CTF_TEAM1)
+								target = trent;
+							else if(ent->client->pers.inventory[ITEM_INDEX(FindItem("Red Flag"))])
+								target = trent;
 						}
 					}
 					else if(entcln[5] == 't')
 					{
 						if(!BotApplyResistance(ent))
-							if(	!BotApplyStrength(ent))
-								if( !CTFApplyHaste(ent))
-									if( !CTFHasRegeneration(ent)) target = trent;
+							if(!BotApplyStrength(ent))
+								if(!CTFApplyHaste(ent))
+									if(!CTFHasRegeneration(ent)) target = trent;
 					}
 					else
 					{
@@ -824,37 +831,41 @@ static void Bot_SearchItems (edict_t *ent)
 #define EXPLO_BOXSIZE	64
 
 static
-qboolean Bot_ExploAvoid(edict_t *ent,vec3_t	v)
+qboolean Bot_ExploAvoid(edict_t *ent, vec3_t	v)
 {
 	int	i;
+	vec3_t	absmax, absmin;
+	vec3_t	msmax, msmin;
 
-	vec3_t	absmax,absmin;
-	vec3_t	msmax,msmin;
+	if (ent->groundentity == NULL && !ent->waterlevel)
+		return true;
 
-	if(ent->groundentity == NULL && !ent->waterlevel) return true;
-	if(!(FFlg[Bot[ent->client->zc.botindex].param[BOP_COMBATSKILL]] & FIRE_EXPAVOID)) return true;
+	if (!(FFlg[Bot[ent->client->zc.botindex].param[BOP_COMBATSKILL]] & FIRE_EXPAVOID))
+		return true;
 
-	VectorCopy(v,msmax);
-	VectorCopy(v,msmin);
+	VectorCopy(v, msmax);
+	VectorCopy(v, msmin);
 	msmax[0] += ent->maxs[0]; msmax[1] += ent->maxs[1]; msmax[2] += ent->maxs[2];
 	msmin[0] += ent->mins[0]; msmin[1] += ent->mins[1]; msmin[2] += ent->mins[2];
 
-	for(i = 0;i < MAX_EXPLINDEX;i++)
+	for (i = 0; i < MAX_EXPLINDEX; i++)
 	{
-		if(ExplIndex[i] != NULL) {if(ExplIndex[i]->inuse == false) ExplIndex[i] = NULL;}
-		if(ExplIndex[i] != NULL)
+		if (ExplIndex[i] != NULL && ExplIndex[i]->inuse == false)
+			ExplIndex[i] = NULL;
+
+		if (ExplIndex[i] != NULL)
 		{
-			VectorCopy(ExplIndex[i]->s.origin,absmax);
-			VectorCopy(absmax,absmin);
+			VectorCopy(ExplIndex[i]->s.origin, absmax);
+			VectorCopy(absmax, absmin);
 			absmax[0] += EXPLO_BOXSIZE; absmax[1] += EXPLO_BOXSIZE; absmax[2] += EXPLO_BOXSIZE;
 			absmin[0] -= EXPLO_BOXSIZE; absmin[1] -= EXPLO_BOXSIZE; absmin[2] -= EXPLO_BOXSIZE;
 
-			if(absmax[0]	< msmin[0]) continue;
-			if(msmax[0]	< absmin[0])	continue;
-			if(absmax[1]	< msmin[1]) continue;
-			if(msmax[1]	< absmin[1])	continue;
-			if(absmax[2]	< msmin[2]) continue;
-			if(msmax[2]	< absmin[2])	continue;
+			if (absmax[0] < msmin[0]) continue;
+			if (absmax[1] < msmin[1]) continue;
+			if (absmax[2] < msmin[2]) continue;
+			if (msmax[0] < absmin[0]) continue;
+			if (msmax[1] < absmin[1]) continue;
+			if (msmax[2] < absmin[2]) continue;
 
 			return false;
 		}
@@ -863,45 +874,47 @@ qboolean Bot_ExploAvoid(edict_t *ent,vec3_t	v)
 }
 
 static
-qboolean CheckLaser(vec3_t pos,vec3_t maxs,vec3_t mins)
+qboolean CheckLaser(vec3_t pos, vec3_t maxs, vec3_t mins)
 {
 	int	i;
-	vec3_t v,end,absmax,absmin;
-	float L1,L2,L3;
+	vec3_t v, end, absmax, absmin;
+	float L1, L2, L3;
 
-	VectorAdd(pos,maxs,absmax);
-	VectorAdd(pos,mins,absmin);
+	VectorAdd(pos, maxs, absmax);
+	VectorAdd(pos, mins, absmin);
 
-	for(i = 0;i < MAX_LASERINDEX;i++)
+	for (i = 0; i < MAX_LASERINDEX; i++)
 	{
-		if(LaserIndex[i] == NULL) return false;
-		if (!(LaserIndex[i]->spawnflags & 1)) continue;
+		if (LaserIndex[i] == NULL)
+			return false;
+		if (!(LaserIndex[i]->spawnflags & 1))
+			continue;
 
-		VectorSubtract(pos,LaserIndex[i]->s.origin,v);
+		VectorSubtract(pos, LaserIndex[i]->s.origin, v);
 		L1 = VectorLength(v);
-		VectorSubtract(pos,LaserIndex[i]->moveinfo.end_origin,v);
+		VectorSubtract(pos, LaserIndex[i]->moveinfo.end_origin, v);
 		L2 = VectorLength(v);
 
-		VectorSubtract(LaserIndex[i]->s.origin,LaserIndex[i]->moveinfo.end_origin,v);
+		VectorSubtract(LaserIndex[i]->s.origin, LaserIndex[i]->moveinfo.end_origin, v);
 		L3 = VectorLength(v);
 
-//		VectorCopy (LaserIndex[i]->s.origin, start);
-		VectorMA (LaserIndex[i]->s.origin, L3 * L1 / (L1 + L2), LaserIndex[i]->movedir, end);
+		//VectorCopy (LaserIndex[i]->s.origin, start);
+		VectorMA(LaserIndex[i]->s.origin, L3 * L1 / (L1 + L2), LaserIndex[i]->movedir, end);
 
-		VectorSubtract(pos,end,v);
+		VectorSubtract(pos, end, v);
 		L3 = VectorLength(v);
 
-		if(L3 > L1 || L3 > L2) continue;
+		if (L3 > L1 || L3 > L2) continue;
 
-//gi.bprintf(PRINT_HIGH,"Length %f!\n",L3);
+		//gi.bprintf(PRINT_HIGH,"Length %f!\n",L3);
 
-		if(end[0]	< absmin[0]) continue;
-		if(absmax[0]	< end[0])	continue;
-		if(end[1]	< absmin[1]) continue;
-		if(absmax[1]	< end[1])	continue;
-		if(end[2]	< absmin[2]) continue;
-		if(absmax[2]	< end[2])	continue;
-//gi.bprintf(PRINT_HIGH,"Laser Checked! %f\n",L3);
+		if (end[0] < absmin[0]) continue;
+		if (end[1] < absmin[1]) continue;
+		if (end[2] < absmin[2]) continue;
+		if (absmax[0] < end[0]) continue;
+		if (absmax[1] < end[1]) continue;
+		if (absmax[2] < end[2]) continue;
+		//gi.bprintf(PRINT_HIGH,"Laser Checked! %f\n",L3);
 		return true;
 	}
 	return false;
@@ -912,296 +925,320 @@ qboolean CheckLaser(vec3_t pos,vec3_t maxs,vec3_t mins)
 //  return	false	can't
 //			true	stand
 //			2		duck
-int Bot_moveT ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom)
+int Bot_moveT(edict_t *ent, float ryaw, vec3_t pos, float dist, float *bottom)
 {
-	float		i,yaw;
-	vec3_t		trstart,trend;
-	vec3_t		trmin,trmax,v,vv;
+	float		i, yaw;
+	vec3_t		trstart, trend;
+	vec3_t		trmin, trmax, v, vv;
 	trace_t		rs_trace;
 	float		tracelimit;
 	qboolean	moveok;
 	int			contents;
 	int			tcontents;
 
-	tcontents =/* MASK_BOTSOLID*/MASK_BOTSOLIDX;//MASK_PLAYERSOLID /*| CONTENTS_TRANSLUCENT*/;  //???[?U?[?ɂ͐G???Ȃ?
-//	if(!ent->waterlevel) tcontents |= CONTENTS_WATER;
+	tcontents = MASK_BOTSOLIDX;//MASK_PLAYERSOLID | CONTENTS_TRANSLUCENT;
+	//if(!ent->waterlevel) tcontents |= CONTENTS_WATER;
 
-	if(/*ent->client->zc.waterstate == WAS_FLOAT*/ent->waterlevel >= 1/*2*/) tracelimit = 75;//75;//61;
-	else if(ent->client->ps.pmove.pm_flags & PMF_DUCKED) tracelimit = 26;
-	else tracelimit = JumpMax + 5;//61;
+	if (/*ent->client->zc.waterstate == WAS_FLOAT*/ent->waterlevel >= 1/*2*/) tracelimit = 75;//75;//61;
+	else if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
+		tracelimit = 26;
+	else
+		tracelimit = JumpMax + 5; //61;
 
-	VectorSet (trmin,-16,-16,-24);
-	VectorSet (trmax,16,16,3);
+	VectorSet(trmin, -16, -16, -24);
+	VectorSet(trmax, 16, 16, 3);
 
-	if(ent->client->zc.route_trace) VectorSet (vv,16,16,0);
-	else VectorSet (vv,16,16,3);
+	if (ent->client->zc.route_trace)
+		VectorSet(vv, 16, 16, 0);
+	else
+		VectorSet(vv, 16, 16, 3);
 
-	if(/* DISABLES CODE */ (0))
+	if (/* DISABLES CODE */ (0))
 		//QW// clean up commented code.
-//	if (!ent->client->ps.pmove.pm_flags & PMF_DUCKED
-//		  && (ent->client->zc.n_duckedtime < FRAMETIME * 10
-//		  && !ent->client->zc.route_trace)
+	//if (!ent->client->ps.pmove.pm_flags & PMF_DUCKED
+	//	  && (ent->client->zc.n_duckedtime < FRAMETIME * 10
+	//	  && !ent->client->zc.route_trace)
 		trmax[2] = 31;
-//	else if(ent->waterlevel && !ent->groundentity) trmax[2] = 32;
-	else if(ent->client->zc.route_trace
+	//else if(ent->waterlevel && !ent->groundentity) trmax[2] = 32;
+	else
+	if (ent->client->zc.route_trace
 		&& !(ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 		&& ent->waterlevel < 2)
 	{
-		Get_RouteOrigin(ent->client->zc.routeindex,v);
-		if((v[2] - ent->s.origin[2]) > 20) trmax[2] = 31;
+		Get_RouteOrigin(ent->client->zc.routeindex, v);
+		if ((v[2] - ent->s.origin[2]) > 20) trmax[2] = 31;
 	}
 
-	yaw = ryaw*M_PI*2 / 360;
-	trend[0] = cos(yaw) * dist ;				//start
-	trend[1] = sin(yaw) * dist ;
+	yaw = ryaw*M_PI * 2 / 360;
+	trend[0] = cos(yaw) * dist;				//start
+	trend[1] = sin(yaw) * dist;
 	trend[2] = 0;
-	VectorAdd (trend, ent->s.origin, trstart);
+	VectorAdd(trend, ent->s.origin, trstart);
 
-	VectorCopy(trstart,trend);
+	VectorCopy(trstart, trend);
 	trend[2] += 1;
-	rs_trace = gi.trace (trstart, trmin, trmax, trend,ent, tcontents);
+	rs_trace = gi.trace(trstart, trmin, trmax, trend, ent, tcontents);
 
 	trmax[2] += 1;
-	if(rs_trace.allsolid || rs_trace.startsolid || rs_trace.fraction != 1.0)
+	if (rs_trace.allsolid || rs_trace.startsolid || rs_trace.fraction != 1.0)
 	{
 		moveok = false;
-		VectorCopy (trstart, trend);
+		VectorCopy(trstart, trend);
 
-		for( i = 4 ; i < (tracelimit + 4) ; i += 4 )
+		for (i = 4; i < (tracelimit + 4); i += 4)
 		{
 			trstart[2] = ent->s.origin[2] + i;
-			rs_trace = gi.trace (trstart, trmin, vv/*trmax*/, trend,ent, tcontents );
-//			rs_trace = gi.trace (trstart, trmin, trmax, trstart,ent, tcontents );
-			if(!rs_trace.allsolid && !rs_trace.startsolid && rs_trace.fraction > 0)
+			rs_trace = gi.trace(trstart, trmin, vv/*trmax*/, trend, ent, tcontents);
+			//			rs_trace = gi.trace (trstart, trmin, trmax, trstart,ent, tcontents );
+			if (!rs_trace.allsolid && !rs_trace.startsolid && rs_trace.fraction > 0)
 			{
 				moveok = true;
 				break;
 			}
 		}
-		if(!moveok/*i >= tracelimit+4*/)
-//		if(i >= tracelimit - 4)
+		if (!moveok/*i >= tracelimit+4*/)
+			//		if(i >= tracelimit - 4)
 		{
-//gi.bprintf(PRINT_HIGH,"apooX %f >= %f\n",i, tracelimit);
-//if(ent->client->ps.pmove.pm_flags & PMF_DUCKED) gi.bprintf(PRINT_HIGH,"apoo1 %f %f \n",i,trmax[2]);
+			//gi.bprintf(PRINT_HIGH,"apooX %f >= %f\n",i, tracelimit);
+			//if(ent->client->ps.pmove.pm_flags & PMF_DUCKED) gi.bprintf(PRINT_HIGH,"apoo1 %f %f \n",i,trmax[2]);
 			return false;
 		}
 
-//		rs_trace = gi.trace (trstart, trmin, trmax, trend,ent, tcontents );
+		//rs_trace = gi.trace (trstart, trmin, trmax, trend,ent, tcontents );
 		*bottom = rs_trace.endpos[2] - ent->s.origin[2];
 
-		if(!ent->client->zc.route_trace)
+		if (!ent->client->zc.route_trace)
 		{
-//gi.bprintf(PRINT_HIGH,"apoo2\n");
-//if(ent->client->zc.waterstate == 1 && ryaw == ent->client->zc.moveyaw) gi.bprintf(PRINT_HIGH,"apoo2\n");
-			if(rs_trace.plane.normal[2] < 0.7 && (!ent->client->zc.waterstate && ent->groundentity)) return false;
+			//gi.bprintf(PRINT_HIGH,"apoo2\n");
+			//if(ent->client->zc.waterstate == 1 && ryaw == ent->client->zc.moveyaw) gi.bprintf(PRINT_HIGH,"apoo2\n");
+			if (rs_trace.plane.normal[2] < 0.7 &&
+				(!ent->client->zc.waterstate && ent->groundentity))
+				return false;
 		}
 		else
 		{
-			Get_RouteOrigin(ent->client->zc.routeindex,v);
-			if(rs_trace.plane.normal[2] < 0.7 && v[2] < ent->s.origin[2]) return false;
+			Get_RouteOrigin(ent->client->zc.routeindex, v);
+			if (rs_trace.plane.normal[2] < 0.7 && v[2] < ent->s.origin[2])
+				return false;
 		}
 
-		if( *bottom >/*=*/ tracelimit - 5)
+		if (*bottom >/*=*/ tracelimit - 5)
 		{
-//gi.bprintf(PRINT_HIGH,"apooY %f > %f\n", *bottom, tracelimit - 5);
-//gi.bprintf(PRINT_HIGH,"apoo3\n");
-//if(ent->client->zc.waterstate == 1 && ryaw == ent->client->zc.moveyaw) gi.bprintf(PRINT_HIGH,"apoo3\n");
+			//gi.bprintf(PRINT_HIGH,"apooY %f > %f\n", *bottom, tracelimit - 5);
+			//gi.bprintf(PRINT_HIGH,"apoo3\n");
+			//if(ent->client->zc.waterstate == 1 && ryaw == ent->client->zc.moveyaw) gi.bprintf(PRINT_HIGH,"apoo3\n");
 			return false;
 		}
+
 		pos[0] = rs_trace.endpos[0];
 		pos[1] = rs_trace.endpos[1];
 		pos[2] = rs_trace.endpos[2];
 
-		if(trmax[2] == 32)
+		if (trmax[2] == 32)
 		{
-			if(Bot_ExploAvoid(ent,pos))
+			if (Bot_ExploAvoid(ent, pos))
 			{
-				if(!CheckLaser(pos,trmax,trmin))
-				return true;
+				if (!CheckLaser(pos, trmax, trmin))
+					return true;
 			}
 			return false;
 		}
 
-//		trmax[2] = 32;
-		VectorCopy(pos,trend);
+		//trmax[2] = 32;
+		VectorCopy(pos, trend);
 		trend[2] += 28;
-		rs_trace = gi.trace (pos, trmin, trmax, trend,ent, tcontents );
-		if(!rs_trace.allsolid && !rs_trace.startsolid && rs_trace.fraction == 1.0)
+		rs_trace = gi.trace(pos, trmin, trmax, trend, ent, tcontents);
+		
+		if (!rs_trace.allsolid && !rs_trace.startsolid && rs_trace.fraction == 1.0)
 		{
-			if(Bot_ExploAvoid(ent,pos))
+			if (Bot_ExploAvoid(ent, pos))
 			{
-				if(!CheckLaser(pos,trmax,trmin))
-				return true;
+				if (!CheckLaser(pos, trmax, trmin))
+					return true;
 			}
 			return false;
 		}
-		if(Bot_ExploAvoid(ent,pos))
+		
+		if (Bot_ExploAvoid(ent, pos))
 		{
-			if(!CheckLaser(pos,trmax,trmin))
-			return 2;
+			if (!CheckLaser(pos, trmax, trmin))
+				return 2;
 		}
 		return false;
 
 
-/*		trmax[2] = 32;
+		/*trmax[2] = 32;
 		rs_trace = gi.trace (pos, trmin, trmax, pos,ent, tcontents );
-		if(!rs_trace.allsolid && !rs_trace.startsolid)	return true;
-		return 2;*/
+			if(!rs_trace.allsolid && !rs_trace.startsolid)
+				return true;
+			return 2;*/
 	}
 	else								// fall avoidance
 	{
 		pos[0] = trstart[0];
 		pos[1] = trstart[1];
 		pos[2] = trstart[2];
-		VectorCopy (trstart, trend);
+		VectorCopy(trstart, trend);
 
-		trstart[2] = trend[2] -8190;
-		rs_trace = gi.trace (trend, trmin, trmax, trstart,ent, tcontents | MASK_OPAQUE);
+		trstart[2] = trend[2] - 8190;
+		rs_trace = gi.trace(trend, trmin, trmax, trstart, ent, tcontents | MASK_OPAQUE);
 
 		*bottom = rs_trace.endpos[2] - ent->s.origin[2];
 
-		if(/* DISABLES CODE */ (0)/*rs_trace.fraction != 1.0 && rs_trace.plane.normal[2] < 0.7 && ent->waterlevel < 2 && ent->groundentity*/)
+		if (/* DISABLES CODE */ (0)
+			/*rs_trace.fraction != 1.0 && 
+			rs_trace.plane.normal[2] < 0.7 && 
+			ent->waterlevel < 2 && ent->groundentity*/)
 		{
-			i = Get_vec_yaw (rs_trace.plane.normal,ryaw);
-			if( i < 90)
+			i = Get_vec_yaw(rs_trace.plane.normal, ryaw);
+			if (i < 90)
 			{
-				if(*bottom < 0 ) *bottom *= 3.0;
+				if (*bottom < 0) *bottom *= 3.0;
 			}
 			else
 			{
-//if(ent->client->ps.pmove.pm_flags & PMF_DUCKED) gi.bprintf(PRINT_HIGH,"apoo2\n");
-//if(ent->client->zc.waterstate == WAS_FLOAT && ryaw == ent->client->zc.moveyaw) gi.bprintf(PRINT_HIGH,"apooX\n");
+				/*if(ent->client->ps.pmove.pm_flags & PMF_DUCKED)
+					gi.bprintf(PRINT_HIGH,"apoo2\n");
+				if(ent->client->zc.waterstate == WAS_FLOAT && 
+					ryaw == ent->client->zc.moveyaw)
+						gi.bprintf(PRINT_HIGH,"apooX\n"); */
 				return false;
 			}
 		}
-		if(/* DISABLES CODE */ (0)/*!ent->client->zc.route_trace*/)
+		if (/* DISABLES CODE */ (0)/*!ent->client->zc.route_trace*/)
 		{
-			if(rs_trace.plane.normal[2] > 0 && rs_trace.plane.normal[2] < 0.7) *bottom /= rs_trace.plane.normal[2];
+			if (rs_trace.plane.normal[2] > 0 && rs_trace.plane.normal[2] < 0.7) *bottom /= rs_trace.plane.normal[2];
 		}
-/*		else
-		{
+		/*		else
+				{
 
-		}*/
+				}*/
 
 		contents = 0;
-		if(!ent->waterlevel)
+		if (!ent->waterlevel)
 		{
 			if (ent->client->enviro_framenum > level.framenum) contents = CONTENTS_LAVA;
-			else contents = ( CONTENTS_LAVA | CONTENTS_SLIME);
+			else contents = (CONTENTS_LAVA | CONTENTS_SLIME);
 		}
-		if( rs_trace.contents & contents ) *bottom = -9999; /*return false;*/
-		else if( rs_trace.surface->flags & SURF_SKY ) *bottom = -9999;
+		if (rs_trace.contents & contents) *bottom = -9999; /*return false;*/
+		else if (rs_trace.surface->flags & SURF_SKY) *bottom = -9999;
 
-		if(!ent->waterlevel && (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
+		if (!ent->waterlevel && (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 			&& ent->groundentity == NULL && ent->velocity[2] > 10 && trmax[2] == 4) return 2;
 
 
-		if(trmax[2] == 32)
+		if (trmax[2] == 32)
 		{
-			if(Bot_ExploAvoid(ent,pos))
+			if (Bot_ExploAvoid(ent, pos))
 			{
-				if(!CheckLaser(pos,trmax,trmin))
-				return true;
+				if (!CheckLaser(pos, trmax, trmin))
+					return true;
 			}
 			return false;
 		}
 
-//		trmax[2] = 32;
-		VectorCopy(pos,trend);
+		//trmax[2] = 32;
+		VectorCopy(pos, trend);
 		trend[2] += 28;
-		rs_trace = gi.trace (pos, trmin, trmax, trend,ent, tcontents );
-		if(!rs_trace.allsolid && !rs_trace.startsolid && rs_trace.fraction == 1.0)
+		rs_trace = gi.trace(pos, trmin, trmax, trend, ent, tcontents);
+		if (!rs_trace.allsolid && !rs_trace.startsolid && rs_trace.fraction == 1.0)
 		{
-			if(Bot_ExploAvoid(ent,pos))
+			if (Bot_ExploAvoid(ent, pos))
 			{
-				if(!CheckLaser(pos,trmax,trmin))
-				return true;
+				if (!CheckLaser(pos, trmax, trmin))
+					return true;
 			}
 			return false;
 		}
-		if(Bot_ExploAvoid(ent,pos))
+		if (Bot_ExploAvoid(ent, pos))
 		{
-			if(!CheckLaser(pos,trmax,trmin))
-			return 2;
+			if (!CheckLaser(pos, trmax, trmin))
+				return 2;
 		}
 		return false;
 	}
 }
 
 static
-int Bot_Watermove ( edict_t *ent,vec3_t pos,float dist,float upd)
+int Bot_Watermove(edict_t *ent, vec3_t pos, float dist, float upd)
 {
 	trace_t		rs_trace;
-	vec3_t		trmin,trmax,touchmin;
-	float		i,j;
-
+	vec3_t		trmin, trmax, touchmin;
+	float		i, j;
 	float		vec;
 
-	VectorCopy(ent->s.origin,trmax);
+	VectorCopy(ent->s.origin, trmax);
 
 	trmax[2] += upd;
 
-	rs_trace = gi.trace (ent->s.origin, ent->mins, ent->maxs, trmax,ent, /*MASK_BOTSOLID*/MASK_BOTSOLIDX);
+	rs_trace = gi.trace(ent->s.origin, ent->mins, ent->maxs, trmax, ent, /*MASK_BOTSOLID*/MASK_BOTSOLIDX);
 
-	if(!rs_trace.allsolid && !rs_trace.startsolid )
+	if (!rs_trace.allsolid && !rs_trace.startsolid)
 	{
-		if(rs_trace.fraction > 0)
+		if (rs_trace.fraction > 0)
 		{
-			VectorCopy(rs_trace.endpos,pos);
+			VectorCopy(rs_trace.endpos, pos);
 			return true;
 			//if(upd < 0) ent->velocity[2] = 0;
 		}
 	}
 	//gi.bprintf(PRINT_HIGH,"Water MOVE NG %f %f!\n",dist,upd);
 	//	return false;
-	//	if(upd > -7 && upd < 7)	return false;
+	//	if(upd > -7 && upd < 7)
+	//		return false;
 
-	VectorCopy(ent->s.origin,trmin);
+	VectorCopy(ent->s.origin, trmin);
 	trmin[2] += upd;
 
 	vec = -1;
-	for(i = 0;i < 360; i += 10)
+	for (i = 0; i < 360; i += 10)
 	{
-		if(i && upd > -13 && upd < 0/*13*/) break;
-		if(i > 60 && i < 300) continue;
+		if (i && upd > -13 && upd < 0/*13*/)
+			break;
+		if (i > 60 && i < 300)
+			continue;
 
 		j = ent->client->zc.moveyaw + i;
 
-		if(j > 180) j = j - 360;
-		else if(j < -180) j = j + 360;
-		else j = i;
+		if (j > 180)
+			j = j - 360;
+		else if (j < -180)
+			j = j + 360;
+		else
+			j = i;
 
-		touchmin[0] = cos(j) * 24 ;
-		touchmin[1] = sin(j) * 24 ;
+		touchmin[0] = cos(j) * 24;
+		touchmin[1] = sin(j) * 24;
 		touchmin[2] = 0;
 
-		VectorAdd(trmin,touchmin,trmax);
-		rs_trace = gi.trace (trmax/*ent->s.origin*/, ent->mins, ent->maxs, trmin,ent, MASK_BOTSOLIDX);
+		VectorAdd(trmin, touchmin, trmax);
+		rs_trace = gi.trace(trmax/*ent->s.origin*/, ent->mins, ent->maxs, trmin, ent, MASK_BOTSOLIDX);
 
 		//		yaw = VectorLength(trmax);
-		if(!rs_trace.allsolid && !rs_trace.startsolid )
+		if (!rs_trace.allsolid && !rs_trace.startsolid)
 		{
-			VectorAdd(rs_trace.endpos,touchmin,trmax);
-			rs_trace = gi.trace (trmax, ent->mins, ent->maxs, trmax,ent, MASK_BOTSOLIDX);
+			VectorAdd(rs_trace.endpos, touchmin, trmax);
+			rs_trace = gi.trace(trmax, ent->mins, ent->maxs, trmax, ent, MASK_BOTSOLIDX);
 			//gi.bprintf(PRINT_HIGH,"NGAAAAAAAAAAAAAAAAAAAAAAAAAAA!\n");
 
 			//			VectorSubtract(rs_trace.endpos,ent->s.origin,trmax);
-			if(!rs_trace.allsolid && !rs_trace.startsolid )
+			if (!rs_trace.allsolid && !rs_trace.startsolid)
 			{
 				//gi.bprintf(PRINT_HIGH,"go go go!\n");
-				vec = i;break;
+				vec = i;
+				break;
 			}
 		}
 	}
 
-	if(vec == -1)
+	if (vec == -1)
 	{
 		//gi.bprintf(PRINT_HIGH,"Water MOVE NG %f %f!\n",dist,upd);
 		return false;
 	}
 
 	//gi.bprintf(PRINT_HIGH,"Water MOVE OK %f %f!\n",dist,upd);
-	VectorCopy(trmax,pos);
+	VectorCopy(trmax, pos);
 
 	//	if(upd < 0) ent->velocity[2] = 0;
 	//		return true;
@@ -1212,7 +1249,7 @@ int Bot_Watermove ( edict_t *ent,vec3_t pos,float dist,float upd)
 	 I'm re-writing it below the way I think it was intended.
 	 Let's see what the bots do with it.
 	 */
-	if(upd < 0)
+	if (upd < 0)
 	{
 		ent->velocity[2] = 0;
 		return true;
@@ -1223,37 +1260,38 @@ int Bot_Watermove ( edict_t *ent,vec3_t pos,float dist,float upd)
 	touchmin[1] = sin(vec) * 16;//dist ;
 	touchmin[2] = 0;
 
-	VectorAdd(ent->s.origin,touchmin,trmin);
-	VectorCopy(trmin,trmax);
+	VectorAdd(ent->s.origin, touchmin, trmin);
+	VectorCopy(trmin, trmax);
 	trmax[2] += upd;
-	rs_trace = gi.trace (trmin, ent->mins, ent->maxs, trmax,ent, MASK_BOTSOLIDX);
+	rs_trace = gi.trace(trmin, ent->mins, ent->maxs, trmax, ent, MASK_BOTSOLIDX);
 
-	if(rs_trace.allsolid || rs_trace.startsolid )
+	if (rs_trace.allsolid || rs_trace.startsolid)
 	{
 		return false;
 	}
 
-	VectorCopy(rs_trace.endpos,pos);
+	VectorCopy(rs_trace.endpos, pos);
 	return true;
 
-/* //QW// Unreachable code
-	VectorCopy(rs_trace.plane.normal,trmin);
-	trmin[2] = 0;
-	VectorNormalize(trmin);
-	VectorAdd(trmax,trmin,trmax);
-	for(i = 1.0;i < dist;i += 1.0)
-	{
-		rs_trace = gi.trace (trmax, ent->mins, ent->maxs,trmax,ent, MASK_BOTSOLIDX);//MASK_PLAYERSOLID);
-		if(!rs_trace.allsolid && !rs_trace.startsolid)
-		{
-			VectorCopy(trmax,pos);
-			return true;
-		}
+	/*
+		//QW// Unreachable code
+		VectorCopy(rs_trace.plane.normal,trmin);
+		trmin[2] = 0;
+		VectorNormalize(trmin);
 		VectorAdd(trmax,trmin,trmax);
-	}
-	//	gi.bprintf(PRINT_HIGH,"failed2\n");
-	return false;
-*/
+		for(i = 1.0;i < dist;i += 1.0)
+		{
+			rs_trace = gi.trace (trmax, ent->mins, ent->maxs,trmax,ent, MASK_BOTSOLIDX);//MASK_PLAYERSOLID);
+			if(!rs_trace.allsolid && !rs_trace.startsolid)
+			{
+				VectorCopy(trmax,pos);
+				return true;
+			}
+			VectorAdd(trmax,trmin,trmax);
+		}
+		//	gi.bprintf(PRINT_HIGH,"failed2\n");
+		return false;
+	*/
 }
 
 static
@@ -2418,7 +2456,8 @@ void Bots_Move_NORM (edict_t *ent)
 		}
 	}
 
-	if(ctf->value){
+	if(ctf->value)
+	{
 		//SeT up team flags
 		if(ent->client->resp.ctf_team == CTF_TEAM1)
 			l = ITEM_INDEX(FindItem("Blue Flag"));
@@ -2426,8 +2465,8 @@ void Bots_Move_NORM (edict_t *ent)
 			l = ITEM_INDEX(FindItem("Red Flag"));
 
 		//need to allways look for flags !!!!
-		//Fixme: use the redflagnow vect  to for a not to follow the fc  on  return
-		if (redflaggone || blueflaggone)
+		//Fixme: use the redflagnow vect to force a bot to follow the fc on  return
+		if (red_flag_gone || blue_flag_gone)
 			Bot_SearchItems(ent);
 
 		//CAMPING AROUND THE FLAG

@@ -1128,51 +1128,52 @@ void Cmd_MapVote (edict_t *ent)
 }
 //end
 
-// server side skinlist command to allow users to get
-// skins list from server when using clients like r1q2 that
-// kill the skins command. //QW added//
+/** 
+ Server side skinlist command to allow users to get
+ skins list from server when using clients like r1q2 that
+ kill the skins command. //QW added//
+*/
 void Cmd_SkinList_f(edict_t *ent)
 {
 	int		i;
 	char	*skin, *name, string[64];
 	edict_t	*edict;
-	
-	if (!level.intermissiontime) 
+
+	if (!level.intermissiontime)
 	{
 		// make it all look nice
-		gi.cprintf (ent,
-					PRINT_HIGH,
-					"\nnum name             skin");
-		gi.cprintf (ent,
-					PRINT_HIGH,
-					"\n--- ---------------- ---------------------\n");
+		gi.cprintf(ent,
+			PRINT_HIGH,
+			"\nnum name             skin");
+		gi.cprintf(ent,
+			PRINT_HIGH,
+			"\n--- ---------------- ---------------------\n");
 		for (i = 0, edict = g_edicts + 1 + i; i < maxclients->value; i++, edict++)
 		{
-			if (!edict->inuse) 
+			if (!edict->inuse)
 				continue;
 			skin = Info_ValueForKey(edict->client->pers.userinfo, "skin");
 			name = Info_ValueForKey(edict->client->pers.userinfo, "name");
-			Com_sprintf (string, sizeof string, "%3i %16s %s\n", i, name, skin);
-			gi.cprintf (ent, PRINT_HIGH, string);
+			Com_sprintf(string, sizeof string, "%3i %16s %s\n", i, name, skin);
+			gi.cprintf(ent, PRINT_HIGH, string);
 		}
-		Com_sprintf (string, sizeof string, "\n");
-		gi.cprintf (ent, PRINT_HIGH, string);
+		Com_sprintf(string, sizeof string, "\n");
+		gi.cprintf(ent, PRINT_HIGH, string);
 	}
 }
 
-/*
-=================
-Cmd_Wave_f
-=================
+/**
+ Perform one of five wave animations for player models.
+ Function argument is the entity performing the action.
+ We look at the string being passed in gi.argv(1) for
+ the index of the wave number to be performed.
 */
-void Cmd_Wave_f (edict_t *ent)
+void Cmd_Wave_f(edict_t *ent)
 {
-	int		i;
+	int i = atoi(gi.argv(1));
 
-	i = atoi (gi.argv(1));
-
-  // Not available to dead or respawning players!
-  if (!G_ClientInGame(ent)) return;
+	// Not available to dead or respawning players!
+	if (!G_ClientInGame(ent)) return;
 
 	// can't wave when ducked
 	if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
@@ -1186,29 +1187,29 @@ void Cmd_Wave_f (edict_t *ent)
 	switch (i)
 	{
 	case 0:
-		safe_cprintf (ent, PRINT_HIGH, "flipoff\n");
-		ent->s.frame = FRAME_flip01-1;
+		safe_cprintf(ent, PRINT_HIGH, "flipoff\n");
+		ent->s.frame = FRAME_flip01 - 1;
 		ent->client->anim_end = FRAME_flip12;
 		break;
 	case 1:
-		safe_cprintf (ent, PRINT_HIGH, "salute\n");
-		ent->s.frame = FRAME_salute01-1;
+		safe_cprintf(ent, PRINT_HIGH, "salute\n");
+		ent->s.frame = FRAME_salute01 - 1;
 		ent->client->anim_end = FRAME_salute11;
 		break;
 	case 2:
-		safe_cprintf (ent, PRINT_HIGH, "taunt\n");
-		ent->s.frame = FRAME_taunt01-1;
+		safe_cprintf(ent, PRINT_HIGH, "taunt\n");
+		ent->s.frame = FRAME_taunt01 - 1;
 		ent->client->anim_end = FRAME_taunt17;
 		break;
 	case 3:
-		safe_cprintf (ent, PRINT_HIGH, "wave\n");
-		ent->s.frame = FRAME_wave01-1;
+		safe_cprintf(ent, PRINT_HIGH, "wave\n");
+		ent->s.frame = FRAME_wave01 - 1;
 		ent->client->anim_end = FRAME_wave11;
 		break;
 	case 4:
 	default:
-		safe_cprintf (ent, PRINT_HIGH, "point\n");
-		ent->s.frame = FRAME_point01-1;
+		safe_cprintf(ent, PRINT_HIGH, "point\n");
+		ent->s.frame = FRAME_point01 - 1;
 		ent->client->anim_end = FRAME_point12;
 		break;
 	}
@@ -1991,14 +1992,14 @@ void ClientCommand (edict_t *ent)
 			if(op_specs->value || max_specs->value)
 			{
 				if((max_specs->value )
-				   && (CountSpecClients() >= (max_specs->value)))
+				   && (CountSpectators() >= (max_specs->value)))
 				{
 					safe_cprintf (ent, PRINT_HIGH,
 								  "Too many spectators already\n");
 					return;
 				}
 				if((op_specs->value)
-				   && (CountSpecClients() >= (max_specs->value)))
+				   && (CountSpectators() >= (max_specs->value)))
 					safe_cprintf (ent, PRINT_HIGH,
 								  "Too many spectators already\n");
 				return;
