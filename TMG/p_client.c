@@ -3423,6 +3423,7 @@ void ClientDisconnect (edict_t *ent)
 
 	gi.unlinkentity (ent);
 	ent->s.modelindex = 0;
+	ent->inuse = false;
 	ent->solid = SOLID_NOT;
 	ent->classname = "disconnected";
 	ent->client->pers.connected = false;
@@ -3449,7 +3450,6 @@ void ClientDisconnect (edict_t *ent)
 
 	gi.configstring (CS_GENERAL + playernum, "");
 	gi.configstring (CS_PLAYERSKINS + playernum, "");
-	G_FreeEdict(ent);
 }
 
 
