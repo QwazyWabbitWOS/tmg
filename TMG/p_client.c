@@ -1060,14 +1060,16 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 	memset(self->client->pers.inventory, 0, sizeof(self->client->pers.inventory));
 
 	// minimal gibs if railserver
-	if (self->health <= 0 || voosh->value)
+	if (self->health <= -40 || voosh->value)
 	{	// gib
 		gi.sound (self, CHAN_BODY, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
-		for (n = 0; n < 2; n++)
+		for (n = 0; n < 3; n++)
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
 
-		// This sets the player model properly.
-		gi.setmodel(self, "models/objects/gibs/sm_meat/tris.md2");
+		//QW// This sets an empty player model. 
+		gi.setmodel(self, "");
+		//QW// generates no such oldframe in some clients
+		//gi.setmodel(self, "models/objects/gibs/sm_meat/tris.md2");
 		//ThrowClientHead (self, damage); // Removed to stop bots from lerping //QW//
 		self->client->anim_priority = ANIM_DEATH;
 		self->client->anim_end = 0;
