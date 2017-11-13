@@ -652,15 +652,15 @@ target_laser_start (edict_t *self)
 
 	// set the color
 	if (self->spawnflags & 2)
-		self->s.skinnum = 0xf2f2f0f0;
+		self->s.skinnum = 0xf2f2f0f0; // red
 	else if (self->spawnflags & 4)
-		self->s.skinnum = 0xd0d1d2d3;
+		self->s.skinnum = 0xd0d1d2d3; // green
 	else if (self->spawnflags & 8)
-		self->s.skinnum = 0xf3f3f1f1;
+		self->s.skinnum = 0xf3f3f1f1; // blue
 	else if (self->spawnflags & 16)
-		self->s.skinnum = 0xdcdddedf;
+		self->s.skinnum = 0xdcdddedf; // brown
 	else if (self->spawnflags & 32)
-		self->s.skinnum = 0xe0e1e2e3;
+		self->s.skinnum = 0xe0e1e2e3; // yellow
 
 	if (!self->enemy)
 	{
