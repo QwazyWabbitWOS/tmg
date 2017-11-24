@@ -2132,6 +2132,7 @@ void CTFFireGrapple(edict_t *self,
 		VectorMA(grapple->s.origin, -10, dir, grapple->s.origin);
 		grapple->touch(grapple, tr.ent, NULL, NULL);
 	}
+	
 	hackLift(self);
 
 	//PON-CTF
@@ -6286,7 +6287,7 @@ void PickMap(edict_t *ent, pmenu_t *p)
 				 maplist->mapname[i],
 				 maplist->mapnick[i]);
 		my_bprintf (PRINT_HIGH, text);
-		ent->client->pers.vote_times ++;
+		ent->client->pers.vote_times++;
 	}
 	else
 		gi.dprintf("Bad Menu Item #%d\n",i);

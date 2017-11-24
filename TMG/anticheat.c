@@ -212,6 +212,11 @@ void BadPlayer(edict_t *ent)
 
 }
 
+/**
+ Log the entity's bot status with the given message
+ then add the IP to the banned IP list and kick them
+ off the server.
+*/
 void OnBotDetection(edict_t *ent, char *msg)
 {
 	int log = 0;

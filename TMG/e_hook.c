@@ -10,6 +10,9 @@ void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST,
 	int *pause_frames, int *fire_frames, void (*fire)(edict_t *ent));
 
 
+/**
+ Lift player slightly off ground to counteract sticking.
+*/
 void hackLift(edict_t *player) 
 {
 
@@ -54,10 +57,9 @@ qboolean Is_Grappling (gclient_t *client)
 	return (client->hook == NULL) ? false : true;
 }
 
-// Function name	: hook_laser_think
-// Description	    : move the two ends of the laser beam to the proper positions
-// Return type		: void 
-// Argument         : edict_t *self
+/**
+ Move the two ends of the laser beam to the proper positions.
+*/
 void hook_laser_think(edict_t *self)
 {
 	vec3_t	forward, right, offset, start;
