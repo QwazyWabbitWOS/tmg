@@ -32,7 +32,7 @@ CFLAGS =-m32 -O3 -fPIC -DARCH="$(ARCH)" -DSTDC_HEADERS -I/usr/include
 endif
 
 # use this when debugging
-#CFLAGS=-g -Og -DEBUG -DARCH="$(ARCH)" -Wall -pedantic
+#CFLAGS=-g -Og -DDEBUG -DARCH="$(ARCH)" -Wall -pedantic
 
 # flavors of Linux
 ifeq ($(shell uname),Linux)

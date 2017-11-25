@@ -24,7 +24,7 @@ CC = gcc -std=gnu99 -DCOMPAT_32BIT -L/usr/lib32 -B/usr/lib32
 CFLAGS=-O3 -m32 -march=$(ARCH) -DARCH="$(ARCH)"
 
 #use these when debugging
-#CFLAGS=-g -Og -m32 -DEBUG -DARCH="$(ARCH)" -Wall -pedantic
+#CFLAGS=-g -Og -m32 -DDEBUG -DARCH="$(ARCH)" -Wall -pedantic
 
 CFLAGS += -DLINUX
 LIBTOOL = ldd
