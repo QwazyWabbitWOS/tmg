@@ -67,12 +67,12 @@ void DbgPrintf (char *msg, ...)
 	vsnprintf (text, sizeof(text), msg, argptr);
 	va_end (argptr);
 
-#ifdef DEBUG
-#ifdef _WIN32
+#if defined _DEBUG
+#if defined _WIN32
 	OutputDebugString(text);
 #endif /* _WIN32 */
-#else // not WIN32 or DEBUG
+#else // not _WIN32 or not _DEBUG
 	if(gamedebug->value)
 		gi.dprintf(text);
-#endif /* _DEBUG */
+#endif /* DEBUG */
 }
