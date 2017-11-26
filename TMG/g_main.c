@@ -515,12 +515,8 @@ void EndDMLevel (void)
 
 
 //RAV
-/*
-=================
-OPEndDMLevel
-
+/**
 End the level and go to selected map
-=================
 */
 void OPEndDMLevel (int mapindex, edict_t *cl)
 {
