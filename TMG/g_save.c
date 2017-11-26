@@ -271,6 +271,9 @@ void InitGame (void)
 	id_y = gi.cvar ("id_y", "-58", 0);
 
 	hostname = gi.cvar ("hostname", "TMG Server", 0);
+	if (strlen(hostname->string) >= 40)
+		gi.dprintf("TMG Warning: Hostname is too long for HUD banner.\n"
+		"Shorten it to less than 40 characters.\n");
 
 	speed_msec = gi.cvar ("speed_msec", "75", 0);
 	speed_set = gi.cvar ("speed_set", "75", 0);

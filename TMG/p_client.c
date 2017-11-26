@@ -2414,16 +2414,22 @@ void ClientPrintMOTD (edict_t *ent)
 	int motdBytes;
 	char *here;
 	char *s1 = MOD" "MOD_VERSION"\n\n";
-	char s2[64];
+	char s2[64]; // gi.centerprintf can handle max. 40 char. per line
 	char *s3 = "Bind a key to +hook for Hook\n\n";
-	int len1, len2, len3;
+	size_t len1, len2, len3;
 	char *p2 = s2;
 
-	Com_sprintf(s2, sizeof s2, "Welcome to %s \n\n", hostname->string);
+	Com_sprintf(s2, sizeof s2, "%s\n\n", hostname->string);
 
 	len1 = strlen(s1);
 	len2 = strlen(s2);
 	len3 = strlen(s3);
+
+	if(len2 >= 40)
+	{
+		gi.dprintf("TMG Warning: Hostname is too long for HUD banner.\n"
+			"Shorten it to less than 40 characters.\n");
+	}
 
 	// Generate the path to the MOTD file.
 	Com_sprintf (motdPath, sizeof motdPath, 
