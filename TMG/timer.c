@@ -362,7 +362,7 @@ void CheckState()
 	}
 }
 
-void TimerThink (void)
+void TimerThink(void)
 {
 	int newdmflag;
 	int i;
@@ -371,11 +371,11 @@ void TimerThink (void)
 	if (level.time > match_nextthink)
 	{
 		// countdowns ?
-		CountDown ();
+		CountDown();
 		// check duel state...
-		CheckState ();
+		CheckState();
 
-		if(use_bots->value)
+		if (use_bots->value)
 			Adjust_Bot_Number();
 
 		match_nextthink += FRAMETIME * 10.0;
@@ -395,17 +395,18 @@ void TimerThink (void)
 			carrier = g_edicts + i;
 			if (carrier->inuse && mapvoteactive)
 			{
-				if (carrier->client->resp.vote == true)
+				if (carrier->client->resp.vote == true &&
+					carrier->client->pers.HasVoted == true)
 					yesvotes++;
 				else
-					if (!carrier->bot_client) // bots can't vote
+					if (carrier->client->pers.HasVoted == true) // bots don't vote
 						novotes++;
 			}
 			if (ctf->value)
 			{
 				if (carrier->inuse && carrier->client->resp.ctf_team > 0)
 				{
-					if(carrier->client->resp.ctf_team == 1)
+					if (carrier->client->resp.ctf_team == 1)
 						ctfgame.players1++;
 					else
 						ctfgame.players2++;
@@ -418,6 +419,7 @@ void TimerThink (void)
 			else
 				ctfgame.specs++;
 		}
+
 		if (mapvoteactive)
 		{
 			//gi.dprintf("B. map to be voted on is %s %s\n",
@@ -452,9 +454,9 @@ void TimerThink (void)
 
 		newdmflag = (int)dmflags->value;
 		if (dmflag != newdmflag)
-			my_bprintf (PRINT_CHAT,
-			"DMFlags have been changed from %i to %i.\n",
-			dmflag, newdmflag);
+			my_bprintf(PRINT_CHAT,
+				"DMFlags have been changed from %i to %i.\n",
+				dmflag, newdmflag);
 
 		dmflagtimer = level.time + 10;
 		dmflag = newdmflag;
