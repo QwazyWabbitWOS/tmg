@@ -1,11 +1,12 @@
 #ifndef INTRO_H
+#define INTRO_H
 
 void Wav_Mod_Setup(void);	// Attempts to find and load intro.txt
 char* Wav_Mod_Next(void);	// Retrieves name of next level in the list
 void PrecacheSongs(void);	// Unused.
 
 //QW// Set the max length of the song list.
-#define	MAXSONGS	1000
+#define	MAXSONGS	100
 
 extern  cvar_t  *wavs;
 extern  cvar_t  *songtoplay;

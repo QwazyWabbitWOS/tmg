@@ -343,17 +343,13 @@ void PrecacheSongs(void)
 					Com_sprintf(song, sizeof song, "misc/%s.wav", names[levels]);
 				if (strlen(song) > 0)
 				{
-					//int i;
-					//DbgPrintf("song to be indexed is %s\n", song);
 					gi.soundindex (song);
-					//DbgPrintf("song index is %d\n", i);
 				}
 				levels++;
 				n_chars = 0;
 				if (levels >= MAXSONGS)
 				{
-					gi.dprintf("\nMAXSONGS exceeded\n"
-						"Unable to add more Wav's.\n");
+					gi.dprintf("Wav Mod: MAXSONGS reached.\n");
 					break;
 				}
 			}
