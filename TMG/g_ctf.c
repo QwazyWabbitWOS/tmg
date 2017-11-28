@@ -6270,7 +6270,7 @@ void MapVote(edict_t *ent)
 void PickMap(edict_t *ent, pmenu_t *p)
 {
 	int i;
-	char *name;
+	char name[32] = "";
 	char text[80];
 
 	i = p->arg;
@@ -6279,7 +6279,7 @@ void PickMap(edict_t *ent, pmenu_t *p)
 	{
 		maplist->votes[i]++;
 		ent->client->pers.HasVoted = true;
-		name = ent->client->pers.netname;
+		Com_sprintf(name, sizeof name, "%s", ent->client->pers.netname);
 		highlight_text(name, name);
 		Com_sprintf (text, sizeof text,
 				 "%s voted for %s \"%s\"\n",
