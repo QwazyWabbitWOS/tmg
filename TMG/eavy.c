@@ -1,6 +1,5 @@
 #include "g_local.h"
 #include "eavy.h"
-#include <ctype.h>
 
 char *ReadTextFile(char *filename)
 {

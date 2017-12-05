@@ -4,10 +4,6 @@
 #include "g_local.h"
 #include "statslog.h"
 #include "maplist.h"	// for gamedir
-#include <time.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
 
 cvar_t	*statslog;			// Enable player stats summary to stats log (default = 1)
 cvar_t	*statsfile;			// the name of the stats log file ("stats.log" by default)

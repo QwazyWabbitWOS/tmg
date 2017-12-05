@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "g_local.h"
 #include "intro.h"
 

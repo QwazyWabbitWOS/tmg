@@ -1,5 +1,3 @@
-#include <ctype.h>
-#include <stdlib.h>
 #include "g_local.h"
 
 #include "g_items.h"

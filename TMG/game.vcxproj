@@ -73,12 +73,17 @@
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">c:\quake2\ctf\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">c:\quake2\ctf\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">c:\quake2\ctf\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">c:\quake2\ctf\</OutDir>
     <RunCodeAnalysis Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</RunCodeAnalysis>
     <RunCodeAnalysis Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>c:\quake2\ctf\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>c:\quake2\ctf\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -91,7 +96,6 @@
       </HeaderFileName>
     </Midl>
     <ClCompile>
-      <PreprocessorDefinitions>DEBUG;_CONSOLE;BUILDING_REF_GL;ERASER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -118,6 +122,10 @@
     <Bscmake />
     <PostBuildEvent />
     <PostBuildEvent />
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
@@ -165,7 +173,6 @@
     </Midl>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>WIN32;NDEBUG;;_WINDOWS;BUILDING_REF_GL;ERASER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BrowseInformation>true</BrowseInformation>
@@ -189,6 +196,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Bscmake />
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>

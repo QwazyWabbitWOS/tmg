@@ -19,10 +19,6 @@
   #define OutputDebugString	//not doing Windows
 #endif
 
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-
 #include "q_shared.h"
 #include "performance.h"
 

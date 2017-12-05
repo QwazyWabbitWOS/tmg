@@ -1,5 +1,4 @@
 
-#include <limits.h>
 #include "g_local.h"
 #include "filtering.h"
 

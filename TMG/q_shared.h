@@ -21,6 +21,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <ctype.h>
+#include <limits.h>
+#include <errno.h>
 
 #if defined _M_IX86 && !defined C_ONLY
 #define id386	1

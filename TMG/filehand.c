@@ -1,7 +1,5 @@
 
 #include "g_local.h"
-#include <ctype.h>
-#include <string.h>
 #include "filehand.h"
 #include "anticheat.h"
 

@@ -3,9 +3,6 @@
 #include "g_local.h"
 #include "highscore.h"
 #include "performance.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
 
 #define KEEP 10
 

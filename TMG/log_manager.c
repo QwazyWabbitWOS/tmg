@@ -1,9 +1,5 @@
 #include "g_local.h"
 #include "log_manager.h"
-#include <time.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
 
 cvar_t	*logfile;           // the logfile mode control
 cvar_t	*logfile_name;      // the server log file
