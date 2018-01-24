@@ -131,6 +131,15 @@ void StatsLogRename(void)
 	}
 }
 
+/**
+ Force flush the log file if it's open.
+ */
+void StatsLogFlush(void)
+{
+	if (pStatsfile && statslog->value)
+		fflush(pStatsfile);
+}
+
 /*
 QwazyWabbit added 09/16/2016.
 This function writes backslash-delimited hook stats to the log file.
@@ -146,6 +155,8 @@ void StatsLogHooks(edict_t *ent)
 		ent->client->resp.hooks_landed_count,
 		ent->client->resp.hooks_deployed_count,
 		level.mapname, level.time);
+	
+	StatsLogFlush();
 }
 
 /**
@@ -174,6 +185,5 @@ void StatsLogPlayerStats(void)
 			level.mapname,
 			level.time);
 	}
-	if (pStatsfile && statslog->value)
-		fflush(pStatsfile);
+	StatsLogFlush();
 }

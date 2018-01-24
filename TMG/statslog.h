@@ -16,6 +16,7 @@ static FILE	*pStatsfile = NULL;
 void StatsLog(const char *fmt, ... ) ;
 void StatsLogRename(void);
 void StatsInitVars(void);
+void StatsLogFlush(void);
 void StatsLogHooks(edict_t *ent);
 void StatsLogPlayerStats(void);
 

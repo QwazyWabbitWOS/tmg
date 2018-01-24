@@ -16,6 +16,7 @@
 #include "runes.h"
 #include "maplist.h"
 #include "banner.h"
+#include "statslog.h"
 
 int global_lights = 0;
 
@@ -998,6 +999,7 @@ void MapVoteThink(qboolean passed, qboolean now)
 			ent = G_Spawn ();
 			ent->classname = "target_changelevel";
 			ent->map = maplist->mapname[maplist->currentmapvote];
+			StatsLogFlush();
 			if (Maplist_CheckFileExists(ent->map))
 				BeginIntermission (ent);
 			else
