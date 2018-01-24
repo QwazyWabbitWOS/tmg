@@ -692,19 +692,30 @@ void my_bprintf (int printlevel, char *fmt, ...)
 {
 	char	buffer[0x2000]; //QW// reduced size 8k s/b sufficient
 	va_list		argptr;
+	edict_t	*cl_ent;
+	int i;
 
 	va_start (argptr, fmt);
 	vsprintf (buffer, fmt, argptr);
 	va_end (argptr);
 
 	// Highlighted text to players
-	gi.bprintf(printlevel, "%s", buffer);
+	for (i = 0; i < maxclients->value ; i++)
+	{
+		cl_ent = g_edicts + 1 + i;
+		if (cl_ent->inuse || !cl_ent->bot_client)
+		{
+			// Safety check...
+			if (G_EntExists(cl_ent))
+				safe_cprintf(cl_ent, printlevel, buffer);
+		}
+	}
 
-	//QW// This is needed for Wallfly
+	// White text to log/console
 	if (dedicated->value)
 	{
 		white_text(buffer, buffer);
-		gi.dprintf ("%s", buffer); // White text to log/console
+		gi.dprintf ("%s", buffer); 
 	}
 }
 
