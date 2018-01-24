@@ -261,7 +261,29 @@ Let bots chill for 1/2 second instead of 1 sec. It didn't help the wall-spawn is
 Fix excessive stack usage due to oversizing of buffers.
 Clean up some initializations.
 Move hud data further to the right.
-Set 30 second minimum warmup time.
+Set 30 second minimum warmup time. 
+NOTE: you must set warmup_time 0 to get zero warmup.
+
+0.2.41
+Fixed a bug where disconnected players sometimes don't fully disappear.
+Send warning to console if MOTD text will exceed 40 characters.
+Fix "no such oldframe" message in some clients. This bug is due to a hack
+in the player_die function where the head gib toss was removed and the dead
+player model is set to empty string. While this stops the head gib from
+lerping on player respawn, any attempt to "fix" the empty model name
+results in "no-such-oldframe" error in clients. Catch-22: set the empty
+string and get warnings in the server, choose something else, get warnings
+in the clients.
+Set limit of 100 files for WaveMod. Gracefully handle case were limit is
+exceeded.
+
+0.2.42
+Fix bug where map votes could never pass.
+Handle WallFly case so he isn't counted for voting.
+Flush the stats log between maps or where commands cause resets
+to prevent lost stats data.
+Stop writing highlighted text to logs.
+
 
 
 
