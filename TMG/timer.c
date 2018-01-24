@@ -361,6 +361,14 @@ void CheckState()
 		}
 	}
 }
+/**
+ Match first 8 characters of netname to standard WallFly name
+ return non-zero if not matched.
+*/
+static int NotWallFly (edict_t *ent)
+{
+	return memcmp(ent->client->pers.netname, "WallFly[", 8);
+}
 
 void TimerThink(void)
 {
@@ -395,12 +403,11 @@ void TimerThink(void)
 			carrier = g_edicts + i;
 			if (carrier->inuse && mapvoteactive)
 			{
-				if (carrier->client->resp.vote == true &&
-					carrier->client->pers.HasVoted == true)
+				if (carrier->client->resp.vote == true)
 					yesvotes++;
 				else
-					if (carrier->client->pers.HasVoted == true) // bots don't vote
-						novotes++;
+					if (!carrier->bot_client && NotWallFly(carrier))
+						novotes++;	// don't count bots or WallFly
 			}
 			if (ctf->value)
 			{
