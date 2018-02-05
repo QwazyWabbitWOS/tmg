@@ -1061,30 +1061,6 @@ void PutBotInServer (edict_t *ent)
 		if (it_ent->inuse)
 			G_FreeEdict(it_ent);
 	}
-	if ((int)(start_items->value) & 256)
-	{
-		edict_t *it_ent;
-
-		item = FindItem("Rebreather");
-		it_ent = G_Spawn();
-		it_ent->classname = item->classname;
-		SpawnItem2 (it_ent, item);
-		Touch_Item (it_ent, ent, NULL, NULL);
-		if (it_ent->inuse)
-			G_FreeEdict(it_ent);
-	}
-	if ((int)(start_items->value) & 512)
-	{
-		edict_t *it_ent;
-
-		item = FindItem("Environment Suit");
-		it_ent = G_Spawn();
-		it_ent->classname = item->classname;
-		SpawnItem2 (it_ent, item);
-		Touch_Item (it_ent, ent, NULL, NULL);
-		if (it_ent->inuse)
-			G_FreeEdict(it_ent);
-	}
 	if ((int)(start_items->value) & 1024)
 	{
 		edict_t *it_ent;
