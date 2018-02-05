@@ -611,11 +611,14 @@ void AddModelSkin (char *modelfile, char *skinname)
 	}
 
 	Com_sprintf(filename, sizeof filename, "%s/"MOD"/%snew", basedir->string, modelfile);
-
 	out = fopen (filename, "wb");
 
 	if (!out)
+	{
+		if (f)
+			fclose(f);
 		return;
+	}
 
 	// mirror header stuff before skinnum
 	for (i=0; i<5; i++)
