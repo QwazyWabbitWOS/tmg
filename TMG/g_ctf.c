@@ -6000,10 +6000,10 @@ void UpdateOpMenu(edict_t *ent)
 		strcat (str, "Restart Level\t");
 
 	if (ent->client->pers.oplevel & OP_CHANGEMAP)
+	{
 		strcat (str, "Exec FFA Configuration\t");
-
-	if (ent->client->pers.oplevel & OP_CHANGEMAP)
 		strcat (str, "Exec CTF Configuration\t");
+	}
 
 	if (strlen(str) >= sizeof str)
 		DbgPrintf("%s str space used: %d\n", __FUNCTION__, strlen(str));
@@ -6364,10 +6364,16 @@ int CTFUpdateJoinMenu(edict_t *ent)
 		}
 	}
 
-	if (ent->client->chase_target)
-		joinmenu[8].text = "Spectate";
+	if (ent->client->resp.spectator == true)
+	{
+		joinmenu[8].text = NULL;
+		joinmenu[8].SelectFunc = NULL;
+	}
 	else
+	{
 		joinmenu[8].text = "Spectate";
+		joinmenu[8].SelectFunc = RAVspec;
+	}
 
 	levelname[0] = '*'; // Highlight this line of text in menu.
 
