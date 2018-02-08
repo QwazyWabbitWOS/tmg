@@ -1708,7 +1708,7 @@ char sys_time[32];
 void GetDate(void);
 char sys_date[32];
 //Camper check
-#define CAMP_WARN_TIME camp_time->value - 10// sec to camp before warning
+#define CAMP_WARN_TIME (int) (camp_time->value - 10)	// sec to camp before warning
 #define CAMP_TIME camp_time->value  // sec to be officially camping
 #define CAMP_DISTANCE camp_distance->value // camping radius
 #define CAMP_WARN_MSG "Hey, quit camping!!(Observer in 10 sec)"
