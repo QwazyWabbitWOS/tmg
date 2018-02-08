@@ -501,7 +501,7 @@ void abandon_fire_hook(edict_t *owner, vec3_t start, vec3_t forward)
 	edict_t	*hook;
 	trace_t tr;
 
-	if(match_state != STATE_PLAYING || !owner->client || !owner )
+	if(match_state != STATE_PLAYING || !owner || !owner->client )
 		return;
 
 	hook = G_Spawn();
@@ -575,6 +575,9 @@ void abandon_hook_fire(edict_t *ent)
 	strcmp(ent->client->pers.weapon->pickup_name, "Hook") == 0)
 	ent->client->weaponstate = -1;	// allow weapon change
 	*/
+	if (!ent || !ent->client || ent->deadflag == DEAD_DEAD || ent->client->pers.pl_state != PL_PLAYING)
+		return;
+
 	if (!use_hook->value)
 	{
 		if (!ent->client->pers.hookmsg)
@@ -584,9 +587,6 @@ void abandon_hook_fire(edict_t *ent)
 		}
 		return;
 	}
-
-	if (!ent || !ent->client || ent->deadflag == DEAD_DEAD || ent->client->pers.pl_state != PL_PLAYING)
-		return;
 
 	if(ent->client->resp.hook_wait > level.time)
 		return;

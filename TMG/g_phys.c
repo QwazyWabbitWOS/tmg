@@ -100,7 +100,7 @@ SV_RunThink (edict_t *ent)
 	ent->nextthink = 0;
 
 	//QW// report if we're asked to think about bad ents
-	if (!ent->think || !strcmp(ent->classname, "freed"))
+	if (ent->think == NULL || !strcmp(ent->classname, "freed"))
 	{
 		if (ent->classname && ent->model)
 			gi.dprintf ("%s NULL ent->think (classname %s, model %s mapname %s)\n",
@@ -114,13 +114,12 @@ SV_RunThink (edict_t *ent)
 		return false;
 	}
 
-	//RAVEN
-	if (!ent->think || strcmp(ent->classname, "freed") == 0)
+	if (strcmp(ent->classname, "freed") == 0)
 	{
 		//restart server instead of crashing it !
 		if(strstr ("target_changelevel", ent->classname))
 		{
-			gi.dprintf ("server would have crashed due to bad map\n");
+			gi.dprintf ("TMG: Server would have crashed due to bad map\n");
 			restartServer();
 			return false;
 		}
@@ -223,19 +222,15 @@ SV_FlyMove (edict_t *ent, float time, int mask)
 	numbumps = 4;
 	
 	blocked = 0;
+	if(!ent || !ent->client)
+		return blocked;
+
 	VectorCopy (ent->velocity, original_velocity);
 	VectorCopy (ent->velocity, primal_velocity);
 	numplanes = 0;
 	
 	time_left = time;
-
-//due check for NULL pointer !!!	
-	if(!ent || !ent->client)
-		return blocked;
-	
-		
-		
-		ent->groundentity = NULL;
+	ent->groundentity = NULL;
 	
 	for (bumpcount=0 ; bumpcount<numbumps ; bumpcount++)
 	{
@@ -313,8 +308,7 @@ SV_FlyMove (edict_t *ent, float time, int mask)
 //PON-CTF
 		if(!i/*ent->client*/)
 		{
-			if(!ent->client->zc.trapped
-				&& !i)
+			if(!ent->client->zc.trapped)
 			{
 				numplanes = 0;
 				if(ent->waterlevel ||

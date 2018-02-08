@@ -705,7 +705,7 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 /*------------------------------------------------------------------------*/
 /**
 Calculate the bonuses for flag defense, flag carrier defense, etc.
-Note that bonuses are not cumaltive. You only get one, they 
+Note that bonuses are not cumulative. You only get one, they 
 are in importance order.
 */
 void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker)
@@ -720,6 +720,13 @@ void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker)
 
 	if (!ctf->value)
 		return;
+	
+	if (!targ || !inflictor || !attacker)
+	{
+		gi.dprintf("TMG: %s called with one or more null args.\n", __FUNCTION__);
+		return;
+	}
+
 	// no bonus for fragging yourself
 	if (!targ->client || !attacker->client || targ == attacker)
 		return;
@@ -806,16 +813,12 @@ void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker)
 	if (!flag)
 		return; // can't find attacker's flag
 	//3ZB
-	if(attacker)
+	VectorSubtract(targ->s.origin,attacker->s.origin,v1);
+	if(VectorLength(v1) < 300
+		&& !(attacker->deadflag)
+		&& (attacker->svflags & SVF_MONSTER))
 	{
-		VectorSubtract(targ->s.origin,attacker->s.origin,v1);
-		if(VectorLength(v1) < 300
-		   && attacker->client
-		   && !(attacker->deadflag)
-		   && (attacker->svflags & SVF_MONSTER))
-		{
-			attacker->client->zc.second_target = flag;
-		}
+		attacker->client->zc.second_target = flag;
 	}
 	//
 	// find attacker's team's flag carrier
@@ -6543,102 +6546,10 @@ qboolean CTFCheckRules(void)
 	//RAV added a lost flag check to check for flags
 	edict_t *flag1, *flag2, *carrier;
 	int i;
-	qboolean red = false;
-	qboolean blue = false;
 
 	if(flagchecktime == level.time)
 	{
 		flag1 = flag2 = NULL;
-		/*		//redflag
-		if ((flag1 = G_Find(NULL, FOFS(classname), "item_flag_team1")) != NULL)
-		{
-			//if flag is at home skip
-			if (redflagnow[1]  ==  redflag_origin[1])
-			{
-				red = true;
-			}
-			else
-				red = false;
-			if(!red)
-				for (i = 1; i <= maxclients->value; i++)
-				{
-					carrier = g_edicts + i;
-					if (carrier->inuse && carrier->client->pers.inventory[ITEM_INDEX(flag1_item)])
-					{
-						red = true;
-						break;
-					}
-				}
-		}
-
-		//no flag: now check for time to respawn it
-		if (!red)
-		{
-			if(!red && red_flag_gone)
-			{
-				if(redflagtime < level.time)
-					//set up spawn timer for 25 sec
-					redflagtime = level.time+ 25;
-			}
-			else
-			{
-				redflagtime = level.time+ 10;
-				red_flag_gone = true;	
-			}
-			if(red_flag_gone && (redflagtime <= level.time || match_state == STATE_WARMUP))
-			{
-				//spawn a new flag
-				CTFResetFlag(CTF_TEAM1);
-				my_bprintf(PRINT_HIGH, "A. The %s flag has returned!\n", CTFTeamName(CTF_TEAM1));
-				red_flag_gone = false;
-			}
-		}
-
-		//blueflag
-		if ((flag2 = G_Find(NULL, FOFS(classname), "item_flag_team2")) != NULL)
-		{
-			//if flag is at home return
-			if (blueflagnow[0]  ==  blueflag_origin[0])
-			{
-				blue = true;
-			}
-			else
-				blue = false;
-			if(!blue)
-				for (i = 1; i <= maxclients->value; i++)
-				{
-					carrier = g_edicts + i;
-					if (carrier->inuse && carrier->client->pers.inventory[ITEM_INDEX(flag2_item)])
-					{
-						blue = true;
-						break;
-					}
-				}
-		}
-
-		//no flag: now check for time to respawn it
-		if (!blue)
-		{
-			if(!blue && blue_flag_gone)
-			{
-				//set up spawn timer for 25 sec
-				if(blueflagtime < level.time)
-					blueflagtime = level.time+ 25;
-			}
-			else
-			{
-				blueflagtime = level.time+ 15;
-				blue_flag_gone = true;
-			}
-			if(blue_flag_gone && (blueflagtime <= level.time || match_state == STATE_WARMUP))
-			{
-				//spawn a new flag
-				CTFResetFlag(CTF_TEAM2);
-				my_bprintf(PRINT_HIGH, "The %s flag has returned!\n", CTFTeamName(CTF_TEAM2));
-				blue_flag_gone = false;
-			}
-		}
-		*/		
 		
 		//if flag is totally gone respawn it
 		if (!G_Find(NULL, FOFS(classname), "item_flag_team1"))
@@ -6658,14 +6569,14 @@ qboolean CTFCheckRules(void)
 			carrier = g_edicts + i;
 			if (carrier->inuse &&
 				carrier->client->pers.inventory[ITEM_INDEX(flag1_item)] &&
-				!red_flag_gone && red && match_state == STATE_WARMUP)
+				!red_flag_gone && match_state == STATE_WARMUP)
 			{
 				carrier->client->pers.inventory[ITEM_INDEX(flag1_item)] = 0;
 				gi.dprintf ("Duplicate RED flag found!\n");
 			}
 			if (carrier->inuse &&
 				carrier->client->pers.inventory[ITEM_INDEX(flag2_item)] &&
-				!blue_flag_gone && blue && match_state == STATE_WARMUP)
+				!blue_flag_gone && match_state == STATE_WARMUP)
 			{
 				gi.dprintf ("Duplicate BLUE flag found!\n");
 				carrier->client->pers.inventory[ITEM_INDEX(flag2_item)] = 0;
@@ -7007,9 +6918,10 @@ void CTFSetupNavSpawn(void)
 				   (Route[i].state == GRS_ITEMS ||
 					Route[i].state == GRS_REDFLAG ||
 					Route[i].state == GRS_BLUEFLAG))
-					//gi.dprintf("kicked item: %d \n", Route[i].state);
+					/*gi.dprintf("kicked item: %d \n", Route[i].state)*/;
 
-				if(j >= globals.num_edicts) Route[i].state = GRS_NORMAL;
+				if(j >= globals.num_edicts)
+					Route[i].state = GRS_NORMAL;
 			}
 		}
 		gi.dprintf("Chaining: Total %i chaining pod assigned.\n", CurrentIndex);
