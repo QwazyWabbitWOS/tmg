@@ -1195,15 +1195,13 @@ void Com_sprintf(char *dest, int size, char *fmt, ...)
 	va_start(argptr, fmt);
 	len = vsprintf(bigbuffer, fmt, argptr);
 	va_end(argptr);
-	if (len >= size)
-#ifdef _DEBUG
+	if (len < size)
+		strncpy(dest, bigbuffer, size - 1);
+	else
+	{
 		Sys_Error("ERROR! %s: destination buffer overflow of len %i, size %i\n"
 			"Input was: %s", __FUNCTION__, len, size, bigbuffer);
-#else
-		Com_Printf("ERROR! %s: destination buffer overflow of len %i, size %i\n"
-			"Input was: %s", __FUNCTION__, len, size, bigbuffer);
-#endif
-	strncpy(dest, bigbuffer, size - 1);
+	}
 }
 
 /*
@@ -1333,6 +1331,18 @@ void Info_SetValueForKey(char *s, char *key, char *value)
 	int		c;
 	size_t	maxsize = MAX_INFO_STRING;
 
+	if (!key)
+	{
+		Com_Printf("NULL key pointer!\n");
+		return;
+	}
+
+	if (!value)
+	{
+		Com_Printf("NULL value pointer!\n");
+		return;
+	}
+
 	if (strstr(key, "\\") || strstr(value, "\\"))
 	{
 		Com_Printf("Can't use keys or values with a \\\n");
@@ -1350,8 +1360,9 @@ void Info_SetValueForKey(char *s, char *key, char *value)
 		Com_Printf("Keys and values must be < 64 characters.\n");
 		return;
 	}
+
 	Info_RemoveKey(s, key);
-	if (!value || !strlen(value))
+	if (!strlen(value))
 		return;
 
 	Com_sprintf(newi, sizeof(newi), "\\%s\\%s", key, value);
