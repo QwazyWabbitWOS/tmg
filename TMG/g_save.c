@@ -243,8 +243,13 @@ void InitGame (void)
 	lan = gi.cvar ("lan", "0", CVAR_LATCH);
 
 	warmup_time =  gi.cvar("warmup_time", "30", CVAR_LATCH);
-	if (warmup_time->value != 0 && warmup_time->value < 30)
+	//QW Some configurations used 1 to set zero warmup.
+	if (warmup_time->value > 1 && warmup_time->value < 30)
+	{
 		gi.cvar_set("warmup_time", "30");
+		gi.dprintf("TMG: Forcing warmup_time 30." 
+			"Set warmup_time 0 to disable warmup mode.\n");
+	}
 
 	g_filter =  gi.cvar("filter", "1", CVAR_LATCH);
 
