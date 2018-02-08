@@ -1479,23 +1479,23 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 		}
 		else if ((ctf->value) && (ent->client->resp.ctf_team == CTF_TEAM1))
 		{
-			if(ent->client->pers.oplevel)
-				Com_sprintf(text2, sizeof text2, "<RED> %s", text);
-			else
+			//if(ent->client->pers.oplevel)
+			//	Com_sprintf(text2, sizeof text2, "<RED> %s", text);
+			//else
 				Com_sprintf(text2, sizeof text2, "<RED> %s", text);
 		}
 		else if ((ctf->value) && (ent->client->resp.ctf_team == CTF_TEAM2))
 		{
-			if(ent->client->pers.oplevel)
-				Com_sprintf(text2, sizeof text2, "<BLUE> %s", text);
-			else
+			//if(ent->client->pers.oplevel)
+			//	Com_sprintf(text2, sizeof text2, "<BLUE> %s", text);
+			//else
 				Com_sprintf(text2, sizeof text2, "<BLUE> %s", text);
 		}
 		else if (ent->client->pers.pl_state == PL_SPECTATOR)
 		{
-			if(ent->client->pers.oplevel != OP_NAMEPASS && ent->client->pers.oplevel != 0)
-				Com_sprintf(text2, sizeof text2, "<SPEC> %s", text);
-			else
+			//if(ent->client->pers.oplevel != OP_NAMEPASS && ent->client->pers.oplevel != 0)
+			//	Com_sprintf(text2, sizeof text2, "<SPEC> %s", text);
+			//else
 				Com_sprintf(text2, sizeof text2, "<SPEC> %s", text);
 		}
 		else
@@ -1507,9 +1507,9 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 	{
 		if (ent->client->pers.pl_state == PL_SPECTATOR)
 		{
-			if(ent->client->pers.oplevel != OP_NAMEPASS && ent->client->pers.oplevel != 0)
-				Com_sprintf(text2, sizeof text2, "<SPEC> %s", text);
-			else
+			//if(ent->client->pers.oplevel != OP_NAMEPASS && ent->client->pers.oplevel != 0)
+			//	Com_sprintf(text2, sizeof text2, "<SPEC> %s", text);
+			//else
 				Com_sprintf(text2, sizeof text2, "<SPEC> %s", text);
 		}
 		else
