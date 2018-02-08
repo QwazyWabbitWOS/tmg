@@ -235,6 +235,7 @@ void R_ConcatTransforms(float in1[3][4], float in2[3][4], float out[3][4])
 
 
 #if defined _M_IX86 && !defined C_ONLY
+#pragma warning (push)
 #pragma warning (disable:4035)
 __declspec(naked) long Q_ftol(float f)
 {
@@ -244,7 +245,7 @@ __declspec(naked) long Q_ftol(float f)
 	__asm mov eax, tmp
 	__asm ret
 }
-#pragma warning (default:4035)
+#pragma warning (pop)
 #endif
 
 /*
@@ -376,7 +377,8 @@ int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s *p)
 	return sides;
 }
 #else
-#pragma warning( disable: 4035 )
+#pragma warning (push)
+#pragma warning (disable: 4035)
 
 __declspec(naked) int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s *p)
 {
@@ -607,7 +609,7 @@ __declspec(naked) int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s
 		int 3
 	}
 }
-#pragma warning( default: 4035 )
+#pragma warning (pop)
 #endif
 
 
