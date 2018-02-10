@@ -34,7 +34,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.42"
+#define MOD_VERSION "0.2.43"
 #define MOD "TMG_MOD"
 
 #ifndef _DEBUG

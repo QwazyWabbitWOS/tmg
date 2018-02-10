@@ -284,7 +284,15 @@ Flush the stats log between maps or where commands cause resets
 to prevent lost stats data.
 Stop writing highlighted text to logs.
 
-
+0.2.43
+Cover case where input file might have been opened but output file open failed.
+Remove duplicate code blocks.
+Correctly handle dynamic player and op menu items. When player is spectator, remove
+"Spectate" from from the player menu.
+More null pointer checks and improved error reporting.
+For compatibility with Tastyspleen's WallFly we removed the OP labels from player tags. 
+This change removes the now unneeded checks for OP status.
+Some configurations used set warmup_time 1 for "no warmups". This change takes that into account and allows 0 or 1 to indicate "no warmup".
 
 
 Completed
