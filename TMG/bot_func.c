@@ -563,8 +563,7 @@ MESS_NOTFOUND:
 					else 
 						break;
 				}
-				if(l < MAXBOP) 
-					break;
+
 				//team
 				if(Get_YenPos(Buff, &k))
 				{
@@ -1345,7 +1344,8 @@ qboolean SpawnBot(int i)
 	}
 
 	bot = Get_NewClient();
-	if(bot == NULL) return false;
+	if(bot == NULL)
+		return false;
 
 	InitializeBot (bot, i);
 	PutBotInServer ( bot );
@@ -1377,7 +1377,7 @@ qboolean SpawnBot(int i)
 		gi.WriteShort (bot-g_edicts);
 		gi.WriteByte (MZ_LOGIN);
 		gi.multicast (bot->s.origin, MULTICAST_PVS);
-		if(debug_spawn->value && bot != NULL)
+		if(debug_spawn->value)
 			DbgPrintf("222 %s bot %s at %f %f %f\n", __func__, 
 			bot->client->pers.netname, 
 			bot->s.origin[0], bot->s.origin[1], bot->s.origin[2]);
@@ -1681,7 +1681,7 @@ void AirStrike_Think(edict_t *ent)
 
 		if( target->classname[0] == 'p')
 		{
-			if(!ctf->value || (ctf->value && ent->owner->client->resp.ctf_team != target->client->resp.ctf_team))
+			if(!ctf->value || (ent->owner->client->resp.ctf_team != target->client->resp.ctf_team))
 			{
 				rs_trace = gi.trace (point, NULL, NULL,
 					target->s.origin, ent, 
