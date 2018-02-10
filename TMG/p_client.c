@@ -2709,7 +2709,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	size_t	i;
 	char	*namepass;
 
-	if(gamedebug)
+	if(gamedebug->value)
 		DbgPrintf("%s\n", __func__);
 
 	// check for malformed or illegal info strings
