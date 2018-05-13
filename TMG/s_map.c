@@ -6,7 +6,7 @@ MAP_ENTRY   *mdsoft_map = NULL;
 
 maplist_t	*maplist;
 
-//QW// thise were originally unsigned. (WTF?)
+//QW// these were originally unsigned. (WTF?)
 static int mdsoft_map_size = 0;
 static int mdsoft_map_last = 0;
 
