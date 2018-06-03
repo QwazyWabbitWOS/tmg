@@ -1875,7 +1875,7 @@ void ClientCommand (edict_t *ent)
 	}
 	//end JSW
 
-	if (Q_strcasecmp (cmd, "location") == 0)
+	if (Q_stricmp (cmd, "location") == 0)
 	{	
 		Cmd_Location_f(ent);
 		return;
@@ -1938,11 +1938,11 @@ void ClientCommand (edict_t *ent)
 		Cmd_WeapLast_f (ent);
 	else if (Q_stricmp (cmd, "kill") == 0)
 		Cmd_Kill_f (ent);
-	else if (Q_strcasecmp (cmd, "skinlist") == 0)
+	else if (Q_stricmp (cmd, "skinlist") == 0)
 		Cmd_SkinList_f (ent);
 	else if (Q_stricmp (cmd, "putaway") == 0)
 		Cmd_PutAway_f (ent);
-	else if (Q_strcasecmp (cmd, "ver") == 0)
+	else if (Q_stricmp (cmd, "ver") == 0)
 			Cmd_Ver_f (ent);
 	else if (Q_stricmp (cmd, "wave") == 0)
 		Cmd_Wave_f (ent);
@@ -1965,7 +1965,7 @@ void ClientCommand (edict_t *ent)
 	}
 	
 	//ZOID
-	else if (Q_strcasecmp (cmd, "join") == 0)
+	else if (Q_stricmp (cmd, "join") == 0)
 	{
 		if(ctf->value)
 			safe_cprintf(ent, PRINT_HIGH, "try team <red or blue>\n");
@@ -1973,12 +1973,12 @@ void ClientCommand (edict_t *ent)
 			JoinGame(ent, NULL);
 	}
 	
-	else if (Q_strcasecmp (cmd, "spec") == 0
-			  || Q_strcasecmp (cmd, "spectator") == 0
-			  || Q_strcasecmp (cmd, "chase") == 0
-			  || Q_strcasecmp (cmd, "chasecam") == 0
-			  || Q_strcasecmp (cmd, "observe") == 0
-			  || (Q_strcasecmp (cmd, "observer") == 0
+	else if (Q_stricmp (cmd, "spec") == 0
+			  || Q_stricmp (cmd, "spectator") == 0
+			  || Q_stricmp (cmd, "chase") == 0
+			  || Q_stricmp (cmd, "chasecam") == 0
+			  || Q_stricmp (cmd, "observe") == 0
+			  || (Q_stricmp (cmd, "observer") == 0
 			 && ent->client->pers.pl_state != PL_SPECTATOR
 			 && !(ent->client->pers.pl_state != PL_CHEATBOT)))
 	{
