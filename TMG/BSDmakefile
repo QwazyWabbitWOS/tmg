@@ -10,18 +10,21 @@
 # Requires GNU make
 #
 
-ARCH = i386
-CC = gcc -std=gnu99 -DCOMPAT_32BIT -L/usr/lib32 -B/usr/lib32
+#ARCH = i386
+#this nice line comes from the linux kernel makefile
+ARCH != uname -m | sed -e s/i.86/i386/ -e s/amd64/x86_64/ -e s/sun4u/sparc64/ -e s/arm.*/arm/ -e s/sa110/arm/ -e s/alpha/axp/
 
+CC = gcc -std=gnu99 -DCOMPAT_32BIT -L/usr/lib32 -B/usr/lib32
+CFLAGS  = -O2 -fPIC -DARCH="$(ARCH)"
+CFLAGS += -ffast-math -w -DGAME_INCLUDE -DLINUX 
+CFLAGS += -DSTDC_HEADERS -I/usr/include
+LDFLAGS = -shared -lm
 
 # on x64 machines do this preparation:
 # sudo apt-get install ia32-libs
 # sudo apt-get install libc6-dev-i386
 # this will let you build 32-bits on ia64 systems
 #
-
-#use these cflags to optimize this build
-CFLAGS=-O3 -m32 -march=$(ARCH) -DARCH="$(ARCH)"
 
 #use these when debugging
 #CFLAGS=-g -Og -m32 -DDEBUG -DARCH="$(ARCH)" -Wall -pedantic
