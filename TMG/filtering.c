@@ -42,8 +42,9 @@ static char *strstri(char *str1, char *str2)
 		s1 = cp;
 		s2 = (char *) str2;
 
-		while ( *s1 && *s2 && !( tolower(*s1) - tolower(*s2) ) )
-			s1++, s2++;
+		while ( *s1 && *s2 && !( tolower(*s1) - tolower(*s2) ) ) {
+			s1++; s2++;
+		}
 
 		if (!*s2)
 			return(cp);

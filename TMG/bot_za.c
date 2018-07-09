@@ -4975,7 +4975,8 @@ GOMOVE:
 		{
 			if(v[2] + 20 <= ent->s.origin[2])
 			{
-				f2 = 20,f3 = 0;
+				f2 = 20;
+				f3 = 0;
 			}
 			else
 			{
@@ -5761,7 +5762,9 @@ GOMOVE:
 VCHCANSEL:
 	//--------------------------------------------------------------------------------------
 	//ladder check
-	front = NULL, left = NULL, right = NULL;
+	front = NULL;
+	left = NULL;
+	right = NULL;
 	k = false;
 	if(zc->route_trace && (zc->routeindex + 1) < CurrentIndex)
 	{

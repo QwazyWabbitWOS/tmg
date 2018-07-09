@@ -514,7 +514,8 @@ MESS_NOTFOUND:
 				i--;
 				continue;
 			}
-			j = 2, k = 1;
+			j = 2;
+			k = 1;
 			if(!strncmp(Buff,"\\\\",2))
 			{
 				//netname

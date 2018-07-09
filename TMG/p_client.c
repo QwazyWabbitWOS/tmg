@@ -2440,7 +2440,7 @@ void ClientPrintMOTD (edict_t *ent)
 	if (in != NULL)
 	{
 		// Count the number of bytes in the file.
-		while ((c = fgetc (in)), c != EOF)
+		while ((c = fgetc (in)) != EOF)
 			motdBytes++;
 	}
 	else
@@ -2484,7 +2484,7 @@ void ClientPrintMOTD (edict_t *ent)
 	if (in)
 	{
 		rewind (in);
-		while ((c = fgetc (in)), c != EOF)
+		while ((c = fgetc (in)) != EOF)
 		{
 			*here = c;
 			here++;

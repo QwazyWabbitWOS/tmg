@@ -875,7 +875,7 @@ void convert_string(char *src, char start, char end, char add, char *dest)
 	{
 		if ( (*dest >= start) && (*dest <= end) && (*dest != '\n') && (*dest != '\r') )
 			*dest += add;
-		src++, dest++;
+		src++; dest++;
 	}
 }
 
