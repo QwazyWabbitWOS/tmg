@@ -386,7 +386,7 @@ void TimerThink(void)
 		if (use_bots->value)
 			Adjust_Bot_Number();
 
-		match_nextthink += FRAMETIME * 10.0;
+		match_nextthink += FRAMETIME * 10.0f;
 		ctfgame.players1 = 0;
 		ctfgame.players2 = 0;
 		ctfgame.players_total = 0;

@@ -1728,7 +1728,7 @@ void CTFResetGrapple(edict_t *self)
 		float volume = 1.0;
 
 		if (cl->silencer_shots)
-			volume = 0.2;
+			volume = 0.2f;
 
 		gi.sound(self->owner, CHAN_RELIABLE + CHAN_WEAPON,
 			gi.soundindex("weapons/grapple/grreset.wav"),
@@ -1817,7 +1817,7 @@ void CTFGrappleTouch(edict_t *self,
 	self->solid = SOLID_NOT;
 
 	if (self->owner->client->silencer_shots)
-		volume = 0.2;
+		volume = 0.2f;
 
 	gi.sound(self->owner, CHAN_RELIABLE + CHAN_WEAPON,
 		gi.soundindex("weapons/grapple/grpull.wav"),
@@ -2056,7 +2056,7 @@ void CTFGrapplePull(edict_t *self)
 			float volume = 1.0;
 
 			if (self->owner->client->silencer_shots)
-				volume = 0.2;
+				volume = 0.2f;
 
 			self->owner->client->ps.pmove.pm_flags |= PMF_NO_PREDICTION;
 			gi.sound(self->owner,
@@ -2176,7 +2176,7 @@ void CTFGrappleFire(edict_t *ent, vec3_t g_offset, int damage, int effect)
 	ent->client->kick_angles[0] = -1;
 
 	if (ent->client->silencer_shots)
-		volume = 0.2;
+		volume = 0.2f;
 
 	//	gi.positioned_sound(ent->s.origin,
 	//						ent, CHAN_WEAPON,
@@ -3298,7 +3298,7 @@ int CTFApplyResistance(edict_t *ent, int dmg)
 	float volume = 1.0;
 
 	if (ent->client && ent->client->silencer_shots)
-		volume = 0.2;
+		volume = 0.2f;
 
 	if (!tech)
 		tech = FindItemByClassname("item_tech1");
@@ -3335,7 +3335,7 @@ qboolean CTFApplyStrengthSound(edict_t *ent)
 	float volume = 1.0;
 
 	if (ent->client && ent->client->silencer_shots)
-		volume = 0.2;
+		volume = 0.2f;
 
 	if (!tech)
 		tech = FindItemByClassname("item_tech2");
@@ -3377,7 +3377,7 @@ void CTFApplyHasteSound(edict_t *ent)
 	float volume = 1.0;
 
 	if (ent->client && ent->client->silencer_shots)
-		volume = 0.2;
+		volume = 0.2f;
 
 	if (!tech)
 		tech = FindItemByClassname("item_tech3");
@@ -3406,7 +3406,7 @@ void CTFApplyRegeneration(edict_t *ent)
 		return;
 
 	if (ent->client->silencer_shots)
-		volume = 0.2;
+		volume = 0.2f;
 
 	if (!tech)
 		tech = FindItemByClassname("item_tech4");

@@ -90,7 +90,7 @@
 //RAV
 #define FL_SPECIAL				0x00020000	// 
 //
-#define	FRAMETIME		0.1
+#define	FRAMETIME		0.1f
 
 // memory tags to allow dynamic memory to be cleaned up
 #define	TAG_GAME	765		// clear when unloading the dll

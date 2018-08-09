@@ -142,9 +142,9 @@ P_DamageFeedback (edict_t *player)
 		client->damage_alpha = 0;
 	client->damage_alpha += count*0.01;
 	if (client->damage_alpha < 0.2)
-		client->damage_alpha = 0.2;
+		client->damage_alpha = 0.2f;
 	if (client->damage_alpha > 0.6)
-		client->damage_alpha = 0.6;		// don't go too saturated
+		client->damage_alpha = 0.6f;		// don't go too saturated
 
 	// the color of the blend will vary based on how much was absorbed
 	// by different armors
@@ -459,34 +459,34 @@ static void
 	if (contents & (CONTENTS_LAVA))
 	{
 		if (is_liquid)
-			alpha = 0.1;
+			alpha = 0.1f;
 		else
-			alpha = 0.6;
+			alpha = 0.6f;
 
-		SV_AddBlend (1.0, 0.3, 0.0, alpha, ent->client->ps.blend);
+		SV_AddBlend (1.0f, 0.3f, 0.0f, alpha, ent->client->ps.blend);
 	}
 	else if (contents & CONTENTS_SLIME)
 	{
 		if (is_liquid)
-			alpha = 0.1;
+			alpha = 0.1f;
 		else
-			alpha = 0.6;
+			alpha = 0.6f;
 
-		SV_AddBlend (0.0, 0.1, 0.05, alpha, ent->client->ps.blend);
+		SV_AddBlend (0.0f, 0.1f, 0.05f, alpha, ent->client->ps.blend);
 	}
 	else if (contents & CONTENTS_WATER)
 	{
 		if (is_liquid)
-			alpha = 0.1;
+			alpha = 0.1f;
 		else
-			alpha = 0.5;
+			alpha = 0.5f;
 
-		SV_AddBlend (0.5, 0.3, 0.2, alpha, ent->client->ps.blend);
+		SV_AddBlend (0.5f, 0.3f, 0.2f, alpha, ent->client->ps.blend);
 	}
 
 	else if (contents & (CONTENTS_SOLID))
 	{
-		SV_AddBlend (0.3, 0.3, 0.3, 0.3, ent->client->ps.blend);
+		SV_AddBlend (0.3f, 0.3f, 0.3f, 0.3f, ent->client->ps.blend);
 	}
 	//
 	/*
@@ -517,7 +517,7 @@ static void
 			}
 		}
 		if (remaining > 30 || (remaining & 4) )
-			SV_AddBlend (0, 0, 1, 0.08, ent->client->ps.blend);
+			SV_AddBlend (0, 0, 1, 0.08f, ent->client->ps.blend);
 	}
 	else if (ent->client->invincible_framenum > level.framenum)
 	{
@@ -526,7 +526,7 @@ static void
 			gi.sound(ent, CHAN_ITEM,
 			gi.soundindex("items/protect2.wav"), 1, ATTN_NORM, 0);
 		if (remaining > 30 || (remaining & 4) )
-			SV_AddBlend (1, 1, 0, 0.08, ent->client->ps.blend);
+			SV_AddBlend (1, 1, 0, 0.08f, ent->client->ps.blend);
 	}
 	//RAV
 	else if (ent->client->respawn_framenum > level.framenum)
@@ -536,7 +536,7 @@ static void
 		//			gi.sound(ent, CHAN_ITEM,
 		//					 gi.soundindex("items/protect2.wav"), 1, ATTN_NORM, 0);
 		if (remaining > 30 || (remaining & 4) )
-			SV_AddBlend (1, 1, 0, 0.08, ent->client->ps.blend);
+			SV_AddBlend (1, 1, 0, 0.08f, ent->client->ps.blend);
 	}
 	//
 	else if (ent->client->enviro_framenum > level.framenum)
@@ -546,7 +546,7 @@ static void
 			gi.sound(ent, CHAN_ITEM,
 			gi.soundindex("items/airout.wav"), 1, ATTN_NORM, 0);
 		if (remaining > 30 || (remaining & 4) )
-			SV_AddBlend (0, 1, 0, 0.08, ent->client->ps.blend);
+			SV_AddBlend (0, 1, 0, 0.08f, ent->client->ps.blend);
 	}
 	else if (ent->client->breather_framenum > level.framenum)
 	{
@@ -555,7 +555,7 @@ static void
 			gi.sound(ent, CHAN_ITEM,
 			gi.soundindex("items/airout.wav"), 1, ATTN_NORM, 0);
 		if (remaining > 30 || (remaining & 4) )
-			SV_AddBlend (0.4, 1, 0.4, 0.04, ent->client->ps.blend);
+			SV_AddBlend (0.4f, 1, 0.4f, 0.04f, ent->client->ps.blend);
 	}
 
 	// add for damage
@@ -567,17 +567,17 @@ static void
 		ent->client->ps.blend);
 
 	if (ent->client->bonus_alpha > 0)
-		SV_AddBlend (0.85, 0.7, 0.3,
+		SV_AddBlend (0.85f, 0.7f, 0.3f,
 		ent->client->bonus_alpha,
 		ent->client->ps.blend);
 
 	// drop the damage value
-	ent->client->damage_alpha -= 0.06;
+	ent->client->damage_alpha -= 0.06f;
 	if (ent->client->damage_alpha < 0)
 		ent->client->damage_alpha = 0;
 
 	// drop the bonus value
-	ent->client->bonus_alpha -= 0.1;
+	ent->client->bonus_alpha -= 0.1f;
 	if (ent->client->bonus_alpha < 0)
 		ent->client->bonus_alpha = 0;
 }

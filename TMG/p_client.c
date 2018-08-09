@@ -4724,7 +4724,7 @@ void ClientBeginServerFrame (edict_t *ent)
 	//RAV
 	if (rune_has_rune(ent, RUNE_REGEN))
 	{
-		client->regen_acc += (float) RUNE_REGEN_PER_SEC / 10.0;
+		client->regen_acc += RUNE_REGEN_PER_SEC / 10.0f;
 		if (ent->health < 150)
 		{
 			ent->health += (int) client->regen_acc;

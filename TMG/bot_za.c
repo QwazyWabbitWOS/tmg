@@ -1607,7 +1607,7 @@ qboolean Bot_Jump(edict_t *ent,vec3_t pos,float dist)
 				if(Get_FlyingSpeed(bottom,x,dist,&speed))
 				{
 					speed *= 1.5;
-					if(speed > 1.2) speed = 1.2;
+					if(speed > 1.2) speed = 1.2f;
 					ent->moveinfo.speed = speed;
 					ent->velocity[2] += VEL_BOT_JUMP;
 					gi.sound(ent, CHAN_VOICE, gi.soundindex("*jump1.wav"), 1, ATTN_NORM, 0);
@@ -4835,12 +4835,12 @@ GOMOVE:
 				}
 				else
 				{
-					ent->moveinfo.speed = 0.3;//0.2;
+					ent->moveinfo.speed = 0.3f;//0.2;
 				}
 			}
 			else
 			{
-				ent->moveinfo.speed = 0.3;//0.2;
+				ent->moveinfo.speed = 0.3f;//0.2;
 			}
 
 			if(x == 0) continue;
@@ -4906,9 +4906,9 @@ GOMOVE:
 					else ent->client->ps.pmove.pm_flags &= ~PMF_DUCKED;
 					break;
 				}
-				else ent->moveinfo.speed = 0.3;//0.2;
+				else ent->moveinfo.speed = 0.3f;//0.2;
 			}
-			else ent->moveinfo.speed = 0.3;//0.2;
+			else ent->moveinfo.speed = 0.3f;//0.2;
 		}
 		if(x >= 90 /*&& ent->velocity[2] < 0*/)
 		{
@@ -5065,7 +5065,7 @@ GOMOVE:
 								{
 									if(iyaw < 0)
 									{
-										ent->moveinfo.speed = 0.05;
+										ent->moveinfo.speed = 0.05f;
 										VectorCopy(trmin,ent->s.origin);
 										break;
 									}
@@ -5081,7 +5081,7 @@ GOMOVE:
 				   && bottom <= f2 && j == true && k
 				   && !(ent->client->ps.pmove.pm_flags & PMF_DUCKED))
 				{
-					ent->moveinfo.speed = 0.15;
+					ent->moveinfo.speed = 0.15f;
 					if(k == 1/*!ent->waterlevel*/)
 					{
 						ent->velocity[2] += VEL_BOT_JUMP;
@@ -5090,7 +5090,7 @@ GOMOVE:
 					}
 					else
 					{
-						ent->moveinfo.speed = 0.1;
+						ent->moveinfo.speed = 0.1f;
 						//waterjumped = true;
 						if(ent->velocity[2] < VEL_BOT_WJUMP/*=1*/ || VectorCompare(ent->s.origin,ent->s.old_origin))
 						{
@@ -5139,7 +5139,7 @@ GOMOVE:
 					{
 						VectorCopy(temppos,ent->s.origin);
 						zc->moveyaw = yaw;
-						ent->moveinfo.speed = 0.2;
+						ent->moveinfo.speed = 0.2f;
 						goto VCHCANSEL;
 					}
 
@@ -5183,7 +5183,7 @@ GOMOVE:
 				   && bottom <= f2 && j == true && k
 				   && !(ent->client->ps.pmove.pm_flags & PMF_DUCKED))
 				{
-					ent->moveinfo.speed = 0.15;
+					ent->moveinfo.speed = 0.15f;
 					if(k == 1/*!ent->waterlevel*/)
 					{
 						ent->velocity[2] += VEL_BOT_JUMP;
@@ -5192,7 +5192,7 @@ GOMOVE:
 					}
 					else
 					{
-						ent->moveinfo.speed = 0.1;
+						ent->moveinfo.speed = 0.1f;
 						//waterjumped = true;
 						if(ent->velocity[2] < VEL_BOT_WJUMP/*= 1*/ || VectorCompare(ent->s.origin,ent->s.old_origin))
 						{
@@ -5242,7 +5242,7 @@ GOMOVE:
 					{
 						VectorCopy(temppos,ent->s.origin);
 						zc->moveyaw = yaw;
-						ent->moveinfo.speed = 0.2;
+						ent->moveinfo.speed = 0.2f;
 						goto VCHCANSEL;
 					}
 

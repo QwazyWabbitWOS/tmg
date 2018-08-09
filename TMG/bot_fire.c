@@ -1031,7 +1031,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy,
 	target = zc->first_target;
 
 
-	if(zc->battlemode == FIRE_CHIKEN) aim *= 0.7;
+	if(zc->battlemode == FIRE_CHIKEN) aim *= 0.7f;
 
 	if(zc->battlemode & FIRE_SHIFT)
 	{
@@ -1144,7 +1144,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy,
 			mywep = Get_KindWeapon(client->pers.weapon);
 			if(1/*mywep == WEAP_BFG*/)
 				CanUsewep(ent, WEAP_BFG);
-			aim *= 0.95;
+			aim *= 0.95f;
 			Get_AimAngle(ent, aim, distance, mywep);
 			if(target->client->weaponstate == WEAPON_FIRING
 				&& ent->groundentity)
@@ -1174,7 +1174,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy,
 		{
 			mywep = Get_KindWeapon(client->pers.weapon);
 			if(1/*mywep == WEAP_BFG*/) CanUsewep(ent,WEAP_BFG);
-			aim *= 0.95;
+			aim *= 0.95f;
 			Get_AimAngle(ent,aim,distance,mywep);
 			if(target->client->weaponstate == WEAPON_FIRING
 				&& ent->groundentity)
@@ -1203,7 +1203,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy,
 			mywep = Get_KindWeapon(client->pers.weapon);
 			if(1/*mywep == WEAP_BFG*/)
 				CanUsewep(ent, WEAP_BFG);
-			aim *= 0.95;
+			aim *= 0.95f;
 			Get_AimAngle(ent, aim, distance, mywep);
 			if(target->client->weaponstate == WEAPON_FIRING && ent->groundentity)
 			{
@@ -1236,7 +1236,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy,
 			mywep = Get_KindWeapon(client->pers.weapon);
 			if(1) /*mywep == WEAP_BFG*/
 				CanUsewep(ent, WEAP_BFG);
-			aim *= 0.95;
+			aim *= 0.95f;
 			Get_AimAngle(ent,aim,distance,mywep);
 			if(target->client->weaponstate == WEAPON_FIRING
 				&& ent->groundentity)
@@ -1266,7 +1266,7 @@ void Combat_Level0(edict_t *ent, int foundedenemy,
 		{
 			mywep = Get_KindWeapon(client->pers.weapon);
 			//CanUsewep(ent,WEAP_BFG);
-			aim *= 0.95;
+			aim *= 0.95f;
 			Get_AimAngle(ent,aim,distance,mywep);
 			if(target->client->weaponstate == WEAPON_FIRING &&
 				ent->groundentity)

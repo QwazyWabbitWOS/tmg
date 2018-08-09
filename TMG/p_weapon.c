@@ -687,11 +687,11 @@ Weapon_Generic2 (edict_t *ent,
 				if (rune_has_rune(ent, RUNE_STRENGTH))
 					gi.sound(ent, CHAN_ITEM,
 							 gi.soundindex("boss3/bs3pain2.wav"),
-							 0.7, ATTN_NORM, 0);
+							 0.7f, ATTN_NORM, 0);
 				if (rune_has_rune(ent, RUNE_HASTE))
 					gi.sound(ent, CHAN_ITEM,
 							 gi.soundindex("flipper/flppain1.wav"),
-							 0.7, ATTN_NORM, 0);
+							 0.7f, ATTN_NORM, 0);
 		
 				fire (ent);
 				break;
