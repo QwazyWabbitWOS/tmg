@@ -485,7 +485,6 @@ void EndDMLevel (void)
     if( !ent )
     {
         DbgPrintf("mdsoft_NextMap returned NULL!\n");
-		assert(ent); // ent must never be NULL
 		if (level.nextmap[0])
         {   // go to a specific map
             ent = G_Spawn ();
