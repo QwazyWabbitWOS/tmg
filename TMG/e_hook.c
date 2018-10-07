@@ -64,10 +64,6 @@ void hook_laser_think(edict_t *self)
 {
 	vec3_t	forward, right, offset, start;
 
-	assert(self->owner);
-	assert(self->owner->owner);
-	assert(self->owner->owner->client);
-
 	//QW// fix hook bugs, decide when to disconnect hook
 	if (!self->owner || //QW// not sure when these can happen
 		!self->owner->owner || //QW// but leaving them in for now.
