@@ -400,14 +400,14 @@ void ClientEndServerFrames (void)
 	for (i = 0 ; i < maxclients->value ; i++)
 	{
 		ent = g_edicts + 1 + i;
-		if (!ent->inuse || !ent->client)
+		if (ent && (!ent->inuse || !ent->client))
 			continue;
 
 		// Safety check...
 		if (!G_EntExists(ent))
 			continue;
 
-		if(!(ent->svflags & SVF_MONSTER))
+		if(ent && !(ent->svflags & SVF_MONSTER))
 			ClientEndServerFrame (ent);
 	}
 }
