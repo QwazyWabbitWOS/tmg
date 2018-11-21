@@ -62,7 +62,7 @@ void StatsLog(const char *fmt, ... )
 				fprintf(pStatsfile, "%s", ar_string); 
 			}
 			else
-				gi.dprintf("Error writing to %s\n", statsfile->string);
+				gi.dprintf("Error writing to %s\n", logpath);
 		}
 		else
 		{
