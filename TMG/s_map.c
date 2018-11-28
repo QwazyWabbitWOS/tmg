@@ -2,7 +2,7 @@
 #include "s_map.h"
 #include "performance.h"
 
-MAP_ENTRY   *mdsoft_map = NULL;
+map_entry_t   *mdsoft_map = NULL;
 
 maplist_t	*maplist;
 
@@ -87,10 +87,10 @@ edict_t *mdsoft_NextMap( void )
 				mdsoft_map_last = 0 - mdsoft_map_last;
 
 			if(debug_smap->value)
-				DbgPrintf( "Random Map %d %s [fVisited = %d]\n",
+				DbgPrintf( "Random Map %d %s [visited = %d]\n",
 				mdsoft_map_last,
 				mdsoft_map[mdsoft_map_last].aFile, 
-				mdsoft_map[mdsoft_map_last].fVisited);
+				mdsoft_map[mdsoft_map_last].visited);
 		}
 
 		/* Choose map */
@@ -112,7 +112,7 @@ edict_t *mdsoft_NextMap( void )
 			do 
 			{
 				if( (0 != mdsoft_map[point].max) &&
-					(0 == mdsoft_map[point].fVisited) )
+					(0 == mdsoft_map[point].visited) )
 				{
 					if( (mdsoft_map[point].min <= count) &&
 						(mdsoft_map[point].max >= count) )
@@ -122,10 +122,10 @@ edict_t *mdsoft_NextMap( void )
 						fFound = 1;
 
 						if(debug_smap->value)
-							DbgPrintf("Map Found = %d %s [fVisited = %d]\n",
+							DbgPrintf("Map Found = %d %s [visited = %d]\n",
 							mdsoft_map_last,
 							mdsoft_map[mdsoft_map_last].aFile,
-							mdsoft_map[mdsoft_map_last].fVisited);
+							mdsoft_map[mdsoft_map_last].visited);
 					}
 					else
 					{
@@ -160,7 +160,7 @@ edict_t *mdsoft_NextMap( void )
 	{
 		/* Set map as visited */
 		if(map_once->value)
-			mdsoft_map[mdsoft_map_last].fVisited = 1;
+			mdsoft_map[mdsoft_map_last].visited = 1;
 
 		/* Set next map */
 		ent = G_Spawn ();
@@ -171,9 +171,9 @@ edict_t *mdsoft_NextMap( void )
 
 			if(debug_smap->value)
 			{
-				DbgPrintf ("Selected = %d %s [fVisited = %d]\n", 
+				DbgPrintf ("Selected = %d %s [visited = %d]\n", 
 					mdsoft_map_last, &mdsoft_map[mdsoft_map_last].aFile[0], 
-					mdsoft_map[mdsoft_map_last].fVisited);
+					mdsoft_map[mdsoft_map_last].visited);
 				gi.bprintf (PRINT_HIGH, "MAP CHANGE: %d ", mdsoft_map_last );
 				gi.bprintf (PRINT_HIGH, &mdsoft_map[mdsoft_map_last].aFile[0] );
 				gi.bprintf (PRINT_HIGH, " [min = %d, max = %d, players = %d]\n",
@@ -199,7 +199,7 @@ void ClearVisited(void)
 	// don't clear if any one of them is not visited
 	for(i = 0; i < mdsoft_map_size; i++ )
 	{
-		if (!mdsoft_map[i].fVisited)
+		if (!mdsoft_map[i].visited)
 			return; 
 	}
 
@@ -207,7 +207,7 @@ void ClearVisited(void)
 		DbgPrintf("Clearing Visited flags\n" );
 
 	for(i = 0; i < mdsoft_map_size; i++ )
-		mdsoft_map[i].fVisited = 0;
+		mdsoft_map[i].visited = 0;
 }
 
 /**
@@ -336,14 +336,14 @@ void MaplistInit( void )
 	fpFile = fopen( pFileName, "r" );
 	if( fpFile )
 	{
-		MAP_ENTRY   temp;
+		map_entry_t   temp;
 		int         element;
 
 		do
 		{
 			temp.min      = 0;
 			temp.max      = (int) maxclients->value;
-			temp.fVisited = 0;
+			temp.visited = 0;
 
 			element = parse_line( fpFile,
 				&temp.aFile[0],
@@ -353,11 +353,11 @@ void MaplistInit( void )
 
 			if( 2 <= element )
 			{
-				MAP_ENTRY *newone;
+				map_entry_t *newone;
 
 				int size = (mdsoft_map_size + 1) * sizeof(*newone);
 				//FIXME: gi.TagMalloc here.
-				newone = realloc(mdsoft_map, size);
+				newone = (map_entry_t *) realloc(mdsoft_map, size);
 
 				if( newone )
 				{

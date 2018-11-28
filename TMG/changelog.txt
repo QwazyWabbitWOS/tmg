@@ -188,7 +188,7 @@ Refactored s_map code.
 Fix bug in safe_bprintf where highlighting was lost.
 Fix index past end of map list. Fix bug where mdsoft_NextMap 
 entered infinite loop if map_randomize = 0 and map_once = 1. 
-Test and clear fVisited flags on map list when all maps become 
+Test and clear visited flags on map list when all maps become 
 visited. Restrict cases where mdsoft_NextMap can return NULL.
 
 0.2.35

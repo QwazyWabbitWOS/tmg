@@ -9,8 +9,8 @@ typedef struct map_entry_s
     char   aName[MAX_QPATH];
     int    min;
     int    max;
-    int    fVisited;
-} MAP_ENTRY;
+    int    visited;
+} map_entry_t;
 
 typedef struct maplist_s
 {
@@ -25,7 +25,7 @@ typedef struct maplist_s
 } maplist_t;
 
 extern	maplist_t	*maplist;
-extern MAP_ENTRY   *mdsoft_map;
+extern map_entry_t   *mdsoft_map;
 
 edict_t *mdsoft_NextMap( void );
 void ClearVisited(void);
