@@ -1485,7 +1485,7 @@ edict_t *SelectFarthestDeathmatchSpawnPoint (void)
 	edict_t  *spot;
 
 	if(debug_spawn->value)
-		DbgPrintf("%s\n", __FUNCTION__);
+		DbgPrintf("%s\n", __func__);
 
 	spot = NULL;
 	bestspot = NULL;
@@ -1578,7 +1578,7 @@ edict_t *SelectDeathmatchSpawnPoint (void)
 	edict_t *spot;
 
 	if(debug_spawn->value)
-		gi.dprintf("%s\n", __FUNCTION__);
+		gi.dprintf("%s\n", __func__);
 
 	if ( (int)(dmflags->value) & DF_SPAWN_FARTHEST)
 	{
@@ -1654,7 +1654,7 @@ qboolean SelectSpawnPointRAV (edict_t *ent, vec3_t origin, vec3_t angles)
 	edict_t  *spot = NULL;
 
 	if(debug_spawn->value)
-		DbgPrintf("%s\n", __FUNCTION__);
+		DbgPrintf("%s\n", __func__);
 
 	//ZOID
 	if (ctf->value && ent->client->kill) //JSW
@@ -1722,7 +1722,7 @@ void	SelectSpawnPoint (edict_t *ent, vec3_t origin, vec3_t angles)
 	edict_t	*spot = NULL;
 
 	if(debug_spawn->value)
-		DbgPrintf("%s %s\n", __FUNCTION__, ent->client->pers.netname);
+		DbgPrintf("%s %s\n", __func__, ent->client->pers.netname);
 
 	if (deathmatch->value)
 		//ZOID

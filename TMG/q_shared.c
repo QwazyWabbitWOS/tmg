@@ -1167,7 +1167,7 @@ void Com_sprintf(char *dest, int size, char *fmt, ...)
 	else
 	{
 		Sys_Error("ERROR! %s: destination buffer overflow of len %i, size %i\n"
-			"Input was: %s", __FUNCTION__, len, size, bigbuffer);
+			"Input was: %s", __func__, len, size, bigbuffer);
 	}
 }
 

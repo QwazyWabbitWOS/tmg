@@ -303,7 +303,7 @@ void PrecacheSongs(void)
 		count = fread((void *)p_buffer, sizeof(char), file_size, file);
 		if (!count)
 			gi.dprintf("%s read %d of %d bytes in %s\n",
-			__FUNCTION__, count, file_size, file);
+			__func__, count, file_size, file);
 
 		p_name = p_buffer;
 		do

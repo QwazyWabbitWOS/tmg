@@ -602,7 +602,7 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 	char	*cname;
 
 	if(debug_spawn->value)
-		DbgPrintf("%s %s\n", __FUNCTION__, ent->client->pers.netname);
+		DbgPrintf("%s %s\n", __func__, ent->client->pers.netname);
 
 	if (ent->client->resp.ctf_state != CTF_STATE_START)
 	{
@@ -644,7 +644,7 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 		break;
 	default:
 		if(debug_spawn->value)
-			DbgPrintf("3 %s default case.\n", __FUNCTION__);
+			DbgPrintf("3 %s default case.\n", __func__);
 		return SelectRandomDeathmatchSpawnPoint();
 	}
 
@@ -671,7 +671,7 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 	if (!count)
 	{
 		if(debug_spawn->value)
-			DbgPrintf("4 %s no spots in range\n", __FUNCTION__);
+			DbgPrintf("4 %s no spots in range\n", __func__);
 		return SelectRandomDeathmatchSpawnPoint();
 	}
 
@@ -685,7 +685,7 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 	selection = rand() % count;
 	spot = NULL;
 	if(debug_spawn->value)
-		DbgPrintf("5 %s count = %d\n", __FUNCTION__, count);
+		DbgPrintf("5 %s count = %d\n", __func__, count);
 
 	do
 	{
@@ -723,7 +723,7 @@ void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker)
 	
 	if (!targ || !inflictor || !attacker)
 	{
-		gi.dprintf("TMG: %s called with one or more null args.\n", __FUNCTION__);
+		gi.dprintf("TMG: %s called with one or more null args.\n", __func__);
 		return;
 	}
 
@@ -5916,7 +5916,7 @@ void UpdateBotMenu(edict_t *ent)
 		strcat(str, "Toggle Bot Insult ON\t");
 
 	if (strlen(str) >= sizeof str)
-		DbgPrintf("%s str space used: %d\n", __FUNCTION__, strlen(str));
+		DbgPrintf("%s str space used: %d\n", __func__, strlen(str));
 
 	// Populate the structure
 	token = strtok (str, seps);
@@ -6009,7 +6009,7 @@ void UpdateOpMenu(edict_t *ent)
 	}
 
 	if (strlen(str) >= sizeof str)
-		DbgPrintf("%s str space used: %d\n", __FUNCTION__, strlen(str));
+		DbgPrintf("%s str space used: %d\n", __func__, strlen(str));
 
 	if (ent->client->pers.oplevel & OP_PLAYERCONTROL)
 	{
@@ -6808,7 +6808,7 @@ void CTFSetupNavSpawn(void)
 		count = fread(code, sizeof(char), 8, fpout);
 		if (count != 8)
 		{
-			gi.dprintf("Error reading chainfile code in %s\n", __FUNCTION__);
+			gi.dprintf("Error reading chainfile code in %s\n", __func__);
 		}
 		if(!ctf->value || use_navfiles->value)
 			strncpy(SRCcode,"3ZBRGDTM", 8); // Deliberately not terminated.
@@ -6819,7 +6819,7 @@ void CTFSetupNavSpawn(void)
 		{
 			CurrentIndex = 0;
 			gi.dprintf("Chaining: %s is not a chaining file for this mode.\n", name);
-			gi.dprintf("%s was looking for %s, found %s\n", __FUNCTION__, SRCcode, code);
+			gi.dprintf("%s was looking for %s, found %s\n", __func__, SRCcode, code);
 			fclose(fpout);
 			return;
 		}
@@ -6827,12 +6827,12 @@ void CTFSetupNavSpawn(void)
 
 		count = fread(&CurrentIndex, sizeof(int), 1, fpout);
 		if (count != 1)
-			gi.dprintf("Error reading chaining file index in %s\n", __FUNCTION__);
+			gi.dprintf("Error reading chaining file index in %s\n", __func__);
 
 		size = (unsigned int)CurrentIndex * sizeof(route_t);
 		count = fread(Route, size, 1, fpout);
 		if (count != 1)
-			gi.dprintf("Error reading chaining file Route in %s\n", __FUNCTION__);
+			gi.dprintf("Error reading chaining file Route in %s\n", __func__);
 
 		for(i = 0; i < CurrentIndex; i++)
 		{

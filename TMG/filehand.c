@@ -619,7 +619,7 @@ void AddEntry (char *filename, char *text)
 	}
 	else
 	{
-		gi.dprintf("ERROR opening %s in %s\n", filename, __FUNCTION__);
+		gi.dprintf("ERROR opening %s in %s\n", filename, __func__);
 	}
 }
 

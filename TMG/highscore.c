@@ -56,7 +56,7 @@ void SaveHighScores (void)
 		count = fread(g_TopScores, sizeof(g_TopScores[0]) * KEEP, 1, HS_file);
 		if (count == 0 || ferror(HS_file))
 		{
-			gi.dprintf ("Error in %s reading %s\n", __FUNCTION__, binfile);
+			gi.dprintf ("Error in %s reading %s\n", __func__, binfile);
 			gi.dprintf ("Characters read: %d\n", count);
 		}
 
@@ -199,7 +199,7 @@ void LoadHighScores (void)
 		stringlength += j;
 	}
 	if (stringlength > sizeof string)
-		DbgPrintf("%s Warning! Highscore stringlength too big!", __FUNCTION__);
+		DbgPrintf("%s Warning! Highscore stringlength too big!", __func__);
 	Com_sprintf (hscores, sizeof hscores, string);
 }
 

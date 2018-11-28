@@ -104,13 +104,13 @@ SV_RunThink (edict_t *ent)
 	{
 		if (ent->classname && ent->model)
 			gi.dprintf ("%s NULL ent->think (classname %s, model %s mapname %s)\n",
-					__FUNCTION__, ent->classname, ent->model, level.mapname);
+					__func__, ent->classname, ent->model, level.mapname);
 		else if (ent->classname)
 			gi.dprintf ("%s NULL ent->think (classname %s mapname %s)\n",
-						__FUNCTION__, ent->classname, level.mapname);
+						__func__, ent->classname, level.mapname);
 		else
 			gi.dprintf ("NULL ent->think (mapname %s)\n",
-						__FUNCTION__, level.mapname);
+						__func__, level.mapname);
 		return false;
 	}
 
@@ -434,7 +434,7 @@ retry:
 	if (DEBUG_PHYSICS)
 		if (!ent->inuse) 
 			DbgPrintf ("%s movetype %d inuse %d classname %s time: %.1f\n",
-			__FUNCTION__, ent->movetype, ent->inuse, ent->classname, level.time);
+			__func__, ent->movetype, ent->inuse, ent->classname, level.time);
 
 	if (trace.fraction != 1.0)
 	{
@@ -879,7 +879,7 @@ SV_Physics_Toss (edict_t *ent)
 	if (!ent->inuse && developer->value)
 		if (DEBUG_PHYSICS)
 			DbgPrintf ("%s entity %d inuse: %d classname %s time: %.1f\n", 
-		__FUNCTION__, ent->movetype, ent->inuse, ent->classname, level.time);
+		__func__, ent->movetype, ent->inuse, ent->classname, level.time);
 
 	// regular thinking
 	SV_RunThink (ent);

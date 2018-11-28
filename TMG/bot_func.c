@@ -317,7 +317,7 @@ qboolean InsideWall(edict_t *ent)
 	torigin[1] += 10.0;
 	if (gi.pointcontents(torigin) & CONTENTS_SOLID && ent->client)
 	{
-		DbgPrintf("1111 %s %s\n", ent->client->pers.netname, __FUNCTION__);
+		DbgPrintf("1111 %s %s\n", ent->client->pers.netname, __func__);
 		return true;
 	}
 
@@ -326,7 +326,7 @@ qboolean InsideWall(edict_t *ent)
 	torigin[1] -= 10.0;
 	if (gi.pointcontents(torigin) & CONTENTS_SOLID && ent->client)
 	{
-		DbgPrintf("2222 %s %s\n", ent->client->pers.netname, __FUNCTION__);
+		DbgPrintf("2222 %s %s\n", ent->client->pers.netname, __func__);
 		return true;
 	}
 
@@ -335,7 +335,7 @@ qboolean InsideWall(edict_t *ent)
 	torigin[1] += 10.0;
 	if (gi.pointcontents(torigin) & CONTENTS_SOLID && ent->client)
 	{
-		DbgPrintf("3333 %s %s\n", ent->client->pers.netname, __FUNCTION__);
+		DbgPrintf("3333 %s %s\n", ent->client->pers.netname, __func__);
 		return true;
 	}
 
@@ -344,7 +344,7 @@ qboolean InsideWall(edict_t *ent)
 	torigin[1] -= 10.0;
 	if (gi.pointcontents(torigin) & CONTENTS_SOLID && ent->client)
 	{
-		DbgPrintf("4444 %s %s\n", ent->client->pers.netname, __FUNCTION__);
+		DbgPrintf("4444 %s %s\n", ent->client->pers.netname, __func__);
 		return true;
 	}
 
@@ -823,7 +823,7 @@ void PutBotInServer (edict_t *ent)
 	//current weapon
 	client = ent->client;
 	if(debug_botspawn->value)
-		DbgPrintf("%s %s\n", __FUNCTION__, client->pers.netname);
+		DbgPrintf("%s %s\n", __func__, client->pers.netname);
 
 	//RAV
 	//  start weapons & respawn protection
