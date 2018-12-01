@@ -284,14 +284,15 @@ extern retrylist_info* retrylist;
 //#define FALSE 0
 //#define TRUE 1
 
-
-//#define SKIPBLANK(str) \
-//  {\
-//    while(*str == ' ' || *str == '\t') \
-//    { \
-//      str++; \
-//    } \
-//  }
+/*
+#define SKIPBLANK(str) \
+  {\
+    while(*str == ' ' || *str == '\t') \
+    { \
+      str++; \
+    } \
+  }
+*/
 
 //// zb_cmd.c
 //void readCfgFiles(void);
