@@ -281,7 +281,7 @@ void OnBotDetection(edict_t *ent, char *msg)
 //void
 //InitBotDetection(void)
 //{
-//	char fname[PATH_MAX];
+//	char fname[MAX_QPATH];
 //
 //	Com_sprintf(fname, sizeof fname, "%s/%s/%s/bot_detected.log",
 //			basedir->string, game_dir->string, cfgdir->string);

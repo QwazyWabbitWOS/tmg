@@ -1140,13 +1140,20 @@ void Com_PageInMemory(byte *buffer, int size)
 ============================================================================
 */
 
-int Q_stricmp(char *s1, char *s2)
+/** Case independent string compare (strcasecmp)
+ if s1 is contained within s2 then return 0, they are "equal".
+ else return the lexicographic difference between them.
+*/
+int Q_stricmp(const char *s1, const char *s2)
 {
-#if defined(_WIN32)
-	return _stricmp(s1, s2);
-#else
-	return strcasecmp(s1, s2);
-#endif
+	const unsigned char
+		*uc1 = (const unsigned char *)s1,
+		*uc2 = (const unsigned char *)s2;
+
+	while (tolower(*uc1) == tolower(*uc2++))
+		if (*uc1++ == '\0')
+			return (0);
+	return (tolower(*uc1) - tolower(*--uc2));
 }
 
 char	bigbuffer[0x10000]; // for Com_sprintf

@@ -49,15 +49,6 @@ typedef enum {false, true}	qboolean;
 #define NULL ((void *)0)
 #endif
 
-#ifndef _WIN32
-#define stricmp strcasecmp
-#define strnicmp strncasecmp
-#endif
-
-#ifdef _WIN32
-#define PATH_MAX _MAX_PATH
-#endif
-
 //terminating strncpy
 #define Q_strncpy(dst, src, len) \
 do { \
@@ -228,7 +219,7 @@ void Com_PageInMemory (byte *buffer, int size);
 //=============================================
 
 // portable case insensitive compare
-int Q_stricmp (char *s1, char *s2);
+int Q_stricmp(const char *s1, const char *s2);
 
 //=============================================
 
