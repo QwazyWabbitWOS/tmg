@@ -96,7 +96,7 @@ void InitAnticheat(void)
 FILE *tn_open (const char *filename, const char *mode)
 {
 	FILE *fd;
-	char path[PATH_MAX];
+	char path[MAX_QPATH];
 
 	strcpy (path, game_dir->string);
 	if (Q_stricmp (path, "") == 0)

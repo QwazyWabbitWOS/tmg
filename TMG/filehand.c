@@ -747,7 +747,7 @@ void LogConnect (edict_t *ent, qboolean connect)
 void LogChat (char *text)
 {
 	FILE *file;
-	char file_name[PATH_MAX];
+	char file_name[MAX_OSPATH];
 	char entry[2048];
 
 	if (text == NULL)

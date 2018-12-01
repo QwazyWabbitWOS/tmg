@@ -348,7 +348,7 @@ static int CompareStringLength(void const *a, void const *b)
 void LoadTextFilterInfo(void)
 {
 	FILE	  *f;
-	char		szFile[PATH_MAX];
+	char		szFile[MAX_QPATH];
 	char		szLineBuffer[200];
 
 	PurgeTextFilterInfo();
