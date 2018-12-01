@@ -10,6 +10,9 @@ cvar_t	*statsfile;			// the name of the stats log file ("stats.log" by default)
 cvar_t	*statsfile_rename;	// how often we rename the file
 cvar_t	*statslog_tmp;		// temp storage for statslog value during rename
 
+// local pointer to the stats file
+static FILE	*pStatsfile = NULL; 
+
 void StatsInitVars(void)
 {
 	//cvars pertaining to stats logs
