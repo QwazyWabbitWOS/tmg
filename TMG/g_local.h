@@ -98,8 +98,6 @@
 
 #define BODY_QUEUE_SIZE		8
 
-static vec3_t VEC_ORIGIN = {0,0,0};
-
 typedef enum damage_n
 {
 	DAMAGE_NO,
