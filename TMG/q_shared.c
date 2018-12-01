@@ -1140,8 +1140,8 @@ void Com_PageInMemory(byte *buffer, int size)
 ============================================================================
 */
 
-/** Case independent string compare (strcasecmp)
- if s1 is contained within s2 then return 0, they are "equal".
+/** Case independent string compare.
+ If s1 is contained within s2 then return 0, they are "equal".
  else return the lexicographic difference between them.
 */
 int Q_stricmp(const char *s1, const char *s2)

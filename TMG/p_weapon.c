@@ -738,7 +738,7 @@ void Weapon_Generic (edict_t *ent,
 		fire_frames, fire);
 	
 	// run the weapon frame again if hasted
-	if (stricmp(ent->client->pers.weapon->pickup_name, "Grapple") == 0 &&
+	if (Q_stricmp(ent->client->pers.weapon->pickup_name, "Grapple") == 0 &&
 		ent->client->weaponstate == WEAPON_FIRING)
 		return;
 	

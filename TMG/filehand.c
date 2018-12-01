@@ -485,7 +485,7 @@ qboolean CheckNameProtect (char name[MAX_QPATH], char namepass[MAX_QPATH])
 							strcpy(oplist[i].namepass, result);
 						}
 
-						if (stricmp(oplist[i].name, name) == 0 && (oplist[i].level & OP_NAMEPASS))
+						if (Q_stricmp(oplist[i].name, name) == 0 && (oplist[i].level & OP_NAMEPASS))
 						{
 							inFile = true;
 							if (debug_ops->value)
@@ -495,7 +495,7 @@ qboolean CheckNameProtect (char name[MAX_QPATH], char namepass[MAX_QPATH])
 									"namepass in oplist is .%s., "
 									"client pass is .%s.\n", name,
 									oplist[i].name,
-									stricmp(oplist[i].namepass, namepass),
+									Q_stricmp(oplist[i].namepass, namepass),
 									oplist[i].namepass, namepass);
 							if (strnicmp(oplist[i].namepass, namepass, strlen(namepass)) == 0)
 							{
