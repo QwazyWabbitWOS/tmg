@@ -1871,7 +1871,7 @@ void Respawn (edict_t *self, qboolean spawn)
 		PutBotInServer(self);
 	else
 		PutClientInServer (self);
-	
+
 	// add a teleportation effect
 	self->s.event = EV_PLAYER_TELEPORT;
 	// hold in place briefly
@@ -2372,7 +2372,7 @@ void PutClientInServer (edict_t *ent)
 
 	if(gamedebug->value)
 		DbgPrintf("%s %s\n", __func__, ent->client->pers.netname);
-	
+
 	//JSW
 	ent->client->kill = 0;	//Clear kill
 	//end
@@ -2968,7 +2968,6 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	if (ctf->value)
 		CTFAssignSkin(ent, s);
 	else
-	//ZOID
 		gi.configstring (CS_PLAYERSKINS + playernum, va("%s\\%s", ent->client->pers.netname, s) );
 
 	// This fills the configstrings with the player names for the flag carrier status
