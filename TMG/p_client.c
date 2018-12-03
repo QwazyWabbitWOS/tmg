@@ -769,6 +769,7 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 				}
 			}
 			else
+			{
 				if(match_state == STATE_PLAYING)
 				{
 					attacker->client->resp.score++;
@@ -783,37 +784,42 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 						case 5:
 							if (rand() & 1)
 								gi.sound (attacker, CHAN_AUTO, gi.soundindex ("misc/dominatingf.wav"), 1, ATTN_NORM, 0);
-							else
+							else {
 								gi.sound (attacker, CHAN_AUTO, gi.soundindex ("misc/dominating.wav"), 1, ATTN_NORM, 0);
-							safe_bprintf(PRINT_HIGH, "%s is beginning a killing streak!\n", attacker->client->pers.netname);
+								safe_bprintf(PRINT_HIGH, "%s is beginning a killing streak!\n", attacker->client->pers.netname);
+							}
 							break;
 						case 10:
 							if (rand() & 1)
 								gi.sound (attacker, CHAN_AUTO, gi.soundindex ("misc/killingspree.wav"), 1, ATTN_NORM, 0);
-							else
+							else {
 								gi.sound (attacker, CHAN_AUTO, gi.soundindex ("misc/killingspreef.wav"), 1, ATTN_NORM, 0);
-							safe_bprintf(PRINT_HIGH, "%s is on a killing streak!\n", attacker->client->pers.netname);
+								safe_bprintf(PRINT_HIGH, "%s is on a killing streak!\n", attacker->client->pers.netname);
+							}
 							break;
 						case 15:
 							if (rand() & 1)
 								gi.sound (attacker, CHAN_AUTO, gi.soundindex ("misc/rampage.wav"), 1, ATTN_NORM, 0);
-							else
+							else {
 								gi.sound (attacker, CHAN_AUTO, gi.soundindex ("misc/rampagef.wav"), 1, ATTN_NORM, 0);
-							safe_bprintf(PRINT_HIGH, "%s is on a rampage!\n", attacker->client->pers.netname);
+								safe_bprintf(PRINT_HIGH, "%s is on a rampage!\n", attacker->client->pers.netname);
+							}
 							break;
 						case 20:
 							if (rand() & 1)
 								gi.sound (attacker, CHAN_AUTO, gi.soundindex ("misc/godlike.wav"), 1, ATTN_NORM, 0);
-							else
+							else {
 								gi.sound (attacker, CHAN_AUTO, gi.soundindex ("misc/godlikef.wav"), 1, ATTN_NORM, 0);
-							safe_bprintf(PRINT_HIGH, "%s is GOD LIKE!\n", attacker->client->pers.netname);
+								safe_bprintf(PRINT_HIGH, "%s is GOD LIKE!\n", attacker->client->pers.netname);
+							}
 							break;
 						default:
 							break;
 						}
 					}
 				}
-				return;
+			}
+			return;
 		}
 	}
 
