@@ -49,6 +49,11 @@ typedef enum {false, true}	qboolean;
 #define NULL ((void *)0)
 #endif
 
+#ifndef _WIN32
+#define stricmp strcasecmp
+#define strnicmp strncasecmp
+#endif
+
 //terminating strncpy
 #define Q_strncpy(dst, src, len) \
 do { \
