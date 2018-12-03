@@ -942,7 +942,7 @@ barrel_touch (edict_t *self,
 		return;
 
 	//ratio = (float)other->mass / (float)self->mass;
-	VectorSubtract (self->s.origin, other->s.origin, v);
+	_VectorSubtract (self->s.origin, other->s.origin, v);
 	//M_walkmove (self, vectoyaw(v), 20 * ratio * FRAMETIME);
 }
 
