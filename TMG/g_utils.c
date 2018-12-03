@@ -624,6 +624,8 @@ void AddModelSkin (char *modelfile, char *skinname)
 	for (i=0; i<5; i++)
 	{
 		count = fread(&buffer_int, sizeof(buffer_int), 1, f);
+		if (count)
+			; // don't worry, be happy
 		fwrite(&buffer_int, sizeof(buffer_int), 1, out);
 	}
 
