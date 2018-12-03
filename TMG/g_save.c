@@ -649,6 +649,8 @@ static void ReadField (FILE *f, field_t *field, byte *base)
 		{
 			*(char **)p = gi.TagMalloc (len, TAG_LEVEL);
 			count = fread (*(char **)p, len, 1, f);
+			if (count)
+				; // don't worry, be happy
 		}
 		break;
 	case F_GSTRING:
@@ -659,6 +661,8 @@ static void ReadField (FILE *f, field_t *field, byte *base)
 		{
 			*(char **)p = gi.TagMalloc (len, TAG_GAME);
 			count = fread (*(char **)p, len, 1, f);
+			if (count)
+				; // don't worry, be happy
 		}
 		break;
 	case F_EDICT:
@@ -734,6 +738,8 @@ static void ReadClient (FILE *f, gclient_t *client)
 	size_t	count;
 
 	count = fread(client, sizeof(*client), 1, f);
+	if (count)
+		; // don't worry, be happy
 
 	for (field=clientfields ; field->name ; field++)
 	{
@@ -808,6 +814,8 @@ void ReadGame (char *filename)
 	}
 
 	count = fread (str, sizeof(str), 1, f);
+	if (count)
+		; // don't worry, be happy
 	if (strcmp (str, __DATE__))
 	{
 		fclose (f);
@@ -905,6 +913,8 @@ static void ReadEdict (FILE *f, edict_t *ent)
 	size_t	count;
 
 	count = fread (ent, sizeof(*ent), 1, f);
+	if (count)
+		; // don't worry, be happy
 
 	for (field = savefields; field->name; field++)
 	{
@@ -925,6 +935,8 @@ static void ReadLevelLocals (FILE *f)
 	size_t	count;
 
 	count = fread (&level, sizeof(level), 1, f);
+	if (count)
+		; // don't worry, be happy
 
 	for (field = levelfields; field->name; field++)
 	{
