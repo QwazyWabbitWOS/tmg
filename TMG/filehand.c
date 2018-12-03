@@ -313,7 +313,7 @@ int CheckOpFile (edict_t *ent, char ip[MAX_QPATH], qboolean returnindex)
 						{
 							if (ent != NULL)
 							{
-								if (strnicmp(oplist[i].namepass, ent->client->pers.namepass, strlen(ent->client->pers.namepass)) == 0)
+								if (Q_strnicmp(oplist[i].namepass, ent->client->pers.namepass, strlen(ent->client->pers.namepass)) == 0)
 								{
 									inFile = true;
 									oplist[i].flagged = true;
@@ -497,7 +497,7 @@ qboolean CheckNameProtect (char name[MAX_QPATH], char namepass[MAX_QPATH])
 									oplist[i].name,
 									Q_stricmp(oplist[i].namepass, namepass),
 									oplist[i].namepass, namepass);
-							if (strnicmp(oplist[i].namepass, namepass, strlen(namepass)) == 0)
+							if (Q_strnicmp(oplist[i].namepass, namepass, strlen(namepass)) == 0)
 							{
 								namepassMatches = true;
 							}
