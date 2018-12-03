@@ -431,18 +431,9 @@ speed	default is 1000
 static void
 use_target_blaster (edict_t *self, edict_t *other, edict_t *activator)
 {
-	int effect;
-
-	if (self->spawnflags & 2)
-		effect = 0;
-	else if (self->spawnflags & 1)
-		effect = EF_HYPERBLASTER;
-	else
-		effect = EF_BLASTER;
-
 	fire_blaster (self, self->s.origin,
 				  self->movedir, self->dmg,
-				  self->speed, EF_BLASTER, MOD_TARGET_BLASTER);
+				  self->speed, EF_BLASTER, true);
 
 	gi.sound (self, CHAN_VOICE, self->noise_index, 1, ATTN_NORM, 0);
 }
