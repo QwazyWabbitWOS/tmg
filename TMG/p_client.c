@@ -3143,7 +3143,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	char *s;
 	int client;
 	qboolean passed = false;
-	qboolean is_bot = false;
+	//qboolean is_bot = false;
 	char *name;
 	char *ip;
 	char player[MAX_QPATH];
@@ -3260,7 +3260,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 		}
 
 		value = Info_ValueForKey (userinfo, "password");
-		if (strcmp(passwd->string, value) != 0)
+		if (strcmp(passwd->string, value) != 0){
 			//RAV
 			if(!passed)
 			{
@@ -3269,77 +3269,78 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 				//	RavenDisconnect (ent);
 				return false;
 			}
-
-			if(! Check_tag(ent,namecheck))
+		}
+		
+		if(! Check_tag(ent,namecheck))
+		{
+			value = Info_ValueForKey (userinfo, "clan");
+			if (strcmp(clan_pass->string, value) != 0)
 			{
-				value = Info_ValueForKey (userinfo, "clan");
-				if (strcmp(clan_pass->string, value) != 0)
-				{
-					gi.dprintf("Player rejected due to invalid clan name: %s\n", player);
-					Info_SetValueForKey(userinfo, "rejmsg", "You do not have the right to wear this tag\n");
-					return false;
-				}
+				gi.dprintf("Player rejected due to invalid clan name: %s\n", player);
+				Info_SetValueForKey(userinfo, "rejmsg", "You do not have the right to wear this tag\n");
+				return false;
 			}
-			proxyinfo[client].clientcommand = 0;
-			proxyinfo[client].retries = 0;
-			proxyinfo[client].rbotretries = 0;
-			proxyinfo[client].charindex = 0;
-			proxyinfo[client].ipaddress[0] = 0;
-			//proxyinfo[client].name[0] = 0;
-			proxyinfo[client].skin[0] = 0;
-			proxyinfo[client].ipaddressBinary[0] = 0;
-			proxyinfo[client].ipaddressBinary[1] = 0;
-			proxyinfo[client].ipaddressBinary[2] = 0;
-			proxyinfo[client].ipaddressBinary[3] = 0;
+		}
+		proxyinfo[client].clientcommand = 0;
+		proxyinfo[client].retries = 0;
+		proxyinfo[client].rbotretries = 0;
+		proxyinfo[client].charindex = 0;
+		proxyinfo[client].ipaddress[0] = 0;
+		//proxyinfo[client].name[0] = 0;
+		proxyinfo[client].skin[0] = 0;
+		proxyinfo[client].ipaddressBinary[0] = 0;
+		proxyinfo[client].ipaddressBinary[1] = 0;
+		proxyinfo[client].ipaddressBinary[2] = 0;
+		proxyinfo[client].ipaddressBinary[3] = 0;
 
-			if(client < maxclients->value )
+		if(client < maxclients->value )
+		{
+			// check for malformed or illegal info strings
+			if (!Info_Validate(userinfo))
 			{
-				// check for malformed or illegal info strings
-				if (!Info_Validate(userinfo))
+				q2a_strcpy (userinfo, "\\name\\badinfo\\skin\\male/grunt");
+			}
+			q2a_strcpy(proxyinfo[client].userinfo, userinfo);
+			s = Info_ValueForKey (userinfo, "skin");
+			q2a_strncpy (proxyinfo[client].skin, s, sizeof(proxyinfo[client].skin)-1);
+			q2a_strncpy (proxyinfo[client].userinfo, userinfo, sizeof(proxyinfo[client].userinfo) - 1);
+			// they can connect
+			ent->client = game.clients + (ent - g_edicts - 1);
+			//disable the reconnection  on a LAN !!!
+			if(!lan->value)
+			{
+				//need to set the addy on first connect, check for same on 2nd and let play if same, if not force 3rd try (bot)
+				//then bust them, be sure after 2nd to kill the stored ip so 3rd try will bust them.
+				if(strcmp(proxyinfo[client].firstport,"") == 0)
 				{
-					q2a_strcpy (userinfo, "\\name\\badinfo\\skin\\male/grunt");
+					q2a_strcpy(proxyinfo[client].firstport, GetPort(ent,Info_ValueForKey(userinfo, "ip")));
+					//reconnect now
+					ent->command = 1;
+					ent->pausetime = level.time +5;
+					return true;
 				}
-				q2a_strcpy(proxyinfo[client].userinfo, userinfo);
-				s = Info_ValueForKey (userinfo, "skin");
-				q2a_strncpy (proxyinfo[client].skin, s, sizeof(proxyinfo[client].skin)-1);
-				q2a_strncpy (proxyinfo[client].userinfo, userinfo, sizeof(proxyinfo[client].userinfo) - 1);
-				// they can connect
-				ent->client = game.clients + (ent - g_edicts - 1);
-				//disable the reconnection  on a LAN !!!
-				if(!lan->value)
+				else
 				{
-					//need to set the addy on first connect, check for same on 2nd and let play if same, if not force 3rd try (bot)
-					//then bust them, be sure after 2nd to kill the stored ip so 3rd try will bust them.
-					if(strcmp(proxyinfo[client].firstport,"") == 0)
+					q2a_strcpy(proxyinfo[client].port, GetPort(ent,Info_ValueForKey(userinfo, "ip")));
+					//if port is the same //not a bot //if differant bust me !!!
+					if(strcmp(proxyinfo[client].firstport,proxyinfo[client].port) == 0
+						&& (!(strcmp(proxyinfo[client].firstport,"") == 0)))
 					{
-						q2a_strcpy(proxyinfo[client].firstport, GetPort(ent,Info_ValueForKey(userinfo, "ip")));
-						//reconnect now
-						ent->command = 1;
-						ent->pausetime = level.time +5;
-						return true;
+						//reset the detection port
+						q2a_strcpy(proxyinfo[client].firstport,"");
+						ent->bust_time = 0;
 					}
 					else
 					{
-						q2a_strcpy(proxyinfo[client].port, GetPort(ent,Info_ValueForKey(userinfo, "ip")));
-						//if port is the same //not a bot //if differant bust me !!!
-						if(strcmp(proxyinfo[client].firstport,proxyinfo[client].port) == 0
-							&& (!(strcmp(proxyinfo[client].firstport,"") == 0)))
-						{
-							//reset the detection port
-							q2a_strcpy(proxyinfo[client].firstport,"");
-							ent->bust_time = 0;
-						}
-						else
-						{
-							//BOT
-							//reset the detection port
-							if(!(strcmp(proxyinfo[client].firstport,"") == 0))
-								ent->bust_time = level.time +rndnum(30,69);
-							q2a_strcpy(proxyinfo[client].firstport,"");
-						}
+						//BOT
+						//reset the detection port
+						if(!(strcmp(proxyinfo[client].firstport,"") == 0))
+							ent->bust_time = level.time +rndnum(30,69);
+						q2a_strcpy(proxyinfo[client].firstport,"");
 					}
 				}
 			}
+		}
 	}
 	//
 
@@ -3351,9 +3352,9 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 		//ZOID -- force team join
 		ent->client->resp.ctf_team = -1;
 		//ZOID
-		is_bot = ent->bot_client;			// make sure bot's join a team
+		//is_bot = ent->bot_client;			// make sure bot's join a team
 		InitClientResp (ent->client);
-		is_bot = false;
+		//is_bot = false;
 		if (!game.autosaved || !ent->client->pers.weapon)
 			InitClientPersistant (ent->client);
 	}
