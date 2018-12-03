@@ -1157,6 +1157,24 @@ int Q_stricmp(const char *s1, const char *s2)
 	return (tolower(*uc1) - tolower(*--uc2));
 }
 
+int Q_strnicmp (const char *s1, const char *s2, size_t count)
+{
+	if (count == 0)
+		return 0;
+	else
+	{
+		while (count-- != 0 && tolower(*s1) == tolower(*s2))
+		{
+			if (count == 0 || *s1 == '\0' || *s2 == '\0')
+				break;
+			s1++;
+			s2++;
+		}
+
+		return tolower(*(unsigned char *) s1) - tolower(*(unsigned char *) s2);
+	}
+}
+
 char	bigbuffer[0x10000]; // for Com_sprintf
 
 /**

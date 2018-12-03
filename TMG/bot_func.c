@@ -456,7 +456,7 @@ void Load_BotInfo(void)
 		{
 			if(fgets(Buff, sizeof Buff, fp ) == NULL) 
 				goto MESS_NOTFOUND;
-			if(!strnicmp(MessageSection, Buff, strlen(MessageSection))) 
+			if(!Q_strnicmp(MessageSection, Buff, strlen(MessageSection))) 
 				break;
 		}
 
@@ -485,7 +485,7 @@ MESS_NOTFOUND:
 				MessageSection[0] = 0;
 				break;
 			}
-			if(!strnicmp(MessageSection, Buff, strlen(MessageSection)))
+			if(!Q_strnicmp(MessageSection, Buff, strlen(MessageSection)))
 				break;
 		}
 		//when not found
@@ -497,7 +497,7 @@ MESS_NOTFOUND:
 			{
 				if(fgets( Buff, sizeof Buff, fp ) == NULL) 
 					goto BOTLIST_NOTFOUND;
-				if(!strnicmp(MessageSection, Buff, strlen(MessageSection))) 
+				if(!Q_strnicmp(MessageSection, Buff, strlen(MessageSection))) 
 					break;
 			}
 		}
