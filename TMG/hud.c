@@ -153,7 +153,7 @@ static char *tn_id (edict_t *ent)
 
 	if ((Q_stricmp (tr.ent->classname, "player") == 0 && tr.ent->inuse))
 	{
-		VectorSubtract (ent->s.origin, tr.ent->s.origin, v);
+		_VectorSubtract (ent->s.origin, tr.ent->s.origin, v);
 		j += sprintf(stats + j,
 			"xv 80 yb -68 string \"Viewing %s\" ", 
 			tr.ent->client->pers.netname );
@@ -421,7 +421,7 @@ char *ShowHud (edict_t *ent)
 	int	score;
 	int ping;
 	int fph;
-	int fpm;
+	//int fpm; // unused
 	int frags, captures, died, num_ppl, rank;
 	int shots, eff;
 	int bigspree;
@@ -529,7 +529,7 @@ char *ShowHud (edict_t *ent)
 			died = rav_getdied(cl->chase_target->client);
 			fph = cl->chase_target->client->resp.fph;
 			//QW// fpm is unused for now.
-			fpm = cl->chase_target->client->resp.fpm;
+			//fpm = cl->chase_target->client->resp.fpm;
 			rank = rav_getrank(cl->chase_target);
 			bigspree = cl->chase_target->client->resp.spree;
 			//score
