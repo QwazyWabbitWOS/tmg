@@ -2322,7 +2322,11 @@ void Bots_Move_NORM (edict_t *ent)
 	edict_t		*it_ent = NULL;
 	gitem_t		*it = NULL;
 
-	edict_t		*front,*left,*right,*e;
+	//QW// unused 
+	//edict_t		*front;
+	//edict_t		*left;
+	//edict_t		*right;
+	edict_t		*e;
 
 	char		*string;
 
@@ -5761,10 +5765,11 @@ GOMOVE:
 	}
 VCHCANSEL:
 	//--------------------------------------------------------------------------------------
+	//QW// unused
 	//ladder check
-	front = NULL;
-	left = NULL;
-	right = NULL;
+	//front = NULL;
+	//left = NULL;
+	//right = NULL;
 	k = false;
 	if(zc->route_trace && (zc->routeindex + 1) < CurrentIndex)
 	{
@@ -5792,7 +5797,7 @@ VCHCANSEL:
 
 		VectorAdd(ent->s.origin,touchmin,touchmax);
 		rs_trace = gi.trace (ent->s.origin, trmin,ent->maxs, touchmax,ent, MASK_BOTSOLID );
-		front = rs_trace.ent;
+		//QW// unused front = rs_trace.ent;
 
 		if(rs_trace.contents & CONTENTS_LADDER) tempflag = true;
 
@@ -5823,7 +5828,7 @@ VCHCANSEL:
 
 			VectorAdd(ent->s.origin,touchmin,touchmax);
 			rs_trace = gi.trace (ent->s.origin, trmin,ent->maxs, touchmax,ent,  MASK_BOTSOLID );
-			right = rs_trace.ent;
+			//QW// unused right = rs_trace.ent;
 
 			if(rs_trace.contents & CONTENTS_LADDER) tempflag = true;
 		}
@@ -5839,7 +5844,7 @@ VCHCANSEL:
 
 			VectorAdd(ent->s.origin,touchmin,touchmax);
 			rs_trace = gi.trace (ent->s.origin, trmin,ent->maxs, touchmax,ent, MASK_BOTSOLID );
-			left = rs_trace.ent;
+			//QW// unused left = rs_trace.ent;
 
 			if(rs_trace.contents & CONTENTS_LADDER)	tempflag = true;
 		}
