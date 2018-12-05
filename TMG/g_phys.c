@@ -212,7 +212,7 @@ SV_FlyMove (edict_t *ent, float time, int mask)
 	float		d;
 	int			numplanes;
 	vec3_t		planes[MAX_CLIP_PLANES];
-	vec3_t		primal_velocity, original_velocity, new_velocity;
+	vec3_t		primal_velocity, original_velocity, new_velocity = {0};
 	int			i, j;
 	trace_t		trace;
 	vec3_t		end;
@@ -1030,7 +1030,6 @@ static void
 SV_Physics_Step (edict_t *ent)
 {
 	qboolean	wasonground;
-	qboolean	hitsound = false;
 	float		*vel;
 	float		speed, newspeed, control;
 	float		friction;
@@ -1053,8 +1052,6 @@ SV_Physics_Step (edict_t *ent)
 		if (!(ent->flags & FL_FLY))
 			if (!((ent->flags & FL_SWIM) && (ent->waterlevel > 2)))
 			{
-				if (ent->velocity[2] < sv_gravity->value*-0.1)
-					hitsound = true;
 				if (ent->waterlevel == 0)
 					SV_AddGravity (ent);
 			}
