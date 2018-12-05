@@ -6544,13 +6544,11 @@ void RavCheckTeams()
 qboolean CTFCheckRules(void)
 {
 	//RAV added a lost flag check to check for flags
-	edict_t *flag1, *flag2, *carrier;
+	edict_t *carrier;
 	int i;
 
 	if(flagchecktime == level.time)
 	{
-		flag1 = flag2 = NULL;
-		
 		//if flag is totally gone respawn it
 		if (!G_Find(NULL, FOFS(classname), "item_flag_team1"))
 		{
