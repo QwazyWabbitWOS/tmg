@@ -1734,7 +1734,9 @@ weapon_bfg_fire (edict_t *ent)
 	else
 		damage = 500;
 
-	if (ent->client->ps.gunframe == 9)
+    VectorCopy(ent->s.origin, start);
+
+    if (ent->client->ps.gunframe == 9)
 	{
 		// send muzzle flash
 		gi.WriteByte (svc_muzzleflash);
