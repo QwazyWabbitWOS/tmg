@@ -15,7 +15,7 @@
 ARCH != uname -m | sed -e s/i.86/i386/ -e s/amd64/x86_64/ -e s/sun4u/sparc64/ -e s/arm.*/arm/ -e s/sa110/arm/ -e s/alpha/axp/
 
 CC = gcc -std=gnu99 -DCOMPAT_32BIT -L/usr/lib32 -B/usr/lib32
-CFLAGS  = -O2 -fPIC -DARCH="$(ARCH)"
+CFLAGS  = -O3 -fPIC -DARCH="$(ARCH)"
 CFLAGS += -ffast-math -w -DGAME_INCLUDE -DLINUX 
 CFLAGS += -DSTDC_HEADERS -I/usr/include
 LDFLAGS = -shared -lm

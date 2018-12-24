@@ -415,7 +415,7 @@ below it. This seems to give a nice uniform leading between lines.
 
 char *ShowHud (edict_t *ent)
 {
-	static char layout[1300];
+	static char layout[MAX_STRING_CHARS];
 	int j = 0;
 	gclient_t	*cl;
 	int	score;
@@ -675,11 +675,12 @@ char *ShowHud (edict_t *ent)
 	if ( s > sizeof layout)
 	{
 		gi.dprintf("%s: Statusbar too big %d\n", __func__, s); //to the log
-		layout[sizeof layout - 1] = 0;
+		layout[sizeof layout - 1] = 0; // zero-terminate it here
 	}
 
 	//DbgPrintf(layout);
 	//DbgPrintf("\n");
+	//DbgPrintf("HUD size: %u\n", s);
 	return (layout);
 }
 

@@ -2510,7 +2510,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 	gclient_t	*cl;
 	edict_t		*cl_ent;
 	int team;
-	size_t maxsize = MAX_MSGLEN;
+	size_t maxsize = MAX_STRING_CHARS;
 
 	if (highscores->value && ent->client->showhighscores)
 	{
@@ -2680,23 +2680,27 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 
 		if (total[0] - last[0] > 1) // couldn't fit everyone
 			sprintf(string + strlen(string),
-			"xv 8 yv %d string \"..and %d more\" ",
+			"xv 8 yv %d string \"plus %d more\" ",
 			42 + (last[0]+1)*8, total[0] - last[0] - 1);
 
 		if (total[1] - last[1] > 1) // couldn't fit everyone
 			sprintf(string + strlen(string),
-			"xv 168 yv %d string \"..and %d more\" ",
+			"xv 168 yv %d string \"plus %d more\" ",
 			42 + (last[1]+1)*8, total[1] - last[1] - 1);
 	}
 
 	len = strlen(string);
-	if (len > maxsize - 10) // this should never happen
+	if (len > maxsize - 1) // this must never happen
 	{
-		gi.dprintf("Warning: scoreboard string length %d neared or exceeded max length %d\n"
+		/* If we exceed MAX_STRING_CHARS the clients will throw the excess away
+		 * so we warn about it here so the mod can be debugged. This is a hard-coded
+		 * limitation in the layout buffer in client-side state. */
+		gi.dprintf("Warning: scoreboard string length %d exceeds max allowable length %d\n"
 			"Dump:\n%s\n---\n", len, maxsize, string);
 	}
 
-	//DbgPrintf("%d: %s\n", len, string);
+	//DbgPrintf("%s %u:\n", __func__, len);
+	//DbgPrintf("%s\n", string);
 	gi.WriteByte (svc_layout);
 	gi.WriteString (string);
 }
@@ -2715,7 +2719,7 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 	gclient_t	*cl;
 	edict_t		*cl_ent;
 	int team;
-	size_t	maxsize = MAX_MSGLEN;
+	size_t	maxsize = MAX_STRING_CHARS; // this is a game client limitation
 
 	if (highscores->value && ent->client->showhighscores)
 	{
@@ -2774,13 +2778,13 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 
 		len = strlen(string);
 
-		// only the top 6 players on each team
-		for (i = 0; i < 6; i++)
+		// only the top 10 players on each team
+		for (i = 0; i < 10; i++)
 		{
 			if (i >= total[0] && i >= total[1])
 				break; // we're done
 
-			// set up y
+			// set up y position
 			Com_sprintf(entry, sizeof entry, "yv %d ", 42 + i * 8);
 			if (maxsize - len > strlen(entry))
 			{
@@ -2795,12 +2799,22 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 			{
 				cl = &game.clients[sorted[0][i]];
 				cl_ent = g_edicts + 1 + sorted[0][i];
+				//sprintf(entry + strlen(entry),
+				//	"xv -80 %s \"%3d %3d %-12.12s %2d\" ",
+				//	(cl_ent == ent) ? "string2" : "string",
+				//	cl->resp.score, 
+				//	(cl->ping > 999) ? 999 : cl->ping, 
+				//	cl->pers.netname,
+				//	cl->resp.captures);
 				sprintf(entry + strlen(entry),
-					"xv -80 %s \"%3d %3d %-12.12s %2d\" ",
-					(cl_ent == ent) ? "string2" : "string",
-					cl->resp.score, 
-					(cl->ping > 999) ? 999 : cl->ping, 
-					cl->pers.netname,
+					"ctf -80 %d %d %d %d ",
+					42 + i * 8,
+					sorted[0][i],
+					cl->resp.score,
+					cl->ping);
+
+				sprintf(entry + strlen(entry),
+					"xv 100 string %d ",
 					cl->resp.captures);
 
 				if (cl_ent->client->pers.inventory[ITEM_INDEX(flag2_item)])
@@ -2821,12 +2835,23 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 			{
 				cl = &game.clients[sorted[1][i]];
 				cl_ent = g_edicts + 1 + sorted[1][i];
+				//sprintf(entry + strlen(entry),
+				//	"xv 160 %s \"%3d %3d %-12.12s %2d\" ",
+				//	(cl_ent == ent) ? "string2" : "string",
+				//	cl->resp.score, 
+				//	(cl->ping > 999) ? 999 : cl->ping, 
+				//	cl->pers.netname,
+				//	cl->resp.captures);
+
 				sprintf(entry + strlen(entry),
-					"xv 160 %s \"%3d %3d %-12.12s %2d\" ",
-					(cl_ent == ent) ? "string2" : "string",
-					cl->resp.score, 
-					(cl->ping > 999) ? 999 : cl->ping, 
-					cl->pers.netname,
+					"ctf 160 %d %d %d %d ",
+					42 + i * 8,
+					sorted[1][i],
+					cl->resp.score,
+					cl->ping);
+
+				sprintf(entry + strlen(entry),
+					"xr -620 string %d ",
 					cl->resp.captures);
 
 				if (cl_ent->client->pers.inventory[ITEM_INDEX(flag1_item)])
@@ -2841,15 +2866,28 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 			}
 		}
 
+		if (total[0] - last[0] > 1) // couldn't fit everyone
+			sprintf(string + strlen(string),
+			"xv 8 yv %d string \"plus %d more\" ",
+			42 + (last[0] + 1) * 8,  // the current yv
+			total[0] - last[0] - 1);
+
+		if (total[1] - last[1] > 1) // couldn't fit everyone
+			sprintf(string + strlen(string),
+			"xv 248 yv %d string \"plus %d more\" ",
+			42 + (last[1] + 1) * 8, // the current yv
+			total[1] - last[1] - 1);
+
 		// list spectators if we have enough room
 		if (last[0] > last[1])
 			j = last[0];
 		else
 			j = last[1];
 
-		j = (j + 3) * 8 + 42;
-		n = 0;
-		if (maxsize - len > 50)
+		j = (j + 2) * 8 + 42; // j is now 2 lines below the longest list
+		n = 0;	// column 1
+
+		if (maxsize - len)
 		{
 			for (i = 0; i < maxclients->value; i++)
 			{
@@ -2865,17 +2903,18 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 					trap = 1;
 					Com_sprintf(entry, sizeof entry, "xv 0 yv %d string2 \"Spectators\" ", j);
 					len = strlen(string);
-					j += 8;
+					j += 8;	// advance one line
 				}
 
 				// use ctf template for spectators, save space
 				sprintf(entry + strlen(entry), "ctf %d %d %d %d %d ",
-					(n & 1) ? 160 : 0, // x
-					j, // y
+					(n & 1) ? 160 : 0, // xv, two columns 0 and 160
+					j, // yv
 					i, // client index
 					cl->resp.score,
 					cl->ping > 999 ? 999 : cl->ping);
 
+				// concatenate only if we have space
 				if (maxsize - len > strlen(entry))
 				{
 					strcat(string, entry);
@@ -2883,31 +2922,25 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 					*entry = 0;
 				}
 
-				if (n & 1)
+				if (n & 1) // alternate columns
 					j += 8;
 				n++;
 			}
 		}
-
-		if (total[0] - last[0] > 1) // couldn't fit everyone
-			sprintf(string + strlen(string),
-			"xv 8 yv %d string \"..and %d more\" ",
-			42 + (last[0]+1)*8, total[0] - last[0] - 1);
-
-		if (total[1] - last[1] > 1) // couldn't fit everyone
-			sprintf(string + strlen(string),
-			"xv 248 yv %d string \"..and %d more\" ",
-			42 + (last[1]+1)*8, total[1] - last[1] - 1);
 	}
 
 	len = strlen(string);
-	if (len > maxsize - 10) // this should never happen
+	if (len > maxsize - 1) // this must never happen
 	{
-		gi.dprintf("Warning: scoreboard string length %d neared or exceeded max length %d\n"
+		/* If we exceed MAX_STRING_CHARS the clients will discard the excess bytes
+		 * so we warn about it here so the mod can be debugged. This is a hard-coded
+		 * limitation in the layout buffer in client-side state. (1024) */
+		gi.dprintf("Warning: scoreboard string length %d exceeds max allowable length %d\n"
 			"Dump:\n%s\n---\n", len, maxsize, string);
 	}
 
-	//DbgPrintf("%d: %s\n", len, string);
+	//DbgPrintf("%s %u:\n", __func__, len);
+	//DbgPrintf("%s\n", string);
 	gi.WriteByte (svc_layout);
 	gi.WriteString (string);
 }
