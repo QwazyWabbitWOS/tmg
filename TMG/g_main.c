@@ -38,6 +38,8 @@ cvar_t	*dmflags;
 cvar_t	*skill;
 cvar_t	*fraglimit;
 cvar_t	*timelimit;
+cvar_t	*scoreboardtime;
+cvar_t	*cycle_always;
 //ZOID
 cvar_t	*capturelimit;
 //ZOID
@@ -686,9 +688,10 @@ void G_RunFrame (void)
 	//	AI_SetSightClient ();
 	
 	//RAV map voting
-	if (level.intermissiontime && (level.intermissiontime < (level.time - 15)))
+	if (level.intermissiontime && (level.intermissiontime < (level.time - scoreboardtime->value)))
 	{
-		level.exitintermission = true;
+		if (CountConnectedClients() || cycle_always->value)
+            level.exitintermission = true;
 	}
 	
 	// exit intermissions

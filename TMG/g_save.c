@@ -205,7 +205,9 @@ void InitGame (void)
 	dmflags = gi.cvar ("dmflags", "0", CVAR_SERVERINFO|CVAR_ARCHIVE);
 	fraglimit = gi.cvar ("fraglimit", "0", CVAR_SERVERINFO);
 	timelimit = gi.cvar ("timelimit", "0", CVAR_SERVERINFO);
-	//ZOID
+	scoreboardtime = gi.cvar ("scoreboardtime", "15", 0);
+    cycle_always = gi.cvar ("cycle_always", "1", 0);
+        //ZOID
 	capturelimit = gi.cvar ("capturelimit", "0", CVAR_SERVERINFO);
 	//ZOID
 	passwd = gi.cvar ("password", "", CVAR_USERINFO);
