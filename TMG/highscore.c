@@ -143,8 +143,6 @@ void SaveHighScores (void)
 					g_TopScores[i].score,
 					g_TopScores[i].netname);
 
-		fprintf(HS_file,"\n     %s  %s\n", MOD, MOD_VERSION);
-		fprintf(HS_file,"              www.railwarz.com");
 		fclose(HS_file);
 	}
 	else
