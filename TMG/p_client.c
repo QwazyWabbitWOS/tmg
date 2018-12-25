@@ -2408,7 +2408,7 @@ void Connect (edict_t *ent)
 //end
 
 // Store the message of the day in memory.
-char *gMOTD = ((char *)-1); // initialized at startup as bad pointer
+char *gMOTD = NULL; // initialized at startup as bad pointer
 cvar_t *motdfile;
 
 void ClientPrintMOTD (edict_t *ent)
@@ -2424,86 +2424,88 @@ void ClientPrintMOTD (edict_t *ent)
 	size_t len1, len2, len3;
 	char *p2 = s2;
 
-	Com_sprintf(s2, sizeof s2, "%s\n\n", hostname->string);
-
-	len1 = strlen(s1);
-	len2 = strlen(s2);
-	len3 = strlen(s3);
-
-	if(len2 >= 40)
+	if (!gMOTD) /* It's my first time. */
 	{
-		gi.dprintf("TMG Warning: Hostname is too long for HUD banner.\n"
-			"Shorten it to less than 40 characters.\n");
-	}
+		Com_sprintf(s2, sizeof s2, "%s\n\n", hostname->string);
 
-	// Generate the path to the MOTD file.
-	Com_sprintf (motdPath, sizeof motdPath, 
-		"%s/%s/%s", basedir->string, game_dir->string, motdfile->string);
+		len1 = strlen(s1);
+		len2 = strlen(s2);
+		len3 = strlen(s3);
 
-	// Open the file.
-	motdBytes = 0;
-	in = fopen (motdPath, "rt");
-	if (in != NULL)
-	{
-		// Count the number of bytes in the file.
-		while ((c = fgetc (in)) != EOF)
-			motdBytes++;
-	}
-	else
-		gi.dprintf("Unable to open MOTD file at %s.\n", motdPath);
-
-	motdBytes += len1 + len2 + len3;
-
-	// Make space for that many bytes.
-	gMOTD = gi.TagMalloc (motdBytes + 1, TAG_GAME);
-	gi.dprintf("Allocating %i bytes for MOTD\n", motdBytes + 1);
-	here = gMOTD;
-
-	//Combine the strings into a banner block
-	while (len1)
-	{
-		memcpy(here, s1++, 1);
-		here++;
-		motdBytes--;
-		len1--;
-	}
-
-	while (len2)
-	{
-		memcpy(here, p2++, 1);
-		here++;
-		motdBytes--;
-		len2--;
-	}
-
-	while (len3)
-	{
-		memcpy(here, s3++, 1);
-		here++;
-		motdBytes--;
-		len3--;
-	}
-
-	highlight_text(gMOTD, gMOTD);
-
-	// Now append the MOTD file.  Null-terminate the string.
-	if (in)
-	{
-		rewind (in);
-		while ((c = fgetc (in)) != EOF)
+		if(len2 >= 40)
 		{
-			*here = c;
+			gi.dprintf("TMG Warning: Hostname is too long for HUD banner.\n"
+				"Shorten it to less than 40 characters.\n");
+		}
+
+		// Generate the path to the MOTD file.
+		Com_sprintf (motdPath, sizeof motdPath, 
+			"%s/%s/%s", basedir->string, game_dir->string, motdfile->string);
+
+		// Open the file.
+		motdBytes = 0;
+		in = fopen (motdPath, "rt");
+		if (in != NULL)
+		{
+			// Count the number of bytes in the file.
+			while ((c = fgetc (in)) != EOF)
+				motdBytes++;
+		}
+		else
+			gi.dprintf("Unable to open MOTD file at %s.\n", motdPath);
+
+		motdBytes += len1 + len2 + len3;
+
+		// Make space for that many bytes.
+		gMOTD = gi.TagMalloc (motdBytes + 1, TAG_GAME);
+		gi.dprintf("Allocating %i bytes for MOTD\n", motdBytes + 1);
+		here = gMOTD;
+
+		//Combine the strings into a banner block
+		while (len1)
+		{
+			memcpy(here, s1++, 1);
 			here++;
 			motdBytes--;
+			len1--;
 		}
-		fclose(in);
+
+		while (len2)
+		{
+			memcpy(here, p2++, 1);
+			here++;
+			motdBytes--;
+			len2--;
+		}
+
+		while (len3)
+		{
+			memcpy(here, s3++, 1);
+			here++;
+			motdBytes--;
+			len3--;
+		}
+
+		highlight_text(gMOTD, gMOTD);
+
+		// Now append the MOTD file.  Null-terminate the string.
+		if (in)
+		{
+			rewind (in);
+			while ((c = fgetc (in)) != EOF)
+			{
+				*here = c;
+				here++;
+				motdBytes--;
+			}
+			fclose(in);
+		}
+
+		*here = '\0';
+
+		if (motdBytes != 0)
+			gi.dprintf ("MOTD error: off by %d bytes", motdBytes);
 	}
-
-	*here = '\0';
-
-	if (motdBytes != 0)
-		gi.dprintf ("MOTD error: off by %d bytes", motdBytes);
-
 	if (!ent->bot_client)
 		gi.centerprintf (ent, "%s", gMOTD);
 }
@@ -3270,7 +3272,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 				return false;
 			}
 		}
-		
+
 		if(! Check_tag(ent,namecheck))
 		{
 			value = Info_ValueForKey (userinfo, "clan");
