@@ -690,13 +690,16 @@ void Bot_Think (edict_t *self)
 	// If bot is not dead but stuck in wall
 	if (!((int)level.time % 10))
 	{
-		//if ( !(self->deadflag) && InsideWall(self) )
-		if (!(self->deadflag) && gi.pointcontents (self->s.origin) & CONTENTS_SOLID)
+	    if (!(self->deadflag) && InsideWall(self)) // expand collision volume
+//		if (!(self->deadflag) && gi.pointcontents (self->s.origin) & CONTENTS_SOLID)
 		{
-			DbgPrintf("%s %s spawned inside wall %s \n%f %f %f\n", 
-				__func__, self->client->pers.netname, level.mapname,
-				self->s.origin[0], self->s.origin[1], self->s.origin[2]); 
-			Cmd_Kill_f(self); // suicide
+
+			if(debug_botspawn->value)
+				DbgPrintf("%s %s spawned inside wall %s \n%f %f %f\n", 
+					__func__, self->client->pers.netname, level.mapname,
+					self->s.origin[0], self->s.origin[1], self->s.origin[2]);
+
+			Respawn(self, false);
 			self->nextthink = level.time + FRAMETIME * 10; // chill for 1 sec.
 			return;
 		}
@@ -822,8 +825,8 @@ void PutBotInServer (edict_t *ent)
 
 	//current weapon
 	client = ent->client;
-	if(debug_botspawn->value)
-		DbgPrintf("%s %s\n", __func__, client->pers.netname);
+	//if(debug_botspawn->value)
+	//	DbgPrintf("%s %s\n", __func__, client->pers.netname);
 
 	//RAV
 	//  start weapons & respawn protection
@@ -1378,7 +1381,7 @@ qboolean SpawnBot(int i)
 		gi.WriteShort (bot-g_edicts);
 		gi.WriteByte (MZ_LOGIN);
 		gi.multicast (bot->s.origin, MULTICAST_PVS);
-		if(debug_spawn->value)
+		if(debug_botspawn->value)
 			DbgPrintf("222 %s bot %s at %f %f %f\n", __func__, 
 			bot->client->pers.netname, 
 			bot->s.origin[0], bot->s.origin[1], bot->s.origin[2]);

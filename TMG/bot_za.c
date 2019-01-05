@@ -2354,38 +2354,24 @@ void Bots_Move_NORM (edict_t *ent)
 	The original bot modules were in a cascade dll
 	so the usual client commands were not available
 	to the bots. Since this is now inside the game
-	I'm using a kill command here to see if we 
+	I'm using the Respawn function here to see if we 
 	get better results on the spawn-death bug. 
 	This is temporary unless proven beneficial. QW
 	*/
 	
-	// -552.130127 469.441559 80.685349 in rtctf1a
-
 	//Solid Check
-//	if ( !(ent->deadflag) && InsideWall(ent) )
-	if (!(ent->deadflag) && gi.pointcontents (ent->s.origin) & CONTENTS_SOLID)
-	{
-		if(debug_botspawn->value)
-			DbgPrintf("%s found %s %s in map %s\n%f %f %f\n", __func__, 
-			ent->client->pers.netname, "positioned inside wall", level.mapname,
-				ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
-		
-		Cmd_Kill_f(ent); // silent suicide mod=23
-		ent->nextthink = level.time + FRAMETIME * 10;
-		return;
-	}
-
-	//QW// Old way...
-	//i = gi.pointcontents (ent->s.origin);
-	//if(i & CONTENTS_SOLID)
-	//{
-	//	T_Damage (ent, ent, ent, ent->s.origin, 
-	//		ent->s.origin, ent->s.origin, 100, 1, 0, MOD_CRUSH);
-	//	if(debug_botspawn->value)
-	//		DbgPrintf("%s %s %s at %f %f %f\n", __func__, 
-	//		ent->client->pers.netname, "MOD_CRUSH",
-	//		ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
-	//}
+//    if (!(ent->deadflag) && InsideWall(ent))
+////	if (!(ent->deadflag) && gi.pointcontents (ent->s.origin) & CONTENTS_SOLID)
+//	{
+//		if(debug_botspawn->value)
+//			DbgPrintf("%s found %s %s in map %s\n%f %f %f\n", __func__, 
+//			ent->client->pers.netname, "positioned inside wall", level.mapname,
+//				ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
+//		
+//		Respawn(ent, false);
+//		ent->nextthink = level.time + FRAMETIME * 10;
+//		return;
+//	}
 
 	if(VectorCompare(ent->s.origin,ent->s.old_origin))
 	{

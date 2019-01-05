@@ -1114,6 +1114,11 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 	}
 	self->deadflag = DEAD_DEAD;
 
+	if (self->bot_client) {
+		VectorClear(self->velocity);
+		VectorClear(self->s.angles);
+	}
+	
 	//routing last index move
 	if(chedit->value && self == &g_edicts[1]) 
 		Move_LastRouteIndex();
@@ -1884,9 +1889,9 @@ void Respawn (edict_t *self, qboolean spawn)
 	self->client->ps.pmove.pm_flags = PMF_TIME_TELEPORT;
 	self->client->ps.pmove.pm_time = 14;
 	self->client->respawn_time = level.time;
-	if(debug_spawn->value)
-		DbgPrintf("%s %s\n", __func__, self->client->pers.netname);
-
+	if(debug_botspawn->value)
+		DbgPrintf("%s %s at %f %f %f\n", __func__, self->client->pers.netname,
+			self->s.origin[0], self->s.origin[1], self->s.origin[2]);
 	return;
 }
 
