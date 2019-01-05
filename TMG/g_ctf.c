@@ -1628,7 +1628,11 @@ potential team1 spawning position for ctf games
 */
 void SP_info_player_team1(edict_t *self)
 {
+	// Only for CTF.
+	if (!ctf->value)
+		G_FreeEdict (self);
 
+	SP_misc_teleporter_dest (self);
 }
 
 /*QUAKED info_player_team2 (0 0 1) (-16 -16 -24) (16 16 32)
@@ -1636,7 +1640,11 @@ potential team2 spawning position for ctf games
 */
 void SP_info_player_team2(edict_t *self)
 {
+	// Only for CTF.
+	if (!ctf->value)
+		G_FreeEdict (self);
 
+	SP_misc_teleporter_dest (self);
 }
 
 

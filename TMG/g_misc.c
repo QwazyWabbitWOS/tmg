@@ -2051,19 +2051,18 @@ void SP_misc_teleporter_dest (edict_t *ent)
 {
 	gi.setmodel (ent, "models/objects/dmspot/tris.md2");
 	ent->s.skinnum = 0;
-//RAV
-  if(hide_spawn->value)
-  {
-    ent->takedamage = DAMAGE_NO;
- 	ent->movetype = MOVETYPE_NONE;
- 	ent->solid = SOLID_NOT;
- 	ent->think = NULL;
- 	ent->svflags |= SVF_NOCLIENT;
-  }
-  else
-	ent->solid = SOLID_BBOX;
 
-//	ent->s.effects |= EF_FLIES;
+	if(hide_spawn->value)
+	{
+		ent->takedamage = DAMAGE_NO;
+		ent->movetype = MOVETYPE_NONE;
+		ent->solid = SOLID_NOT;
+		ent->think = NULL;
+		ent->svflags |= SVF_NOCLIENT;
+	}
+	else
+		ent->solid = SOLID_BBOX;
+	
 	VectorSet (ent->mins, -32, -32, -24);
 	VectorSet (ent->maxs, 32, 32, -16);
 	gi.linkentity (ent);
