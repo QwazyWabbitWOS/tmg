@@ -929,7 +929,7 @@ int Bot_moveT(edict_t *ent, float ryaw, vec3_t pos, float dist, float *bottom)
 {
 	float		i, yaw;
 	vec3_t		trstart, trend;
-	vec3_t		trmin, trmax, v, vv;
+	vec3_t		trmin, trmax, v = {0}, vv;
 	trace_t		rs_trace;
 	float		tracelimit;
 	qboolean	moveok;
@@ -1581,7 +1581,8 @@ qboolean Get_FlyingSpeed(float bottom,float block,float dist,float *speed)
 static
 qboolean Bot_Jump(edict_t *ent,vec3_t pos,float dist)
 {
-	float	x,yaw,tdist,bottom,speed;
+	float	x, yaw, tdist, speed;
+	float  bottom = 0;
 	vec3_t	temppos;
 	zgcl_t	*zc;
 
@@ -1635,7 +1636,8 @@ qboolean Bot_Fall(edict_t *ent,vec3_t pos,float dist)
 {
 	zgcl_t	*zc;
 	float	x,l,speed,grav,vel,ypos,yori;
-	vec3_t	v,vv;
+	vec3_t	v = {0};
+	vec3_t	vv = {0};
 	int		mf = false;
 	short	mode = 0;
 
@@ -2314,9 +2316,9 @@ void Bots_Move_NORM (edict_t *ent)
 	vec3_t		temppos;
 
 	trace_t		rs_trace;
-	edict_t		*touch[MAX_EDICTS],*trent;
-	vec3_t		touchmin,touchmax,v,vv;
-	vec3_t		trmin,trmax;
+	edict_t		*touch[MAX_EDICTS], *trent;
+	vec3_t		touchmin, touchmax, v = {0}, vv = {0};
+	vec3_t		trmin = {0},trmax;
 	int			i,j,k,l;
 	qboolean	canrocj,waterjumped;
 	edict_t		*it_ent = NULL;
