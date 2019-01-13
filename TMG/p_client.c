@@ -1701,8 +1701,10 @@ qboolean SelectSpawnPointRAV (edict_t *ent, vec3_t origin, vec3_t angles)
 				spot = G_Find(spot, FOFS(classname), "info_player_start");
 			}
 
-			if(!spot)
-				gi.error("Couldn't find spawn point %s\n", game.spawnpoint);
+			if (!spot) {
+				gi.error ("Couldn't find spawn point %s\n", game.spawnpoint);
+				exit(EXIT_FAILURE); // Never executed but silences Xcode warnings
+			}
 		}
 	}
 
@@ -1766,8 +1768,10 @@ void	SelectSpawnPoint (edict_t *ent, vec3_t origin, vec3_t angles)
 			{	// there wasn't a spawnpoint without a target, so use any
 				spot = G_Find (spot, FOFS(classname), "info_player_start");
 			}
-			if (!spot)
+			if (!spot) {
 				gi.error ("Couldn't find spawn point %s\n", game.spawnpoint);
+				exit(EXIT_FAILURE); // Never executed but silences Xcode warnings
+			}
 		}
 	}
 
@@ -4309,7 +4313,6 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 	//RAV  hook stuff
 	//if(!chedit->value) //use old hook for normal usage
-	//{
 	if (ent->client->buttons & BUTTON_USE
 		&& !ent->deadflag && !(client->ps.pmove.pm_type == PM_SPECTATOR))			
 	{
@@ -4320,9 +4323,6 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	{
 		abandon_hook_reset(ent->client->hook);
 	}
-
-	//}
-
 }
 
 /*
