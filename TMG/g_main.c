@@ -784,11 +784,11 @@ void G_RunFrame (void)
 	if (level.intermissiontime)
 	{ //set up highscores display
 		//fix for highscores
-		if(level.time == level.intermissiontime + 7.0)
+		if(level.time == level.intermissiontime + scoreboardtime->value/2)
 		{
 			LoadHighScores();
 		}
-		if ((level.time >= level.intermissiontime + 7.1) && (show_highscores->value))
+		if ((level.time >= level.intermissiontime + (scoreboardtime->value/2) + 0.1) && (show_highscores->value))
 		{
 			for (i=0; i<=maxclients->value; i++)
 			{
@@ -809,14 +809,14 @@ void G_RunFrame (void)
 				}
 			}
 		}
-		if ((level.time >= level.intermissiontime + 11.0) && (hs_show == true))
+		if ((level.time >= level.intermissiontime + scoreboardtime->value - 4.0) && (hs_show == true))
 		{
 			hs_show = false;
 		}
 	}
 
 	if((mapvote->value) && 
-		(level.time+(int)menutime->value-1 < votetime) && 
+		(level.time + menutime->value - 1.0f < votetime) && 
 		!locked_teams && (maplist->nextmap == -1))
 	{
 		//gi.drintf("3 match_state_end = %f, level.time = %f, votetime = %f\n",
