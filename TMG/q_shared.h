@@ -10,6 +10,7 @@
 #pragma warning(disable : 4127)		// conditional expression is constant
 #if _MSC_VER > 1500
 #pragma warning(disable : 4996)		// unsafe CRT functions (_CRT_SECURE_NO_WARNINGS).
+#pragma warning(disable : 4459)		// declaration of 'var' hides global declaration.
 #endif
 #endif
 

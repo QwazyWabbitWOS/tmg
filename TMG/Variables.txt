@@ -1,0 +1,6 @@
+This is a list of TMG console variables that can be controlled by
+server administrators to configure their server. Use the cvarlist
+command from console to dump a complete list of current values on
+your server.
+
+

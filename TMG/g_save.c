@@ -246,10 +246,10 @@ void InitGame (void)
 
 	warmup_time =  gi.cvar("warmup_time", "30", CVAR_LATCH);
 	//QW Some configurations used 1 to set zero warmup.
-	if (warmup_time->value > 1 && warmup_time->value < 30)
+	if (warmup_time->value > 1 && warmup_time->value < 15)
 	{
-		gi.cvar_set("warmup_time", "30");
-		gi.dprintf("TMG: Forcing warmup_time 30." 
+		gi.cvar_set("warmup_time", "15");
+		gi.dprintf("TMG: Forcing warmup_time 15. " 
 			"Set warmup_time 0 to disable warmup mode.\n");
 	}
 
@@ -1033,7 +1033,7 @@ void ReadLevel (char *filename)
 	gi.FreeTags (TAG_LEVEL);
 
 	// wipe all the entities
-	memset (g_edicts, 0, game.maxentities*sizeof(g_edicts[0]));
+	memset (g_edicts, 0, game.maxentities * sizeof(g_edicts[0]));
 	globals.num_edicts = maxclients->value+1;
 
 	// check edict size
@@ -1101,5 +1101,3 @@ void ReadLevel (char *filename)
 				ent->nextthink = level.time + ent->delay;
 	}
 }
-
-

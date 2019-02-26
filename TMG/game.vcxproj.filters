@@ -172,6 +172,7 @@
     <None Include="BSDmakefile" />
     <None Include="GNUmakefile" />
     <None Include="Statistics Log.txt" />
+    <None Include="Variables.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="anticheat.h">

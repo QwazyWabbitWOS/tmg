@@ -2822,7 +2822,8 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 					cl->ping);
 
 				sprintf(entry + strlen(entry),
-					"xv 100 string %d ",
+					"xv 100 %s %d ",
+					(cl_ent == ent) ? "string2" : "string",
 					cl->resp.captures);
 
 				if (cl_ent->client->pers.inventory[ITEM_INDEX(flag2_item)])
@@ -2859,7 +2860,8 @@ void CTFScoreboardMessageNew (edict_t *ent, edict_t *killer)
 					cl->ping);
 
 				sprintf(entry + strlen(entry),
-					"xr -620 string %d ",
+					"xv 340 %s %d ",
+					(cl_ent == ent) ? "string2" : "string",
 					cl->resp.captures);
 
 				if (cl_ent->client->pers.inventory[ITEM_INDEX(flag1_item)])
