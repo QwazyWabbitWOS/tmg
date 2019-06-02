@@ -1,9 +1,7 @@
-if: branch = master
-
 language: c
 
 compiler: gcc
 
 script:
-	make all
+  - make all
 
