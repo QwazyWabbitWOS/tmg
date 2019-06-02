@@ -1,3 +1,5 @@
+if: branch = master
+
 language: c
 
 compiler: gcc
