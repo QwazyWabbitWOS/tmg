@@ -3,5 +3,5 @@ language: c
 compiler: gcc
 
 script:
-  - make -f TMG/GNUmakefile
+  - make all -C TMG/
 
