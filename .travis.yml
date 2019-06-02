@@ -1,3 +1,7 @@
-jobs:
+language: c
+
+compiler: gcc
+
+script:
 	make all
 
