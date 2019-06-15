@@ -149,26 +149,6 @@ char *ConvertName(char *name)
 	return (name);
 }
 
-/**
-This should probably replace ConvertName
-because it also catches " ' + \ _ ` and DEL
-characters. */
-char *ConvertNameA(char *name)
-{
-	size_t i;
-
-	for(i = 0; i < strlen(name); i++ )
-	{
-		if(!isalnum(name[i])
-			&& name[i] != ' '
-			&& name[i] != '_')
-		{
-			name[i] = 'x';
-		}
-	}
-	return (name);
-}
-
 /*
  Impair identified cheaters and make them glow
  */

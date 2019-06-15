@@ -25,11 +25,6 @@ void InitAnticheat(void);
 char *ConvertName(char *name);
 
 /**
- Filter names of forbidden characters
- */
-char *ConvertNameA(char *name);
-
-/**
  Impair identified cheaters and make them glow
  */
 void BadPlayer(edict_t *ent);
