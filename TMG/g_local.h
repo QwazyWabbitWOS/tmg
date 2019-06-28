@@ -31,7 +31,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.47"
+#define MOD_VERSION "0.2.48"
 #define MOD "TMG_MOD"
 
 #ifndef _DEBUG
@@ -51,8 +51,8 @@
 //==================================================================
 
 // view pitching times
-#define DAMAGE_TIME		0.5
-#define	FALL_TIME		0.3
+#define DAMAGE_TIME		0.5f
+#define	FALL_TIME		0.3f
 
 
 // edict->spawnflags
@@ -1760,8 +1760,8 @@ int hstime;
 void Move_LastRouteIndex(void);
 
 //Combat AI
-void Combat_Level0(edict_t *ent,int foundedenemy,int enewep,float aim,float distance,int skill);
-void Combat_LevelX(edict_t *ent,int foundedenemy,int enewep,float aim,float distance,int skill);
+//void Combat_Level0(edict_t *ent,int foundedenemy,int enewep,float aim,float distance,int bot_skill);
+//void Combat_LevelX(edict_t *ent,int foundedenemy,int enewep,float aim,float distance,int bot_skill);
 void UsePrimaryWeapon(edict_t *ent);
 
 //p_view.c

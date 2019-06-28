@@ -202,7 +202,7 @@ void CountDown()
 		return;
 
 	// how long left ?
-	seconds_left = (long) ceil(match_state_end - level.time);
+	seconds_left = (long) ceilf(match_state_end - level.time);
 	//DbgPrintf("%d %f %f\n", seconds_left, match_state_end, level.time);
 
 	// ignore if <0 seconds

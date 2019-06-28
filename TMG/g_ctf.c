@@ -371,7 +371,7 @@ static edict_t *loc_findradius (edict_t *from, vec3_t org, float rad)
 		if (!from->inuse)
 			continue;
 		for (j = 0; j < 3; j++)
-			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j])*0.5);
+			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j]) * 0.5f);
 
 		if (VectorLength(eorg) > rad)
 			continue;
@@ -2343,14 +2343,23 @@ void RaV_unhook (edict_t *ent)
 void CTFTeam_f (edict_t *ent, int desired_team)
 {
 	char *t, *s;
+	gclient_t* cl;
+
 
 	if (!ctf->value)
 		return;
 
-	if (ent->client->resp.teamswitch > level.time)
+	if (ent->client)
+		cl = ent->client;
+	else {
+		DbgPrintf("%s NULL ent->client\n", __func__);
+		return;
+	}
+
+	if (cl->resp.teamswitch > level.time)
 		return;
 
-	ent->client->resp.teamswitch = level.time + 3;
+	cl->resp.teamswitch = level.time + 3;
 
 	if (ent->classname[0] == 'c')
 	{	// in CAM mode
@@ -2371,7 +2380,7 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 	{
 		if (!ent->bot_client)
 			safe_cprintf(ent, PRINT_HIGH, "You are on the %s team.\n",
-			CTFTeamName(ent->client->resp.ctf_team));
+			CTFTeamName(cl->resp.ctf_team));
 		return;
 	}
 
@@ -2382,11 +2391,11 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 		return;
 	}
 
-	if (ent->client->resp.ctf_team == desired_team)
+	if (cl->resp.ctf_team == desired_team)
 	{
 		if (!ent->bot_client)
 			safe_cprintf(ent, PRINT_HIGH, "You are already on the %s team.\n",
-			CTFTeamName(ent->client->resp.ctf_team));
+			CTFTeamName(cl->resp.ctf_team));
 		return;
 	}
 
@@ -2428,36 +2437,36 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 
 	ent->svflags = 0;
 	ent->flags &= ~FL_GODMODE;
-	ent->client->resp.ctf_team = desired_team;
-	ent->client->resp.ctf_state = CTF_STATE_START;
-	s = Info_ValueForKey (ent->client->pers.userinfo, "skin");
+	cl->resp.ctf_team = desired_team;
+	cl->resp.ctf_state = CTF_STATE_START;
+	s = Info_ValueForKey (cl->pers.userinfo, "skin");
 	//skin change is allowed here
-	ent->client->skintime = level.time -1;
+	cl->skintime = level.time - 1;
 	CTFAssignSkin(ent, s);
 
-	if (ent->client && ent->client->ctf_grapple)
-		CTFResetGrapple(ent->client->ctf_grapple);
+	if (cl->ctf_grapple)
+		CTFResetGrapple(cl->ctf_grapple);
 
-	if (ent->solid == SOLID_NOT || ent->client->resp.spectator !=0)
+	if (ent->solid == SOLID_NOT || cl->resp.spectator != 0)
 	{ // spectator
 		PutClientInServer (ent);
 		// add a teleportation effect
 		ent->s.event = EV_PLAYER_TELEPORT;
 		// hold in place briefly
-		ent->client->ps.pmove.pm_flags = PMF_TIME_TELEPORT;
-		ent->client->ps.pmove.pm_time = 14;
+		cl->ps.pmove.pm_flags = PMF_TIME_TELEPORT;
+		cl->ps.pmove.pm_time = 14;
 		CheckPlayers();
 		my_bprintf(PRINT_HIGH,
 				   "%s joined the %s team. "
 				   "(%d red, %d blue, %d spectators)\n",
-				   ent->client->pers.netname,
+				   cl->pers.netname,
 				   CTFTeamName(desired_team),
 				   ctfgame.players1,
 				   ctfgame.players2,
 				   ctfgame.specs);
-		ent->client->pers.pl_state = PL_PLAYING;
-		ent->client->resp.spectator = 0;
-		StatsLog("JOIN: %s\\%d\\%.1f\n", ent->client->pers.netname, ent->client->resp.ctf_team, level.time);
+		cl->pers.pl_state = PL_PLAYING;
+		cl->resp.spectator = 0;
+		StatsLog("JOIN: %s\\%d\\%.1f\n", cl->pers.netname, cl->resp.ctf_team, level.time);
 		return;
 	}
 
@@ -2469,8 +2478,8 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 
 	if (!voosh->value)
 		TossClientWeapon(ent);
-	if (ent->client && ent->client->ctf_grapple)
-		CTFResetGrapple(ent->client->ctf_grapple);
+	if (cl && cl->ctf_grapple)
+		CTFResetGrapple(cl->ctf_grapple);
 
 	CTFPlayerResetGrapple(ent);
 	// drop the rune if we have one
@@ -2482,17 +2491,17 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 		ent->flashlight = NULL;
 	}
 
-	ent->client->resp.score = 0;
+	cl->resp.score = 0;
 	CheckPlayers();
 	my_bprintf(PRINT_HIGH, "%s changed to the %s team. "
 		"(%d red, %d blue, %d spectators)\n",
-		ent->client->pers.netname, CTFTeamName(desired_team), 
+		cl->pers.netname, CTFTeamName(desired_team), 
 		ctfgame.players1, ctfgame.players2, ctfgame.specs);
-	ent->client->pers.pl_state = PL_PLAYING;
-	ent->client->resp.spectator = 0;
+	cl->pers.pl_state = PL_PLAYING;
+	cl->resp.spectator = 0;
 	//skin change is allowed here
-	ent->client->skintime = level.time - 1;
-	StatsLog("SIDE: %s\\%d\\%.1f\n", ent->client->pers.netname, ent->client->resp.ctf_team, level.time);
+	cl->skintime = level.time - 1;
+	StatsLog("SIDE: %s\\%d\\%.1f\n", cl->pers.netname, cl->resp.ctf_team, level.time);
 
 	// don't even bother waiting for death frames
 	ent->deadflag = DEAD_DEAD;
@@ -6806,8 +6815,8 @@ void CTFSetupNavSpawn(void)
 {
 	FILE	*fpout;
 	char	name[MAX_QPATH];
-	char	code[9];
-	char	SRCcode[9];
+	char	code[9] = { 0 };
+	char	SRCcode[9] = { 0 };
 	int	i, j;
 	vec3_t	v;
 	edict_t		*other;
@@ -6851,10 +6860,14 @@ void CTFSetupNavSpawn(void)
 		{
 			gi.dprintf("Error reading chainfile code in %s\n", __func__);
 		}
-		if(!ctf->value || use_navfiles->value)
-			strncpy(SRCcode,"3ZBRGDTM", 8); // Deliberately not terminated.
-		else
-			strncpy(SRCcode,"3ZBRGCTF", 8);
+		if (!ctf->value || use_navfiles->value) {
+			strncpy(SRCcode, "3ZBRGDTM", 8);
+			SRCcode[8] = 0;
+		}
+		else {
+			strncpy(SRCcode, "3ZBRGCTF", 8);
+			SRCcode[8] = 0;
+		}
 
 		if(strncmp(code, SRCcode, 8))
 		{

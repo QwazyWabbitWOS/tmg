@@ -580,7 +580,7 @@ qboolean ModifyOpLevel (int entry, int newlevel)
  Add operator access level for named user @ IP address
  if user_o.txt file doesn't exist, create it.
 */
-int AddOperator (char entry[MAX_QPATH], int level, char pass[16])
+int AddOperator (char entry[MAX_QPATH], int op_lev, char pass[16])
 {
 	FILE *opfile;
 	char line[MAX_QPATH];
@@ -588,7 +588,7 @@ int AddOperator (char entry[MAX_QPATH], int level, char pass[16])
 	opfile = tn_open("user_o.txt", "a+");
 	if (opfile)
 	{
-		Com_sprintf (line, sizeof line, "%s\t%d\t%s\n", entry, level, pass);
+		Com_sprintf (line, sizeof line, "%s\t%d\t%s\n", entry, op_lev, pass);
 		fputs(line, opfile);
 		fclose(opfile);
 		CheckOpFile(NULL, "*@*.*.*.*", false);

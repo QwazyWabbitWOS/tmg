@@ -2234,20 +2234,20 @@ void ClientCommand (edict_t *ent)
 	}
 	else if (Q_stricmp (cmd, "modop") == 0)
 	{
-		int level;
+		int oper_level;
 		if (ent->client->pers.oplevel & OP_MODOP)
 		{
 			if (IPMatch (gi.argv(1),  "*@*.*.*.*") == 1 && gi.argc() == 3)
 			{
 				if (atoi(gi.argv(2)) > ent->client->pers.oplevel)
-					level = ent->client->pers.oplevel;
+					oper_level = ent->client->pers.oplevel;
 				else
-					level = atoi(gi.argv(2));
+					oper_level = atoi(gi.argv(2));
 
-				if (ModifyOpLevel(CheckOpFile (NULL, gi.argv(1), true), level))
+				if (ModifyOpLevel(CheckOpFile (NULL, gi.argv(1), true), oper_level))
 					safe_cprintf (ent, PRINT_HIGH,
 								  "%s level changed to %d\n",
-								  gi.argv(1), level);
+								  gi.argv(1), oper_level);
 				else
 					safe_cprintf (ent, PRINT_HIGH,
 								  "No matching entry found.\n");
@@ -2262,7 +2262,7 @@ void ClientCommand (edict_t *ent)
 	else if (Q_stricmp(cmd, "addop") == 0 ||
 			 Q_stricmp(cmd, "opadd") == 0)
 	{
-		int level;
+		int oper_level;
 		char pass[16];
 		if (ent->client->pers.oplevel & OP_ADDOP)
 		{
@@ -2270,9 +2270,9 @@ void ClientCommand (edict_t *ent)
 			{
 				gi.dprintf("there are %d args\n", gi.argc());
 				if (gi.argc() < 3)
-					level = (int)defaultoplevel->value;
+					oper_level = (int)defaultoplevel->value;
 				else
-					level = atoi(gi.argv(2));
+					oper_level = atoi(gi.argv(2));
 				if (gi.argc() < 4)
 					Com_sprintf(pass, sizeof pass, "nopass");
 				else
@@ -2280,8 +2280,8 @@ void ClientCommand (edict_t *ent)
 
 				safe_cprintf (ent, PRINT_HIGH,
 					"%s added to user_o.txt with level %d and password %s.\n",
-							  gi.argv(1), level, pass);
-				AddOperator (gi.argv(1), level, pass);
+							  gi.argv(1), oper_level, pass);
+				AddOperator (gi.argv(1), oper_level, pass);
 			}
 			else
 				safe_cprintf(ent, PRINT_HIGH, "Usage: addop user@ip level pass\n");

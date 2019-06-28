@@ -240,13 +240,13 @@ static int Bot_SearchEnemy (edict_t *ent)
 					if(!tmpflg && target == NULL)
 					{
 						pitch = Get_pitch(trmin);
-						pitch = fabs(pitch - ent->s.angles[PITCH]);
+						pitch = fabsf(pitch - ent->s.angles[PITCH]);
 						if(pitch > 180) pitch = 360 - pitch;
 						//if(ent->client->zc.zcstate & STS_WAITS) target = trent;
 						if(pitch <= vr)
 						{
 							yaw = Get_yaw(trmin);
-							yaw = fabs(yaw - ent->s.angles[YAW]);
+							yaw = fabsf(yaw - ent->s.angles[YAW]);
 							if(yaw > 180) yaw = 360 - yaw;
 							if(yaw <= hr || (ent->client->zc.zcstate & STS_WAITS))	target = trent;
 						}
@@ -516,7 +516,7 @@ static void Bot_SearchItems (edict_t *ent)
 							if( ent->health < 100 && (!pickup_pri || yaw < 96)) target = trent;
 						}
 						else if(entcln[12] == 's'){ //item_health_small
-							if(fabs(trent->s.origin[2] - ent->s.origin[2] + 8) > JumpMax) continue;
+							if(fabsf(trent->s.origin[2] - ent->s.origin[2] + 8) > JumpMax) continue;
 							target = trent;
 						}
 						else if(entcln[12] == 'l') //item_health_large
@@ -529,7 +529,7 @@ static void Bot_SearchItems (edict_t *ent)
 					else if(entcln[5] == 'a' && !pickup_pri)
 					{
 						if(entcln[11] == 's'){		//item_armor_shard
-							if(fabs(trent->s.origin[2] - ent->s.origin[2] + 8) > JumpMax) continue;
+							if(fabsf(trent->s.origin[2] - ent->s.origin[2] + 8) > JumpMax) continue;
 							target = trent;
 						}
 						else if(entcln[11] == 'j')	//item_armor_jacket
@@ -788,8 +788,8 @@ static void Bot_SearchItems (edict_t *ent)
 					zc->second_target = target;
 					break;
 				}
-				else if(zc->second_target->classname[6] == 'F' &&
-						zc->second_target->classname[6] == 'F') //QW// WTF is this about? Should this be 'R'?
+				else if(zc->second_target->classname[6] == 'F')
+						//&& zc->second_target->classname[6] == 'F') //QW// WTF is this about? Should this be 'R'?
 				{
 					target = NULL;
 					continue;
@@ -3643,7 +3643,7 @@ DCHCANC:// keep squatting
 				//				VectorSubtract(Route[k].Pt,ent->s.origin,temppos);
 				if(Route[zc->routeindex].state <= GRS_ITEMS && TraceX(ent,v))
 				{
-					if(fabs(v[2] - ent->s.origin[2]) <= JumpMax || zc->waterstate == WAS_IN)
+					if(fabsf(v[2] - ent->s.origin[2]) <= JumpMax || zc->waterstate == WAS_IN)
 					{
 						zc->route_trace = true;
 						zc->rt_locktime = level.time + FRAMETIME * POD_LOCKFRAME;
@@ -4023,7 +4023,7 @@ DCHCANC:// keep squatting
 								|| Route[zc->routeindex].state == GRS_ONTRAIN))
 							{
 								Get_RouteOrigin(zc->routeindex - 1,v);
-								if(fabs(v[2] - ent->s.origin[2]) <= JumpMax)
+								if(fabsf(v[2] - ent->s.origin[2]) <= JumpMax)
 								{
 									if(zc->waterstate < WAS_IN
 									   /*&& Route[zc->routeindex].ent->trainteam == NULL*/
@@ -5390,7 +5390,7 @@ GOMOVE:
 			if(zc->waterstate == WAS_IN)  ent->moveinfo.decel = level.time;
 			else if(!k)
 			{
-				if( ( level.time - ent->moveinfo.decel) > 4.0 && !zc->route_trace)
+				if( ( level.time - ent->moveinfo.decel) > 4.0f && !zc->route_trace)
 				{
 					ent->velocity[2] = -200;
 					ent->moveinfo.decel = level.time;
@@ -5594,7 +5594,7 @@ GOMOVE:
 								//VectorScale (temppos, 3, v);
 								//VectorAdd(ent->s.origin,v,zc->movtarget_pt);
 
-								if(fabs (e->moveinfo.start_origin[2] - e->moveinfo.end_origin[2]) > JumpMax )
+								if(fabsf (e->moveinfo.start_origin[2] - e->moveinfo.end_origin[2]) > JumpMax )
 								{
 									if(e->union_ent == NULL)
 									{
@@ -5664,14 +5664,14 @@ GOMOVE:
 										{
 											if(e->moveinfo.state == PSTATE_BOTTOM || e->moveinfo.state == PSTATE_UP)
 											{
-												if(fabs(trent->s.origin[2] - ent->s.origin[2]) < JumpMax) k = true;
+												if(fabsf(trent->s.origin[2] - ent->s.origin[2]) < JumpMax) k = true;
 											}
 										}
 										else
 										{
 											if(e->moveinfo.state == PSTATE_BOTTOM || e->moveinfo.state == PSTATE_UP )
 											{
-												if(fabs(trent->s.origin[2] - ent->s.origin[2]) < JumpMax) k = true;
+												if(fabsf(trent->s.origin[2] - ent->s.origin[2]) < JumpMax) k = true;
 											}
 										}
 									}

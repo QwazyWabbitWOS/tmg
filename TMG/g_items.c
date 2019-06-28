@@ -302,11 +302,11 @@ qboolean Pickup_Navi (edict_t *ent, edict_t *other)
 						if((j + k) >= other->client->zc.routeindex)
 						{
 							Get_RouteOrigin(j + k,v);
-							if(fabs(v[2] - other->s.origin[2])> JumpMax)
+							if(fabsf(v[2] - other->s.origin[2])> JumpMax)
 							{
 								if(/* DISABLES CODE */ (0)/*Route[j].state == GRS_PUSHBUTTON*/)
 								{
-									if(fabs(Route[j].ent->union_ent->s.origin[2] + 8 - other->s.origin[2])< JumpMax)
+									if(fabsf(Route[j].ent->union_ent->s.origin[2] + 8 - other->s.origin[2])< JumpMax)
 										flg = true;
 								}
 								else 
@@ -1272,7 +1272,7 @@ edict_t *Drop_Item (edict_t *ent, gitem_t *item)
 		for (i = 1; i <= maxclients->value; i++)
 		{
 			e = g_edicts + i;
-			if (e && e->inuse && !e->bot_client)
+			if (ent->client && e && e->inuse && !e->bot_client)
 			{
 				safe_centerprintf(e, "%s lost the quad damage!\n", ent->client->pers.netname);
 				gi.sound (e, CHAN_AUTO, gi.soundindex ("items/quaddrop.wav"), 1, ATTN_NONE, 0);
@@ -1667,8 +1667,8 @@ void droptofloor2 (edict_t *ent)
 					if(tr.endpos[2] < ent->s.origin[2] - 16 && tr.endpos[2] > min[2] && !tr.allsolid && !tr.startsolid)
 					{
 						min[2] = tr.endpos[2];
-						min[0] = ent->s.origin[0] + cos(yaw) * (j + 16);
-						min[1] = ent->s.origin[1] + sin(yaw) * (j + 16);
+						min[0] = ent->s.origin[0] + cosf(yaw) * (j + 16);
+						min[1] = ent->s.origin[1] + sinf(yaw) * (j + 16);
 						break;
 					}
 				}
@@ -1741,7 +1741,7 @@ void PrecacheItem (gitem_t *it)
 			s++;
 
 		len = s - start;
-		if (len >= MAX_QPATH || len < 5)
+		if (len >= MAX_QPATH - 1 || len < 5)
 			gi.error ("PrecacheItem: %s has bad precache string", it->classname);
 		memcpy (data, start, len);
 		data[len] = 0;

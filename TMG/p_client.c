@@ -214,12 +214,12 @@ qboolean IsNeutral (edict_t *ent)
 
 void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 {
-	int mod, i;
+	int obit_mod, i;
 	char *message[16];
 	char *message2[16];
 	qboolean ff;
 	ff = meansOfDeath & MOD_FRIENDLY_FIRE;
-	mod = meansOfDeath & ~MOD_FRIENDLY_FIRE;
+	obit_mod = meansOfDeath & ~MOD_FRIENDLY_FIRE;
 
 	// If no victim then no obit!
 	if (!G_EntExists(self))
@@ -231,14 +231,14 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 		attacker->client->pers.netname, //attacker
 		self->client->ping, 
 		attacker->client->ping, 
-		mod, //means of death
+		obit_mod, //means of death
 		/*hitLocation*/NULL,
 		level.time); 
 	else 
 		StatsLog("KILL: %s\\%d\\%d\\%d\\%.1f\n",	// a player killed himself
 		self->client->pers.netname, 
 		self->client->ping, 
-		mod, 
+		obit_mod, 
 		/*hitLocation*/NULL,
 		level.time); 
 
@@ -248,7 +248,7 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 		message2[i] = "";
 	} //end for
 
-	switch (mod)
+	switch (obit_mod)
 	{
 	case MOD_SUICIDE:
 		message[0] = "commits suicide";
@@ -360,7 +360,7 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 	}
 	if (attacker == self)
 	{
-		switch (mod)
+		switch (obit_mod)
 		{
 		case MOD_HELD_GRENADE:
 			message[0] = "tried to put the pin back in";
@@ -485,7 +485,7 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 			//-552.130127 469.441559 80.685349 in rtctf1a
 			if (debug_spawn->value)
 				gi.dprintf("%s %s has MOD %d \n%f %f %f\n", __func__, 
-				self->client->pers.netname, mod,
+				self->client->pers.netname, obit_mod,
 				self->s.origin[0], self->s.origin[1], self->s.origin[2]);
 			message[1] = "commited suicide";
 			message[2] = "went the way of the dodo";
@@ -541,9 +541,9 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 	self->enemy = attacker;
 	if (attacker && attacker->client)
 	{
-		if (mod == MOD_BLASTER && extrasounds->value)
+		if (obit_mod == MOD_BLASTER && extrasounds->value)
 			gi.sound (attacker, CHAN_AUTO, gi.soundindex ("misc/humiliation.wav"), 1, ATTN_NORM, 0);
-		switch (mod)
+		switch (obit_mod)
 		{
 		case MOD_BLASTER:
 			message[0] = "(quakeweenie) was massacred by";
@@ -3784,7 +3784,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			else VectorCopy(ent->s.old_origin,v);
 			//gi.bprintf(PRINT_HIGH,"5\n");
 		}
-		else if(fabs(v[2] - ent->s.origin[2]) > 20)
+		else if(fabsf(v[2] - ent->s.origin[2]) > 20)
 		{
 			if(ent->groundentity && ent->waterlevel < 2)
 			{
@@ -3891,7 +3891,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 					if(old_ground->targetname && old_ground->union_ent)
 					{
 						if(TraceX(ent,old_ground->union_ent->s.origin)
-							&& fabs(ent->s.origin[2] - old_ground->union_ent->s.origin[2]) < JumpMax)
+							&& fabsf(ent->s.origin[2] - old_ground->union_ent->s.origin[2]) < JumpMax)
 						{
 							VectorCopy(old_ground->monsterinfo.last_sighting,v);
 							l = GRS_ONDOOR;
@@ -4028,7 +4028,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			ent->velocity[0] -= 1200 * v_right[0] * framerate(ucmd);
 			ent->velocity[1] -= 1200 * v_right[1] * framerate(ucmd);
 		}
-		vel = sqrt (ent->velocity[0]*ent->velocity[0] + ent->velocity[1]*ent->velocity[1]);
+		vel = sqrtf (ent->velocity[0] * ent->velocity[0] + ent->velocity[1] * ent->velocity[1]);
 		if (vel > 550)
 		{
 			mul = 550 / vel;
@@ -4073,7 +4073,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		}
 
 
-		vel = sqrt (ent->velocity[0]*ent->velocity[0] + ent->velocity[1]*ent->velocity[1]);
+		vel = sqrt ((double)ent->velocity[0] * (double)ent->velocity[0] + (double)ent->velocity[1] * (double)ent->velocity[1]);
 
 		if (vel > 550)
 		{

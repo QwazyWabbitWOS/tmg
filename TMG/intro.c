@@ -188,7 +188,7 @@ char* Wav_Mod_Next()
 				}
 
 				// pick number of unused wavs to skip (less clustering likely)
-				i = (int) floor(random() * ((float)(unused_wav)));
+				i = (int) floorf(random() * ((float)(unused_wav)));
 
 				// skip to first unused wav (has to find one)
 				map	= 0;
@@ -216,7 +216,7 @@ char* Wav_Mod_Next()
 			{
 				wav_mod_current_level = -1;
 
-				i = (int) floor(random() * ((float)(wav_mod_num_wavs)));
+				i = (int) floorf(random() * ((float)(wav_mod_num_wavs)));
 
 				if (!Q_stricmp(wav->string, wav_mod_names[i]))
 				{

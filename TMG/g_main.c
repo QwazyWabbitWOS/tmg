@@ -788,7 +788,7 @@ void G_RunFrame (void)
 		{
 			LoadHighScores();
 		}
-		if ((level.time >= level.intermissiontime + (scoreboardtime->value/2) + 0.1) && (show_highscores->value))
+		if ((level.time >= level.intermissiontime + (scoreboardtime->value/2) + 0.1f) && (show_highscores->value))
 		{
 			for (i=0; i<=maxclients->value; i++)
 			{
@@ -809,7 +809,7 @@ void G_RunFrame (void)
 				}
 			}
 		}
-		if ((level.time >= level.intermissiontime + scoreboardtime->value - 4.0) && (hs_show == true))
+		if ((level.time >= level.intermissiontime + scoreboardtime->value - 4.0f) && (hs_show == true))
 		{
 			hs_show = false;
 		}

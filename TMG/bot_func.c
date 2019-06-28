@@ -653,7 +653,7 @@ edict_t *Get_NewClient (void)
 		// the first couple seconds of server time can involve a lot of
 		// freeing and allocating, so relax the replacement policy
 		if (!e->inuse && !client->pers.connected && 
-			( e->freetime < 2 || level.time - e->freetime > 0.5 ) )
+			( e->freetime < 2 || level.time - e->freetime > 0.5f ) )
 		{
 			G_InitEdict (e);
 			return e;

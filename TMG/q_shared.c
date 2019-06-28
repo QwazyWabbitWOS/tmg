@@ -1175,7 +1175,7 @@ int Q_strnicmp (const char *s1, const char *s2, size_t count)
 	}
 }
 
-char	bigbuffer[0x10000]; // for Com_sprintf
+static char	bigbuffer[0x10000];  //QW// For Com_sprintf
 
 /**
  Safer, uses large buffer

@@ -154,8 +154,8 @@ void SaveHighScores (void)
 
 void LoadHighScores (void)
 {
-	char	entry[1400] = "";
-	char	string[1400] = "";
+	char	entry[1400];
+	char	string[1400];
 	size_t	stringlength;
 	int		i;
 	size_t	j;
@@ -172,6 +172,8 @@ void LoadHighScores (void)
 		gi.dprintf("Can't open highscores using %s\n", filename);
 		return;
 	}
+
+	entry[0] = 0;
 	string[0] = 0;
 	stringlength = strlen(string);
 	i = 0;

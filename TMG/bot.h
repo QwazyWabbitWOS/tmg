@@ -77,8 +77,8 @@ void PutBotInServer (edict_t *ent);
 void SpawnBotReserving2(int *red,int *blue);
 
 //Combat AI
-void Combat_Level0(edict_t *ent,int foundedenemy,int enewep,float aim,float distance,int skill);
-void Combat_LevelX(edict_t *ent,int foundedenemy,int enewep,float aim,float distance,int skill);
+void Combat_Level0(edict_t *ent,int foundedenemy,int enewep,float aim,float distance,int bot_skill);
+void Combat_LevelX(edict_t *ent,int foundedenemy,int enewep,float aim,float distance,int bot_skill);
 void UsePrimaryWeapon(edict_t *ent);
 
 //Explotion Index

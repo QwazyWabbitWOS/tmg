@@ -95,7 +95,7 @@ void TimeLeft(void)
 	long seconds_left;
 
 	// how long left ?
-	seconds_left = ceil(match_state_end - level.time);
+	seconds_left = ceilf(match_state_end - level.time);
 	min = (int) seconds_left / 60;
 	sec = (int) seconds_left - (min) * 60;
 

@@ -184,8 +184,8 @@ void BeginIntermission (edict_t *targ)
 
 void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 {
-	char	entry[MAX_MSGLEN] = "";	// Temporary string store
-	char	string[MAX_MSGLEN] = ""; // The scoreboard message
+	char	entry[MAX_MSGLEN];	// Temporary string store
+	char	string[MAX_MSGLEN]; // The scoreboard message
 	size_t	len;
 	int		i;
 	int		j;
@@ -207,6 +207,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 	Com_sprintf(filename, sizeof filename, "%s/%s/%s/hs/%s_hs.txt", 
 		basedir->string, game_dir->string, cfgdir->string, level.mapname);
 
+	entry[0] = 0;
 	string[0] = 0;
 	stringlength = strlen(string);
 

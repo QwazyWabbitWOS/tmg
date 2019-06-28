@@ -25,7 +25,7 @@ qboolean entryInFile (char *filename, char ip[]);
 int CheckOpFile (edict_t *ent, char ip[], qboolean returnindex);
 qboolean CheckNameProtect (char name[], char namepass[]);
 qboolean ModifyOpLevel (int entry, int newlevel);
-int AddOperator (char entry[], int level, char pass[16]);
+int AddOperator (char entry[], int op_lev, char pass[16]);
 void AddEntry (char *filename, char *text);
 void sv_ban_ip (edict_t *ent);
 void ShowFile(edict_t *ent, char *filename);

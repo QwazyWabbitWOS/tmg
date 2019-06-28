@@ -800,7 +800,7 @@ void ReadGame (char *filename)
 {
 	FILE	*f;
 	int		i;
-	char	str[16];
+	char	str[16] = { 0 };
 	size_t	count;
 
 	gi.FreeTags (TAG_GAME);

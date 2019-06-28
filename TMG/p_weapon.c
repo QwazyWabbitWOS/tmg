@@ -768,9 +768,9 @@ GRENADE
 ======================================================================
 */
 
-#define GRENADE_TIMER		3.0
-#define GRENADE_MINSPEED	400
-#define GRENADE_MAXSPEED	800
+#define GRENADE_TIMER		3.0f
+#define GRENADE_MINSPEED	400.0f
+#define GRENADE_MAXSPEED	800.0f
 
 void weapon_grenade_fire (edict_t *ent, qboolean held)
 {
@@ -796,8 +796,8 @@ void weapon_grenade_fire (edict_t *ent, qboolean held)
 	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
 
 	timer = ent->client->grenade_time - level.time;
-	speed = GRENADE_MINSPEED + (GRENADE_TIMER - timer) *
-	((GRENADE_MAXSPEED - GRENADE_MINSPEED) / GRENADE_TIMER);
+	speed = (int)(GRENADE_MINSPEED + (GRENADE_TIMER - timer) *
+	((GRENADE_MAXSPEED - GRENADE_MINSPEED) / GRENADE_TIMER));
 
 	fire_grenade2 (ent, start, forward, damage, speed, timer, radius, held);
 
@@ -1171,7 +1171,7 @@ Weapon_HyperBlaster_Fire (edict_t *ent)
 		}
 		else
 		{
-			rotation = (ent->client->ps.gunframe - 5) * 2*M_PI/6;
+			rotation = (ent->client->ps.gunframe - 5.0) * 2.0 * M_PI / 6.0;
 			offset[0] = -4 * sin(rotation);
 			offset[1] = 0;
 			offset[2] = 4 * cos(rotation);

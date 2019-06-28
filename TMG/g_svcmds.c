@@ -15,6 +15,7 @@ void Move_LastRouteIndex(void)
 		else if(!Route[i].index)
 			break;
 	}
+	assert(i >= 0);
 	if(!CurrentIndex || !Route[i].index)
 		CurrentIndex = i;
 	else
@@ -426,21 +427,21 @@ void ServerCommand (void)
 	}
 	else if (Q_stricmp(cmd, "addop") == 0)
 	{
-		int level;
+		int oper_level;
 		char pass[16];
 		if (IPMatch (gi.argv(2),  "*@*.*.*.*") == 1)
 		{
 			if (gi.argc() < 4)
-				level = (int)defaultoplevel->value;
+				oper_level = (int)defaultoplevel->value;
 			else
-				level = atoi(gi.argv(3));
+				oper_level = atoi(gi.argv(3));
 			if (gi.argc() < 5)
 				sprintf(pass, "nopass");
 			else
 				sprintf(pass, "%s", gi.argv(4));
-			if (AddOperator (gi.argv(2), level, pass) == 0)
+			if (AddOperator (gi.argv(2), oper_level, pass) == 0)
 				gi.dprintf ("%s added to user_o.txt with level %d "
-							"and password %s.\n", gi.argv(2), level, pass);
+							"and password %s.\n", gi.argv(2), oper_level, pass);
 			else
 				gi.dprintf ("Error adding user\n");
 		}
