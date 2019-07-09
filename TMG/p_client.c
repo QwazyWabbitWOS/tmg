@@ -2465,7 +2465,7 @@ void ClientPrintMOTD (edict_t *ent)
 
 		motdBytes += len1 + len2 + len3;
 
-		// Make space for that many bytes.
+		// Allocated only once per server start. 
 		gMOTD = gi.TagMalloc (motdBytes + 1, TAG_GAME);
 		gi.dprintf("Allocating %i bytes for MOTD\n", motdBytes + 1);
 		here = gMOTD;
