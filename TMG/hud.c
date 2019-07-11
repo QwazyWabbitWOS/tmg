@@ -31,6 +31,8 @@ void GetDate(void)
 		"%02i-%02i-%4i", month, day, year);
 }
 
+static qboolean initialized = 0; // indicates time is valid
+
 /*
  Format the local time string for use in the HUD.
  Use AM/PM or 24 hour time depending on the cvar tmgclock, (12 or 24). 
@@ -38,7 +40,6 @@ void GetDate(void)
  Set server_time to 0 for no time in HUD, 1 for local time, 2 for GMT.
  Variable ampm contains "", "AM", "PM" or "UTC" per each mode.
 */
-static qboolean initialized = 0;
 void GetTime(void)
 {
 	char ampm[4] = "";
@@ -160,60 +161,6 @@ static char *tn_id (edict_t *ent)
 	}
 	return (stats); 
 }
-
-
-/*
-char *tn_vote_msg (edict_t *ent)
-{
-	static char stats[200];
-	static char line1[64], line2[64];
-	int xv1, xv2;
-
-	if (Q_stricmp(vote_cmd, "map") == 0)
-		Com_sprintf (line1, sizeof line1, "%s : change map to %s.", 
-			votestarter->client->pers.netname, vote_entry);
-	else
-	if (Q_stricmp(vote_cmd,"cycle")==0)
-		Com_sprintf (line1, sizeof line1, "%s : change cycle to %s.", 
-			votestarter->client->pers.netname, vote_entry);
-	else
-	if (Q_stricmp(vote_cmd,"promote")==0)
-		Com_sprintf (line1, sizeof line1, "%s : promote %s.", 
-			votestarter->client->pers.netname, 
-			votetarget->client->pers.netname );
-	else
-	if (Q_stricmp(vote_cmd,"demote")==0)
-		Com_sprintf (line1, sizeof line1, "%s : demote %s.", 
-			votestarter->client->pers.netname, 
-			votetarget->client->pers.netname );
-	Com_sprintf (line2, sizeof line2, 
-		"Agree? Go to Console and type (yes/no)");
- 
-	xv1 = 160-(strlen(line1)*4);
-	xv2 = 160-(strlen(line2)*4);
-
-	Com_sprintf (stats, sizeof stats, 
-		"xv %d yb -90 string2 \"%s\" xv %d yb -180 string \"%s\" ", 
-		xv1, line1, xv2, line2);
-
-	return (stats);
-}
-
-char *tn_votewait (edict_t *ent)
-{
-	static char stats[200];
-	static char line1[64];
-	int xv1;
-	Com_sprintf (line1, sizeof line1, 
-		"Waiting for vote results...");
-
-	xv1 = 160-(strlen(line1)*4);
-	Com_sprintf (stats, sizeof stats, 
-		"xv %d yb -90 string2 \"%s\" ", xv1, line1);
-
-	return (stats);
-}
-*/
 
 /* 
 	Calculate player's frags per hour
