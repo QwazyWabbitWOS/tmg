@@ -8,7 +8,7 @@
 #ifdef _WIN32
   #define WIN32_LEAN_AND_MEAN	//non-MFC
   #include <windows.h>
-  #define CRTDBG_MAP_ALLOC
+  #define _CRTDBG_MAP_ALLOC
   #include <stdlib.h>
   #include <crtdbg.h>
   _CrtMemState startup1;	// memory diagnostics
@@ -1893,3 +1893,4 @@ typedef struct ctfgame_s
 ctfgame_t ctfgame;
 
 #endif /* G_LOCAL_H */
+
