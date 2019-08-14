@@ -1079,9 +1079,8 @@ skipwhite:
 			c = *data++;
 			if (c == '\"' || !c)
 			{
-				com_token[len] = 0;
-				*data_p = data;
-				return com_token;
+				//bugfix from skuller
+				goto finish;
 			}
 			if (len < MAX_TOKEN_CHARS)
 			{
@@ -1103,9 +1102,11 @@ skipwhite:
 		c = *data;
 	} while (c > 32);
 
+finish:
+
 	if (len == MAX_TOKEN_CHARS)
 	{
-		//		Com_Printf ("Token exceeded %i chars, discarded.\n", MAX_TOKEN_CHARS);
+		Com_Printf ("Token exceeded %i chars, discarded.\n", MAX_TOKEN_CHARS);
 		len = 0;
 	}
 	com_token[len] = 0;

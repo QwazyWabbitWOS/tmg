@@ -256,12 +256,10 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 
 		// print level name & header
 		Com_sprintf(string, sizeof string,
-			//"xv 0 yv -100 cstring2 \"%s\" "
 			"xv 0 yv -90 cstring2 \"MAP: %s\" "
 			"xv 0 yv -70 cstring2 \"%s %s\" "
-			//"xv 20 yv -60 string2 \"Longest\" "
 			"xv -130 yv -50 string2 \"Kills Ping FPH Time Spree Name \"",
-			/*hostname->string,*/ level.mapname, MOD, MOD_VERSION);
+			level.mapname, MOD, MOD_VERSION);
 
 		len = strlen(string);
 
@@ -404,7 +402,7 @@ void Cmd_Score_f (edict_t *ent)
 		ent->client->showhighscores = false;
 	}
 
-	//QW// this block may be obsolete on r1q2 server
+	//QW// this code may be obsolete on r1q2/q2pro servers
 	//RAV
 	// do not update twice prevent netchan bug, overflows
 	if (ent->client->resp.menu_time == level.framenum)
