@@ -173,6 +173,7 @@
     <None Include="GNUmakefile" />
     <None Include="Statistics Log.txt" />
     <None Include="Variables.txt" />
+    <None Include="..\.travis.yml" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="anticheat.h">
