@@ -856,11 +856,6 @@ qboolean G_ClientInGame(edict_t *ent)
  */
 
 
-#ifdef _WIN32
-#pragma warning(push)
-#pragma warning(disable : 4706) // assignment within conditional expression
-#endif
-
 //QW//
 /**
  Replace characters in destination string.
@@ -873,17 +868,13 @@ qboolean G_ClientInGame(edict_t *ent)
 // Cover both line endings in case Windows file ends up on *nix server.
 void convert_string(char *src, char start, char end, char add, char *dest)
 {
-	while ((*dest = *src))
+	while ((*dest = *src) != 0)
 	{
 		if ( (*dest >= start) && (*dest <= end) && (*dest != '\n') && (*dest != '\r') )
 			*dest += add;
 		src++; dest++;
 	}
 }
-
-#ifdef _WIN32
-#pragma warning(pop)
-#endif
 
 /**
  Set msb in specified string characters, copying them to destination. 
