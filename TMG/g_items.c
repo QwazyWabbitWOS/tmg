@@ -100,17 +100,27 @@ gitem_t	*FindItem (char *pickup_name)
  */
 void DoRespawn (edict_t *ent)
 {
-	edict_t	*e;
-	int	i;
+	if (ent == NULL)
+	{
+		gi.dprintf("NULL ent passed to %s\n", __func__);
+		return;
+	}
 
-	assert(ent != NULL);
-	if (ent && ent->team)
+	if (ent->team)
 	{
 		edict_t	*master;
-		int	count;
-		int choice;
+		unsigned	count;
+		unsigned	choice;
+
+		if (ent == NULL)
+		{
+			gi.dprintf("NULL ent passed to %s\n", __func__);
+			return;
+		}
 
 		master = ent->teammaster;
+		if (master == NULL)
+			return;
 
 		//ZOID
 		// in ctf, when we are weapons stay, only the master
@@ -122,43 +132,45 @@ void DoRespawn (edict_t *ent)
 			ent = master;
 		else 
 		{
-			//ZOID
-			for (count = 0, ent = master; ent; ent = ent->chain, count++)
-				;
+			count = 0;
+			for (ent = master; ent; ent = ent->chain)
+				count++;
 
 			assert(count != 0);
 			choice = rand() % count;
 
-			assert(ent != NULL);
-			for (count = 0, ent = master; count < choice; ent = ent->chain, count++)
-				;
+			count = 0;
+			for (ent = master; count < choice; ent = ent->chain)
+				count++;
 		}
 	}
 
-	assert(ent != NULL);
-	ent->svflags &= ~SVF_NOCLIENT;
-	ent->solid = SOLID_TRIGGER;
-	gi.linkentity (ent);
-
-	if (Q_stricmp(ent->classname, "item_quad") == 0 && ((int)quad_notify->value & QUAD_NOTIFY_SPAWN))
+	if (ent)
 	{
-		//		gi.dprintf("a quad damage was spawned\n");
-		for (i = 1; i <= maxclients->value; i++)
+		ent->svflags &= ~SVF_NOCLIENT;
+		ent->solid = SOLID_TRIGGER;
+		gi.linkentity(ent);
+
+		if (Q_stricmp(ent->classname, "item_quad") == 0 && ((int)quad_notify->value & QUAD_NOTIFY_SPAWN))
 		{
-			e = g_edicts + i;
-			if (e && e->inuse && !e->bot_client)
+			//		gi.dprintf("a quad damage was spawned\n");
+			for (int i = 1; i <= maxclients->value; i++)
 			{
-				//				safe_centerprintf(e, "A quad damage has been spawned!\n");
-				gi.sound (e, CHAN_AUTO, gi.soundindex ("items/quadspwn.wav"), 1, ATTN_NONE, 0);
+				edict_t* e = g_edicts + i;
+				if (e && e->inuse && !e->bot_client)
+				{
+					//				safe_centerprintf(e, "A quad damage has been spawned!\n");
+					gi.sound(e, CHAN_AUTO, gi.soundindex("items/quadspwn.wav"), 1, ATTN_NONE, 0);
+				}
 			}
 		}
+
+		if (ent->classname[0] == 'R')
+			return;
+
+		// send an effect
+		ent->s.event = EV_ITEM_RESPAWN;
 	}
-
-	if(ent->classname[0] == 'R')
-		return;
-
-	// send an effect
-	ent->s.event = EV_ITEM_RESPAWN;
 }
 
 void SetRespawn (edict_t *ent, float delay)
