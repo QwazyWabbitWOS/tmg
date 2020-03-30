@@ -3696,7 +3696,7 @@ static void CTFSay_Team_Health(edict_t *who, char *buf)
 	if (who->health <= 0)
 		strcpy(buf, "dead");
 	else
-		Com_sprintf(buf, sizeof buf, "%i health", who->health);
+		sprintf(buf, "%i health", who->health);
 }
 
 static void CTFSay_Team_Tech(edict_t *who, char *buf)
@@ -3715,7 +3715,7 @@ static void CTFSay_Team_Tech(edict_t *who, char *buf)
 			{
 				if ((rune = FindItem(rune_namefornum[i])) != NULL &&
 					who->client->pers.inventory[ITEM_INDEX(rune)])
-					Com_sprintf(buf, sizeof buf, "the %s", rune->pickup_name);
+					sprintf(buf, "the %s", rune->pickup_name);
 				return;
 			}
 		}
@@ -3727,8 +3727,8 @@ static void CTFSay_Team_Tech(edict_t *who, char *buf)
 		if ((tech = FindItemByClassname(tnames[i])) != NULL &&
 			who->client->pers.inventory[ITEM_INDEX(tech)]) 
 		{
-				Com_sprintf(buf, sizeof buf, "the %s", tech->pickup_name);
-				return;
+			sprintf(buf, "the %s", tech->pickup_name);
+			return;
 		}
 		i++;
 	}
@@ -3791,13 +3791,12 @@ static void CTFSay_Team_Sight(edict_t *who, char *buf)
 
 void CTFSay_Team(edict_t *who, char *msg)
 {
-	char outmsg[1024];
-	char buf[1024];
+	char outmsg[1024] = { 0 };
+	char buf[1024] = { 0 };
 	int i;
 	char *p;
 	edict_t *cl_ent;
 	char msg2[1024];
-	outmsg[0] = 0;
 
 	if(who->is_muted)
 		return;
@@ -3818,40 +3817,34 @@ void CTFSay_Team(edict_t *who, char *msg)
 	{
 		if (*msg == '%')
 		{
-			switch (*++msg)
+			switch (tolower(*++msg))
 			{
 			case 'l' :
-			case 'L' :
 				CTFSay_Team_Location(who, buf);
 				strcpy(p, buf);
 				p += strlen(buf);
 				break;
 			case 'a' :
-			case 'A' :
 				CTFSay_Team_Armor(who, buf);
 				strcpy(p, buf);
 				p += strlen(buf);
 				break;
 			case 'h' :
-			case 'H' :
 				CTFSay_Team_Health(who, buf);
 				strcpy(p, buf);
 				p += strlen(buf);
 				break;
 			case 't' :
-			case 'T' :
 				CTFSay_Team_Tech(who, buf);
 				strcpy(p, buf);
 				p += strlen(buf);
 				break;
 			case 'w' :
-			case 'W' :
 				CTFSay_Team_Weapon(who, buf);
 				strcpy(p, buf);
 				p += strlen(buf);
 				break;
 			case 'n' :
-			case 'N' :
 				CTFSay_Team_Sight(who, buf);
 				strcpy(p, buf);
 				p += strlen(buf);
