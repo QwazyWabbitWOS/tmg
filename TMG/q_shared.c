@@ -1180,8 +1180,13 @@ static char	bigbuffer[0x10000];  //QW// For Com_sprintf
 
 /**
  Safer, uses large buffer
+ //QW// The big buffer allows us to safely dump
+ its contents to the log if the resulting format string
+ exceeds the size expected by the calling function.
+ This way we can see if this was a bug or possibly
+ malicious input.
 */
-void Com_sprintf(char *dest, int size, char *fmt, ...)
+void Com_sprintf(char* dest, int size, char* fmt, ...)
 {
 	int		len;
 	va_list		argptr;
@@ -1193,7 +1198,7 @@ void Com_sprintf(char *dest, int size, char *fmt, ...)
 		strncpy(dest, bigbuffer, size - 1);
 	else
 	{
-		Sys_Error("ERROR! %s: destination buffer overflow of len %i, size %i\n"
+		Com_Printf("ERROR! %s: destination buffer overflow of len %i, size %i\n"
 			"Input was: %s", __func__, len, size, bigbuffer);
 	}
 }
