@@ -12,7 +12,7 @@ extern float myrandom;
 // Bot cvar declarations
 extern	cvar_t  *use_bots;
 extern	cvar_t	*bot_num;
-extern	cvar_t	*bot_free_clients;
+extern	cvar_t	*bot_free_clients; // Default: 2, controls bot/player replacement
 extern	cvar_t	*bot_insult;
 extern	cvar_t	*bot_chat;
 extern	cvar_t	*bot_camptime;
