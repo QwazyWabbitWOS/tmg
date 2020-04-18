@@ -6854,11 +6854,11 @@ void CTFSetupNavSpawn(void)
 			gi.dprintf("Error reading chainfile code in %s\n", __func__);
 		}
 		if (!ctf->value || use_navfiles->value) {
-			strncpy(SRCcode, "3ZBRGDTM", 8);
+			memcpy(SRCcode, "3ZBRGDTM", 8);
 			SRCcode[8] = 0;
 		}
 		else {
-			strncpy(SRCcode, "3ZBRGCTF", 8);
+			memcpy(SRCcode, "3ZBRGCTF", 8);
 			SRCcode[8] = 0;
 		}
 
