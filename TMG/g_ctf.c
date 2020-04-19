@@ -682,7 +682,7 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 	else
 		count -= 2;
 
-	selection = rand() % count;
+	selection = count ? rand() % count : 0;
 	spot = NULL;
 	if(debug_spawn->value)
 		DbgPrintf("5 %s count = %d\n", __func__, count);
