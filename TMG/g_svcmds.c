@@ -15,7 +15,7 @@ void Move_LastRouteIndex(void)
 		else if(!Route[i].index)
 			break;
 	}
-	assert(i >= 0);
+
 	if(!CurrentIndex || !Route[i].index)
 		CurrentIndex = i;
 	else
