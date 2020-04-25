@@ -286,7 +286,7 @@ void InitGame (void)
 	speed_set = gi.cvar ("speed_set", "75", 0);
 	speed_bust = gi.cvar ("speed_bust", "200", 0);
 
-	// configurable railun reload time, damage and kick
+	// configurable railgun reload time, damage and kick
 	railwait = gi.cvar("railwait", "12", CVAR_LATCH);	// the reload frame number passed to Weapon_Generic
 	raildamage = gi.cvar ("raildamage", "300", CVAR_LATCH);
 	railkick = gi.cvar ("railkick", "200", CVAR_LATCH);
