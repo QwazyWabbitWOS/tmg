@@ -393,7 +393,7 @@ void ED_ParseField (char *key, char *value, edict_t *ent)
 			return;
 		}
 	}
-	gi.dprintf ("%s is not a field\n", key);
+	gi.dprintf ("'%s' is not a field\n", key);
 }
 
 /*

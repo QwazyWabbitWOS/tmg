@@ -65,7 +65,10 @@ field_t fields[] = {
 	{"maxyaw", STOFS(maxyaw), F_FLOAT, FFL_SPAWNTEMP},
 	{"minpitch", STOFS(minpitch), F_FLOAT, FFL_SPAWNTEMP},
 	{"maxpitch", STOFS(maxpitch), F_FLOAT, FFL_SPAWNTEMP},
-	{"nextmap", STOFS(nextmap), F_LSTRING, FFL_SPAWNTEMP}
+	{"nextmap", STOFS(nextmap), F_LSTRING, FFL_SPAWNTEMP},
+
+	{NULL, 0, 0, 0}	// End of list. ED_ParseField relies on this marker. (f->name)
+
 };
 
 // -------- just for savegames ----------
