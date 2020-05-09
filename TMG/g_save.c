@@ -67,7 +67,7 @@ field_t fields[] = {
 	{"maxpitch", STOFS(maxpitch), F_FLOAT, FFL_SPAWNTEMP},
 	{"nextmap", STOFS(nextmap), F_LSTRING, FFL_SPAWNTEMP},
 
-	{NULL, 0, 0, 0}	// End of list. ED_ParseField relies on this marker. (f->name)
+	{0, 0, 0, 0}	// End of list. ED_ParseField relies on this marker. (f->name)
 
 };
 
@@ -217,11 +217,11 @@ void InitGame (void)
 
 	g_select_empty = gi.cvar ("g_select_empty", "0", CVAR_ARCHIVE);
 
-	run_pitch = gi.cvar ("run_pitch", "0.002", 0);
-	run_roll = gi.cvar ("run_roll", "0.005", 0);
-	bob_up  = gi.cvar ("bob_up", "0.005", 0);
-	bob_pitch = gi.cvar ("bob_pitch", "0.002", 0);
-	bob_roll = gi.cvar ("bob_roll", "0.002", 0);
+	run_pitch	= gi.cvar ("run_pitch", "0.002", 0);
+	run_roll	= gi.cvar ("run_roll",	"0.005", 0);
+	bob_up		= gi.cvar ("bob_up",	"0.005", 0);
+	bob_pitch	= gi.cvar ("bob_pitch", "0.002", 0);
+	bob_roll	= gi.cvar ("bob_roll",	"0.002", 0);
 
 	//chain edit flag
 	chedit = gi.cvar ("chain", "0", CVAR_LATCH);
