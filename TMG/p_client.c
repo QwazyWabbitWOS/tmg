@@ -1065,19 +1065,13 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 	memset(self->client->pers.inventory, 0, sizeof(self->client->pers.inventory));
 
 	// minimal gibs if railserver
-	if (self->health <= -40 || voosh->value)
+	if (self->health <= -20 || voosh->value)
 	{	// gib
 		gi.sound (self, CHAN_BODY, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
 		for (n = 0; n < 3; n++)
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
 
-		//QW// This sets an empty player model. 
-		gi.setmodel(self, "");
-		//QW// generates no such oldframe in some clients
-		//gi.setmodel(self, "models/objects/gibs/sm_meat/tris.md2");
-		//ThrowClientHead (self, damage); // Removed to stop bots from lerping //QW//
-		self->client->anim_priority = ANIM_DEATH;
-		self->client->anim_end = 0;
+		ThrowClientHead(self, damage);
 		self->takedamage = DAMAGE_NO;
 	}
 	else
@@ -2430,16 +2424,16 @@ void ClientPrintMOTD (edict_t *ent)
 	char *s1 = MOD" "MOD_VERSION"\n\n";
 	char s2[64]; // gi.centerprintf can handle max. 40 char. per line
 	char *s3 = "Bind a key to +hook for Hook\n\n";
-	size_t len1, len2, len3;
+	int len1, len2, len3;
 	char *p2 = s2;
 
 	if (!gMOTD) /* It's my first time. */
 	{
 		Com_sprintf(s2, sizeof s2, "%s\n\n", hostname->string);
 
-		len1 = strlen(s1);
-		len2 = strlen(s2);
-		len3 = strlen(s3);
+		len1 = (int)strlen(s1);
+		len2 = (int)strlen(s2);
+		len3 = (int)strlen(s3);
 
 		if(len2 >= 40)
 		{

@@ -336,7 +336,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 					Com_sprintf (entry, sizeof entry,
 						"xv 2 yv %i string \"%s\"",
 						i * 8 + 24, line);
-					j = strlen(entry);
+					j = (int)strlen(entry);
 					if (stringlength + j > 1400)
 						break;
 					strcpy (string + stringlength, entry);
@@ -345,7 +345,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 				}
 
 				fclose(hs_file);
-				j = strlen(entry);
+				j = (int)strlen(entry);
 				if (stringlength + j < 1400)
 				{
 					strcpy (string + stringlength, entry);
@@ -362,7 +362,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 		string[0] = 0;
 		stringlength = strlen(string);
 		Com_sprintf (entry, sizeof entry, ShowHud(ent));
-		j = strlen(entry);
+		j = (int)strlen(entry);
 		if (!(stringlength + j > 1400))
 		{
 			strcpy (string + stringlength, entry);

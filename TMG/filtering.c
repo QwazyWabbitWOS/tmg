@@ -371,7 +371,7 @@ void LoadTextFilterInfo(void)
 	// Iterate through the file and save the filter strings.
 	while ( NULL != fgets_endws( szLineBuffer, sizeof(szLineBuffer), f) )
 	{
-		size_t	nLength;
+		int nLength;
 		char *psz;
 
 		// Ignore any line which does not begin with "="
@@ -379,7 +379,7 @@ void LoadTextFilterInfo(void)
 			continue;
 
 		// Allocate space to store the string.
-		nLength = strlen( szLineBuffer);
+		nLength = (int)strlen( szLineBuffer);
 
 		if ( NULL == (psz = (char*) gi.TagMalloc( nLength, TAG_GAME)) )
 		{

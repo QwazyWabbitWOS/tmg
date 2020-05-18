@@ -466,7 +466,7 @@ void Load_BotInfo(void)
 				goto MESS_NOTFOUND;
 			if(Buff[0] == '.' || Buff[0] == '[' || Buff[0] == '#')
 				break;
-			k = strlen(Buff);
+			k = (int)strlen(Buff);
 			if((strlen(Buff) + strlen(ClientMessage)) > MAX_STRING_CHARS - 1)
 				break;
 			strcat(ClientMessage, Buff);
