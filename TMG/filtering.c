@@ -20,7 +20,7 @@
  */
 static void Strcpyn(char *pszDest, const char *pszSrc, int nDestSize)
 {
-	strncpy( pszDest, pszSrc, nDestSize);
+	strncpy( pszDest, pszSrc, nDestSize - 1);
 	pszDest[nDestSize-1] = '\0';
 }
 
