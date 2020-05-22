@@ -758,7 +758,7 @@ void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker)
 		// Log Flag Carrier Frag
 		StatsLog("FLAG: %s\\%s\\%s\\%.0f\\%.1f\n", 
 			attacker->client->pers.netname, targ->client->pers.netname,
-			"FC Frag", CTF_FRAG_CARRIER_BONUS, level.time);
+			"FC_Frag", CTF_FRAG_CARRIER_BONUS, level.time);
 
 		// the the target had the flag, clear the hurt carrier
 		// field on the other team
@@ -786,7 +786,7 @@ void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker)
 		// Log Flag Danger Carrier Protect Frag
 		StatsLog("PROT: %s\\%s\\%d\\%.1f\n", 
 			attacker->client->pers.netname,
-			"FC Def", CTF_CARRIER_DANGER_PROTECT_BONUS, level.time );
+			"FC_Def", CTF_CARRIER_DANGER_PROTECT_BONUS, level.time );
 		return;
 	}
 
@@ -854,7 +854,7 @@ void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker)
 		// Log Flag Defense
 		StatsLog( "FLAG: %s\\%s\\%s\\%.0f\\%.1f\n", 
 			attacker->client->pers.netname, targ->client->pers.netname,
-			"F Def", CTF_FLAG_DEFENSE_BONUS, level.time );
+			"F_Def", CTF_FLAG_DEFENSE_BONUS, level.time );
 		return;
 	}
 
@@ -875,7 +875,7 @@ void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker)
 			// Log Flag Carrier Protect Frag
 			StatsLog("FLAG: %s\\%s\\%s\\%.0f\\%.1f\n", 
 				attacker->client->pers.netname, targ->client->pers.netname,
-				"FC Def", CTF_CARRIER_PROTECT_BONUS, level.time );
+				"FC_Def", CTF_CARRIER_PROTECT_BONUS, level.time );
 			return;
 		}
 	}
@@ -1032,7 +1032,7 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 					// Log Flag Capture
 					StatsLog("CAPT: %s\\%d\\%s\\%.0f\\%.1f\\%.1f\n",
 						other->client->pers.netname, other->client->resp.ctf_team,
-						"F Capture", CTF_CAPTURE_BONUS, held_time, level.time);
+						"F_Capture", CTF_CAPTURE_BONUS, held_time, level.time);
 
 					other->client->pers.inventory[ITEM_INDEX(enemy_flag_item)] = 0;
 					ctfgame.last_flag_capture = level.time;
@@ -1063,7 +1063,7 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 								// Log Flag Capture Team Score
 								StatsLog("TEAM: %s\\%s\\%.0f\\%.1f\n",
 									player->client->pers.netname,
-									"Team Score", CTF_TEAM_BONUS, level.time);
+									"Team_Score", CTF_TEAM_BONUS, level.time);
 							}
 							//end
 							// award extra points for capture assists
@@ -1077,7 +1077,7 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 								// Log Flag Capture Team Score
 								StatsLog("ASST: %s\\%s\\%.0f\\%.1f\n",
 									player->client->pers.netname,
-									"F Return Assist",
+									"F_Return_Assist",
 									CTF_RETURN_FLAG_ASSIST_BONUS,
 									level.time);
 							}
@@ -1092,7 +1092,7 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 								// Log Flag Capture Team Score
 								StatsLog("ASST: %s\\%s\\%.0f\\%.1f\n",
 									player->client->pers.netname,
-									"FC Frag Assist",
+									"FC_Frag_Assist",
 									CTF_FRAG_CARRIER_ASSIST_BONUS,
 									level.time);
 							}
@@ -1115,7 +1115,7 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 		StatsLog("FLAG: %s\\%d\\%s\\%.0f\\%.1f\n",
 			other->client->pers.netname,
 			other->client->resp.ctf_team,
-			"F Return",
+			"F_Return",
 			CTF_RECOVERY_BONUS,
 			level.time);
 
@@ -1137,7 +1137,7 @@ qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 	StatsLog("FLAG: %s\\%d\\%s\\%.0f\\%.1f\n",
 		other->client->pers.netname,
 		other->client->resp.ctf_team,
-		"F Pickup",
+		"F_Pickup",
 		CTF_FLAG_BONUS,
 		level.time);
 
