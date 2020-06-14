@@ -447,8 +447,9 @@ void InitGame (void)
 	oplistBase = gi.TagMalloc (64 * sizeof(oplist_t), TAG_GAME);
 	oplist = oplistBase + 1;
 
-	//QW// Set these for debugging output
+	//QW// Set these for various debugging output
 	debug_spawn = gi.cvar ("debug_spawn", "0", 0);
+	debug_bots = gi.cvar("debug_bots", "0", 0);
 	debug_botspawn = gi.cvar ("debug_botspawn", "0", 0);
 	debug_ops = gi.cvar ("debug_ops", "0", 0);
 

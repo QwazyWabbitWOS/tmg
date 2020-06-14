@@ -257,6 +257,7 @@ cvar_t	*grapple_damage;
 
 /* Debugging options */
 cvar_t	*debug_spawn;
+cvar_t	*debug_bots;
 cvar_t	*debug_botspawn;
 cvar_t	*debug_ops;
 

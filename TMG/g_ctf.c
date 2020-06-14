@@ -514,7 +514,7 @@ void CTFAssignSkin(edict_t *ent, char *s)
 	else
 		Com_sprintf(t, sizeof(t), "male/");
 
-	if ((p = strrchr(t, '/')) != NULL)
+	if ((p = strchr(t, '/')) != NULL)
 	{
 		p[1] = 0;
 		if (strlen(t) <= 1)

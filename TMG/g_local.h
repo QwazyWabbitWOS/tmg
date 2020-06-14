@@ -5,6 +5,8 @@
 #ifndef G_LOCAL_H
 #define G_LOCAL_H
 
+#define _CRT_SECURE_NO_WARNINGS 1
+
 #ifdef _WIN32
   #define WIN32_LEAN_AND_MEAN	//non-MFC
   #include <windows.h>
@@ -31,7 +33,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.50"
+#define MOD_VERSION "0.2.51"
 #define MOD "TMG_MOD"
 
 #ifndef _DEBUG
@@ -776,9 +778,10 @@ extern	cvar_t	*grapple_pullspeed;
 extern	cvar_t	*grapple_damage;
 
 /* Debugging options */
-extern	cvar_t	*debug_spawn;
-extern	cvar_t	*debug_botspawn;
-extern	cvar_t	*debug_ops;
+extern	cvar_t* debug_spawn;
+extern	cvar_t* debug_bots;		//QW// for debugging bot code
+extern	cvar_t* debug_botspawn;
+extern	cvar_t* debug_ops;
 
 /* ops can select server configurations */
 extern	cvar_t *ctf_cfg_file;
