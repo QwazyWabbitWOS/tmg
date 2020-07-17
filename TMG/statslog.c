@@ -146,7 +146,7 @@ void StatsLogFlush(void)
 /*
 QwazyWabbit added 09/16/2016.
 This function writes backslash-delimited hook stats to the log file.
-For performance reasons, counters are incremented in the hook_think function 
+For performance reasons, counters are incremented in the hook_touch function 
 rather than calling a logging function every time a player launches a hook. 
 Calling this function in BeginIntermission grabs the counter values before
 they're cleared by PutClientInServer on the next level change.
