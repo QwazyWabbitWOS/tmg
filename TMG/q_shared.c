@@ -1031,11 +1031,11 @@ Parse a token out of a string.
 Handles C and C++ comments.
 ==============
 */
-char* COM_Parse(const char** data_p)
+char* COM_Parse(char** data_p)
 {
 	int         c;
 	int         len;
-	const char* data;
+	char* data;
 	char* s = com_token[com_tokidx++ & 3];
 
 	data = *data_p;
