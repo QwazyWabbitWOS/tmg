@@ -203,7 +203,7 @@ static int Bot_SearchEnemy (edict_t *ent)
 			if(Bot_traceS(ent,trent))
 			{
 				VectorSubtract (trent->s.origin, ent->s.origin, trmin);
-			
+
 				if(ctf->value && ent->client->resp.ctf_team == trent->client->resp.ctf_team)
 				{
 					//have flag
@@ -632,8 +632,8 @@ static void Bot_SearchItems (edict_t *ent)
 						if(ent->client->pers.inventory[ITEM_INDEX(Fdi_CELLS/*FindItem("Cells")*/)]
 											< ent->client->pers.max_cells) target = trent;
 					}
-				
-				
+
+
 				}
 				else if(entcln[0] == 'w')
 				{
@@ -685,7 +685,7 @@ static void Bot_SearchItems (edict_t *ent)
 							&& (!ent->client->pers.inventory[ITEM_INDEX(Fdi_RAILGUN/*FindItem("Railgun")*/)]
 							|| trent->spawnflags & (DROPPED_ITEM | DROPPED_PLAYER_ITEM)))) target = trent;
 					}
-				
+
 					else if(entcln[7] == 'b')					//weapon_bfg
 					{
 						if(!wstayf || (wstayf
@@ -1048,7 +1048,7 @@ int Bot_moveT(edict_t *ent, float ryaw, vec3_t pos, float dist, float *bottom)
 		VectorCopy(pos, trend);
 		trend[2] += 28;
 		rs_trace = gi.trace(pos, trmin, trmax, trend, ent, tcontents);
-		
+
 		if (!rs_trace.allsolid && !rs_trace.startsolid && rs_trace.fraction == 1.0)
 		{
 			if (Bot_ExploAvoid(ent, pos))
@@ -1058,7 +1058,7 @@ int Bot_moveT(edict_t *ent, float ryaw, vec3_t pos, float dist, float *bottom)
 			}
 			return false;
 		}
-		
+
 		if (Bot_ExploAvoid(ent, pos))
 		{
 			if (!CheckLaser(pos, trmax, trmin))
@@ -1086,8 +1086,8 @@ int Bot_moveT(edict_t *ent, float ryaw, vec3_t pos, float dist, float *bottom)
 		*bottom = rs_trace.endpos[2] - ent->s.origin[2];
 
 		if (/* DISABLES CODE */ (0)
-			/*rs_trace.fraction != 1.0 && 
-			rs_trace.plane.normal[2] < 0.7 && 
+			/*rs_trace.fraction != 1.0 &&
+			rs_trace.plane.normal[2] < 0.7 &&
 			ent->waterlevel < 2 && ent->groundentity*/)
 		{
 			i = Get_vec_yaw(rs_trace.plane.normal, ryaw);
@@ -1099,7 +1099,7 @@ int Bot_moveT(edict_t *ent, float ryaw, vec3_t pos, float dist, float *bottom)
 			{
 				/*if(ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 					gi.bprintf(PRINT_HIGH,"apoo2\n");
-				if(ent->client->zc.waterstate == WAS_FLOAT && 
+				if(ent->client->zc.waterstate == WAS_FLOAT &&
 					ryaw == ent->client->zc.moveyaw)
 						gi.bprintf(PRINT_HIGH,"apooX\n"); */
 				return false;
@@ -1492,7 +1492,7 @@ void Set_Combatstate(edict_t *ent,int foundedenemy)
 
 	if(!(client->zc.zccmbstt & CTS_ENEM_NSEE))
 		Combat_Level0(ent,foundedenemy,enewep,aim,distance,combskill);
-	else if(client->zc.zccmbstt & FIRE_REFUGE) 
+	else if(client->zc.zccmbstt & FIRE_REFUGE)
 		Combat_Level0(ent,foundedenemy,enewep,aim,distance,combskill);
 	else Combat_LevelX(ent,foundedenemy,enewep,aim,distance,combskill);
 
@@ -2284,7 +2284,7 @@ float Get_pitch1 (vec3_t vec)
 		if(asin((double) out[0]) < 0 ) pitch *= -1;
 
 		pitch -= 90;
-		if(pitch < -180) 
+		if(pitch < -180)
 		pitch += 360;
 
 		return pitch;
@@ -2324,7 +2324,7 @@ void Bots_Move_NORM (edict_t *ent)
 	edict_t		*it_ent = NULL;
 	gitem_t		*it = NULL;
 
-	//QW// unused 
+	//QW// unused
 	//edict_t		*front;
 	//edict_t		*left;
 	//edict_t		*right;
@@ -2352,24 +2352,24 @@ void Bots_Move_NORM (edict_t *ent)
 	myrandom = random();
 	//--------------------------------------------------------------------------
 
-	/*	
+	/*
 	The original bot modules were in a cascade dll
 	so the usual client commands were not available
 	to the bots. Since this is now inside the game
-	I'm using the Respawn function here to see if we 
-	get better results on the spawn-death bug. 
+	I'm using the Respawn function here to see if we
+	get better results on the spawn-death bug.
 	This is temporary unless proven beneficial. QW
 	*/
-	
+
 	//Solid Check
 //    if (!(ent->deadflag) && InsideWall(ent))
 ////	if (!(ent->deadflag) && gi.pointcontents (ent->s.origin) & CONTENTS_SOLID)
 //	{
 //		if(debug_botspawn->value)
-//			DbgPrintf("%s found %s %s in map %s\n%f %f %f\n", __func__, 
+//			DbgPrintf("%s found %s %s in map %s\n%f %f %f\n", __func__,
 //			ent->client->pers.netname, "positioned inside wall", level.mapname,
 //				ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
-//		
+//
 //		Respawn(ent, false);
 //		ent->nextthink = level.time + FRAMETIME * 10;
 //		return;
@@ -2381,14 +2381,14 @@ void Bots_Move_NORM (edict_t *ent)
 		{
 			VectorCopy(ent->s.origin,v);
 //			v[2] -= GROUND_TEST_EPSILON;
-//			rs_trace = gi.trace(ent->s.origin,ent->mins,ent->maxs,v,ent,MASK_BOTGROUND);		
+//			rs_trace = gi.trace(ent->s.origin,ent->mins,ent->maxs,v,ent,MASK_BOTGROUND);
 			v[2] -= 1.0;
 			rs_trace = gi.trace(ent->s.origin,ent->mins,ent->maxs,v,ent,MASK_BOTSOLIDX);
-			if(!rs_trace.allsolid && !rs_trace.startsolid) 
+			if(!rs_trace.allsolid && !rs_trace.startsolid)
 				ent->groundentity = rs_trace.ent;
 		}
 	}
-	
+
 	// chill out for a bit if just pushed
 //	if ((ent->client->zc.push_time > 0)
 //		&& (((ent->groundentity == NULL) && (ent->client->zc.push_time + BOT_PUSH_IDLE_TIME_AIR) > level.time)
@@ -2406,7 +2406,7 @@ void Bots_Move_NORM (edict_t *ent)
 //			// occasionally becoming stuck. :/
 //			qboolean move_regardless = (ent->groundentity != NULL) && (random() >= 0.80);
 //			if (!move_regardless) {
-//			
+//
 //				gi.linkentity(ent);
 //				G_TouchTriggers(ent);
 //
@@ -4383,7 +4383,7 @@ DCHCANC:// keep squatting
 			if(/*!k &&*/ zc->waitin_obj->moveinfo.state == PSTATE_UP
 			   || zc->waitin_obj->moveinfo.state == PSTATE_BOTTOM) k = true;
 
-			if(zc->waitin_obj->moveinfo.state == PSTATE_BOTTOM) 
+			if(zc->waitin_obj->moveinfo.state == PSTATE_BOTTOM)
 				plat_go_up (zc->waitin_obj);
 
 			if(zc->route_trace)
@@ -4393,7 +4393,7 @@ DCHCANC:// keep squatting
 			}
 		}
 		//have target
-		if(/*j ||*/ k != true)
+		if(/*j ||*/ k != 1)
 		{
 			if(k == 2) zc->zcstate |= STS_W_DONT;
 			else
@@ -5376,7 +5376,7 @@ GOMOVE:
 				else k = 2;
 			}
 
-			if(k == true) Get_WaterState(ent);
+			if(k == 1) Get_WaterState(ent);
 			if(zc->route_trace && v[2] == ent->s.origin[2]) k = 3;
 
 			if((!ent->groundentity && !zc->waterstate && k && ent->velocity[2] < 1)
@@ -5970,7 +5970,7 @@ VCHCANSEL_L:
 	else if(ent->s.angles[PITCH] > 29) ent->s.angles[PITCH] = 29;
 
 	//--------------------------------------------------------------------------------------
-	
+
 	//ZOID
 	if (ent->client->ctf_grapple)
 	{
@@ -5987,12 +5987,12 @@ VCHCANSEL_L:
 			else if(VectorCompare(ent->s.origin,ent->s.old_origin))
 			{
 				ent->velocity[2] +=  JumpMax;//ent->gravity * sv_gravity->value * FRAMETIME * 4;
-				
+
 				if(ent->client->ctf_grapplestate == CTF_GRAPPLE_STATE_PULL)
 				{
 					VectorSubtract(ent->s.origin,e->s.origin,v);
 					yaw = Get_yaw(v);
-					
+
 					yaw = yaw * M_PI * 2 / 360;
 					ent->velocity[0] += cos(yaw) * 200 ;				//start
 					ent->velocity[1] += sin(yaw) * 200 ;
@@ -6007,24 +6007,24 @@ VCHCANSEL_L:
 		else if(ent->waterlevel && !ent->groundentity && ent->velocity[2] < 0) VectorClear(ent->velocity);//ent->velocity[2] = 0;
 	}
 	//ZOID
-	
+
 	/*
 	 ent->velocity[0] = 800 * (random() - 0.5);
 	 ent->velocity[1] = 800 * (random() - 0.5);
-	 
+
 	 ent->client->ps.pmove.pm_flags |= PMF_DUCKED;
 	 */
 	ent->client->zc.trapped = false;		//trapcatch clear
-	
+
 	gi.linkentity (ent);
 	G_TouchTriggers (ent);
-	
+
 	ent->client->zc.trapped = false;
-	
-	// Bot chatting 
+
+	// Bot chatting
 	if(bot_chat->value)
 		RandomChat(ent);
-	
+
 }
 
 #ifdef _WIN32
