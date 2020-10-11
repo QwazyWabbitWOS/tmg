@@ -3721,7 +3721,7 @@ static void CTFSay_Team_Tech(edict_t *who, char *buf)
 		}
 	}
 
-	//FIXME: what is value of i here? need to reset to 0?
+	i = 0; //QW// Fixed initialization.
 	while (tnames[i])
 	{
 		if ((tech = FindItemByClassname(tnames[i])) != NULL &&
