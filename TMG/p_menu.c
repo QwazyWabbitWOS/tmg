@@ -214,66 +214,68 @@ void PMenu_Select(edict_t *ent)
 		p->SelectFunc(ent, p);
 }
 
-int WFMenuFromNumberKey(edict_t *ent, int slot)
-{
-	pmenuhnd_t *hnd;
-	pmenu_t *p;
-	int i;
-	int pos;
-
-	if (!ent->client->menu) {
-		gi.dprintf("warning:  ent has no menu\n");
-		return 0;
-	}
-
-	hnd = ent->client->menu;
-
-	if (hnd->cur < 0)
-		return 0; // no selectable entries
-
-
-	for (i = 0, pos = 0; (i < hnd->num) && (ent->client->menu); ++i)
-	{
-//DEBUGGING MEMORY PROBLEM-GREGG
-#ifdef DEBUG_NT
-		if (_CrtIsValidPointer(hnd, sizeof(pmenuhnd_t), true) != true)
-		{
-			gi.dprintf("Bad Menu Handle in p_menu (2)\n");
-			return 0;
-		}
-#endif
-//DEBUGGING MEMORY PROBLEM-GREGG
-
-		if (!ent->client->menu) return 0;
-
-		//Pick next menu item
-		p = hnd->entries + i;
-
-		//Increment position for selectable items
-		if ( (p) && p->SelectFunc) 
-		{
-			++pos;
-
-			//Did we find it?
-			if (pos == slot) 
-			{
-				//Execute the function
-				p->SelectFunc(ent, p);
-				return 1;
-			}
-		}
-		if (!ent->client->menu) return 0;
-
-//DEBUGGING MEMORY PROBLEM-GREGG
-#ifdef TARGET_NT
-		if (_CrtIsValidPointer(hnd, sizeof(pmenuhnd_t), 1) != 1)
-		{
-			gi.dprintf("Bad Menu Handle in p_menu (2)\n");
-			return 0;
-		}
-#endif
-//DEBUGGING MEMORY PROBLEM-GREGG
-
-	}
-	return 1;
-}
+//QW// Scheduled for deletion (unused function)
+//int WFMenuFromNumberKey(edict_t *ent, int slot)
+//{
+//	pmenuhnd_t *hnd;
+//	pmenu_t *p;
+//	int i;
+//	int pos;
+//
+//	if (!ent->client->menu) {
+//		gi.dprintf("warning:  ent has no menu\n");
+//		return 0;
+//	}
+//
+//	hnd = ent->client->menu;
+//
+//	if (hnd->cur < 0)
+//		return 0; // no selectable entries
+//
+//
+//	for (i = 0, pos = 0; (i < hnd->num) && (ent->client->menu); ++i)
+//	{
+////DEBUGGING MEMORY PROBLEM-GREGG
+//#ifdef DEBUG_NT
+//		if (_CrtIsValidPointer(hnd, sizeof(pmenuhnd_t), true) != true)
+//		{
+//			gi.dprintf("Bad Menu Handle in p_menu (2)\n");
+//			return 0;
+//		}
+//#endif
+////DEBUGGING MEMORY PROBLEM-GREGG
+//
+//		if (!ent->client->menu)
+//			return 0;
+//
+//		//Pick next menu item
+//		p = hnd->entries + i;
+//
+//		//Increment position for selectable items
+//		if ( (p) && p->SelectFunc) 
+//		{
+//			++pos;
+//
+//			//Did we find it?
+//			if (pos == slot) 
+//			{
+//				//Execute the function
+//				p->SelectFunc(ent, p);
+//				return 1;
+//			}
+//		}
+//		if (!ent->client->menu) return 0;
+//
+////DEBUGGING MEMORY PROBLEM-GREGG
+//#ifdef TARGET_NT
+//		if (_CrtIsValidPointer(hnd, sizeof(pmenuhnd_t), 1) != 1)
+//		{
+//			gi.dprintf("Bad Menu Handle in p_menu (2)\n");
+//			return 0;
+//		}
+//#endif
+////DEBUGGING MEMORY PROBLEM-GREGG
+//
+//	}
+//	return 1;
+//}

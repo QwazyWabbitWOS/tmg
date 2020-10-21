@@ -364,7 +364,6 @@ char *ShowHud (edict_t *ent)
 {
 	static char layout[MAX_STRING_CHARS];
 	int j = 0;
-	gclient_t	*cl;
 	int	score;
 	int ping;
 	int fph;
@@ -384,8 +383,6 @@ char *ShowHud (edict_t *ent)
 					"Fire to change view\n";
 	
 	num_ppl = CountConnectedClients();
-	cl = ent->client;
-
 	Com_sprintf (layout, sizeof(layout), "");
 
 	if (!ent || !ent->client || ent->bot_client)
@@ -467,18 +464,18 @@ char *ShowHud (edict_t *ent)
 		{
 			// Raven 12-31-1999
 			// Revised by QwazyWabbit 2016
-			score = cl->chase_target->client->resp.score;
-			frags = cl->chase_target->client->resp.frags;
-			captures = cl->chase_target->client->resp.captures;
-			shots = cl->chase_target->client->resp.shots;
-			eff = cl->chase_target->client->resp.eff;
-			ping = cl->chase_target->client->ping;
-			died = rav_getdied(cl->chase_target->client);
-			fph = cl->chase_target->client->resp.fph;
+			score = ent->client->chase_target->client->resp.score;
+			frags = ent->client->chase_target->client->resp.frags;
+			captures = ent->client->chase_target->client->resp.captures;
+			shots = ent->client->chase_target->client->resp.shots;
+			eff = ent->client->chase_target->client->resp.eff;
+			ping = ent->client->chase_target->client->ping;
+			died = rav_getdied(ent->client->chase_target->client);
+			fph = ent->client->chase_target->client->resp.fph;
 			//QW// fpm is unused for now.
 			//fpm = cl->chase_target->client->resp.fpm;
-			rank = rav_getrank(cl->chase_target);
-			bigspree = cl->chase_target->client->resp.spree;
+			rank = rav_getrank(ent->client->chase_target);
+			bigspree = ent->client->chase_target->client->resp.spree;
 			//score
 			j += sprintf (layout+j, "xr -50 yt 2 string2 \"Score\" ");
 			j += sprintf (layout+j, "xr -50 yt 10 string \"%i\" ", score);
@@ -529,15 +526,15 @@ char *ShowHud (edict_t *ent)
 	if(ent->client->pers.pl_state != PL_SPECTATOR)
 	{
 		//parse out the info
-		score = cl->resp.score;
-		frags = cl->resp.frags;
-		captures = cl->resp.captures;
-		shots = cl->resp.shots;
-		eff = cl->resp.eff;
-		ping = cl->ping;
-		died = rav_getdied(cl);
+		score = ent->client->resp.score;
+		frags = ent->client->resp.frags;
+		captures = ent->client->resp.captures;
+		shots = ent->client->resp.shots;
+		eff = ent->client->resp.eff;
+		ping = ent->client->ping;
+		died = rav_getdied(ent->client);
 		rank = rav_getrank(ent);
-		bigspree = cl->resp.spree;
+		bigspree = ent->client->resp.spree;
 
 		//score
 		j += sprintf (layout+j, "xr -50 yt 2 string2 \"Score\" ");
@@ -547,7 +544,7 @@ char *ShowHud (edict_t *ent)
 		j += sprintf (layout+j, "xr -50 yt 26 string \"%i\" ", ping);
 		//fph
 		j += sprintf (layout+j, "xr -50 yt 34 string2 \"FPH\" ");
-		j += sprintf (layout+j, "xr -50 yt 42 string \"%i\" ", cl->resp.fph);
+		j += sprintf (layout+j, "xr -50 yt 42 string \"%i\" ", ent->client->resp.fph);
 		//Efficiency
 		j += sprintf (layout+j, "xr -50 yt 50 string2 \"Acc\" ");
 		j += sprintf (layout+j, "xr -50 yt 58 string \"%i%%%%\" ", eff);

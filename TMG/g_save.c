@@ -1047,6 +1047,7 @@ void ReadLevel (char *filename)
 	{
 		fclose (f);
 		gi.error ("ReadLevel: mismatched edict size");
+		return;
 	}
 
 	// check function pointer base address
@@ -1055,6 +1056,7 @@ void ReadLevel (char *filename)
 	{
 		fclose (f);
 		gi.error ("ReadLevel: function pointers have moved");
+		return;
 	}
 
 	// load the level locals

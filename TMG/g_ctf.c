@@ -2343,23 +2343,20 @@ void RaV_unhook (edict_t *ent)
 void CTFTeam_f (edict_t *ent, int desired_team)
 {
 	char *t, *s;
-	gclient_t* cl;
-
 
 	if (!ctf->value)
 		return;
 
-	if (ent->client)
-		cl = ent->client;
-	else {
+	if (!ent->client)
+	{
 		DbgPrintf("%s NULL ent->client\n", __func__);
 		return;
 	}
 
-	if (cl->resp.teamswitch > level.time)
+	if (ent->client->resp.teamswitch > level.time)
 		return;
 
-	cl->resp.teamswitch = level.time + 3;
+	ent->client->resp.teamswitch = level.time + 3;
 
 	if (ent->classname[0] == 'c')
 	{	// in CAM mode
@@ -2380,7 +2377,7 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 	{
 		if (!ent->bot_client)
 			safe_cprintf(ent, PRINT_HIGH, "You are on the %s team.\n",
-			CTFTeamName(cl->resp.ctf_team));
+			CTFTeamName(ent->client->resp.ctf_team));
 		return;
 	}
 
@@ -2391,11 +2388,11 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 		return;
 	}
 
-	if (cl->resp.ctf_team == desired_team)
+	if (ent->client->resp.ctf_team == desired_team)
 	{
 		if (!ent->bot_client)
 			safe_cprintf(ent, PRINT_HIGH, "You are already on the %s team.\n",
-			CTFTeamName(cl->resp.ctf_team));
+			CTFTeamName(ent->client->resp.ctf_team));
 		return;
 	}
 
@@ -2437,36 +2434,36 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 
 	ent->svflags = 0;
 	ent->flags &= ~FL_GODMODE;
-	cl->resp.ctf_team = desired_team;
-	cl->resp.ctf_state = CTF_STATE_START;
-	s = Info_ValueForKey (cl->pers.userinfo, "skin");
+	ent->client->resp.ctf_team = desired_team;
+	ent->client->resp.ctf_state = CTF_STATE_START;
+	s = Info_ValueForKey (ent->client->pers.userinfo, "skin");
 	//skin change is allowed here
-	cl->skintime = level.time - 1;
+	ent->client->skintime = level.time - 1;
 	CTFAssignSkin(ent, s);
 
-	if (cl->ctf_grapple)
-		CTFResetGrapple(cl->ctf_grapple);
+	if (ent->client->ctf_grapple)
+		CTFResetGrapple(ent->client->ctf_grapple);
 
-	if (ent->solid == SOLID_NOT || cl->resp.spectator != 0)
+	if (ent->solid == SOLID_NOT || ent->client->resp.spectator != 0)
 	{ // spectator
 		PutClientInServer (ent);
 		// add a teleportation effect
 		ent->s.event = EV_PLAYER_TELEPORT;
 		// hold in place briefly
-		cl->ps.pmove.pm_flags = PMF_TIME_TELEPORT;
-		cl->ps.pmove.pm_time = 14;
+		ent->client->ps.pmove.pm_flags = PMF_TIME_TELEPORT;
+		ent->client->ps.pmove.pm_time = 14;
 		CheckPlayers();
 		my_bprintf(PRINT_HIGH,
 				   "%s joined the %s team. "
 				   "(%d red, %d blue, %d spectators)\n",
-				   cl->pers.netname,
+				   ent->client->pers.netname,
 				   CTFTeamName(desired_team),
 				   ctfgame.players1,
 				   ctfgame.players2,
 				   ctfgame.specs);
-		cl->pers.pl_state = PL_PLAYING;
-		cl->resp.spectator = 0;
-		StatsLog("JOIN: %s\\%d\\%.1f\n", cl->pers.netname, cl->resp.ctf_team, level.time);
+		ent->client->pers.pl_state = PL_PLAYING;
+		ent->client->resp.spectator = 0;
+		StatsLog("JOIN: %s\\%d\\%.1f\n", ent->client->pers.netname, ent->client->resp.ctf_team, level.time);
 		return;
 	}
 
@@ -2478,8 +2475,8 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 
 	if (!voosh->value)
 		TossClientWeapon(ent);
-	if (cl && cl->ctf_grapple)
-		CTFResetGrapple(cl->ctf_grapple);
+	if (ent->client->ctf_grapple)
+		CTFResetGrapple(ent->client->ctf_grapple);
 
 	CTFPlayerResetGrapple(ent);
 	// drop the rune if we have one
@@ -2491,17 +2488,17 @@ void CTFTeam_f (edict_t *ent, int desired_team)
 		ent->flashlight = NULL;
 	}
 
-	cl->resp.score = 0;
+	ent->client->resp.score = 0;
 	CheckPlayers();
 	my_bprintf(PRINT_HIGH, "%s changed to the %s team. "
 		"(%d red, %d blue, %d spectators)\n",
-		cl->pers.netname, CTFTeamName(desired_team), 
+		ent->client->pers.netname, CTFTeamName(desired_team),
 		ctfgame.players1, ctfgame.players2, ctfgame.specs);
-	cl->pers.pl_state = PL_PLAYING;
-	cl->resp.spectator = 0;
+	ent->client->pers.pl_state = PL_PLAYING;
+	ent->client->resp.spectator = 0;
 	//skin change is allowed here
-	cl->skintime = level.time - 1;
-	StatsLog("SIDE: %s\\%d\\%.1f\n", cl->pers.netname, cl->resp.ctf_team, level.time);
+	ent->client->skintime = level.time - 1;
+	StatsLog("SIDE: %s\\%d\\%.1f\n", ent->client->pers.netname, ent->client->resp.ctf_team, level.time);
 
 	// don't even bother waiting for death frames
 	ent->deadflag = DEAD_DEAD;

@@ -4800,7 +4800,8 @@ GOMOVE:
 
 
 					if(!j) k = 0;
-					else if( f1 > 10 && f1 < -10) k = 0;
+					else if( f1 > 10 || f1 < -10)
+						k = 0;
 					if(k)
 					{
 						if(k == 2) VectorCopy(v,vv);
@@ -4872,7 +4873,7 @@ GOMOVE:
 					}
 
 					if(!j) k = 0;
-					else if( f1 > 10 && f1 < -10) k = 0;
+					else if( f1 > 10 || f1 < -10) k = 0;
 					if(k )
 					{
 						if(k == 2) VectorCopy(v,vv);

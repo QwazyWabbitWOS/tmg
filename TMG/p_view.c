@@ -1218,15 +1218,16 @@ void ClientEndServerFrame (edict_t *ent)
 	int		i;
 	edict_t *e;
 
-	current_player = ent;
-	current_client = ent->client;
-
 	// Safety check...
 	if (!G_EntExists(ent))
 		return;
 
-	if(!ent || !ent->inuse)
+	if (!ent || !ent->inuse)
 		return;
+
+	current_player = ent;
+	current_client = ent->client;
+
 	//
 	// If the origin or velocity have changed since ClientThink(),
 	// update the pmove values.  This will happen when the client

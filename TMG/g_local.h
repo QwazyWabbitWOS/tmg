@@ -33,7 +33,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.51"
+#define MOD_VERSION "0.2.52"
 #define MOD "TMG_MOD"
 
 #ifndef _DEBUG
@@ -768,7 +768,7 @@ extern	cvar_t	*mercylimit;
 extern	cvar_t	*randomrcon;
 extern	cvar_t	*defaultoplevel;
 extern	cvar_t	*nokill;
-float dmflagtimer;
+float	dmflagtimer;
 extern	cvar_t	*minfps;
 extern	cvar_t	*use_grapple;
 extern  cvar_t  *log_connect;
@@ -802,7 +802,7 @@ extern cvar_t	*nuke_cells;
 extern cvar_t	*nuke_radius;
 extern cvar_t	*nuke_radius2;
 */
-extern cvar_t	*runes4all;
+extern	cvar_t	*runes4all;
 extern	cvar_t	*quad_notify;
 extern	cvar_t	*teamtechs;
 extern	cvar_t	*auto_flag_return;
@@ -1239,7 +1239,7 @@ void PMenu_Update(edict_t *ent);
 void PMenu_Next(edict_t *ent);
 void PMenu_Prev(edict_t *ent);
 void PMenu_Select(edict_t *ent);
-int WFMenuFromNumberKey(edict_t *ent, int slot);
+//int WFMenuFromNumberKey(edict_t *ent, int slot);
 
 
 //
