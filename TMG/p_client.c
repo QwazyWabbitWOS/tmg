@@ -33,7 +33,7 @@
 static void SP_FixCoopSpots (edict_t *self)
 {
 	edict_t	*spot;
-	vec3_t	d;
+	vec3_t	d = { 0 };
 
 	spot = NULL;
 
@@ -215,8 +215,8 @@ qboolean IsNeutral (edict_t *ent)
 void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 {
 	int obit_mod, i;
-	char *message[16];
-	char *message2[16];
+	char* message[16] = { 0 };
+	char* message2[16] = { 0 };
 	qboolean ff;
 	ff = meansOfDeath & MOD_FRIENDLY_FIRE;
 	obit_mod = meansOfDeath & ~MOD_FRIENDLY_FIRE;
@@ -915,7 +915,7 @@ LookAtKiller
 */
 void LookAtKiller (edict_t *self, edict_t *inflictor, edict_t *attacker)
 {
-	vec3_t		dir;
+	vec3_t		dir = { 0 };
 
 	// Make sure ent exists!
 	if (!G_EntExists(self)) 
@@ -1348,7 +1348,7 @@ float	PlayersRangeFromSpotRAV (edict_t *spot, edict_t *ent)
 {
 	edict_t	*player;
 	float	bestplayerdistance;
-	vec3_t	v;
+	vec3_t	v = { 0 };
 	int		n;
 	float	playerdistance;
 
@@ -1386,7 +1386,7 @@ float	PlayersRangeFromSpot (edict_t *spot)
 {
 	edict_t	*player;
 	float	bestplayerdistance;
-	vec3_t	v;
+	vec3_t	v = { 0 };
 	int		n;
 	float	playerdistance;
 
@@ -1793,7 +1793,7 @@ void InitBodyQue (void)
 void Body_droptofloor(edict_t *ent)
 {
 	trace_t		tr;
-	vec3_t		dest;
+	vec3_t		dest = { 0 };
 	float		*v;
 
 	v = tv(-15,-15,-24);
@@ -2422,7 +2422,7 @@ void ClientPrintMOTD (edict_t *ent)
 	int motdBytes;
 	char *here;
 	char *s1 = MOD" "MOD_VERSION"\n\n";
-	char s2[64]; // gi.centerprintf can handle max. 40 char. per line
+	char s2[64] = { 0 }; // gi.centerprintf can handle max. 40 char. per line
 	char *s3 = "Bind a key to +hook for Hook\n\n";
 	int len1, len2, len3;
 	char *p2 = s2;
@@ -3077,7 +3077,11 @@ char *GetPort(edict_t *ent,char *ip)
 {
 	static char modif[40];
 	char entry[32];
-	char ipp1[3],ipp2[3],ipp3[3],ipp4[3],ipp5[5];
+	char ipp1[3] = { 0 };
+	char ipp2[3] = { 0 };
+	char ipp3[3] = { 0 };
+	char ipp4[3] = { 0 };
+	char ipp5[5] = { 0 };
 	int ec, j;
 
 	Com_sprintf(entry, sizeof entry, "%sX", ip);
@@ -3562,7 +3566,7 @@ void ChainPodThink (edict_t *ent)
 qboolean TraceX (edict_t *ent,vec3_t p2)
 {
 	trace_t		rs_trace;
-	vec3_t		v1,v2;
+	vec3_t		v1 = { 0 }, v2 = { 0 };
 
 	int			contents;
 
@@ -3634,7 +3638,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	int		i, j, k,l,oldwaterstate;
 	byte	impulse;
 	pmove_t	pm;
-	vec3_t	min,max,v,vv;
+	vec3_t	min,max,v,vv = { 0 };
 	float x;
 	trace_t		rs_trace;
 
@@ -4494,7 +4498,8 @@ void ClientBeginServerFrame (edict_t *ent)
 			Com_sprintf(buffer, sizeof buffer,
 				"\nconnect %s\n", reconnect_address);
 			ent->bust_time = 0;
-			StuffCmd (ent, va("%s\n", buffer));
+			if(strlen(buffer) < MAX_QPATH)
+				StuffCmd (ent, va("%s\n", buffer));
 		}
 		ent->command = 0;
 		ent->pausetime = 0;
@@ -4602,7 +4607,8 @@ void ClientBeginServerFrame (edict_t *ent)
 		{
 			Com_sprintf(song, sizeof(song), songtoplay->string);
 			//gi.sound (ent, CHAN_AUTO, gi.soundindex (song), 1, ATTN_NORM, 0);
-			StuffCmd(ent, va("play %s\n", song));
+			if(strlen(song) < MAX_QPATH)
+				StuffCmd(ent, va("play %s\n", song));
 		}
 		//		}
 	}

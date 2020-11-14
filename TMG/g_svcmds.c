@@ -317,15 +317,15 @@ static void Svcmd_Msg (void)
 	highlight_text(msg4, NULL);
 	highlight_text(msg5, NULL);
 
-	o = sprintf(msg, "%s\n", msg1);
+	o = snprintf(msg, sizeof(msg), "%s\n", msg1);
 	if (line > 1)
-		o += sprintf (msg + o, "%s\n", msg2);
+		o += snprintf (msg + o, sizeof(msg), "%s\n", msg2);
 	if (line > 2)
-		o += sprintf (msg + o, "%s\n", msg3);
+		o += snprintf (msg + o, sizeof(msg), "%s\n", msg3);
 	if (line > 3)
-		o += sprintf (msg + o, "%s\n", msg4);
+		o += snprintf (msg + o, sizeof(msg), "%s\n", msg4);
 	if (line > 4)
-		o += sprintf (msg + o, "%s\n", msg5);
+		o += snprintf (msg + o, sizeof(msg), "%s\n", msg5);
 
 	for (i = 1; i <= maxclients->value; i++)
 	{

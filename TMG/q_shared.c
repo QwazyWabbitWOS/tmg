@@ -15,13 +15,13 @@ vec3_t vec3_origin = { 0,0,0 };
 
 void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, float degrees)
 {
-	float	m[3][3];
+	float	m[3][3] = { 0 };
 	float	im[3][3];
 	float	zrot[3][3];
 	float	tmpmat[3][3];
 	float	rot[3][3];
 	int	i;
-	vec3_t vr, vup, vf;
+	vec3_t vr, vup, vf = { 0 };
 
 	vf[0] = dir[0];
 	vf[1] = dir[1];
@@ -115,7 +115,7 @@ void AngleVectors(vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
 void ProjectPointOnPlane(vec3_t dst, const vec3_t p, const vec3_t normal)
 {
 	float d;
-	vec3_t n;
+	vec3_t n = { 0 };
 	float inv_denom;
 
 	inv_denom = 1.0F / DotProduct(normal, normal);
@@ -139,7 +139,7 @@ void PerpendicularVector(vec3_t dst, const vec3_t src)
 	int	pos;
 	int i;
 	float minelem = 1.0F;
-	vec3_t tempvec;
+	vec3_t tempvec = { 0 };
 
 	/*
 	** find the smallest magnitude axially aligned vector
@@ -276,7 +276,7 @@ int BoxOnPlaneSide2(vec3_t emins, vec3_t emaxs, struct cplane_s *p)
 	int		i;
 	float	dist1, dist2;
 	int		sides;
-	vec3_t	corners[2];
+	vec3_t	corners[2] = { 0 };
 
 	for (i = 0; i < 3; i++)
 	{
@@ -1189,7 +1189,7 @@ void Com_sprintf(char* dest, int size, char* fmt, ...)
 	len = vsprintf(bigbuffer, fmt, argptr);
 	va_end(argptr);
 	if (len < size)
-		strncpy(dest, bigbuffer, size - 1);
+		strncpy(dest, bigbuffer, (size_t)size - 1);
 	else
 	{
 		Com_Printf("ERROR! %s: destination buffer overflow of len %i, size %i\n"
@@ -1254,7 +1254,7 @@ void Info_RemoveKey(char *s, char *key)
 {
 	char	*start;
 	char	pkey[MAX_INFO_STRING] = "";
-	char	value[MAX_INFO_STRING];
+	char	value[MAX_INFO_STRING] = "";
 	char	*o;
 
 	if (strstr(key, "\\"))
