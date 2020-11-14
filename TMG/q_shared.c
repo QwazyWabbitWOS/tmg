@@ -15,7 +15,7 @@ vec3_t vec3_origin = { 0,0,0 };
 
 void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, float degrees)
 {
-	float	m[3][3] = { 0 };
+	float	m[3][3] = { { 0 } };
 	float	im[3][3];
 	float	zrot[3][3];
 	float	tmpmat[3][3];
@@ -276,7 +276,7 @@ int BoxOnPlaneSide2(vec3_t emins, vec3_t emaxs, struct cplane_s *p)
 	int		i;
 	float	dist1, dist2;
 	int		sides;
-	vec3_t	corners[2] = { 0 };
+	vec3_t	corners[2] = { { 0 } };
 
 	for (i = 0; i < 3; i++)
 	{
