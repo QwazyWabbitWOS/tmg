@@ -18,4 +18,7 @@
     <LocalDebuggerWorkingDirectory>c:\quake2</LocalDebuggerWorkingDirectory>
     <LocalDebuggerCommandArguments>+set dedicated 1 +set game ctf +set ctf 1 +set gamedebug 0 +set sv_gamedebug 0 +exec ctfserver.cfg</LocalDebuggerCommandArguments>
   </PropertyGroup>
+  <PropertyGroup>
+    <ShowAllFiles>false</ShowAllFiles>
+  </PropertyGroup>
 </Project>
