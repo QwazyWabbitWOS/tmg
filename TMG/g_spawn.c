@@ -361,17 +361,13 @@ void ED_ParseField (char *key, char *value, edict_t *ent)
 				*(char **)(b+f->ofs) = ED_NewString (value);
 				break;
 			case F_VECTOR:
-				if (sscanf(value, "%f %f %f", &vec[0], &vec[1], &vec[2])) {
-					((float*)(b + f->ofs))[0] = vec[0];
-					((float*)(b + f->ofs))[1] = vec[1];
-					((float*)(b + f->ofs))[2] = vec[2];
-				}
-				else {
-					((float*)(b + f->ofs))[0] = vec[0];	// if we get here, it's an error in the map
-					((float*)(b + f->ofs))[1] = vec[1]; // set all zeroes and log a warning.
-					((float*)(b + f->ofs))[2] = vec[2];
+				if (sscanf(value, "%f %f %f", &vec[0], &vec[1], &vec[2]) != 3) {
 					gi.dprintf("WARNING: Vector field incomplete in %s, map: %s, field: %s\n", __func__, level.mapname, f->name);
+					VectorClear(vec);
 				}
+				((float*)(b + f->ofs))[0] = vec[0];
+				((float*)(b + f->ofs))[1] = vec[1];
+				((float*)(b + f->ofs))[2] = vec[2];
 				break;
 			case F_INT:
 				*(int *)(b+f->ofs) = atoi(value);
@@ -657,7 +653,7 @@ RTJump_Chk
 static qboolean RTJump_Chk(vec3_t apos,vec3_t tpos)
 {
 	float	x,l,grav,vel,ypos,yori;
-	vec3_t	v,vv;
+	vec3_t	v = { 0 }, vv = { 0 };
 	int		mf = false;
 
 	grav = 1.0 * sv_gravity->value * FRAMETIME; 
@@ -723,7 +719,7 @@ void G_FindRouteLink(edict_t *ent)
 	qboolean	tpbool;
 
 	int i,j,k,l,total = 0;
-	vec3_t	v;
+	vec3_t	v = { 0 };
 	float	x;
 
 

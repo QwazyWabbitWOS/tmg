@@ -797,7 +797,7 @@ COM_FileExtension
 */
 char *COM_FileExtension(char *in)
 {
-	static char exten[8];
+	static char exten[8] = { 0 };
 	int		i;
 
 	while (*in && *in != '.')

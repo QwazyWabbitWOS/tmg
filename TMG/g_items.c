@@ -1233,7 +1233,7 @@ edict_t *Drop_Item (edict_t *ent, gitem_t *item)
 {
 	edict_t	*dropped;
 	vec3_t	forward, right;
-	vec3_t	offset;
+	vec3_t	offset = { 0 };
 	edict_t	*e;
 	int	i;
 
@@ -1480,7 +1480,7 @@ droptofloor
 void droptofloor (edict_t *ent)
 {
 	trace_t		tr;
-	vec3_t		dest;
+	vec3_t		dest = { 0 };
 	float		*v;
 
 	v = tv(-15,-15,-15);
@@ -1550,7 +1550,11 @@ droptofloor2
 */
 void droptofloor2 (edict_t *ent)
 {
-	vec3_t  trmin,trmax,min,mins,maxs;
+	vec3_t  trmin = { 0 };
+	vec3_t  trmax = { 0 };
+	vec3_t  min = { 0 };
+	vec3_t  mins = { 0 };
+	vec3_t  maxs = { 0 };
 	float	i,j,yaw;
 
 	trace_t		tr;
