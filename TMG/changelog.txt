@@ -294,6 +294,11 @@ For compatibility with Tastyspleen's WallFly we removed the OP labels from playe
 This change removes the now unneeded checks for OP status.
 Some configurations used set warmup_time 1 for "no warmups". This change takes that into account and allows 0 or 1 to indicate "no warmup".
 
+After forgetting to update this file for a very long time.
+
+0.2.53
+Move the top right corner HUD statistics down 10 units to allow space for FPS output from Q2RTX.
+
 
 Completed
 2. Player name on freecam was fixed, but I may have to fix it again so it's still on the list.

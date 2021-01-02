@@ -477,38 +477,38 @@ char *ShowHud (edict_t *ent)
 			rank = rav_getrank(ent->client->chase_target);
 			bigspree = ent->client->chase_target->client->resp.spree;
 			//score
-			j += sprintf (layout+j, "xr -50 yt 2 string2 \"Score\" ");
-			j += sprintf (layout+j, "xr -50 yt 10 string \"%i\" ", score);
+			j += sprintf (layout+j, "xr -50 yt 12 string2 \"Score\" ");
+			j += sprintf (layout+j, "xr -50 yt 20 string \"%i\" ", score);
 			//ping
-			j += sprintf (layout+j, "xr -50 yt 18 string2 \"Ping\" ");
-			j += sprintf (layout+j, "xr -50 yt 26 string \"%i\" ", ping);
+			j += sprintf (layout+j, "xr -50 yt 28 string2 \"Ping\" ");
+			j += sprintf (layout+j, "xr -50 yt 36 string \"%i\" ", ping);
 			//fph
-			j += sprintf (layout+j, "xr -50 yt 34 string2 \"FPH\" ");
-			j += sprintf (layout+j, "xr -50 yt 42 string \"%i\" ", fph);
+			j += sprintf (layout+j, "xr -50 yt 44 string2 \"FPH\" ");
+			j += sprintf (layout+j, "xr -50 yt 52 string \"%i\" ", fph);
 			//Efficiency
-			j += sprintf (layout+j, "xr -50 yt 50 string2 \"Acc\" ");
-			j += sprintf (layout+j, "xr -50 yt 58 string \"%i%%%%\" ", eff);
-			j += sprintf (layout+j, "xr -50 yt 66 string \"%i/%i\" ", frags, shots);
+			j += sprintf (layout+j, "xr -50 yt 60 string2 \"Acc\" ");
+			j += sprintf (layout+j, "xr -50 yt 68 string \"%i%%%%\" ", eff);
+			j += sprintf (layout+j, "xr -50 yt 76 string \"%i/%i\" ", frags, shots);
 			//rank
-			j += sprintf (layout+j, "xr -50 yt 74 string2 \"Rank\" ");
-			j += sprintf (layout+j, "xr -50 yt 82 string \"%i/%i \" ", rank, num_ppl);
+			j += sprintf (layout+j, "xr -50 yt 84 string2 \"Rank\" ");
+			j += sprintf (layout+j, "xr -50 yt 92 string \"%i/%i \" ", rank, num_ppl);
 			//time
-			j += sprintf (layout+j, "xr -50 yt 90 string2 \"Time\" ");
-			j += sprintf (layout+j, "xr -50 yt 98 string \"%s \" ", match_time_left);
+			j += sprintf (layout+j, "xr -50 yt 100 string2 \"Time\" ");
+			j += sprintf (layout+j, "xr -50 yt 108 string \"%s \" ", match_time_left);
 			//Deaths
-			j += sprintf (layout+j, "xr -50 yt 106 string2 \"Deaths\" ");
-			j += sprintf (layout+j, "xr -50 yt 114 string \"%i \" ", died);
+			j += sprintf (layout+j, "xr -50 yt 116 string2 \"Deaths\" ");
+			j += sprintf (layout+j, "xr -50 yt 124 string \"%i \" ", died);
 
-			j += sprintf (layout+j, "xr -50 yt 122 string2 \"Frags\" ");
-			j += sprintf (layout+j, "xr -50 yt 130 string \"%i \" ", frags);
+			j += sprintf (layout+j, "xr -50 yt 132 string2 \"Frags\" ");
+			j += sprintf (layout+j, "xr -50 yt 140 string \"%i \" ", frags);
 			
-			j += sprintf (layout+j, "xr -50 yt 138 string2 \"Spree\" ");
-			j += sprintf (layout+j, "xr -50 yt 146 string \"%i \" ", bigspree);
+			j += sprintf (layout+j, "xr -50 yt 148 string2 \"Spree\" ");
+			j += sprintf (layout+j, "xr -50 yt 156 string \"%i \" ", bigspree);
 
 			if (ctf->value)
 			{
-				j += sprintf (layout+j, "xr -50 yt 154 string2 \"Caps\" ");
-				j += sprintf (layout+j, "xr -50 yt 162 string \"%i \" ", captures);
+				j += sprintf (layout+j, "xr -50 yt 164 string2 \"Caps\" ");
+				j += sprintf (layout+j, "xr -50 yt 172 string \"%i \" ", captures);
 			}
 		}
 	} // End spectator HUD
@@ -537,38 +537,38 @@ char *ShowHud (edict_t *ent)
 		bigspree = ent->client->resp.spree;
 
 		//score
-		j += sprintf (layout+j, "xr -50 yt 2 string2 \"Score\" ");
-		j += sprintf (layout+j, "xr -50 yt 10 string \"%i\" ", score);
+		j += sprintf (layout+j, "xr -50 yt 12 string2 \"Score\" ");
+		j += sprintf (layout+j, "xr -50 yt 20 string \"%i\" ", score);
 		//ping
-		j += sprintf (layout+j, "xr -50 yt 18 string2 \"Ping\" ");
-		j += sprintf (layout+j, "xr -50 yt 26 string \"%i\" ", ping);
+		j += sprintf (layout+j, "xr -50 yt 28 string2 \"Ping\" ");
+		j += sprintf (layout+j, "xr -50 yt 36 string \"%i\" ", ping);
 		//fph
-		j += sprintf (layout+j, "xr -50 yt 34 string2 \"FPH\" ");
-		j += sprintf (layout+j, "xr -50 yt 42 string \"%i\" ", ent->client->resp.fph);
+		j += sprintf (layout+j, "xr -50 yt 44 string2 \"FPH\" ");
+		j += sprintf (layout+j, "xr -50 yt 52 string \"%i\" ", ent->client->resp.fph);
 		//Efficiency
-		j += sprintf (layout+j, "xr -50 yt 50 string2 \"Acc\" ");
-		j += sprintf (layout+j, "xr -50 yt 58 string \"%i%%%%\" ", eff);
-		j += sprintf (layout+j, "xr -50 yt 66 string \"%i/%i\" ", frags, shots);
+		j += sprintf (layout+j, "xr -50 yt 60 string2 \"Acc\" ");
+		j += sprintf (layout+j, "xr -50 yt 68 string \"%i%%%%\" ", eff);
+		j += sprintf (layout+j, "xr -50 yt 76 string \"%i/%i\" ", frags, shots);
 		//rank
-		j += sprintf (layout+j, "xr -50 yt 74 string2 \"Rank\" ");
-		j += sprintf (layout+j, "xr -50 yt 82 string \"%i/%i\" ", rank, num_ppl);
+		j += sprintf (layout+j, "xr -50 yt 84 string2 \"Rank\" ");
+		j += sprintf (layout+j, "xr -50 yt 92 string \"%i/%i\" ", rank, num_ppl);
 		//time
-		j += sprintf (layout+j, "xr -50 yt 90 string2 \"Time\" ");
-		j += sprintf (layout+j, "xr -50 yt 98 string \"%s \" ", match_time_left);
+		j += sprintf (layout+j, "xr -50 yt 100 string2 \"Time\" ");
+		j += sprintf (layout+j, "xr -50 yt 108 string \"%s \" ", match_time_left);
 		//Deaths
-		j += sprintf (layout+j, "xr -50 yt 106 string2 \"Deaths\" ");
-		j += sprintf (layout+j, "xr -50 yt 114 string \"%i \" ", died);
+		j += sprintf (layout+j, "xr -50 yt 116 string2 \"Deaths\" ");
+		j += sprintf (layout+j, "xr -50 yt 124 string \"%i \" ", died);
 
-		j += sprintf (layout+j, "xr -50 yt 122 string2 \"Frags\" ");
-		j += sprintf (layout+j, "xr -50 yt 130 string \"%i \" ", frags);
+		j += sprintf (layout+j, "xr -50 yt 132 string2 \"Frags\" ");
+		j += sprintf (layout+j, "xr -50 yt 140 string \"%i \" ", frags);
 
-		j += sprintf (layout+j, "xr -50 yt 138 string2 \"Spree\" ");
-		j += sprintf (layout+j, "xr -50 yt 146 string \"%i \" ", bigspree);
+		j += sprintf (layout+j, "xr -50 yt 148 string2 \"Spree\" ");
+		j += sprintf (layout+j, "xr -50 yt 156 string \"%i \" ", bigspree);
 
 		if (ctf->value)
 		{
-			j += sprintf (layout+j, "xr -50 yt 154 string2 \"Caps\" ");
-			j += sprintf (layout+j, "xr -50 yt 162 string \"%i \" ", captures);
+			j += sprintf (layout+j, "xr -50 yt 164 string2 \"Caps\" ");
+			j += sprintf (layout+j, "xr -50 yt 172 string \"%i \" ", captures);
 		}
 
 		//only show if hud is active

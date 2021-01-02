@@ -1,8 +1,7 @@
 
 // q_shared.h -- included first by ALL program modules
 
-#ifndef Q_SHARED_H
-#define Q_SHARED_H
+#pragma once
 
 #ifdef _WIN32
 #pragma warning(disable : 4244)     // conversion from 'type1' to 'type2', possible loss of data
@@ -141,9 +140,6 @@ extern vec3_t vec3_origin;
 #define	nanmask (255<<23)
 
 #define	IS_NAN(x) (((*(int *)&x)&nanmask)==nanmask)
-
-
-extern long Q_ftol( float f );
 
 #define DotProduct(x,y)			(x[0]*y[0]+x[1]*y[1]+x[2]*y[2])
 #define VectorSubtract(a,b,c)	(c[0]=a[0]-b[0],c[1]=a[1]-b[1],c[2]=a[2]-b[2])
@@ -1000,4 +996,3 @@ typedef struct
 	short		stats[MAX_STATS];		// fast status bar updates
 } player_state_t;
 
-#endif //Q_SHARED_H

@@ -2,8 +2,7 @@
 // g_local.h -- local definitions for game module
 //
 
-#ifndef G_LOCAL_H
-#define G_LOCAL_H
+#pragma once
 
 #define _CRT_SECURE_NO_WARNINGS 1
 
@@ -33,7 +32,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.52"
+#define MOD_VERSION "0.2.53"
 #define MOD "TMG_MOD"
 
 #ifndef _DEBUG
@@ -547,10 +546,10 @@ extern	int	meansOfDeath;
 
 extern	edict_t			*g_edicts;
 
-#define FOFS(x)     q_offsetof(edict_t, x)
-#define STOFS(x)    q_offsetof(spawn_temp_t, x)
-#define	LLOFS(x) (size_t)&(((level_locals_t *)0)->x)
-#define	CLOFS(x) (size_t)&(((gclient_t *)0)->x)
+#define FOFS(x)  q_offsetof(edict_t, x)
+#define STOFS(x) q_offsetof(spawn_temp_t, x)
+#define LLOFS(x) (size_t)&(((level_locals_t *)0)->x)
+#define CLOFS(x) (size_t)&(((gclient_t *)0)->x)
 
 #define random()	((rand () & 0x7fff) / ((float)0x7fff))
 #define crandom()	(2.0 * (random() - 0.5))
@@ -1894,6 +1893,3 @@ typedef struct ctfgame_s
 	int last_capture_team; // Team that last capped a flag. 
 } ctfgame_t;
 ctfgame_t ctfgame;
-
-#endif /* G_LOCAL_H */
-
