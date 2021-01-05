@@ -929,39 +929,35 @@ void tolower_text(char *src, char *dest)
 }
 
 
-qboolean CheckFlood (edict_t *who)
+qboolean CheckFlood(edict_t* who)
 {
 	int	i;
-	gclient_t *cl;
+	gclient_t* cl;
 
 	cl = who->client;
 
-	//DB
-	if (level.time < cl->flood_locktill)
-	{
-		safe_cprintf(who, PRINT_HIGH, "You can't talk for %d more seconds\n",
-					 (int)(cl->flood_locktill - level.time));
+	if (level.time < cl->flood_locktill) {
+		safe_cprintf(who, PRINT_HIGH,
+			"You can't talk for %d more seconds\n",
+			(int)(cl->flood_locktill - level.time));
 		return false;
 	}
 
+	int max_i = sizeof(cl->flood_when) / sizeof(cl->flood_when[0]);
 	i = cl->flood_whenhead - flood_msgs->value + 1;
 
 	if (i < 0)
-		i = (sizeof(cl->flood_when)/sizeof(cl->flood_when[0])) + i;
+		i = max_i + i;
 
-	if (cl->flood_when[i] &&
-		level.time - cl->flood_when[i] < flood_persecond->value)
-	{
+	if (i < max_i && cl->flood_when[i] && level.time - cl->flood_when[i] < flood_persecond->value) {
 		cl->flood_locktill = level.time + flood_waitdelay->value;
 		safe_cprintf(who, PRINT_CHAT,
-					 "Flood protection: You can't talk for %d seconds.\n",
-					 (int)flood_waitdelay->value);
+			"Flood protection: You can't talk for %d seconds.\n",
+			(int)flood_waitdelay->value);
 		return false;
 	}
 
-	cl->flood_whenhead = (cl->flood_whenhead + 1)
-		% (sizeof(cl->flood_when)/sizeof(cl->flood_when[0]));
-
+	cl->flood_whenhead = (cl->flood_whenhead + 1) % max_i;
 	cl->flood_when[cl->flood_whenhead] = level.time;
 	return true;
 }
