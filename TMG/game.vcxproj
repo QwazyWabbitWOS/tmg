@@ -515,7 +515,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\.travis.yml" />
     <None Include="BSDmakefile" />
     <None Include="game.def" />
     <None Include="changelog.txt" />
