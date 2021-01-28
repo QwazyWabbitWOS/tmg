@@ -9,6 +9,7 @@
 #include "bot.h"
 #include "statslog.h"
 #include "highscore.h"
+#include "intro.h"
 
 /**
  Entity name and corresponding spawn function
