@@ -420,7 +420,7 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 		if (!data)
 			gi.error ("ED_ParseEntity: EOF without closing brace");
 
-		strncpy (keyname, com_token, sizeof(keyname)-1);
+		Q_strncpyz (keyname, sizeof(keyname) - 1, com_token);
 		
 	// parse value	
 		com_token = COM_Parse (&data);
@@ -881,8 +881,8 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	memset (&level, 0, sizeof(level));
 	memset (g_edicts, 0, game.maxentities * sizeof (g_edicts[0]));
 
-	Q_strncpy (level.mapname, mapname, sizeof(level.mapname)-1);
-	Q_strncpy (game.spawnpoint, spawnpoint, sizeof(game.spawnpoint)-1);
+	Q_strncpyz (level.mapname, sizeof(level.mapname) - 1, mapname);
+	Q_strncpyz (game.spawnpoint, sizeof(game.spawnpoint) - 1, spawnpoint);
 
 	//RAV
 
@@ -1034,9 +1034,9 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	mapscrewed = false;
 
 	if(ctf->value)
-		strcpy(defaultmap,	"q2ctf1");
+		Q_strncpyz(defaultmap, sizeof defaultmap, "q2ctf1");
 	else
-		strcpy(defaultmap,	"q2dm1");
+		Q_strncpyz(defaultmap, sizeof defaultmap, "q2dm1");
 
 	mapvotefilled = false;
 
@@ -1317,10 +1317,10 @@ void SP_worldspawn (edict_t *ent)
 	if (ent->message && ent->message[0])
 	{
 		gi.configstring (CS_NAME, ent->message);
-		strncpy (level.level_name, ent->message, sizeof level.level_name - 1);
+		Q_strncpyz (level.level_name, sizeof level.level_name - 1, ent->message);
 	}
 	else
-		strncpy (level.level_name, level.mapname, sizeof level.level_name);
+		Q_strncpyz (level.level_name, sizeof level.level_name, level.mapname);
 
 	if (st.sky && st.sky[0])
 		gi.configstring (CS_SKY, st.sky);
