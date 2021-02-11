@@ -4,8 +4,6 @@
 
 #pragma once
 
-#define _CRT_SECURE_NO_WARNINGS
-
 #ifdef _WIN32
   #define WIN32_LEAN_AND_MEAN	//non-MFC
   #include <windows.h>

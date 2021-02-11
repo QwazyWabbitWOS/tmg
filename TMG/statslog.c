@@ -37,7 +37,7 @@ void StatsLog(const char *fmt, ... )
 	char	logpath [MAX_QPATH];
 
 	va_start(argptr, fmt); 
-	vsprintf(ar_tmp, fmt, argptr); 
+	vsnprintf(ar_tmp, sizeof ar_tmp, fmt, argptr); 
 	va_end(argptr); 
 
 	time(&long_time);

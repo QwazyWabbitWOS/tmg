@@ -582,7 +582,7 @@ void COM_FileBase(char *in, char *out)
 	else
 	{
 		s--;
-		strncpy(out, s2 + 1, s - s2);
+		Q_strncpyz(out, s - s2, s2 + 1);
 		out[s - s2] = 0;
 	}
 }
@@ -603,7 +603,7 @@ void COM_FilePath(char *in, char *out)
 	while (s != in && *s != '/')
 		s--;
 
-	strncpy(out, in, s - in);
+	Q_strncpyz(out, s - in, in);
 	out[s - in] = 0;
 }
 
@@ -652,7 +652,7 @@ char *va(char *format, ...)
 	static char		string[1024];
 
 	va_start(argptr, format);
-	vsprintf(string, format, argptr);
+	vsnprintf(string, sizeof string, format, argptr);
 	va_end(argptr);
 
 	return string;
@@ -809,6 +809,56 @@ int Q_strnicmp (const char *s1, const char *s2, size_t count)
 	}
 }
 
+size_t Q_strncpyz(char* dst, size_t dstSize, const char* src)
+{
+	char* d = dst;
+	const char* s = src;
+	size_t        decSize = dstSize;
+
+	if (!dst || !src || dstSize < 1) {
+		DbgPrintf("Bad arguments passed to %s\n", __func__);
+		return 0;
+	}
+
+	while (--decSize && *s)
+		*d++ = *s++;
+	*d = 0;
+
+	if (decSize == 0)    // Unsufficent room in dst, return count + length of remaining src
+		return (s - src - 1 + strlen(s));
+	else
+		return (s - src - 1);    // returned count excludes NULL terminator
+}
+
+size_t Q_strncatz(char* dst, size_t dstSize, const char* src)
+{
+	char* d = dst;
+	const char* s = src;
+	size_t        decSize = dstSize;
+	size_t        dLen;
+
+	if (!dst || !src || dstSize < 1) {
+		DbgPrintf("Bad arguments passed to %s\n", __func__);
+		return 0;
+	}
+
+	while (--decSize && *d)
+		d++;
+	dLen = d - dst;
+
+	if (decSize == 0)
+		return (dLen + strlen(s));
+
+	if (decSize > 0) {
+		while (--decSize && *s)
+			*d++ = *s++;
+
+		*d = 0;
+	}
+
+	return (dLen + (s - src));    // returned count excludes NULL terminator
+}
+
 static char	bigbuffer[0x10000];  //QW// For Com_sprintf
 
 /**
@@ -825,10 +875,10 @@ void Com_sprintf(char* dest, int size, char* fmt, ...)
 	va_list		argptr;
 
 	va_start(argptr, fmt);
-	len = vsprintf(bigbuffer, fmt, argptr);
+	len = vsnprintf(bigbuffer, sizeof bigbuffer, fmt, argptr);
 	va_end(argptr);
 	if (len < size)
-		strncpy(dest, bigbuffer, (size_t)size - 1);
+		Q_strncpyz(dest, (size_t)size - 1, bigbuffer);
 	else
 	{
 		Com_Printf("ERROR! %s: destination buffer overflow of len %i, size %i\n"
