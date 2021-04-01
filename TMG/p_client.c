@@ -2494,7 +2494,7 @@ void ClientPrintMOTD (edict_t *ent)
 		// Now append the MOTD file.  Null-terminate the string.
 		if (in)
 		{
-			rewind (in);
+			fseek(in, 0L, SEEK_SET);
 			while ((c = fgetc (in)) != EOF)
 			{
 				*here = c;
@@ -4602,13 +4602,15 @@ void ClientBeginServerFrame (edict_t *ent)
 		ent->reset_time = level.time + 10;
 		Respawn(ent, true);
 
-		//play the intro song if used
+		//play the intro song when player connects
 		if(wavs->value && !ent->bot_client)
 		{
 			Com_sprintf(song, sizeof(song), songtoplay->string);
-			//gi.sound (ent, CHAN_AUTO, gi.soundindex (song), 1, ATTN_NORM, 0);
-			if(strlen(song) < MAX_QPATH)
+			gi.sound (ent, CHAN_AUTO, gi.soundindex (song), 1, ATTN_NORM, 0);
+			if (strlen(song) < MAX_QPATH) {
 				StuffCmd(ent, va("play %s\n", song));
+				DbgPrintf("Client playing: %s\n", song);
+			}
 		}
 		//		}
 	}

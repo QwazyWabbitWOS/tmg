@@ -56,7 +56,7 @@ void Wav_Mod_Setup(void)
 				lines++;
 		}
 
-		rewind(file);
+		fseek(file, 0L, SEEK_SET);
 		p_buffer = gi.TagMalloc(file_size, TAG_GAME);
 		memset(p_buffer, 0, file_size);
 		gi.dprintf("Allocated %ld bytes for file\n", file_size);
@@ -274,17 +274,20 @@ void PrecacheSongs(void)
 {
 	FILE *file;
 	char file_name[MAX_QPATH];
-	char song[MAX_QPATH];
+	char song[MAX_QPATH] = { 0 };
 	int levels = 0;
 	size_t	count;
 
-	song[0] = '\0';
 
 	Com_sprintf(file_name, sizeof file_name, "%s/%s/%s/intro.txt",
 		basedir->string, game_dir->string, cfgdir->string);
 
 	file = fopen(file_name, "r");
-	if (file != NULL)
+	if (file == NULL)
+	{
+		gi.dprintf("==== Wav Mod v.01 - missing intro.txt file ====\n");
+	}
+	else
 	{
 		int file_size = 0;
 		char *p_buffer;
@@ -297,7 +300,7 @@ void PrecacheSongs(void)
 			fgetc(file);
 			file_size++;
 		}
-		rewind(file);
+		fseek(file, 0L, SEEK_SET);
 		p_buffer = gi.TagMalloc(file_size, TAG_LEVEL);
 		memset(p_buffer, 0, file_size);
 		count = fread((void *)p_buffer, sizeof(char), file_size, file);
@@ -337,12 +340,11 @@ void PrecacheSongs(void)
 			{
 				memcpy(&names[levels][0], p_name - n_chars, n_chars);
 				memset(&names[levels][n_chars], 0, 1);
-				if (levels > 0)
-					//precache here 
-					Com_sprintf(song, sizeof song, "misc/%s.wav", names[levels]);
+				//precache here 
+				Com_sprintf(song, sizeof song, "misc/%s.wav", names[levels]);
 				if (strlen(song) > 0)
 				{
-					gi.soundindex (song);
+					gi.soundindex(song);
 				}
 				levels++;
 				n_chars = 0;
@@ -373,9 +375,5 @@ void PrecacheSongs(void)
 		gi.dprintf("\n\n");
 		gi.TagFree(p_buffer);
 		fclose(file);
-	}
-	else
-	{
-		gi.dprintf ("==== Wav Mod v.01 - missing intro.txt file ====\n");
 	}
 }

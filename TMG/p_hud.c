@@ -65,7 +65,7 @@ void MoveClientToIntermission (edict_t *ent)
 	if(wavs->value && !ent->bot_client)
 	{
 		Com_sprintf(song, sizeof(song), songtoplay->string);
-		//gi.sound (ent, CHAN_ITEM, gi.soundindex (song), 1, ATTN_NORM, 0);
+		gi.sound (ent, CHAN_ITEM, gi.soundindex (song), 1, ATTN_NORM, 0);
 		StuffCmd(ent, va("play %s\n", song));
 	}
 }

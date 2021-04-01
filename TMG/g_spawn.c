@@ -1370,7 +1370,7 @@ void SP_worldspawn (edict_t *ent)
 	else
 		gi.cvar_set("sv_gravity", st.gravity);
 
-	//QW//PrecacheSongs();
+	PrecacheSongs();
 
 	snd_fry = gi.soundindex ("player/fry.wav");	// standing in lava / slime
 	PrecacheItem (FindItem ("Blaster"));

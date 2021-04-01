@@ -416,6 +416,21 @@ void ClientEndServerFrames (void)
 }
 
 /*
+Returns the created target changelevel
+================ =
+*/
+edict_t * CreateTargetChangeLevel(char* map)
+{
+	edict_t* ent;
+
+	ent = G_Spawn();
+	ent->classname = "target_changelevel";
+	Com_sprintf(level.nextmap, sizeof(level.nextmap), "%s", map);
+	ent->map = level.nextmap;
+	return ent;
+}
+
+/*
 =================
 EndDMLevel
 
@@ -430,12 +445,7 @@ void EndDMLevel (void)
 
 	// stay on same level flag
 	if (dmflag & DF_SAME_LEVEL)
-	{
-		ent = G_Spawn ();
-		ent->classname = "target_changelevel";
-		ent->map = level.mapname;
-		BeginIntermission (ent);
-	}
+		BeginIntermission(CreateTargetChangeLevel(level.mapname));
 
 	if (maplist->nextmap > -1)
 	{
