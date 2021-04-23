@@ -1,0 +1,4 @@
+This is QwazyWabbit's TMG Railwarz!
+This is a testing TMG CTF server.
+Please report any bugs you observe and
+describe how to reproduce them.
