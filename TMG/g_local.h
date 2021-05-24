@@ -781,8 +781,8 @@ extern	cvar_t* debug_botspawn;
 extern	cvar_t* debug_ops;
 
 /* ops can select server configurations */
-extern	cvar_t *ctf_cfg_file;
-extern	cvar_t *ffa_cfg_file;
+extern	cvar_t *ctf_cfgfile;
+extern	cvar_t *ffa_cfgfile;
 
 /*
 extern	cvar_t	*allow_lasermines;

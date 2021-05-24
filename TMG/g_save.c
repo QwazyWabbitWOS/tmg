@@ -454,8 +454,8 @@ void InitGame (void)
 	debug_ops = gi.cvar ("debug_ops", "0", 0);
 
 	//QW// Configure FFA and CTF config file names for OP menu
-	ffa_cfg_file = gi.cvar ("ffa_cfgfile", "ffa.cfg", 0);
-	ctf_cfg_file = gi.cvar ("ctf_cfgfile", "railwarz.cfg", 0);
+	ffa_cfgfile = gi.cvar ("ffa_cfgfile", "ffa.cfg", 0);
+	ctf_cfgfile = gi.cvar ("ctf_cfgfile", "railwarz.cfg", 0);
 
 	/*
 	 allow_lasermines = gi.cvar ("allow_lasermines", "0", CVAR_LATCH);

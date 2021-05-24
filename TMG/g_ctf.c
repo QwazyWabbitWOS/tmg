@@ -20,8 +20,8 @@
 cvar_t *dropflag_delay;
 cvar_t *newscore;
 cvar_t *ctf_deathscores;
-cvar_t *ctf_cfg_file;
-cvar_t *ffa_cfg_file;
+cvar_t *ctf_cfgfile;
+cvar_t *ffa_cfgfile;
 
 char menustring[24][64];
 
@@ -4140,7 +4140,7 @@ void OpExecFFAConfig (edict_t *ent, pmenu_t *menu)
 {
 	char buffer[100];
 	PMenu_Close(ent);
-	Com_sprintf(buffer, sizeof buffer, "\nexec %s\n", ffa_cfg_file->string);
+	Com_sprintf(buffer, sizeof buffer, "\nexec %s\n", ffa_cfgfile->string);
 	gi.AddCommandString(buffer);
 }
 
@@ -4148,7 +4148,7 @@ void OpExecCTFConfig (edict_t *ent, pmenu_t *menu)
 {
 	char buffer[100];
 	PMenu_Close(ent);
-	Com_sprintf(buffer, sizeof buffer, "\nexec %s\n", ctf_cfg_file->string);
+	Com_sprintf(buffer, sizeof buffer, "\nexec %s\n", ctf_cfgfile->string);
 	gi.AddCommandString(buffer);
 }
 
