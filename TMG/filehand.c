@@ -19,6 +19,9 @@ qboolean lessGeneral(char *line, char *comp)
 		return false;
 }
 
+#define ALLOWED 0
+#define BANNED 1
+
 /**
  Matches client IP to whitelist and blacklist files.
  Returns 1 if not allowed to connect.
@@ -28,56 +31,53 @@ int checkAllowed (char *userinfo)
 {
 	FILE *ipfile;
 	char line[MAX_QPATH], ip[MAX_QPATH], aline[MAX_QPATH];
-	int stop;
+	int status = ALLOWED; // assume the best of everyone.
+	char* loopback = "127.0.0.1";
 
 	// let loopback match.
-	if (strcmp(Info_ValueForKey (userinfo, "ip"), "loopback") == 0)
-		return (0);
+	if (Q_strnicmp(Info_ValueForKey (userinfo, "ip"), loopback, strlen(loopback)) == 0)
+		return ALLOWED;
 
 	Com_sprintf(ip, sizeof ip, "%s@%s",
 		Info_ValueForKey (userinfo, "name"),
 		Info_ValueForKey (userinfo, "ip"));
 
-	stop = 1;
-	ipfile = tn_open("ip_allowed.txt", "r");
+	ipfile = tn_open("ip_allowed.txt", "r", false);
 	if (ipfile)
 	{
-		while ((fgets(aline, MAX_QPATH, ipfile)) && (stop == 1))
+		while ((fgets(aline, MAX_QPATH, ipfile)) && (status == 1))
 		{
 			if (!strchr("#", *aline))
 			{
 				if (IPMatch(ip, aline) == 1)
-					stop = 0;
+					status = ALLOWED;
 			}
 		}
 		fclose(ipfile);
 	}
 	else
-		stop = 0;
+		status = ALLOWED; // No allowed file, admit all.
 
-	if (stop == 1)
-		return (1);
-
-	ipfile = tn_open("ip_banned.txt", "r");
+	ipfile = tn_open("ip_banned.txt", "r", false);
 	if (ipfile)
 	{
-		while (fgets(line, MAX_QPATH, ipfile) && stop == 0)
+		while (fgets(line, MAX_QPATH, ipfile) && status == 0)
 		{
 			if (!strchr("#", *line))
 			{
 				if (IPMatch(ip, line) == 1)
-					stop = 1;
+					status = BANNED;
 			}
 		}
 		fclose(ipfile);
 	}
 
-	if (stop == 1)
+	if (status == BANNED)
 	{
-		ipfile = tn_open("ip_allowed.txt","r");
+		ipfile = tn_open("ip_allowed.txt","r", false);
 		if (ipfile)
 		{
-			while ((fgets(aline, MAX_QPATH, ipfile)) && (stop == 1))
+			while ((fgets(aline, MAX_QPATH, ipfile)) && (status == 1))
 			{
 				if (!strchr("#", *aline))
 				{
@@ -86,15 +86,14 @@ int checkAllowed (char *userinfo)
 						gi.dprintf ("*** IPControl - Letting %s in:\n"
 							"less general than %s.\n", aline, line);
 						// gi.dprintf ("%s, %s <->%s\n", ip, aline, line);
-						stop = 0;
+						status = ALLOWED;
 					}
 				}
 			}
 			fclose(ipfile);
 		}
 	}
-
-	return stop; // 1 if client is banned, otherwise 0.
+	return status; // 1 if client is banned, otherwise 0.
 }
 
 /**
@@ -212,7 +211,7 @@ qboolean entryInFile (char *filename, char ip[MAX_QPATH])
 
 	inFile = false;
 
-	thefile = tn_open(filename, "r");
+	thefile = tn_open(filename, "r", true);
 	if (thefile)
 	{
 		while (fgets(line, MAX_QPATH, thefile))
@@ -270,10 +269,9 @@ int CheckOpFile (edict_t *ent, char ip[MAX_QPATH], qboolean returnindex)
 	char *result = NULL;
 	inFile = false;
 
-	opfile = tn_open("user_o.txt", "r");
+	opfile = tn_open("user_o.txt", "r", true);
 	if (!opfile)
 	{
-		gi.dprintf("ERROR: Could not open operator file.\n");
 		return -1;
 	}
 	else
@@ -391,55 +389,6 @@ int CheckOpFile (edict_t *ent, char ip[MAX_QPATH], qboolean returnindex)
 	return flagged;
 }
 
-
-///**
-//  a case-insensitive comparison between two char's.
-//*/
-//static int
-//imatch(const char c1, const char c2)
-//{
-//    if (isalpha(c1) && isalpha(c2)) {
-//       return toupper(c1) == toupper(c2);
-//    }
-//    else {
-//       return c1 == c2;
-//    }
-//}
-//
-///**
-//   a case-insensitive version of ANSI C strchr.
-//*/
-//static char *
-//strichr(const char * s, int c)
-//{
-//    const char ch = c;
-//
-//    for (; !imatch(*s, ch); ++s) 
-//        if (*s == '\0')
-//            return NULL;
-//    return ((char *) s);
-//}
-//
-//
-///**
-//  a case-insensitive version of ANSI C strstr.
-//*/
-//static char *
-//stristr(const char * s1, const char * s2)
-//{
-//	if (*s2 == '\0')
-//		return ((char *) s1);
-//	for (; (s1 = strichr(s1, *s2)) != NULL; ++s1) {
-//		const char * sc1, *sc2;
-//		for (sc1 = s1, sc2 = s2; ; )
-//			if (*++sc2 == '\0')
-//				return ((char *) s1);
-//			else if (!imatch(*++sc1, *sc2))
-//				break;
-//	}
-//	return NULL;
-//}
-
 qboolean CheckNameProtect (char name[MAX_QPATH], char namepass[MAX_QPATH])
 {
 
@@ -455,8 +404,10 @@ qboolean CheckNameProtect (char name[MAX_QPATH], char namepass[MAX_QPATH])
 	namepassMatches = false;
 	i = 0;
 
-	opfile = tn_open("user_o.txt", "r");
-	if (opfile)
+	opfile = tn_open("user_o.txt", "r", true);
+	if (!opfile)
+		return true;
+	else
 	{
 		do
 		{
@@ -533,11 +484,6 @@ qboolean CheckNameProtect (char name[MAX_QPATH], char namepass[MAX_QPATH])
 			return true;
 		}
 	}
-	else
-	{
-		gi.dprintf("ERROR: Could not open operator file.\n");
-		return true;
-	}
 }
 
 /**
@@ -556,7 +502,7 @@ qboolean ModifyOpLevel (int entry, int newlevel)
 		return false;
 
 	oplist[entry].level = newlevel;
-	opfile = tn_open("user_o.txt", "w");
+	opfile = tn_open("user_o.txt", "w", true);
 	if (opfile)
 	{
 		for (i = 0; i < entriesinopfile + 1; i++)
@@ -565,11 +511,6 @@ qboolean ModifyOpLevel (int entry, int newlevel)
 				"%s\t%d\n", oplist[i].entry, oplist[i].level);
 			fputs(line, opfile);
 		}
-	}
-	else
-	{
-		gi.dprintf("ERROR: Could not open operator file.\n");
-		return false;
 	}
 	fclose(opfile);
 	CheckOpFile(NULL, "*@*.*.*.*", false);
@@ -585,7 +526,7 @@ int AddOperator (char entry[MAX_QPATH], int op_lev, char pass[16])
 	FILE *opfile;
 	char line[MAX_QPATH];
 
-	opfile = tn_open("user_o.txt", "a+");
+	opfile = tn_open("user_o.txt", "a+", true);
 	if (opfile)
 	{
 		Com_sprintf (line, sizeof line, "%s\t%d\t%s\n", entry, op_lev, pass);
@@ -594,7 +535,6 @@ int AddOperator (char entry[MAX_QPATH], int op_lev, char pass[16])
 		CheckOpFile(NULL, "*@*.*.*.*", false);
 		return 0;
 	}
-	gi.dprintf("ERROR: Could not open operator file.\n");
 	return 1;
 }
 
@@ -610,19 +550,16 @@ void AddEntry (char *filename, char *text)
 	if (entryInFile (filename, text))
 		return;
 
-	ipfile = tn_open(filename, "a+");
+	ipfile = tn_open(filename, "a+", true);
 	if (ipfile)
 	{
 		fputs(text, ipfile);
 		fputs("\n", ipfile);
 		fclose (ipfile);
 	}
-	else
-	{
-		gi.dprintf("ERROR opening %s in %s\n", filename, __func__);
-	}
 }
 
+// Ban the specified player: ban user@ip
 void sv_ban_ip (edict_t *ent)
 {
 	char banned[MAX_QPATH];
@@ -660,7 +597,7 @@ void ShowFile(edict_t *ent, char *filename)
 	FILE	*file;
 	int c;	// variable to hold temporary file data
 
-	file = tn_open(filename, "r");
+	file = tn_open(filename, "r", true);
 	if (file == NULL)
 	{	// file did not open
 		if (ent == NULL)
