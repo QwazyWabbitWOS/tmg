@@ -35,7 +35,7 @@ void BadPlayer(edict_t *ent);
 
 void OnBotDetection(edict_t *ent, char *msg);
 void AddLogEntry (char *filename, char *text);
-FILE *tn_open (const char *filename, const char *mode);
+FILE *tn_open (const char *filename, const char *mode, const int warn);
 
 //#define RANDCHAR()		(random() < 0.3) ? '0' + (int)(9.9 * random()) : 'A' + (int)(26.9 * random())
 //#define DEFAULTUSERDISPLAY "%s is using a client side proxy!!!"
@@ -197,9 +197,6 @@ typedef struct zbotcmd_s
   CMDINITFUNC *initfunc;
 
 } zbotcmd_t;
-
-//FIXME: does this need to be global?
-//extern char buffer[0x10000];
 
 //extern char customServerCmd[256];
 //extern char customClientCmd[256];

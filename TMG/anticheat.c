@@ -62,7 +62,7 @@ void InitAnticheat(void)
 		proxyinfo[i].cl_pitchspeed = 0;
 	}
 
-	if(!lan->value)
+	if(!lan->value)	// if we're doing ratbot checks, lan is 0 (default)
 	{
 		//if server_ip is not set, stop the server
 		if (strcmp(server_ip->string, "") == 0)
@@ -93,7 +93,11 @@ void InitAnticheat(void)
 //	}
 //}
 
-FILE *tn_open (const char *filename, const char *mode)
+/**
+ Open the named file with specified mode.
+ If warn is true, report any error here.
+*/
+FILE *tn_open (const char *filename, const char *mode, const int warn)
 {
 	FILE *fd;
 	char path[MAX_QPATH];
@@ -107,6 +111,8 @@ FILE *tn_open (const char *filename, const char *mode)
 	strcat (path, "/");
 	strcat (path, filename);
 	fd = fopen (path, mode);
+	if (!fd && !warn)
+		gi.dprintf("Warning: Could not open %s\n", path);
 	return (fd);
 }
 
@@ -114,16 +120,12 @@ void AddLogEntry (char *filename, char *text)
 {
 	FILE *ipfile;
 
-	ipfile = tn_open(filename, "a+");
+	ipfile = tn_open(filename, "a+", true);
 	if (ipfile)
 	{
 		fputs(text, ipfile);
 		fputs("\n", ipfile);
 		fclose (ipfile);
-	}
-	else
-	{
-		gi.dprintf("ERROR opening %s for logging\n", filename);
 	}
 }
 
@@ -132,7 +134,7 @@ void AddLogEntry (char *filename, char *text)
  */
 char *ConvertName(char *name)
 {
-	// Note: escapes needed for \ and "
+	// Note: escapes needed for \ and " if you use them here.
 	char *forbidden = "~!@#$%^&*()=|?,.<>[]{}:;/-";
 
 	size_t i;
