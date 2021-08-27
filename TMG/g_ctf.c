@@ -5157,6 +5157,8 @@ void OpPlayer(edict_t *ent, pmenu_t *p)
 			   true, true);
 }
 
+// Give the operator access level specified by the cvar
+// defaultoplevel to the player selected in the menu.
 void OpMe(edict_t *ent, pmenu_t *p)
 {
 	int i;
@@ -5910,7 +5912,7 @@ void KickPlayer(edict_t *ent, pmenu_t *p)
 			   true, true);
 }
 
-//QW// 
+//QW// Present the bot control menu.
 void UpdateBotMenu(edict_t *ent)
 {
 	char bots_on_off[20];
@@ -5996,7 +5998,7 @@ void UpdateBotMenu(edict_t *ent)
 	}
 }
 
-//JSW
+//JSW Present the player control menu.
 void UpdateOpMenu(edict_t *ent)
 {
 	char team_lock_unlock[20];

@@ -23,16 +23,13 @@ int global_lights = 0;
 char *ClientTeam1 (edict_t *ent)
 {
 	char		*p;
-	static char	value[MAX_INFO_VALUE];
-
-	value[0] = 0;
+	static char	value[MAX_INFO_VALUE] = { 0 };
 
 	if (!ent->client)
 		return value;
 
 	if (!G_EntExists(ent))
 		return value;
-
 
 	strcpy(value, Info_ValueForKey (ent->client->pers.userinfo, "skin"));
 	p = strchr(value, '/');
@@ -917,8 +914,8 @@ void Cmd_Players_f (edict_t *ent)
 	int		i;
 	int		count;
 	char	small[64];
-	char	large[1280];
-	int		index[256];
+	char	large[1280] = { 0 };
+	int		index[256] = { 0 };
 
 	count = 0;
 	for (i = 0 ; i < maxclients->value ; i++)
@@ -1219,7 +1216,7 @@ void Cmd_Wave_f(edict_t *ent)
 
 void Say_Op(edict_t *who, char *msg)
 {
-	char outmsg[1024];
+	char outmsg[1024] = { 0 };
 	int i;
 	char *p;
 	edict_t *cl_ent;
@@ -2648,6 +2645,8 @@ void ClientCommand (edict_t *ent)
 			if (ent->client->pers.oplevel & OP_RCON)
 				safe_cprintf(ent, PRINT_HIGH, "OP_RCON\n");
 		}
+		else
+			safe_cprintf(ent, PRINT_HIGH, "You have no special permissions.\n");
 	}
 	//	else
 	else if (console_chat->value)

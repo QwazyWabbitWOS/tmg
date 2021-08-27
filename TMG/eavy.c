@@ -65,7 +65,7 @@ edict_t *EAVYFindFarthestFlagPosition(edict_t *flag)
 {
     edict_t *bestspot, *spot = NULL;
     float   bestdistance, bestflagdistance = 0;
-    vec3_t  v;
+    vec3_t  v = { 0 };
 
     bestspot = G_Find (NULL, FOFS(classname), "info_player_deathmatch");
 
@@ -122,7 +122,7 @@ void EAVYSpawnTeamNearFlagCheck(void)
 {
     edict_t *flag, *spot = NULL;
     float   dist;
-    vec3_t  v;
+    vec3_t  v = { 0 };
 
     flag = G_Find (NULL, FOFS(classname), "item_flag_team1");
     while((spot = G_Find (spot, FOFS(classname), "info_player_team2")) != NULL)
@@ -160,7 +160,7 @@ void EAVYSpawnTeamNearFlag(edict_t *flag)
 {
     edict_t *spot = NULL;
     float   dist;
-    vec3_t  v;
+    vec3_t  v = { 0 };
 
     while((spot = G_Find (spot, FOFS(classname), "info_player_deathmatch")) != NULL)
     {

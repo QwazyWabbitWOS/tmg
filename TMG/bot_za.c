@@ -131,6 +131,7 @@ static int Bot_SearchEnemy (edict_t *ent)
 	qboolean	tmpflg;		//temporary
 	edict_t		*target,*trent;
 	trace_t		rs_trace;
+	vec3_t		trmin;
 
 	int		i,j,k = 0;
 	int		foundedenemy;
@@ -139,8 +140,6 @@ static int Bot_SearchEnemy (edict_t *ent)
 	float	vr,hr;
 
 	char	*entcln;
-
-	vec3_t	trmin;
 
 	zc = &ent->client->zc;
 
@@ -2316,7 +2315,8 @@ void Bots_Move_NORM (edict_t *ent)
 	vec3_t		temppos;
 
 	trace_t		rs_trace;
-	edict_t		*touch[MAX_EDICTS], *trent;
+	edict_t*	touch[MAX_EDICTS];
+	edict_t*	trent;
 	vec3_t		touchmin, touchmax, v = {0}, vv = {0};
 	vec3_t		trmin = {0},trmax;
 	int			i,j,k,l;

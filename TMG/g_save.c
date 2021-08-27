@@ -244,8 +244,8 @@ void InitGame (void)
 
 	sv_botdetection = gi.cvar("sv_botdetection", "29", 0);
 	
-	server_ip =  gi.cvar("server_ip", "", CVAR_LATCH);
-	lan = gi.cvar ("lan", "0", CVAR_LATCH);
+	server_ip =  gi.cvar("server_ip", "", CVAR_LATCH);    // Needed for ratbot checking
+	lan = gi.cvar ("lan", "0", CVAR_LATCH);               // Set 1 to disable ratbot tests
 
 	warmup_time =  gi.cvar("warmup_time", "30", CVAR_LATCH);
 	//QW Some configurations used 1 to set zero warmup.
@@ -443,7 +443,7 @@ void InitGame (void)
 	use_navfiles = gi.cvar("use_navfiles", "1", 0);
 
 	// operator list management
-	defaultoplevel = gi.cvar ("defaultoplevel", "0", 0);
+	defaultoplevel = gi.cvar ("defaultoplevel", "0", 0); // be sure to specify some value in server.cfg
 	oplistBase = gi.TagMalloc (64 * sizeof(oplist_t), TAG_GAME);
 	oplist = oplistBase + 1;
 

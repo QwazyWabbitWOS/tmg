@@ -228,7 +228,7 @@ void InsultVictim(edict_t *ent, edict_t *victim)
 //==============================================
 void TauntVictim(edict_t *ent, edict_t *victim)
 {
-	vec3_t vtmp;
+	vec3_t vtmp = { 0 };
 
 	if (!ent->bot_client || ent == victim)
 		return;
@@ -310,7 +310,7 @@ void CheckCampSite(edict_t *other)
 //=============================================
 qboolean InsideWall(edict_t *ent)
 {
-	vec3_t torigin;
+	vec3_t torigin = { 0 };
 
 	VectorCopy(ent->s.origin, torigin);
 	torigin[0] += 10.0;
@@ -1667,7 +1667,7 @@ void AirStrike_Think(edict_t *ent)
 	edict_t	*target,*sight;
 	trace_t	rs_trace;
 
-	vec3_t	point;
+	vec3_t	point = { 0 };
 
 	ent->nextthink = level.time + ent->moveinfo.speed * 0.5 /300;
 	ent->think = G_FreeEdict;
@@ -1716,8 +1716,10 @@ void Cmd_AirStrike(edict_t *ent)
 {
 	edict_t	*viper;
 	trace_t	rs_trace;
-
-	vec3_t	strpoint,tts,tte,tmp;
+	vec3_t	strpoint = { 0 };
+	vec3_t	tts = { 0 };
+	vec3_t	tte = { 0 };
+	vec3_t	tmp = { 0 };
 
 	vec_t	f;
 

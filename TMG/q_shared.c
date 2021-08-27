@@ -775,6 +775,25 @@ void Com_PageInMemory(byte *buffer, int size)
 ============================================================================
 */
 
+// fast "C" macros
+#define Q_isupper(c)    ((c) >= 'A' && (c) <= 'Z')
+#define Q_islower(c)    ((c) >= 'a' && (c) <= 'z')
+#define Q_isdigit(c)    ((c) >= '0' && (c) <= '9')
+#define Q_isalpha(c)    (Q_isupper(c) || Q_islower(c))
+#define Q_isalnum(c)    (Q_isalpha(c) || Q_isdigit(c))
+#define Q_isprint(c)    ((c) >= 32 && (c) < 127)
+#define Q_isgraph(c)    ((c) > 32 && (c) < 127)
+#define Q_isspace(c)    (c == ' ' || c == '\f' || c == '\n' || \
+                         c == '\r' || c == '\t' || c == '\v')
+
+static inline int Q_tolower(int c)
+{
+	if (Q_isupper(c)) {
+		c += ('a' - 'A');
+	}
+	return c;
+}
+
 /** Case independent string compare.
  If s1 is contained within s2 then return 0, they are "equal".
  else return the lexicographic difference between them.
@@ -785,10 +804,10 @@ int Q_stricmp(const char *s1, const char *s2)
 		*uc1 = (const unsigned char *)s1,
 		*uc2 = (const unsigned char *)s2;
 
-	while (tolower(*uc1) == tolower(*uc2++))
+	while (Q_tolower(*uc1) == Q_tolower(*uc2++))
 		if (*uc1++ == '\0')
 			return (0);
-	return (tolower(*uc1) - tolower(*--uc2));
+	return (Q_tolower(*uc1) - Q_tolower(*--uc2));
 }
 
 int Q_strnicmp (const char *s1, const char *s2, size_t count)
@@ -797,7 +816,7 @@ int Q_strnicmp (const char *s1, const char *s2, size_t count)
 		return 0;
 	else
 	{
-		while (count-- != 0 && tolower(*s1) == tolower(*s2))
+		while (count-- != 0 && Q_tolower(*s1) == Q_tolower(*s2))
 		{
 			if (count == 0 || *s1 == '\0' || *s2 == '\0')
 				break;
@@ -805,7 +824,7 @@ int Q_strnicmp (const char *s1, const char *s2, size_t count)
 			s2++;
 		}
 
-		return tolower(*(unsigned char *) s1) - tolower(*(unsigned char *) s2);
+		return Q_tolower(*(unsigned char *) s1) - Q_tolower(*(unsigned char *) s2);
 	}
 }
 

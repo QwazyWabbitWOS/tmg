@@ -511,8 +511,8 @@ qboolean ModifyOpLevel (int entry, int newlevel)
 				"%s\t%d\n", oplist[i].entry, oplist[i].level);
 			fputs(line, opfile);
 		}
+		fclose(opfile);
 	}
-	fclose(opfile);
 	CheckOpFile(NULL, "*@*.*.*.*", false);
 	return true;
 }
