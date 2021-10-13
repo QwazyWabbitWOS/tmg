@@ -169,7 +169,6 @@
     <None Include="game.def">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="BSDmakefile" />
     <None Include="GNUmakefile" />
     <None Include="Statistics Log.txt" />
     <None Include="Variables.txt" />

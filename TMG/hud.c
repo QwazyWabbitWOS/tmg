@@ -578,10 +578,6 @@ char *ShowHud (edict_t *ent)
 			/* Very bottom left corner */
 			j += sprintf (layout+j, "xl 2 yb -10 string2 \"%s %s\" ", MOD, MOD_VERSION);
 
-			//JSW
-			if (ent->client->pers.oplevel)
-				j += sprintf (layout+j, "xl 2 yb -20 string2 \"Operator Level %d\" ", ent->client->pers.oplevel);
-
 			if(server_time->value)
 			{
 				j += sprintf (layout+j, "xl 2 yb -90 string2 \" Server Time\" ");
@@ -610,6 +606,10 @@ char *ShowHud (edict_t *ent)
 		j += sprintf(layout+j, "xv 60 yv 140 string2 \"%4.0f %4.0f %4.0f Angle %3.0f\" ", 
 			ent->s.origin[0], ent->s.origin[1], ent->s.origin[2],
 			ent->client->ps.viewangles[1]);
+
+	//JSW
+	if (ent->client->pers.oplevel)
+		j += sprintf(layout + j, "xl 2 yb -20 string2 \"Operator Level %d\" ", ent->client->pers.oplevel);
 
 	//id disabling added 12-14-99 raven
 	if ((!ent->client->chase_target) && (ent->client->pers.db_id))

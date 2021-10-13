@@ -539,7 +539,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\ctf\ctfserver.cfg" />
-    <None Include="BSDmakefile" />
     <None Include="game.def" />
     <None Include="changelog.txt" />
     <None Include="GNUmakefile" />
