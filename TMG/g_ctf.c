@@ -4110,10 +4110,13 @@ void RestartThisMap(void)
 void OpBotToggle(edict_t *ent, pmenu_t *menu)
 {
 	PMenu_Close(ent);
-	if(use_bots->value == 0)
-		gi.cvar_set("use_bots", "1");
+	if (use_bots->value == 0)
+	{
+		gi.cvar_forceset("use_bots", "1");
+		Load_BotInfo();
+	}
 	else
-		gi.cvar_set("use_bots", "0");
+		gi.cvar_forceset("use_bots", "0");
 
 	RestartThisMap();
 }
