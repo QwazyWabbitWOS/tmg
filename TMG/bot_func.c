@@ -777,6 +777,7 @@ void InitializeBot (edict_t *ent, int botindex)
 
 	client->zc.botindex = botindex;
 	client->resp.enterframe = level.framenum;
+	ent->bot_client = true;
 
 	if(ctf->value)
 		BotAssignTeamCtf(ent->client);
