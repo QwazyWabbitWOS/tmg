@@ -18,7 +18,7 @@
 /**
  A wrapper for strncpy that unlike strncpy, always terminates strings with NUL.
  */
-static void Strcpyn(char *pszDest, const char *pszSrc, int nDestSize)
+static void Strcpyn(char *pszDest, const char *pszSrc, size_t nDestSize)
 {
 	strncpy( pszDest, pszSrc, nDestSize - 1);
 	pszDest[nDestSize-1] = '\0';

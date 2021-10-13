@@ -131,7 +131,7 @@ ThrowGib (edict_t *self, char *gibname, int damage, int type)
 {
 	edict_t *gib;
 	vec3_t	vd;
-	vec3_t	origin;
+	vec3_t	origin = { 0 };
 	vec3_t	size;
 	float	vscale;
 
@@ -293,7 +293,7 @@ void
 ThrowDebris (edict_t *self, char *modelname, float speed, vec3_t origin)
 {
 	edict_t	*chunk;
-	vec3_t	v;
+	vec3_t	v = { 0 };
 
 	chunk = G_Spawn();
 	VectorCopy (origin, chunk->s.origin);
@@ -375,7 +375,7 @@ path_corner_touch (edict_t *self,
 				   cplane_t *plane,
 				   csurface_t *surf)
 {
-	vec3_t		v;
+	vec3_t		v = { 0 };
 	edict_t		*next;
 
 	if (other->movetarget != self)
@@ -801,8 +801,8 @@ func_explosive_explode (edict_t *self,
 						int damage,
 						vec3_t point)
 {
-	vec3_t	origin;
-	vec3_t	chunkorigin;
+	vec3_t	origin = { 0 };
+	vec3_t	chunkorigin = { 0 };
 	vec3_t	size;
 	int		count;
 	int		mass;
@@ -949,9 +949,9 @@ barrel_touch (edict_t *self,
 static void
 barrel_explode (edict_t *self)
 {
-	vec3_t	org;
+	vec3_t	org = { 0 };
 	float	spd;
-	vec3_t	save;
+	vec3_t	save = { 0 };
 
 	T_RadiusDamage (self, self->activator, self->dmg,
 					NULL, self->dmg + 40, MOD_BARREL);
@@ -986,7 +986,7 @@ barrel_explode (edict_t *self)
 	ThrowDebris (self, "models/objects/debris3/tris.md2", spd, org);
 
 	// a bunch of little chunks
-	spd = 2 * self->dmg / 200;
+	spd = 2.0f * self->dmg / 200;
 	org[0] = self->s.origin[0] + crandom() * self->size[0];
 	org[1] = self->s.origin[1] + crandom() * self->size[1];
 	org[2] = self->s.origin[2] + crandom() * self->size[2];
@@ -1687,7 +1687,7 @@ target_string_use (edict_t *self, edict_t *other, edict_t *activator)
 	{
 		if (!e->count)
 			continue;
-		n = e->count - 1;
+		n = (size_t)e->count - 1;
 		if (n > len)
 		{
 			e->s.frame = 12;

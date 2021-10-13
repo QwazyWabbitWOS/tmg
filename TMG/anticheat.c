@@ -38,12 +38,12 @@ void InitAnticheat(void)
 
 	//RAV
 	proxyinfoBase = gi.TagMalloc ((maxclients->value + 1) * sizeof(proxyinfo_t), TAG_GAME);
-	q2a_memset(proxyinfoBase, 0x0, (maxclients->value + 1) * sizeof(proxyinfo_t));
+	q2a_memset(proxyinfoBase, 0x0, ((size_t)(maxclients->value) + 1) * sizeof(proxyinfo_t));
 	proxyinfo = proxyinfoBase + 1;
 	proxyinfo[-1].inuse = 1;
 
 	reconnectproxyinfo = gi.TagMalloc (maxclients->value  * sizeof(proxyreconnectinfo_t), TAG_GAME);
-	q2a_memset(reconnectproxyinfo, 0x0, maxclients->value * sizeof(proxyreconnectinfo_t));
+	q2a_memset(reconnectproxyinfo, 0x0, (size_t)maxclients->value * sizeof(proxyreconnectinfo_t));
 
 	reconnectlist = (reconnect_info *)gi.TagMalloc (maxclients->value * sizeof(reconnect_info), TAG_GAME);
 

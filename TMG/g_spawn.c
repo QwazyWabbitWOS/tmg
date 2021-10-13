@@ -526,8 +526,8 @@ void G_FindTrainTeam(void)
 		{
 			if(!Q_stricmp(e->classname,"path_corner") && e->targetname && e->target)
 			{
-//		orgtarget = e->target;		//terminal
-//		orgtargetname = e->targetname;
+				//orgtarget = e->target;		//terminal
+				//orgtargetname = e->targetname;
 				currtarget = e->target;			//target
 				currtargetname = e->targetname;	//targetname
 				lc = 0;

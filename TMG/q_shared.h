@@ -25,18 +25,6 @@
 #include <limits.h>
 #include <errno.h>
 
-#if defined _M_IX86 && !defined C_ONLY
-#define id386	1
-#else
-#define id386	0
-#endif
-
-#if defined _M_ALPHA && !defined C_ONLY
-#define idaxp	1
-#else
-#define idaxp	0
-#endif
-
 typedef unsigned char 		byte;
 typedef enum {false, true}	qboolean;
 
@@ -382,7 +370,6 @@ COLLISION DETECTION
 
 
 // plane_t structure
-// !!! if this is changed, it must be changed in asm code too !!!
 typedef struct cplane_s
 {
 	vec3_t	normal;
@@ -391,16 +378,6 @@ typedef struct cplane_s
 	byte	signbits;		// signx + (signy<<1) + (signz<<1)
 	byte	pad[2];
 } cplane_t;
-
-// structure offset for asm code
-#define CPLANE_NORMAL_X			0
-#define CPLANE_NORMAL_Y			4
-#define CPLANE_NORMAL_Z			8
-#define CPLANE_DIST				12
-#define CPLANE_TYPE				16
-#define CPLANE_SIGNBITS			17
-#define CPLANE_PAD0				18
-#define CPLANE_PAD1				19
 
 typedef struct cmodel_s
 {

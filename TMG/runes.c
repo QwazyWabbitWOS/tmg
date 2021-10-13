@@ -65,6 +65,9 @@ qboolean rune_pickup(edict_t *self, edict_t *other)
 	int i = 0;
 	gitem_t *tech;
 
+	if(!self || !other)
+		return false;
+	
 	if(match_state < STATE_PLAYING)
 		return false;
 
@@ -242,14 +245,14 @@ void Rune_Spawn(edict_t *rune, gitem_t *item)
 }
 
 // spawns all the runes
-void runes_spawn(edict_t *self)
+void runes_spawn(edict_t* self)
 {
-	edict_t	*rune;
-	int	i, j;
+	edict_t* rune;
+	int	i;
 
-	for (i=0; i<(int)runes->value; i++)
+	if (runes->value)
 	{	// runes number of each rune
-		for (j=RUNE_FIRST; j<=RUNE_LAST; j++)
+		for (i = RUNE_FIRST; i <= RUNE_LAST; i++)
 		{	// run thru all runes
 			rune = G_Spawn();
 			rune_select_spawn_point(rune->s.origin);
@@ -259,7 +262,7 @@ void runes_spawn(edict_t *self)
 			}
 			else
 			{
-				Rune_Spawn(rune, FindItem(rune_namefornum[j]));
+				Rune_Spawn(rune, FindItem(rune_namefornum[i]));
 			}
 		}
 	}

@@ -6,7 +6,7 @@
 
 void Move_LastRouteIndex(void)
 {
-	int	i;
+	int	i = 0;
 
 	for(i = CurrentIndex - 1 ; i >= 0; i--)
 	{

@@ -30,7 +30,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.54"
+#define MOD_VERSION "0.2.55"
 #define MOD "TMG_MOD"
 
 #ifndef _DEBUG
@@ -820,29 +820,29 @@ extern	cvar_t	*doors_stay_open;
 #define	PS_RESPAWN_CLOSEST	8
 
 //OP flags
-#define	OP_SPEC				1
-#define	OP_SAY				2
-#define	OP_SWITCH			4
-#define	OP_CHANGEMAP		8
+#define	OP_SPEC				1	// Can spectate even if specators are not allowed.
+#define	OP_SAY				2	// Ops can talk to anyone even if server is muted
+#define	OP_SWITCH			4	// Op can switch players around or force spectator
+#define	OP_CHANGEMAP		8	// Op force map change.
 
-#define	OP_LOCKTEAMS		16
-#define	OP_RESTART			32
-#define	OP_KICK				64
-#define	OP_STATUS			128
+#define	OP_LOCKTEAMS		16	// Can lock teams
+#define	OP_RESTART			32	// Can restart level
+#define	OP_KICK				64	// Can kick players
+#define	OP_STATUS			128	// Can do status command 
 
-#define	OP_SILENCE			256
-#define	OP_LOCKSERVER		512
-#define	OP_LISTEN			1024
-#define	OP_SHOWBANNEDFILE	2048
+#define	OP_SILENCE			256	// Can silence/unsilence players
+#define	OP_LOCKSERVER		512	// Can lock server
+#define	OP_LISTEN			1024	// 
+#define	OP_SHOWBANNEDFILE	2048	// 
 
-#define	OP_BAN				4096
-#define	OP_LIGHTS			8192
-#define	OP_PROTECTED		16384
-#define	OP_ADDOP			32768
+#define	OP_BAN				4096	// Can manipulate bans (showbanfile, ban user@ip, kickban from Player List menu, etc.)
+#define	OP_LIGHTS			8192	// Can control lights on/off.
+#define	OP_PROTECTED		16384	// Can bypass lockouts 
+#define	OP_ADDOP			32768	// Can list ops file and add ops
 
-#define OP_MODOP			65536
-#define	OP_RCON				131072
-#define OP_NAMEPASS			262144
+#define OP_MODOP			65536	// Can modify an ops oplevel
+#define	OP_RCON				131072	// Can enter rconmode
+#define OP_NAMEPASS			262144	// OP name is password protected (malfunctions for clients using q2pro)
 #define OP_PLAYERCONTROL	(OP_SWITCH|OP_KICK|OP_SILENCE|OP_BAN|OP_ADDOP|OP_MODOP)
 
 //quad_notify flags

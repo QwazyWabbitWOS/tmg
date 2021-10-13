@@ -131,7 +131,7 @@ static int Bot_SearchEnemy (edict_t *ent)
 	qboolean	tmpflg;		//temporary
 	edict_t		*target,*trent;
 	trace_t		rs_trace;
-	vec3_t		trmin;
+	vec3_t		trmin = { 0 };
 
 	int		i,j,k = 0;
 	int		foundedenemy;
@@ -328,8 +328,8 @@ static void Bot_SearchItems (edict_t *ent)
 	qboolean	wstayf,q;		//weaponflag
 	edict_t		*target,*trent;
 
-	vec3_t		touchmin,touchmax;
-	vec3_t		trmin,trmax;
+	vec3_t		touchmin = { 0 },touchmax = { 0 };
+	vec3_t		trmin = { 0 },trmax = { 0 };
 
 	gitem_t		*item;
 	char		*entcln;
@@ -833,8 +833,8 @@ static
 qboolean Bot_ExploAvoid(edict_t *ent, vec3_t	v)
 {
 	int	i;
-	vec3_t	absmax, absmin;
-	vec3_t	msmax, msmin;
+	vec3_t	absmax = { 0 }, absmin = { 0 };
+	vec3_t	msmax = { 0 }, msmin = { 0 };
 
 	if (ent->groundentity == NULL && !ent->waterlevel)
 		return true;
@@ -876,7 +876,7 @@ static
 qboolean CheckLaser(vec3_t pos, vec3_t maxs, vec3_t mins)
 {
 	int	i;
-	vec3_t v, end, absmax, absmin;
+	vec3_t v = { 0 }, end, absmax = { 0 }, absmin = { 0 };
 	float L1, L2, L3;
 
 	VectorAdd(pos, maxs, absmax);
@@ -927,8 +927,8 @@ qboolean CheckLaser(vec3_t pos, vec3_t maxs, vec3_t mins)
 int Bot_moveT(edict_t *ent, float ryaw, vec3_t pos, float dist, float *bottom)
 {
 	float		i, yaw;
-	vec3_t		trstart, trend;
-	vec3_t		trmin, trmax, v = {0}, vv;
+	vec3_t		trstart = { 0 }, trend = { 0 };
+	vec3_t		trmin = { 0 }, trmax = { 0 }, v = {0}, vv = { 0 };
 	trace_t		rs_trace;
 	float		tracelimit;
 	qboolean	moveok;
@@ -1162,7 +1162,7 @@ static
 int Bot_Watermove(edict_t *ent, vec3_t pos, float dist, float upd)
 {
 	trace_t		rs_trace;
-	vec3_t		trmin, trmax, touchmin;
+	vec3_t		trmin = { 0 }, trmax = { 0 }, touchmin = { 0 };
 	float		i, j;
 	float		vec;
 
@@ -1297,7 +1297,7 @@ static
 int Bot_moveW ( edict_t *ent,float ryaw,vec3_t pos,float dist,float *bottom)
 {
 	float		yaw;
-	vec3_t		trstart,trend;
+	vec3_t		trstart = { 0 },trend = { 0 };
 	trace_t		rs_trace;
 
 	int			contents;
@@ -1341,7 +1341,8 @@ static
 qboolean BankCheck(edict_t *ent,vec3_t pos)
 {
 	trace_t	rs_trace;
-	vec3_t	end,v1,v2;
+	vec3_t	end = { 0 };
+	vec3_t	v1 = { 0 }, v2 = { 0 };
 
 	VectorSet(v1,-16,-16,-24);
 	VectorSet(v2,16,16,16);
@@ -1366,7 +1367,7 @@ static
 qboolean HazardCheck(edict_t *ent,vec3_t pos)
 {
 	trace_t	rs_trace;
-	vec3_t	end,v1,v2;
+	vec3_t	end = { 0 }, v1 = { 0 }, v2 = { 0 };
 	int		contents;
 
 	VectorSet(v1,-16,-16,-16);
@@ -1427,7 +1428,7 @@ qboolean HazardCheck(edict_t *ent,vec3_t pos)
 static
 void Set_Combatstate(edict_t *ent,int foundedenemy)
 {
-	vec3_t	v;
+	vec3_t	v = { 0 };
 	gclient_t	*client;
 	float	distance;
 	edict_t	*target;
@@ -1695,7 +1696,8 @@ qboolean Bot_Fall(edict_t *ent,vec3_t pos,float dist)
 		//if on hazard object cause error
 		if(!HazardCheck(ent,vv))
 		{
-			if(++zc->routeindex >= CurrentIndex) zc->routeindex = 0;
+			if(++zc->routeindex >= CurrentIndex)
+				zc->routeindex = 0;
 
 //gi.bprintf(PRINT_HIGH,"OFF 1\n"); //ppx
 //gi.bprintf(PRINT_HIGH,"hazard out\n");
@@ -1852,7 +1854,7 @@ JMPCHK:
 qboolean TargetJump(edict_t *ent,vec3_t tpos)
 {
 	float	x,l,grav,vel,ypos,yori;
-	vec3_t	v,vv;
+	vec3_t	v = { 0 }, vv = { 0 };
 	int		mf = false;
 
 	grav = ent->gravity * sv_gravity->value * FRAMETIME;
@@ -1918,7 +1920,7 @@ static
 qboolean TargetJump_Turbo(edict_t *ent,vec3_t tpos)
 {
 	float	x,l,grav,vel,ypos,yori;
-	vec3_t	v,vv;
+	vec3_t	v = { 0 }, vv = { 0 };
 	int		mf = false;
 	float	jvel;
 
@@ -1994,7 +1996,7 @@ static
 qboolean TargetJump_Chk(edict_t *ent,vec3_t tpos,float defvel)
 {
 	float	x,l,grav,vel,ypos,yori;
-	vec3_t	v,vv;
+	vec3_t	v = { 0 }, vv = { 0 };
 	int		mf = false;
 
 	grav = ent->gravity * sv_gravity->value * FRAMETIME;
@@ -2066,7 +2068,7 @@ void Set_BotAnim(edict_t *ent,int anim,int frame,int end)
 void Get_WaterState(edict_t *ent)
 {
 	zgcl_t	*zc;
-	vec3_t	trmin,trmax;
+	vec3_t	trmin = { 0 }, trmax = { 0 };
 	float	x;
 	trace_t		rs_trace;
 
@@ -2201,7 +2203,7 @@ void Get_RouteOrigin(int index,vec3_t pos)
 static
 void Search_NearlyPod(edict_t *ent)
 {
-	vec3_t	v,v1,v2;
+	vec3_t	v, v1 = { 0 }, v2 = { 0 };
 	float x;
 
 	if(Route[ent->client->zc.routeindex].state >= GRS_ITEMS)	return;
@@ -2312,14 +2314,14 @@ void Bots_Move_NORM (edict_t *ent)
 	float		x, f1, f2, f3, bottom;
 	int			tempflag;
 	//qboolean	buttonuse;
-	vec3_t		temppos;
+	vec3_t		temppos = { 0 };
 
 	trace_t		rs_trace;
 	edict_t*	touch[MAX_EDICTS];
 	edict_t*	trent;
-	vec3_t		touchmin, touchmax, v = {0}, vv = {0};
-	vec3_t		trmin = {0},trmax;
-	int			i,j,k,l;
+	vec3_t		touchmin = { 0 }, touchmax = { 0 }, v = { 0 }, vv = { 0 };
+	vec3_t		trmin = { 0 }, trmax = { 0 };
+	int			i, j, k, l;
 	qboolean	canrocj,waterjumped;
 	edict_t		*it_ent = NULL;
 	gitem_t		*it = NULL;
@@ -2334,7 +2336,7 @@ void Bots_Move_NORM (edict_t *ent)
 
 	cplane_t	plane;
 
-	vec3_t		Origin,Velocity,change;//original param
+	vec3_t		Origin = { 0 }, Velocity = { 0 }, change = { 0 };//original param
 	float		OYaw=0;			//
 	float		dis;
 	qboolean	ladderdrop;

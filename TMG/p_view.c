@@ -60,7 +60,7 @@ P_DamageFeedback (edict_t *player)
 	gclient_t	*client;
 	float	side;
 	float	realcount, count, kick;
-	vec3_t	v;
+	vec3_t	v = { 0 };
 	int		r, l;
 	static	vec3_t	power_color = {0.0, 1.0, 0.0};
 	static	vec3_t	acolor = {1.0, 1.0, 1.0};
@@ -223,7 +223,7 @@ SV_CalcViewOffset (edict_t *ent)
 	float		bob;
 	float		ratio;
 	float		delta;
-	vec3_t		v;
+	vec3_t		v = { 0 };
 
 
   // Make sure ent exists!
@@ -428,7 +428,7 @@ static void
 	SV_CalcBlend (edict_t *ent)
 {
 	int		contents;
-	vec3_t	vieworg;
+	vec3_t	vieworg = { 0 };
 	int		remaining;
 	//RAV
 	float	alpha;
@@ -593,7 +593,7 @@ P_FallingDamage (edict_t *ent)
 {
 	float	delta;
 	int		damage;
-	vec3_t	dir;
+	vec3_t	dir = { 0 };
 	static qboolean is_jump;
 
 	// Make sure ent exists!
@@ -1750,7 +1750,7 @@ and right after spawning
 void BotEndServerFrame (edict_t *ent)
 {
 	float	bobtime;
-	vec3_t	v;
+	vec3_t	v = { 0 };
 
 	current_player = ent;
 	current_client = ent->client;

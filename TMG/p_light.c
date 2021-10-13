@@ -1,9 +1,9 @@
 // Flashlight 
 
 #include "g_local.h"
-/*8===============>
+/*===============>
 FL_makemake 
-<===============8*/
+<===============*/
 
 void FL_make(edict_t *self) 
 {

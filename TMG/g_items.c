@@ -1803,7 +1803,7 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 				VectorCopy (ent->s.origin, blueflag_origin);
 				VectorCopy (ent->s.origin, blueflagnow);
 			}
-			//gi.dprintf("%s spawned at %s \n", ent->classname, vtos(ent->s.origin));
+			gi.dprintf("%s spawned at %s \n", ent->classname, vtos(ent->s.origin));
 		}
 		else
 		{
