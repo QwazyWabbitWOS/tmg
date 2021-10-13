@@ -7,11 +7,9 @@
 #pragma warning(disable : 4244)     // conversion from 'type1' to 'type2', possible loss of data
 #pragma warning(disable : 4100)		// unreferenced formal parameter
 #pragma warning(disable : 4127)		// conditional expression is constant
-#if _MSC_VER > 1500
 #pragma warning(disable : 4996)		// unsafe CRT functions (_CRT_SECURE_NO_WARNINGS).
 #pragma warning(disable : 4459)		// declaration of 'var' hides global declaration.
 #pragma warning(disable : 6244)		// local declaration of <variable> hides previous declaration at <line> of <file>
-#endif
 #endif
 
 #include <assert.h>
