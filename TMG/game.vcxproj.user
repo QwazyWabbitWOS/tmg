@@ -13,10 +13,10 @@
     <LocalDebuggerWorkingDirectory>c:\quake2</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommand>c:\quake2\q2proded64</LocalDebuggerCommand>
+    <LocalDebuggerCommand>c:\quake2\r1q2ded64.exe</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>c:\quake2</LocalDebuggerWorkingDirectory>
-    <LocalDebuggerCommandArguments>+set dedicated 1 +set developer 1 +set sv_restrict_rtx 0 +set game ctf +set ctf 1 +set gamedebug 0 +set sv_gamedebug 0 +exec ctfserver.cfg</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>+set dedicated 1 +set developer 0 +set sv_restrict_rtx 0 +set game ctf +set ctf 1 +set gamedebug 1 +set sv_gamedebug 1 +exec ctfserver.cfg</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup>
     <ShowAllFiles>false</ShowAllFiles>

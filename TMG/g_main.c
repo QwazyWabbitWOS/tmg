@@ -102,7 +102,6 @@ cvar_t  *max_hud_dist;
 cvar_t  *light_comp;
 cvar_t  *id_x;
 cvar_t  *id_y;
-cvar_t  *mod;
 cvar_t  *hud_freq;
 cvar_t  *motd_time;
 
@@ -432,12 +431,9 @@ edict_t * CreateTargetChangeLevel(char* map)
 
 /*
 =================
-EndDMLevel
-
 The timelimit or fraglimit has been exceeded
 =================
 */
-
 void EndDMLevel (void)
 {
 	edict_t		*ent = NULL;

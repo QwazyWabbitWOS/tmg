@@ -165,26 +165,14 @@ qboolean Pickup_Weapon(edict_t* ent, edict_t* other)
 	return true;
 }
 
-
-// ### Hentai ### BEGIN
-//QW// Used by ShowGun but that code is disabled.
-//static qboolean
-//ViewWeaponSupported(char *model)
-//{
-//	return true;
-//}
-
 void ShowGun(edict_t* ent)
 {
-	//	char heldmodel[128], model[128];
-	//	int len;
-
 	int nIndex;
 	char* pszIcon;
 
 	// Make sure ent exists!
-	if (!G_EntExists(ent)) return;
-
+	if (!G_EntExists(ent))
+		return;
 
 	if (!view_weapons->value)
 	{
@@ -197,73 +185,6 @@ void ShowGun(edict_t* ent)
 		ent->s.modelindex2 = 0;
 		return;
 	}
-	/*
-		// speed things up, set flags after checking, so we only check once
-		if (!(ent->flags & (FL_NO_VWEAPON | FL_SUPPORTS_VWEAPON)))
-		{
-			strcpy(model, Info_ValueForKey (ent->client->pers.userinfo, "skin"));
-
-			for(len = 0; model[len]; len++)
-			{
-				if(model[len] == '/')
-				{
-					model[len] = '\0';
-					break;
-				}
-			}
-
-			ent->modelname = G_CopyString(model);
-
-			if (!ViewWeaponSupported(model))
-			{	// not supported
-				ent->s.modelindex2 = 255;
-				ent->flags |= FL_NO_VWEAPON;
-				return;
-			}
-			else
-			{
-				ent->flags |= FL_SUPPORTS_VWEAPON;
-			}
-		}
-		// we already know that this model ain't supported
-		else if (ent->flags & FL_NO_VWEAPON)
-		{
-			ent->s.modelindex2 = 255;
-			return;
-		}
-
-		if (ent->bot_client)
-		{
-			strcpy(model, ent->modelname);
-		}
-		else	// clients can change models during play
-		{
-			strcpy(model, Info_ValueForKey (ent->client->pers.userinfo, "skin"));
-
-			for(len = 0; model[len]; len++)
-			{
-				if(model[len] == '/')
-				{
-					model[len] = '\0';
-					break;
-				}
-			}
-		}
-
-		strcat(model, "/");
-
-		strcpy(heldmodel, "players/");
-		strcat(heldmodel, model);
-
-		if (!ent->bot_client || !ent->client->ctf_grapple)
-			strcat(heldmodel, ent->client->pers.weapon->icon);
-		else	// bot using grapple
-			strcat(heldmodel, "w_grapple");
-
-		strcat(heldmodel, ".md2");
-	//	gi.dprintf ("%s\n", heldmodel);
-		ent->s.modelindex2 = gi.modelindex(heldmodel);// Hentai's custom gun models
-	*/
 
 	// New engine support..
 	// Determine the weapon's precache index.

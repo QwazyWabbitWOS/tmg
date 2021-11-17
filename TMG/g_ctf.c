@@ -6556,9 +6556,7 @@ qboolean CTFStartClient(edict_t *ent)
 		safe_centerprintf(ent, "Hit 'TAB' or 'inven' for Menu\n");
 		return true;
 	}
-
 	return false;
-
 }
 
 

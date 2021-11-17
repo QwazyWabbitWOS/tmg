@@ -753,8 +753,7 @@ void safe_centerprintf (edict_t *ent, char *fmt, ...)
 	char	buffer[0x2000];
 	va_list	argptr;
 
-	if (!ent->inuse || 
-		ent->bot_client)
+	if (!ent->inuse || ent->bot_client)
 		return;
 
 	va_start (argptr, fmt);
@@ -764,7 +763,6 @@ void safe_centerprintf (edict_t *ent, char *fmt, ...)
 	// Safety check...
 	if (G_EntExists(ent))
 		gi.centerprintf(ent, "%s", buffer);
-	
 }
 
 // botsafe bprintf

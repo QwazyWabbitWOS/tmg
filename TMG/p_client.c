@@ -2353,13 +2353,6 @@ void PutClientInServer (edict_t *ent)
 		Touch_Item (it_ent, ent, NULL, NULL);
 	}
 
-	// End
-	//
-
-	if (!KillBox (ent))
-	{	// could't spawn in?
-	}
-
 	gi.linkentity (ent);
 
 	if (!ent->map)
@@ -2384,8 +2377,6 @@ void PutClientInServer (edict_t *ent)
 
 	//JSW
 	ent->client->kill = 0;	//Clear kill
-	//end
-
 }
 
 //RAV

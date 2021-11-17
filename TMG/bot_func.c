@@ -1336,7 +1336,6 @@ void PutBotInServer (edict_t *ent)
 //	int i	index of bot list
 //
 //----------------------------------------------------------------
-
 qboolean SpawnBot(int i)
 {
 	edict_t		*bot,*ent;

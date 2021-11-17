@@ -878,8 +878,6 @@ size_t Q_strncatz(char* dst, size_t dstSize, const char* src)
 	return (dLen + (s - src));    // returned count excludes NULL terminator
 }
 
-static char	bigbuffer[0x10000];  //QW// For Com_sprintf
-
 /**
  Safer, uses large buffer
  //QW// The big buffer allows us to safely dump
@@ -892,6 +890,7 @@ void Com_sprintf(char* dest, int size, char* fmt, ...)
 {
 	int		len;
 	va_list		argptr;
+	char	bigbuffer[0x1000];
 
 	va_start(argptr, fmt);
 	len = vsnprintf(bigbuffer, sizeof bigbuffer, fmt, argptr);

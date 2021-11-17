@@ -622,7 +622,6 @@ extern  cvar_t  *max_hud_dist;
 extern  cvar_t  *light_comp;
 extern  cvar_t  *id_x;
 extern  cvar_t  *id_y;
-extern  cvar_t  *mod;
 extern  cvar_t  *hud_freq;
 extern  cvar_t  *motd_time;
 
