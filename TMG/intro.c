@@ -295,14 +295,17 @@ void PrecacheSongs(void)
 		long counter = 0;
 		int n_chars = 0;
 
+		// estimate the file size
 		while (!feof(file))
 		{
 			fgetc(file);
 			file_size++;
 		}
+
 		fseek(file, 0L, SEEK_SET);
 		p_buffer = gi.TagMalloc(file_size, TAG_LEVEL);
 		memset(p_buffer, 0, file_size);
+		
 		count = fread((void *)p_buffer, sizeof(char), file_size, file);
 		if (!count)
 			gi.dprintf("%s read %d of %d bytes in %s\n",
