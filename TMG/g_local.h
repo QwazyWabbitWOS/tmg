@@ -1247,8 +1247,9 @@ typedef struct client_persistent_s
 	char		netname[16];
 	int			hand;
 
-	qboolean	connected;			// a loadgame will leave valid entities that
-									// just don't have a connection yet
+	// A loadgame will leave valid entities that
+	// just don't have a connection yet.
+	qboolean	connected;
 
 	// values saved and restored from edicts when changing levels
 	int			health;
