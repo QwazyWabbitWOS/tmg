@@ -33,9 +33,6 @@ typedef enum {false, true}	qboolean;
 #define NULL ((void *)0)
 #endif
 
-size_t Q_strncpyz(char* dst, size_t dstSize, const char* src);
-size_t Q_strncatz(char* dst, size_t dstSize, const char* src);
-
 // angle indexes
 #define	PITCH				0		// up / down
 #define	YAW					1		// left / right
@@ -198,6 +195,9 @@ void Com_PageInMemory (byte *buffer, int size);
 // portable case insensitive compares
 int Q_stricmp(const char *s1, const char *s2);
 int Q_strnicmp (const char *s1, const char *s2, size_t count);
+size_t Q_strncpyz(char* dst, size_t dstSize, const char* src);
+size_t Q_strncatz(char* dst, size_t dstSize, const char* src);
+
 
 //=============================================
 

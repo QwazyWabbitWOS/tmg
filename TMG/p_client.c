@@ -3035,8 +3035,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	CheckOpFile(ent, player, true);
 
 	// save off the userinfo in case we want to check something later
-	Com_sprintf(ent->client->pers.userinfo,
-		sizeof ent->client->pers.userinfo, "%s", userinfo);
+	Com_sprintf(ent->client->pers.userinfo, sizeof ent->client->pers.userinfo, "%s", userinfo);
 }
 
 /*
