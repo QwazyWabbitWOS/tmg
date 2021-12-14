@@ -1163,6 +1163,7 @@ void SV_AddRotationalFriction (edict_t *ent);
 void ShutdownGame (void);
 game_export_t *GetGameAPI (game_import_t *import);
 void ClientEndServerFrames (void);
+edict_t* CreateTargetChangeLevel(char* map);
 void EndDMLevel (void);
 void OPEndDMLevel (int mapindex, edict_t *cl);
 void CheckDMRules (void);
