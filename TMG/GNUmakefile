@@ -54,7 +54,8 @@ SHLIBEXT=so
 #set position independent code
 SHLIBCFLAGS=-fPIC
 
-ORIGDIR=Source
+OBJ = obj
+OBJECT_FILES=$(addprefix $(OBJ)/, $(SOURCE_FILES:.c=.o))
 
 DO_SHLIB_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
 
@@ -86,9 +87,6 @@ game$(ARCH).real.$(SHLIBEXT) : $(GAME_OBJS)
 
 clean:
 	/bin/rm -f $(GAME_OBJS) game$(ARCH).real.$(SHLIBEXT)
-
-depend:
-	$(CC) -MM $(GAME_OBJS:.o=.c)
 
 depends:
 	$(CC) $(CFLAGS) -MM *.c > dependencies
