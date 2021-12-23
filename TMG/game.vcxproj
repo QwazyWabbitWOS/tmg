@@ -169,10 +169,12 @@
     <PostBuildEvent />
     <PostBuildEvent />
     <PostBuildEvent>
-      <Command>copy $(OutDir)$(TargetName)$(TargetExt) c:\quake2\ctf\</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copying DLL $(OutDir)$(TargetName)$(TargetExt)</Message>
+      <Message>
+      </Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -257,8 +259,10 @@
       <OutputFile>./game.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>copy $(OutDir)$(TargetName)$(TargetExt) c:\quake2\ctf\</Command>
-      <Message>Copying DLL $(OutDir)$(TargetName)$(TargetExt)</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
