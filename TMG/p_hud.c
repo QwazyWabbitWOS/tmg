@@ -623,7 +623,8 @@ void G_SetStats (edict_t *ent)
 			ent->client->ps.stats[STAT_ARMOR_ICON] = 0;
 			ent->client->ps.stats[STAT_ARMOR] = 0;
 		}
-	}
+	}  // voosh
+
 	//
 	// pickup message
 	//

@@ -790,7 +790,8 @@ void InitializeBot(edict_t* ent, int botindex)
 	client->pers.health = 100;
 	client->pers.max_health = 100;
 
-	if (!voosh->value) {
+	if (!voosh->value)
+	{
 		client->pers.max_bullets = 200;
 		client->pers.max_shells = 100;
 		client->pers.max_rockets = 50;
@@ -1111,7 +1112,8 @@ void PutBotInServer(edict_t* ent)
 		client->pers.inventory[client->pers.selected_item] = 1;
 		client->pers.weapon = item;
 	}
-	else {
+	else
+	{
 		item = FindItem("Blaster");
 		client->pers.selected_item = ITEM_INDEX(item);
 		client->pers.inventory[client->pers.selected_item] = 1;
