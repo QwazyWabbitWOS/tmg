@@ -74,8 +74,8 @@ void SpawnItem4(edict_t* ent, gitem_t* item)
 qboolean Bot_trace(edict_t* ent, edict_t* other)
 {
 	trace_t		rs_trace;
-	vec3_t	ttx;
-	vec3_t	tty;
+	vec3_t	ttx = { 0 };
+	vec3_t	tty = { 0 };
 
 	VectorCopy(ent->s.origin, ttx);
 	VectorCopy(other->s.origin, tty);
@@ -156,7 +156,8 @@ qboolean Bot_trace(edict_t* ent, edict_t* other)
 qboolean Bot_traceX(edict_t* ent, edict_t* other)
 {
 	trace_t		rs_trace;
-	vec3_t	ttx, tty;
+	vec3_t	ttx = { 0 };
+	vec3_t	tty = { 0 };
 	VectorCopy(ent->s.origin, ttx);
 	VectorCopy(other->s.origin, tty);
 	ttx[2] += 16;
@@ -172,7 +173,8 @@ qboolean Bot_traceX(edict_t* ent, edict_t* other)
 qboolean Bot_traceY(edict_t* ent, edict_t* other)
 {
 	trace_t		rs_trace;
-	vec3_t	ttx, tty;
+	vec3_t	ttx = { 0 };
+	vec3_t	tty = { 0 };
 	VectorCopy(ent->s.origin, ttx);
 	VectorCopy(other->s.origin, tty);
 	if (ent->maxs[2] >= 32)
@@ -200,7 +202,7 @@ qboolean Bot_traceY(edict_t* ent, edict_t* other)
 qboolean Bot_trace2(edict_t* ent, vec3_t ttz)
 {
 	trace_t		rs_trace;
-	vec3_t	ttx;
+	vec3_t	ttx = { 0 };
 	VectorCopy(ent->s.origin, ttx);
 	if (ent->maxs[2] >= 32) ttx[2] += 24;
 	else ttx[2] -= 12;
@@ -219,7 +221,8 @@ qboolean Bot_trace2(edict_t* ent, vec3_t ttz)
 qboolean Bot_traceS(edict_t* ent, edict_t* other)
 {
 	trace_t		rs_trace;
-	vec3_t	start, end;
+	vec3_t	start = { 0 };
+	vec3_t	end = { 0 };
 	int		mycont;
 
 
@@ -297,7 +300,7 @@ WATERMODE:
 
 float Get_yaw(vec3_t vec)
 {
-	vec3_t		out;
+	vec3_t		out = { 0 };
 	double		yaw;
 
 	VectorCopy(vec, out);

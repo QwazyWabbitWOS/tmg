@@ -137,7 +137,7 @@ void AngleMove_Done (edict_t *ent)
 
 void AngleMove_Final (edict_t *ent)
 {
-	vec3_t	move;
+	vec3_t	move = { 0 };
 
 	if (ent->moveinfo.state == STATE_UP)
 		VectorSubtract (ent->moveinfo.end_angles, ent->s.angles, move);
@@ -158,7 +158,7 @@ void AngleMove_Final (edict_t *ent)
 
 void AngleMove_Begin (edict_t *ent)
 {
-	vec3_t	destdelta;
+	vec3_t	destdelta = { 0 };
 	float	len;
 	float	traveltime;
 	float	frames;
@@ -439,7 +439,8 @@ void Touch_Plat_Center (edict_t *ent, edict_t *other, cplane_t *plane, csurface_
 void plat_spawn_inside_trigger (edict_t *ent)
 {
 	edict_t	*trigger;
-	vec3_t	tmin, tmax;
+	vec3_t	tmin = { 0 };
+	vec3_t	tmax = { 0 };
 
 //
 // middle trigger
@@ -795,7 +796,9 @@ static void button_killed (edict_t *self, edict_t *inflictor, edict_t *attacker,
 
 void SP_func_button (edict_t *ent)
 {
-	vec3_t	abs_movedir,tdir,tdir2;
+	vec3_t	abs_movedir = { 0 };
+	vec3_t	tdir = { 0 };
+	vec3_t	tdir2 = { 0 };
 	float	dist;
 	gitem_t		*it;		//j
 	edict_t		*it_ent;	//j
@@ -1139,7 +1142,8 @@ static void Think_CalcMoveSpeed (edict_t *self)
 static void Think_SpawnDoorTrigger (edict_t *ent)
 {
 	edict_t		*other;
-	vec3_t		mins, maxs;
+	vec3_t	mins = { 0 };
+	vec3_t	maxs = { 0 };
 
 	if (ent->flags & FL_TEAMSLAVE)
 		return;		// only the team leader spawns a trigger
@@ -1261,7 +1265,7 @@ void SP_func_door (edict_t *ent)
 {
 	gitem_t		*it;		//j
 	edict_t		*it_ent;	//j
-	vec3_t	abs_movedir;
+	vec3_t	abs_movedir = { 0 };
 
 	if (ent->sounds != 1)
 	{
@@ -1526,7 +1530,7 @@ when spawned and operate in reverse.
 
 void SP_func_water (edict_t *self)
 {
-	vec3_t	abs_movedir;
+	vec3_t	abs_movedir = { 0 };
 
 	G_SetMovedir (self->s.angles, self->movedir);
 	self->movetype = MOVETYPE_PUSH;
@@ -1677,10 +1681,10 @@ static void train_wait (edict_t *self)
 	
 }
 
-void train_next (edict_t *self)
+void train_next(edict_t* self)
 {
-	edict_t		*ent;
-	vec3_t		dest;
+	edict_t* ent;
+	vec3_t		dest = { 0 };
 	qboolean	first;
 
 	first = true;
@@ -1737,7 +1741,7 @@ again:
 static void train_resume (edict_t *self)
 {
 	edict_t	*ent;
-	vec3_t	dest;
+	vec3_t	dest = { 0 };
 
 	ent = self->target_ent;
 

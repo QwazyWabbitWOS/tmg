@@ -13,7 +13,8 @@
 static void Get_AimAngle(edict_t* ent, float aim, float dist, int weapon)
 {
 	edict_t* target;
-	vec3_t	targaim, v;
+	vec3_t	targaim = { 0 };
+	vec3_t	v = { 0 };
 	trace_t	rs_trace;
 
 	target = ent->client->zc.first_target;
@@ -967,7 +968,7 @@ void Combat_LevelX(edict_t* ent, int foundedenemy,
 	edict_t* target;
 	int			mywep;
 	int			k;
-	vec3_t		v;
+	vec3_t		v = { 0 };
 
 	client = ent->client;
 	zc = &client->zc;
@@ -1023,7 +1024,10 @@ void Combat_Level0(edict_t* ent, int foundedenemy,
 	zgcl_t* zc;
 	edict_t* target;
 	int			mywep, i, j, k;
-	vec3_t		v, vv, v1, v2;
+	vec3_t	v = { 0 };
+	vec3_t	vv = { 0 };
+	vec3_t	v1 = { 0 };
+	vec3_t	v2 = { 0 };
 	trace_t		rs_trace;
 
 	client = ent->client;
