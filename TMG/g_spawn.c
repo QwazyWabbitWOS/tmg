@@ -302,19 +302,19 @@ void ED_CallSpawn (edict_t *ent)
 ED_NewString
 =============
 */
-char *ED_NewString (char *string)
+char* ED_NewString(char* string)
 {
-	char	*newb, *new_p;
+	char* newb, * new_p;
 	int		i;
-	int		l;
-	
-	l = (int) strlen(string) + 1;
-	newb = gi.TagMalloc (l, TAG_LEVEL);
+	int		len;
+
+	len = (int)strlen(string) + 1;
+	newb = gi.TagMalloc(len, TAG_LEVEL);
 	new_p = newb;
 
-	for (i=0 ; i< l ; i++)
+	for (i = 0; i < len; i++)
 	{
-		if (string[i] == '\\' && i < l-1)
+		if (string[i] == '\\' && i < len - 1)
 		{
 			i++;
 			if (string[i] == 'n')
@@ -325,7 +325,7 @@ char *ED_NewString (char *string)
 		else
 			*new_p++ = string[i];
 	}
-	
+
 	return newb;
 }
 
@@ -515,7 +515,7 @@ void G_FindTrainTeam(void)
 
 	qboolean	findteam;
 	char	*currtarget,*currtargetname;
-	char	*targethist[MAX_EDICTS];
+	static char	*targethist[MAX_EDICTS];
 	int		lc,i,j,k;
 	int		loopindex;
 

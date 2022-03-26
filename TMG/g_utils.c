@@ -570,7 +570,7 @@ void StuffCmd(edict_t *ent, char *text)
 		gi.dprintf ("%s\n", text);
 		return;
 	}
-	gi.WriteByte(11);				// 11 = svc_stufftext
+	gi.WriteByte(svc_stufftext);
 	gi.WriteString(text);
 	gi.unicast(ent, true);
 }

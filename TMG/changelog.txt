@@ -299,6 +299,17 @@ After forgetting to update this file for a very long time.
 0.2.53
 Move the top right corner HUD statistics down 10 units to allow space for FPS output from Q2RTX.
 
+0.2.54
+Refactored CheckFlood.
+Use a version of Knightmare's Q_strncpyz & Q_strncatz functions.
+Restored PrecacheSongs for music intros.
+
+0.2.55
+Renamed internal cvars for ffa and ctf modes. (removed underscores to align with config statements)
+
+0.2.56
+Style and misc. cleanups.
+Bug fix for returning blue flag.
 
 Completed
 2. Player name on freecam was fixed, but I may have to fix it again so it's still on the list.
