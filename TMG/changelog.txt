@@ -308,8 +308,11 @@ Restored PrecacheSongs for music intros.
 Renamed internal cvars for ffa and ctf modes. (removed underscores to align with config statements)
 
 0.2.56
+
+0.2.57
 Style and misc. cleanups.
 Bug fix for returning blue flag.
+
 
 Completed
 2. Player name on freecam was fixed, but I may have to fix it again so it's still on the list.
