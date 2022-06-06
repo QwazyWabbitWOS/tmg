@@ -81,8 +81,6 @@ restartServer(void)
 	
 /*
 =============
-SV_RunThink
-
 Runs thinking code for this frame if necessary
 =============
 */
