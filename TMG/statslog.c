@@ -83,8 +83,8 @@ void StatsLog(const char *fmt, ... )
 	}
 } 
 
-// this renames the stats file from lox/stats.log (or whatever)
-// to lox/stats/YYYYMMDD-stats.log. The lox/stats/ folder MUST exist.
+// this renames the stats file from stats.log (or whatever)
+// to stats/YYYYMMDD-stats.log. The stats/ folder MUST exist.
 void StatsLogRename(void)
 {
 	char	oldname[MAX_QPATH];
