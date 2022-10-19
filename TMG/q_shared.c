@@ -843,10 +843,10 @@ size_t Q_strncpyz(char* dst, size_t dstSize, const char* src)
 		*d++ = *s++;
 	*d = 0;
 
-	if (decSize == 0)    // Unsufficent room in dst, return count + length of remaining src
-		return (s - src - 1 + strlen(s));
+	if (decSize == 0)    // Insufficent room in dst, return count + length of remaining src
+		return (s - src + strlen(s));
 	else
-		return (s - src - 1);    // returned count excludes NULL terminator
+		return (s - src);    // returned count excludes NUL terminator
 }
 
 size_t Q_strncatz(char* dst, size_t dstSize, const char* src)
