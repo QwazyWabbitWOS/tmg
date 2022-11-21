@@ -303,9 +303,6 @@ void InitGame (void)
 	// allow ops to control lighting
 	lights_out = gi.cvar ("lights_out", "1", CVAR_LATCH);
 
-	InitHighScores();
-	Log_Init_vars();
-	
 	mapvote = gi.cvar("mapvote", "1", 0);
 
 	rcon = gi.cvar ("rcon_password", "", 0);
@@ -539,8 +536,9 @@ void InitGame (void)
 	GetDate();
 	GetTime();
 
-	//QW// Initialize cvars pertaining to stats logs
-	StatsInitVars();
+	InitHighScores();
+	Log_Init_vars(); //QW// For log_manager
+	StatsInitVars(); //QW// Initialize stats logging
 
 	if(ctf->value)
 		StatsLog("MODE: %s %s\n", "TMG_MOD CTF", MOD_VERSION );

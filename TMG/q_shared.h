@@ -19,6 +19,7 @@
 #include <ctype.h>
 #include <limits.h>
 #include <errno.h>
+#include <sys/stat.h> //QW// for gcc mkdir().
 
 typedef unsigned char 		byte;
 typedef enum {false, true}	qboolean;
@@ -229,6 +230,13 @@ extern	int	curtime;		// time returned by last Sys_Milliseconds
 
 int		Sys_Milliseconds (void);
 void	Sys_Mkdir (char *path);
+
+//QW// Taken from Q2PRO
+#ifdef _WIN32
+#define os_mkdir(p)         _mkdir(p)
+#else
+#define os_mkdir(p)         mkdir(p, 0775)
+#endif
 
 // large block stack allocation routines
 void	*Hunk_Begin (int maxsize);

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>+set developer 1 +set game ctf +set ctf 1 +exec ctfserver.cfg</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>+set game ctf +set ctf 1 +exec ctfserver.cfg</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>c:\quake2\q2proded.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>c:\quake2\r1q2ded.exe</LocalDebuggerCommand>
     <LocalDebuggerWorkingDirectory>c:\quake2</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

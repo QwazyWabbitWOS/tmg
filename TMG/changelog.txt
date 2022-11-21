@@ -313,6 +313,9 @@ Renamed internal cvars for ffa and ctf modes. (removed underscores to align with
 Style and misc. cleanups.
 Bug fix for returning blue flag.
 
+0.2.58
+Create ctf/cfg/hs/, ctf/logs/ and ctf/stats/ directories if they don't exist.
+Flush stats log in ShutdownGame.
 
 Completed
 2. Player name on freecam was fixed, but I may have to fix it again so it's still on the list.

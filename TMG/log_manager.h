@@ -2,6 +2,7 @@
 #define LOG_MANAGER_H
 
 extern cvar_t *logfile;         // the logfile mode control
+extern cvar_t *logfolder;       // the server log folder
 extern cvar_t *logfile_name;    // the server log file
 extern cvar_t *logfile_rename;  // how often we rename the server log file
 extern cvar_t *logfile_tmp;     // temp storage of logfile mode

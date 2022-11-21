@@ -294,8 +294,10 @@ void ShutdownGame (void)
 		}
 	}
 
-	if(statsfile) // guard against a failed initialization
+	if (statsfile) {// guard against a failed initialization
 		StatsLog("DOWN: %s\\%.1f\n", level.mapname, level.time);
+		StatsLogFlush();
+	}
 
 	if (mdsoft_map)
 		free(mdsoft_map);

@@ -6,6 +6,7 @@
 #include "maplist.h"	// for gamedir
 
 cvar_t	*statslog;			// Enable player stats summary to stats log (default = 1)
+cvar_t	*statsfolder;		// the path to the stats log file ("./ctf/stats/" by default)
 cvar_t	*statsfile;			// the name of the stats log file ("stats.log" by default)
 cvar_t	*statsfile_rename;	// how often we rename the file
 cvar_t	*statslog_tmp;		// temp storage for statslog value during rename
@@ -15,11 +16,24 @@ static FILE	*pStatsfile = NULL;
 
 void StatsInitVars(void)
 {
+	char stats[MAX_QPATH];
+
+	Com_sprintf(stats, sizeof stats, "%s/stats/", game_dir->string);
+	statsfolder = gi.cvar("statsfolder", stats, 0);
+
 	//cvars pertaining to stats logs
 	statslog = gi.cvar ("statslog", "1", 0);		//QW// allow logging player statistics
 	statsfile = gi.cvar ("statsfile", "stats.log", 0); //QW// the name of the stats file
 	statsfile_rename = gi.cvar ("statsfile_rename", "1", 0); //QW// 0 = never, 1 = daily, 2 = weekly, 3 = monthly
 	statslog_tmp = gi.cvar ("statslog_tmp", "0", 0);
+	
+	int ret = os_mkdir(statsfolder->string);
+	if (!ret || errno == EEXIST)
+		gi.dprintf("Initialized %s OK\n", statsfolder->string);
+	else {
+		gi.dprintf("Unable to create %s folder, (%s) stats logging disabled.\n", statsfolder->string, strerror(errno));
+		gi.cvar_forceset("statslog", "0");
+	}
 }
 
 // Output the statistics strings to a file in the gamedir
@@ -52,12 +66,12 @@ void StatsLog(const char *fmt, ... )
 		ar_st->tm_sec, 
 		ar_tmp); 
 
-	Com_sprintf(logpath, sizeof logpath, "%s/stats/%s", game_dir->string, statsfile->string);
+	Com_sprintf(logpath, sizeof logpath, "%s%s", statsfolder->string, statsfile->string);
 
 	// if not open and we want logging, open the log
 	if (statslog->value)
 	{
-		if (!pStatsfile) 
+		if (!pStatsfile)
 		{
 			pStatsfile = fopen(logpath, "a");
 			if(pStatsfile) 

@@ -29,8 +29,18 @@ HS_STRUCT g_TopScores[KEEP];
 
 void InitHighScores (void)
 {
+	char hs[MAX_QPATH];
+	Com_sprintf(hs, sizeof hs, "%s/%s/hs/", game_dir->string, cfgdir->string);
 	highscores = gi.cvar ("highscores", "1", CVAR_LATCH);
 	show_highscores = gi.cvar ("show_highscores", "0", CVAR_LATCH);
+
+	int ret = os_mkdir(hs);
+	if (!ret || errno == EEXIST)
+		gi.dprintf("Initialized %s OK\n", hs);
+	else {
+		gi.dprintf("Unable to create %s folder, (%s) highscores logging disabled.\n", hs, strerror(errno));
+		gi.cvar_forceset("highscores", "0");
+	}
 }
 
 void SaveHighScores (void)

@@ -2,6 +2,7 @@
 #include "log_manager.h"
 
 cvar_t	*logfile;           // the logfile mode control
+cvar_t	*logfolder;         // the server log folder
 cvar_t	*logfile_name;      // the server log file
 cvar_t	*logfile_rename;    // how often we rename the server log file
 cvar_t	*logfile_tmp;       // temp storage of logfile mode
@@ -16,9 +17,22 @@ Initialize the default values for the cvars we use.
 */
 void Log_Init_vars (void)
 {
+	char logs[MAX_QPATH];
+
+	Com_sprintf(logs, sizeof logs, "%s/cfg/logs/", game_dir->string);
+	logfolder = gi.cvar ("logfolder", logs, CVAR_NOSET);
 	logfile_name = gi.cvar ("logfile_name", "server.log", CVAR_NOSET);
 	logfile_rename = gi.cvar ("logfile_rename", "1", 0);
 	logfile_tmp = gi.cvar ("logfile_tmp", "0", 0);
+
+	//QW// Create the logs folder if it doesn't exist.
+	int ret = os_mkdir(logfolder->string);
+	if (!ret || errno == EEXIST)
+		gi.dprintf("Initialized %s OK\n", logfolder->string);
+	else {
+		gi.dprintf("Unable to create %s folder, (%s) server logging disabled.\n", logfolder->string, strerror(errno));
+		gi.cvar_forceset("logfile", "0");
+	}
 }
 
 // Call this once per second or once per minute
@@ -42,7 +56,8 @@ int	Log_CheckLocalMidnight(void)
 // depending on value of logfile_rename, default is daily.
 void Log_RenameConsoleLog(void)
 {
-	char	logpath [MAX_QPATH], newname[MAX_QPATH];
+	char	logpath[MAX_QPATH];
+	char	newname[MAX_QPATH];
     time_t	long_time;
 	struct	tm	*ltime; 
 	
@@ -59,7 +74,8 @@ void Log_RenameConsoleLog(void)
 		gi.cvar_forceset("logfile", "0");	// turn off logging
 		gi.dprintf("Backing up logfile\n");	// post a message to force log closure
 		Com_sprintf(logpath, sizeof logpath, "%s/%s", game_dir->string, logfile_name->string);
-		Com_sprintf(newname, sizeof newname, "%s/logs/%02i%02i%02i-%s", 
+		Com_sprintf(newname, sizeof newname, "%s/%s/%02i%02i%02i-%s", 
+			logfolder->string,
 			game_dir->string,
 			ltime->tm_year + 1900, 
 			ltime->tm_mon + 1, 
