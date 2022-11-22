@@ -235,7 +235,7 @@ void	Sys_Mkdir (char *path);
 #ifdef _WIN32
 #define os_mkdir(p)         _mkdir(p)
 #else
-#define os_mkdir(p)         mkdir(p, 0775)
+#define os_mkdir(p)         mkdir(p, 0755)
 #endif
 
 // large block stack allocation routines
