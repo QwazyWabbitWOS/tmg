@@ -15,7 +15,5 @@ TMG/Debug
 *.so
 dependencies
 TMG/Release/
-/TMG/.vs/
-/TMG/.vs/
-*.zip
-/TMG/x64
+TMG/.vs/
+TMG/x64
