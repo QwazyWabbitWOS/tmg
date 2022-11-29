@@ -29,11 +29,11 @@ void Wav_Mod_Setup(void)
 
 	gi.dprintf ("\n==== Wav Mod v.02 Setup ====\n");
 
-	wavs = gi.cvar("wavs", "1 ", 0);
-	songtoplay = gi.cvar("song", "misc/mm.wav ", 0);
-	use_song_file = gi.cvar ("use_song_file", "0", CVAR_ARCHIVE);
-	wav_random = gi.cvar ("wav_random", "1", CVAR_ARCHIVE);
-	wav = gi.cvar ("wav", "mm.wav",0);
+	wavs = gi.cvar("wavs", "1 ", 0);	// 1|0 play wavs or not
+	songtoplay = gi.cvar("song", "misc/mm.wav ", 0); // default 1st song
+	use_song_file = gi.cvar ("use_song_file", "1", CVAR_ARCHIVE); // use the song file (intro.txt)
+	wav_random = gi.cvar ("wav_random", "1", CVAR_ARCHIVE); // randomize
+	wav = gi.cvar ("wav", "mm.wav",0); // just to instantiate the wav cvar
 
 	Com_sprintf(file_name, sizeof file_name, "%s/%s/%s/intro.txt", 
 		basedir->string, game_dir->string, cfgdir->string);
