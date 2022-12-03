@@ -5,7 +5,8 @@
 #pragma once
 
 #ifdef _WIN32
-  #define WIN32_LEAN_AND_MEAN	//non-MFC
+  #define WIN32_LEAN_AND_MEAN	// non-MFC
+  #define _USE_MATH_DEFINES		// for some POSIX math constants (M_PI)
   #include <windows.h>
   #include <direct.h> // for _mkdir()
   #define _CRTDBG_MAP_ALLOC
@@ -31,7 +32,7 @@
 //
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"TMG_MOD"
-#define MOD_VERSION "0.2.58"
+#define MOD_VERSION "0.2.59"
 #define MOD "TMG_MOD"
 
 #ifndef _DEBUG
