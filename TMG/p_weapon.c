@@ -637,7 +637,7 @@ void Weapon_Generic(edict_t* ent,
 	int* fire_frames,
 	void (*fire)(edict_t* ent))
 {
-	int oldstate;
+	weaponstate_t oldstate;
 
 	// Make sure ent exists!
 	if (!G_EntExists(ent))
@@ -665,8 +665,7 @@ void Weapon_Generic(edict_t* ent,
 
 	if ((CTFApplyHaste(ent) ||
 		(Q_stricmp(ent->client->pers.weapon->pickup_name, "Grapple") == 0 &&
-			ent->client->weaponstate != WEAPON_FIRING))
-		&& oldstate == ent->client->weaponstate)
+			ent->client->weaponstate != WEAPON_FIRING)) && oldstate == ent->client->weaponstate)
 	{
 		Weapon_Generic2(ent, FRAME_ACTIVATE_LAST, FRAME_FIRE_LAST,
 			FRAME_IDLE_LAST, FRAME_DEACTIVATE_LAST, pause_frames,

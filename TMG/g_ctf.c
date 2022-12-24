@@ -3805,7 +3805,7 @@ void CTFSay_Team(edict_t* who, char* msg)
 		msg++;
 	}
 
-	for (p = outmsg; *msg && (p - outmsg) < sizeof(outmsg) - 1; msg++)
+	for (p = outmsg; *msg && (p - outmsg) < (int)sizeof(outmsg) - 1; msg++)
 	{
 		if (*msg == '%')
 		{
@@ -6959,9 +6959,9 @@ void CTFSetupNavSpawn(void)
 				if (j >= globals.num_edicts &&
 					(Route[i].state == GRS_ITEMS ||
 						Route[i].state == GRS_REDFLAG ||
-						Route[i].state == GRS_BLUEFLAG))
+						Route[i].state == GRS_BLUEFLAG)) {
 					/*gi.dprintf("kicked item: %d \n", Route[i].state)*/;
-
+				}
 				if (j >= globals.num_edicts)
 					Route[i].state = GRS_NORMAL;
 			}

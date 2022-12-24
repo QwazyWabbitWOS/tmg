@@ -7,10 +7,10 @@
 
 //RAV
 	char	*apszTextFilterStrings[1000];
-	int		nTextFilterCount;
+	size_t		nTextFilterCount;
 
 	char	*apszTextNonFilterStrings[1000];
-	int		nTextNonFilterCount;
+	size_t		nTextNonFilterCount;
 //
 
 /**************************************************************************/
@@ -161,7 +161,7 @@ static char *fgets_endws(char *pszBuffer, int nSize, FILE *pStream)
  */
 qboolean FilterText(char *pszText)
 {
-	int 	 i;
+	size_t 	 i;
 	char	 szBuffer[500];
 	char	*p;
 	char	*pSrc;
@@ -308,7 +308,7 @@ qboolean FilterText(char *pszText)
 
 static void PurgeTextFilterInfo(void)
 {
-	int i;
+	size_t i;
 
 	for ( i = 0; i < nTextFilterCount; i++)
 	{

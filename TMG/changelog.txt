@@ -321,6 +321,11 @@ Flush stats log in ShutdownGame.
 Initialize Wav cvars in a function.
 Added _USE_MATH_DEFINES to get POSIX math constants when targeting WIN32.
 
+0.2.60
+No significant functional changes.
+Raise warning levels on Linux. Catch more lint.
+Tidy up code where initializers or indentation was wrong or fallthroughs occur.
+
 Completed
 2. Player name on freecam was fixed, but I may have to fix it again so it's still on the list.
 3. Same with bug in lockteams on the admin menu.

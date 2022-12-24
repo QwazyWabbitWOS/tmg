@@ -67,7 +67,7 @@ void Maplist_InitVars(void)
 // returns true if it is a stock map, else false
 qboolean Maplist_CheckStockmaps(char *thismap)
 {
-	int i;
+	size_t i;
 	
 	for (i = 0; i < sizeof stockmaps / sizeof stockmaps[0]; i++)
 	{

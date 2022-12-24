@@ -114,7 +114,6 @@ int ApplyLocationalSystem (edict_t *attacker, edict_t *targ, vec3_t point, int m
 					gi.sound (attacker, CHAN_AUTO, gi.soundindex ("misc/headhunter.wav"), 1, ATTN_NORM, 0);
 				hstime = level.time + 10;
 			}
-
 			if ((attacker->misc_time[MSG_TIME] < level.time) && (damage_display->value > 0))
 			{
 				safe_centerprintf (attacker, "You shot %s in the HEAD\n", targ->client->pers.netname);
@@ -127,11 +126,8 @@ int ApplyLocationalSystem (edict_t *attacker, edict_t *targ, vec3_t point, int m
 		if (attacker->client)
 		{
 			if ((attacker->misc_time[MSG_TIME] < level.time) && (damage_display->value > 0))
-
-
 			{	
-					safe_centerprintf (attacker, "You shot %s in the Legs\n", targ->client->pers.netname);
-
+				safe_centerprintf (attacker, "You shot %s in the Legs\n", targ->client->pers.netname);
 				attacker->misc_time[MSG_TIME] = level.time + 1;
 			}
 		}
@@ -141,21 +137,16 @@ int ApplyLocationalSystem (edict_t *attacker, edict_t *targ, vec3_t point, int m
 		if (attacker->client)
 		{
 		if ((attacker->misc_time[MSG_TIME] < level.time) && (damage_display->value > 0))
-
 			{
-					
-					safe_centerprintf (attacker, "You shot %s in the chest !\n", targ->client->pers.netname);
-
+				safe_centerprintf (attacker, "You shot %s in the chest !\n", targ->client->pers.netname);
 				attacker->misc_time[MSG_TIME] = level.time + 1;
 			}
 		}
+		break;
 	default:
 		return d_damage;
 		break;
 	}
 
 	return damage;
-
 }
-
-

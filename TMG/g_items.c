@@ -2044,9 +2044,9 @@ void SpawnItem3 (edict_t *ent, gitem_t *item)
 gitem_t	itemlist[] = 
 {
 	{
-		NULL
+		NULL,
 	},	// leave index 0 alone
-//3ZB
+	//3ZB
 	//
 	// NAVI
 	//

@@ -1612,6 +1612,7 @@ void Combat_Level0(edict_t* ent, int foundedenemy,
 				if (B_UseShotgun(ent, target, enewep, aim, distance, bot_skill))
 					goto FIRED;
 			}
+			break;
 		case WEAP_GRENADES:
 			if (distance < 1200)
 			{

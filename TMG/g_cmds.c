@@ -1229,7 +1229,7 @@ void Say_Op(edict_t *who, char *msg)
 		msg++;
 	}
 
-	for (p = outmsg; *msg && (p - outmsg) < sizeof(outmsg) - 1; msg++)
+	for (p = outmsg; *msg && (p - outmsg) < (int)sizeof(outmsg) - 1; msg++)
 	{
 			*p++ = *msg;
 	}

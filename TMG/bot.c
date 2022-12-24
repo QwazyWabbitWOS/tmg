@@ -323,8 +323,8 @@ float Get_pitch(vec3_t vec)
 
 	VectorNormalize2(vec, out);
 
-	pitch = acos((double)out[2]);
-	pitch = ((float)pitch) / M_PI * 180;
+	pitch = acosf(out[2]);
+	pitch = (float)(pitch / M_PI * 180);
 
 	pitch -= 90;
 	if (pitch < -180)

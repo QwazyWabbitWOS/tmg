@@ -17,38 +17,38 @@
 
 //
 field_t fields[] = {
-	{"classname", FOFS(classname), F_LSTRING},
-	{"origin", FOFS(s.origin), F_VECTOR},
-	{"model", FOFS(model), F_LSTRING},
-	{"spawnflags", FOFS(spawnflags), F_INT},
-	{"speed", FOFS(speed), F_FLOAT},
-	{"accel", FOFS(accel), F_FLOAT},
-	{"decel", FOFS(decel), F_FLOAT},
-	{"target", FOFS(target), F_LSTRING},
-	{"targetname", FOFS(targetname), F_LSTRING},
-	{"pathtarget", FOFS(pathtarget), F_LSTRING},
-	{"deathtarget", FOFS(deathtarget), F_LSTRING},
-	{"killtarget", FOFS(killtarget), F_LSTRING},
-	{"combattarget", FOFS(combattarget), F_LSTRING},
-	{"message", FOFS(message), F_LSTRING},
-	{"team", FOFS(team), F_LSTRING},
-	{"wait", FOFS(wait), F_FLOAT},
-	{"delay", FOFS(delay), F_FLOAT},
-	{"random", FOFS(random), F_FLOAT},
-	{"move_origin", FOFS(move_origin), F_VECTOR},
-	{"move_angles", FOFS(move_angles), F_VECTOR},
-	{"style", FOFS(style), F_INT},
-	{"count", FOFS(count), F_INT},
-	{"health", FOFS(health), F_INT},
-	{"sounds", FOFS(sounds), F_INT},
-	{"light", 0, F_IGNORE},
-	{"dmg", FOFS(dmg), F_INT},
-	{"angles", FOFS(s.angles), F_VECTOR},
-	{"angle", FOFS(s.angles), F_ANGLEHACK},
-	{"mass", FOFS(mass), F_INT},
-	{"volume", FOFS(volume), F_FLOAT},
-	{"attenuation", FOFS(attenuation), F_FLOAT},
-	{"map", FOFS(map), F_LSTRING},
+	{"classname", FOFS(classname), F_LSTRING, 0},
+	{"origin", FOFS(s.origin), F_VECTOR, 0},
+	{"model", FOFS(model), F_LSTRING, 0},
+	{"spawnflags", FOFS(spawnflags), F_INT, 0},
+	{"speed", FOFS(speed), F_FLOAT, 0},
+	{"accel", FOFS(accel), F_FLOAT, 0},
+	{"decel", FOFS(decel), F_FLOAT, 0},
+	{"target", FOFS(target), F_LSTRING, 0},
+	{"targetname", FOFS(targetname), F_LSTRING, 0},
+	{"pathtarget", FOFS(pathtarget), F_LSTRING, 0},
+	{"deathtarget", FOFS(deathtarget), F_LSTRING, 0},
+	{"killtarget", FOFS(killtarget), F_LSTRING, 0},
+	{"combattarget", FOFS(combattarget), F_LSTRING, 0},
+	{"message", FOFS(message), F_LSTRING, 0},
+	{"team", FOFS(team), F_LSTRING, 0},
+	{"wait", FOFS(wait), F_FLOAT, 0},
+	{"delay", FOFS(delay), F_FLOAT, 0},
+	{"random", FOFS(random), F_FLOAT, 0},
+	{"move_origin", FOFS(move_origin), F_VECTOR, 0},
+	{"move_angles", FOFS(move_angles), F_VECTOR, 0},
+	{"style", FOFS(style), F_INT, 0},
+	{"count", FOFS(count), F_INT, 0},
+	{"health", FOFS(health), F_INT, 0},
+	{"sounds", FOFS(sounds), F_INT, 0},
+	{"light", 0, F_IGNORE, 0},
+	{"dmg", FOFS(dmg), F_INT, 0},
+	{"angles", FOFS(s.angles), F_VECTOR, 0},
+	{"angle", FOFS(s.angles), F_ANGLEHACK, 0},
+	{"mass", FOFS(mass), F_INT, 0},
+	{"volume", FOFS(volume), F_FLOAT, 0},
+	{"attenuation", FOFS(attenuation), F_FLOAT, 0},
+	{"map", FOFS(map), F_LSTRING, 0},
 
 	// temp spawn vars -- only valid when the spawn function is called
 	{"lip", STOFS(lip), F_INT, FFL_SPAWNTEMP},
@@ -81,57 +81,57 @@ field_t fields[] = {
 
 field_t		savefields[] =
 {
-	{"", FOFS(classname), F_LSTRING},
-	{"", FOFS(target), F_LSTRING},
-	{"", FOFS(targetname), F_LSTRING},
-	{"", FOFS(killtarget), F_LSTRING},
-	{"", FOFS(team), F_LSTRING},
-	{"", FOFS(pathtarget), F_LSTRING},
-	{"", FOFS(deathtarget), F_LSTRING},
-	{"", FOFS(combattarget), F_LSTRING},
-	{"", FOFS(model), F_LSTRING},
-	{"", FOFS(map), F_LSTRING},
-	{"", FOFS(message), F_LSTRING},
+	{"", FOFS(classname), F_LSTRING, 0},
+	{"", FOFS(target), F_LSTRING, 0},
+	{"", FOFS(targetname), F_LSTRING, 0},
+	{"", FOFS(killtarget), F_LSTRING, 0},
+	{"", FOFS(team), F_LSTRING, 0},
+	{"", FOFS(pathtarget), F_LSTRING, 0},
+	{"", FOFS(deathtarget), F_LSTRING, 0},
+	{"", FOFS(combattarget), F_LSTRING, 0},
+	{"", FOFS(model), F_LSTRING, 0},
+	{"", FOFS(map), F_LSTRING, 0},
+	{"", FOFS(message), F_LSTRING, 0},
 
-	{"", FOFS(client), F_CLIENT},
-	{"", FOFS(item), F_ITEM},
+	{"", FOFS(client), F_CLIENT, 0},
+	{"", FOFS(item), F_ITEM, 0},
 
-	{"", FOFS(goalentity), F_EDICT},
-	{"", FOFS(movetarget), F_EDICT},
-	{"", FOFS(enemy), F_EDICT},
-	{"", FOFS(oldenemy), F_EDICT},
-	{"", FOFS(activator), F_EDICT},
-	{"", FOFS(groundentity), F_EDICT},
-	{"", FOFS(teamchain), F_EDICT},
-	{"", FOFS(teammaster), F_EDICT},
-	{"", FOFS(owner), F_EDICT},
-	{"", FOFS(mynoise), F_EDICT},
-	{"", FOFS(mynoise2), F_EDICT},
-	{"", FOFS(target_ent), F_EDICT},
-	{"", FOFS(chain), F_EDICT},
+	{"", FOFS(goalentity), F_EDICT, 0},
+	{"", FOFS(movetarget), F_EDICT, 0},
+	{"", FOFS(enemy), F_EDICT, 0},
+	{"", FOFS(oldenemy), F_EDICT, 0},
+	{"", FOFS(activator), F_EDICT, 0},
+	{"", FOFS(groundentity), F_EDICT, 0},
+	{"", FOFS(teamchain), F_EDICT, 0},
+	{"", FOFS(teammaster), F_EDICT, 0},
+	{"", FOFS(owner), F_EDICT, 0},
+	{"", FOFS(mynoise), F_EDICT, 0},
+	{"", FOFS(mynoise2), F_EDICT, 0},
+	{"", FOFS(target_ent), F_EDICT, 0},
+	{"", FOFS(chain), F_EDICT, 0},
 
-	{NULL, 0, F_INT}
+	{NULL, 0, F_INT, 0}
 };
 
 field_t		levelfields[] =
 {
-	{"", LLOFS(changemap), F_LSTRING},
+	{"", LLOFS(changemap), F_LSTRING, 0},
 
-	{"", LLOFS(sight_client), F_EDICT},
-	{"", LLOFS(sight_entity), F_EDICT},
-	{"", LLOFS(sound_entity), F_EDICT},
-	{"", LLOFS(sound2_entity), F_EDICT},
+	{"", LLOFS(sight_client), F_EDICT, 0},
+	{"", LLOFS(sight_entity), F_EDICT, 0},
+	{"", LLOFS(sound_entity), F_EDICT, 0},
+	{"", LLOFS(sound2_entity), F_EDICT, 0},
 
-	{NULL, 0, F_INT}
+	{NULL, 0, F_INT, 0}
 };
 
 field_t		clientfields[] =
 {
-	{"", CLOFS(pers.weapon), F_ITEM},
-	{"", CLOFS(pers.lastweapon), F_ITEM},
-	{"", CLOFS(newweapon), F_ITEM},
+	{"", CLOFS(pers.weapon), F_ITEM, 0},
+	{"", CLOFS(pers.lastweapon), F_ITEM, 0},
+	{"", CLOFS(newweapon), F_ITEM, 0},
 
-	{NULL, 0, F_INT}
+	{NULL, 0, F_INT, 0}
 };
 
 //
@@ -654,8 +654,9 @@ static void ReadField (FILE *f, field_t *field, byte *base)
 		{
 			*(char **)p = gi.TagMalloc (len, TAG_LEVEL);
 			count = fread (*(char **)p, len, 1, f);
-			if (count)
+			if (count) {
 				; // don't worry, be happy
+			}
 		}
 		break;
 	case F_GSTRING:
@@ -666,8 +667,9 @@ static void ReadField (FILE *f, field_t *field, byte *base)
 		{
 			*(char **)p = gi.TagMalloc (len, TAG_GAME);
 			count = fread (*(char **)p, len, 1, f);
-			if (count)
+			if (count) {
 				; // don't worry, be happy
+			}
 		}
 		break;
 	case F_EDICT:
@@ -743,9 +745,9 @@ static void ReadClient (FILE *f, gclient_t *client)
 	size_t	count;
 
 	count = fread(client, sizeof(*client), 1, f);
-	if (count)
+	if (count) {
 		; // don't worry, be happy
-
+	}
 	for (field=clientfields ; field->name ; field++)
 	{
 		ReadField (f, field, (byte *)client);
@@ -819,8 +821,9 @@ void ReadGame (char *filename)
 	}
 
 	count = fread (str, sizeof(str), 1, f);
-	if (count)
+	if (count) {
 		; // don't worry, be happy
+	}
 	if (strcmp (str, __DATE__))
 	{
 		fclose (f);
@@ -918,9 +921,9 @@ static void ReadEdict (FILE *f, edict_t *ent)
 	size_t	count;
 
 	count = fread (ent, sizeof(*ent), 1, f);
-	if (count)
+	if (count) {
 		; // don't worry, be happy
-
+	}
 	for (field = savefields; field->name; field++)
 	{
 		ReadField (f, field, (byte *)ent);
@@ -940,9 +943,9 @@ static void ReadLevelLocals (FILE *f)
 	size_t	count;
 
 	count = fread (&level, sizeof(level), 1, f);
-	if (count)
+	if (count) {
 		; // don't worry, be happy
-
+	}
 	for (field = levelfields; field->name; field++)
 	{
 		ReadField (f, field, (byte *)&level);

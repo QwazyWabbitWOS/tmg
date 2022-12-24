@@ -170,7 +170,7 @@ void M_CheckGround (edict_t *ent)
  **/
 void M_CheckGround (edict_t *ent)
 {
-	vec3_t		point,stp,v1,v2;
+	vec3_t		point = { 0 }, stp = { 0 }, v1 = { 0 }, v2 = { 0 };
 	trace_t		trace,tracep;
 
 	if (ent->flags & (FL_SWIM|FL_FLY))
@@ -191,7 +191,7 @@ void M_CheckGround (edict_t *ent)
 // if the hull point one-quarter unit down is solid the entity is on ground
 	point[0] = ent->s.origin[0];
 	point[1] = ent->s.origin[1];
-	point[2] = ent->s.origin[2] - 0.25;
+	point[2] = ent->s.origin[2] - 0.25f;
 
 	trace = gi.trace (ent->s.origin,
 					  ent->mins, ent->maxs,
@@ -242,7 +242,7 @@ void M_CheckGround (edict_t *ent)
 
 void M_CategorizePosition (edict_t *ent)
 {
-	vec3_t		point;
+	vec3_t		point = { 0 };
 	int			cont;
 
 //
@@ -366,7 +366,7 @@ void M_WorldEffects (edict_t *ent)
 
 void M_droptofloor (edict_t *ent)
 {
-	vec3_t		end;
+	vec3_t		end = { 0 };
 	trace_t		trace;
 
 	ent->s.origin[2] += 1;
