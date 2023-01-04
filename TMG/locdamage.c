@@ -38,7 +38,7 @@
  */
 int GetHitLocation (vec3_t point, edict_t *ent, int mod)
 {
-	vec3_t hLoc;
+	vec3_t hLoc = { 0 };
 
 	if (!ent->client)
 		return LOC_NONE;	//apply on players only

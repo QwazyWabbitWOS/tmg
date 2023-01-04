@@ -47,7 +47,7 @@ int MapMaxVotes(void)
 
 void VoteForMap(int i)
 {
-	if (i >= 0 && i < maplist->nummaps)
+	if (!(i < 0) && i < maplist->nummaps)
 		++maplist->votes[i];
 }
 

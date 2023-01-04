@@ -919,8 +919,8 @@ returns the associated value, or an empty string.
 char *Info_ValueForKey(char *s, char *key)
 {
 	char	pkey[MAX_INFO_STRING] = "";
-	static	char value[2][MAX_INFO_STRING]; // Use two buffers so compares work without stomping on each other.
-	static	int	valueindex;
+	static	char value[2][MAX_INFO_STRING] = { "" }; // Use two buffers so compares work without stomping on each other.
+	static	int	valueindex = 1;
 	char	*o;
 
 	valueindex ^= 1;

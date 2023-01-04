@@ -3633,7 +3633,7 @@ void ClientThink(edict_t* ent, usercmd_t* ucmd)
 	trace_t		rs_trace;
 
 	static	edict_t* old_ground;
-	static	qboolean	wasground;
+	static	qboolean	wasground = false;
 
 	impulse = ucmd->impulse;
 
