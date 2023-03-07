@@ -6,6 +6,23 @@
 oplist_t	*oplist;
 oplist_t	*oplistBase;
 
+int entriesinopfile;
+
+/**
+Display the operators and their access levels
+currently held in the server.
+*/
+void ShowOps(void)
+{
+	gi.dprintf("OP  %-24s      %-5s        %-9s\n", "Entry", "Level","Password");
+	gi.dprintf("--- ----------------------  ------------------ --------\n");
+	for (int i = 0; i < entriesinopfile; i++) {
+		gi.dprintf("%d.  %-24s      %-4d       %s\n",
+			i + 1, oplist[i].entry, oplist[i].level, oplist[i].namepass);
+	}
+	gi.dprintf("\n");
+}
+
 /**
  Used to decide if whitelist entry is less general
  than the blacklist entry. If true then checkAllowed
@@ -258,7 +275,7 @@ qboolean entryInFile (char *filename, char ip[MAX_QPATH])
 
  Returns -1 if oplist file could not be opened.
  */
-int CheckOpFile (edict_t *ent, char ip[MAX_QPATH], qboolean returnindex)
+int CheckOpFile (edict_t *ent, char* ip, qboolean returnindex)
 {
 	FILE *opfile;
 	char line[MAX_QPATH];
@@ -513,8 +530,10 @@ qboolean ModifyOpLevel (int entry, int newlevel)
 		}
 		fclose(opfile);
 	}
-	CheckOpFile(NULL, "*@*.*.*.*", false);
-	return true;
+	if (CheckOpFile(NULL, "*@*.*.*.*", false))
+		return true;
+	else
+		return false;
 }
 
 /**
