@@ -2,7 +2,8 @@
 // g_local.h -- local definitions for game module
 //
 
-#pragma once
+#ifndef G_LOCAL_H
+#define G_LOCAL_H
 
 #ifdef _WIN32
   #define WIN32_LEAN_AND_MEAN	// non-MFC
@@ -638,7 +639,7 @@ extern	cvar_t  *raildamage;
 extern	cvar_t  *railkick;
 
 extern	cvar_t  *flashlight;
-extern	cvar_t  *lights;//do not document this one
+extern	cvar_t  *lights;//do not document this one (deprecate)
 extern	cvar_t  *lights_out;
 
 extern	cvar_t	*mapvote;
@@ -766,7 +767,6 @@ extern	cvar_t	*mercylimit;
 extern	cvar_t	*randomrcon;
 extern	cvar_t	*defaultoplevel;
 extern	cvar_t	*nokill;
-float	dmflagtimer;
 extern	cvar_t	*minfps;
 extern	cvar_t	*use_grapple;
 extern  cvar_t  *log_connect;
@@ -831,14 +831,14 @@ extern	cvar_t	*doors_stay_open;
 #define	OP_KICK				64	// Can kick players
 #define	OP_STATUS			128	// Can do status command 
 
-#define	OP_SILENCE			256	// Can silence/unsilence players
-#define	OP_LOCKSERVER		512	// Can lock server
-#define	OP_LISTEN			1024	// 
-#define	OP_SHOWBANNEDFILE	2048	// 
+#define	OP_SILENCE			256		// Can silence/unsilence players
+#define	OP_LOCKSERVER		512		// Can lock server
+#define	OP_LISTEN			1024	// Not implemented
+#define	OP_SHOWBANNEDFILE	2048	// Allows read-only display of banned file contents.
 
 #define	OP_BAN				4096	// Can manipulate bans (showbanfile, ban user@ip, kickban from Player List menu, etc.)
 #define	OP_LIGHTS			8192	// Can control lights on/off.
-#define	OP_PROTECTED		16384	// Can bypass lockouts 
+#define	OP_PROTECTED		16384	// Can bypass lockouts
 #define	OP_ADDOP			32768	// Can list ops file and add ops
 
 #define OP_MODOP			65536	// Can modify an ops oplevel
@@ -972,12 +972,13 @@ void tolower_text(char *src, char *dest);
 qboolean CheckFlood(edict_t *who);
 // end g_utils.c declarations
 
-float yesvotes;
-float novotes;
-qboolean mapvoteactive;
-int mapvotetime;
-qboolean votemapnow;
-
+//QW// in vote.c
+extern float yesvotes;
+extern float novotes;
+extern qboolean mapvoteactive;
+extern int mapvotetime;
+extern qboolean votemapnow;
+extern qboolean mapvotefilled;
 
 //
 // g_combat.c
@@ -1688,25 +1689,28 @@ float   flastime;//flashlight timer (stops laggers)
 //RAV
 void FL_think (edict_t *self);
 void FL_make(edict_t *self);
+
 //RUNES
-vec3_t v_forward;
-vec3_t v_right;
-vec3_t v_up;
+extern vec3_t v_forward;
+extern vec3_t v_right;
+extern vec3_t v_up;
 //Track the flag
-float      flagchecktime;
-float redflagtime;
-float blueflagtime;
-vec3_t redflagnow;
-vec3_t blueflagnow;
-vec3_t redflag_origin;
-vec3_t blueflag_origin;
-qboolean red_flag_gone;
-qboolean blue_flag_gone;
+extern float      flagchecktime;
+extern float redflagtime;
+extern float blueflagtime;
+extern vec3_t redflagnow;
+extern vec3_t blueflagnow;
+extern vec3_t redflag_origin;
+extern vec3_t blueflag_origin;
+extern qboolean red_flag_gone;
+extern qboolean blue_flag_gone;
+
 //System Time
 void GetTime(void);
-char sys_time[32];
+extern char sys_time[32];
 void GetDate(void);
-char sys_date[32];
+extern char sys_date[32];
+
 //Camper check
 #define CAMP_WARN_TIME (int) (camp_time->value - 10)	// sec to camp before warning
 #define CAMP_TIME camp_time->value  // sec to be officially camping
@@ -1731,19 +1735,19 @@ int ApplyLocationalSystem (edict_t *attacker, edict_t *targ, vec3_t point, int m
 qboolean CheckModel(edict_t *ent, char *s);
 
 //Voting /MAP
-float	votetime;
+extern float	votetime;
 
-qboolean locked_teams; // teams status
-qboolean mapscrewed;
-char defaultmap[MAX_QPATH];
+extern qboolean locked_teams; // teams status
+extern qboolean mapscrewed;
+extern char defaultmap[MAX_QPATH];
 
 //even teams stuff
-qboolean notfairRED; // Used to control HUD messages
-qboolean notfairBLUE;
-float redtime;
-float bluetime;
-char match_time_left[32];
-qboolean techspawn;
+extern qboolean notfairRED; // Used to control HUD messages
+extern qboolean notfairBLUE;
+extern float redtime;
+extern float bluetime;
+extern char match_time_left[32];
+extern qboolean techspawn;
 
 //weapon
 void Weapon_Blaster (edict_t *ent);
@@ -1757,7 +1761,7 @@ void Weapon_Grenade (edict_t *ent);
 void Weapon_GrenadeLauncher (edict_t *ent);
 void Weapon_Railgun (edict_t *ent);
 void Weapon_BFG (edict_t *ent);
-int hstime;
+extern int hstime;
 
 //route util
 void Move_LastRouteIndex(void);
@@ -1876,9 +1880,6 @@ void BotEndServerFrame (edict_t *ent);
 
 //----------------------------------------------------------------
 
-qboolean mapvotefilled;
-
-
 typedef struct ctfgame_s
 {
 	int	team1; // RED capture count
@@ -1893,4 +1894,7 @@ typedef struct ctfgame_s
 	float last_flag_capture; // Time the last flag was capped.
 	int last_capture_team; // Team that last capped a flag. 
 } ctfgame_t;
-ctfgame_t ctfgame;
+
+extern ctfgame_t ctfgame;
+
+#endif /* G_LOCAL_H */

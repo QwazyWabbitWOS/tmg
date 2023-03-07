@@ -122,7 +122,6 @@ cvar_t  *lights;//do not document this one
 cvar_t  *lights_out;
 
 cvar_t	*mapvote;
-cvar_t	*map_randomize;
 
 cvar_t *rcon;
 

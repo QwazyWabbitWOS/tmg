@@ -405,9 +405,9 @@ extern	int			cumsindex;
 extern	int			targetindex;		//debugtarget
 
 extern	int			ListedBotCount;		//bot count of list
-float bot_time;
-float wait_time;
-float kill_time;
+extern	float		bot_time;
+extern	float		wait_time;
+extern	float		kill_time;
 extern	int			SpawnWaitingBots;
 extern	char		ClientMessage[MAX_STRING_CHARS];
 extern	botinfo_t	Bot[MAXBOTS];

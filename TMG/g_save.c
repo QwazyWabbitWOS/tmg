@@ -209,8 +209,9 @@ void InitGame (void)
 	fraglimit = gi.cvar ("fraglimit", "0", CVAR_SERVERINFO);
 	timelimit = gi.cvar ("timelimit", "0", CVAR_SERVERINFO);
 	scoreboardtime = gi.cvar ("scoreboardtime", "15", 0);
-    cycle_always = gi.cvar ("cycle_always", "1", 0);
-        //ZOID
+	cycle_always = gi.cvar ("cycle_always", "1", 0);
+
+	//ZOID
 	capturelimit = gi.cvar ("capturelimit", "0", CVAR_SERVERINFO);
 	//ZOID
 	passwd = gi.cvar ("password", "", CVAR_USERINFO);
@@ -441,7 +442,7 @@ void InitGame (void)
 
 	// operator list management
 	defaultoplevel = gi.cvar ("defaultoplevel", "0", 0); // be sure to specify some value in server.cfg
-	oplistBase = gi.TagMalloc (64 * sizeof(oplist_t), TAG_GAME);
+	oplistBase = gi.TagMalloc (MAX_OPS * sizeof(oplist_t), TAG_GAME);
 	oplist = oplistBase + 1;
 
 	//QW// Set these for various debugging output

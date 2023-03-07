@@ -11,6 +11,9 @@
 #include "highscore.h"
 #include "intro.h"
 
+char sys_time[32];
+char sys_date[32];
+
 /**
  Entity name and corresponding spawn function
  */

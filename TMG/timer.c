@@ -8,8 +8,14 @@
 #include "bot.h"
 
 // global
-int match_state;
-float match_state_end;
+int		match_state;
+float	match_state_end;
+float	dmflagtimer;
+int		hstime;
+float	votetime;
+float bot_time;
+float wait_time;
+float kill_time;
 
 // static
 float match_nextthink;
@@ -120,7 +126,6 @@ void ServerInit (int resetall)
 	match_nextthink = level.time + FRAMETIME * 10.0;
 	match_state = STATE_NEEDPLAYERS;
 	match_state_end = 1;
-	locked_teams = false;
 	serverlocked = false;
 	dmflagtimer = level.time;
 	hstime = level.time - 10;

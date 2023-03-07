@@ -7,6 +7,14 @@ Contains all the vote handling functions
 #include "s_map.h"
 #include "performance.h"
 
+float yesvotes;
+float novotes;
+qboolean mapvoteactive;
+int mapvotetime;
+qboolean votemapnow;
+qboolean mapvotefilled;
+char defaultmap[MAX_QPATH];
+
 //============================================================================
 
 //Clear the map votes

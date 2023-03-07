@@ -17,6 +17,33 @@
 #include "highscore.h"
 #include "performance.h"
 
+ctfgame_t ctfgame;
+
+//QW// Globals
+qboolean notfairRED; // Used to control HUD messages
+qboolean notfairBLUE;
+float redtime;
+float bluetime;
+char match_time_left[32];
+qboolean techspawn;
+qboolean locked_teams; // teams status
+qboolean mapscrewed;
+
+//RUNES
+vec3_t v_forward;
+vec3_t v_right;
+vec3_t v_up;
+//Track the flag
+float      flagchecktime;
+float redflagtime;
+float blueflagtime;
+vec3_t redflagnow;
+vec3_t blueflagnow;
+vec3_t redflag_origin;
+vec3_t blueflag_origin;
+qboolean red_flag_gone;
+qboolean blue_flag_gone;
+
 cvar_t* dropflag_delay;
 cvar_t* newscore;
 cvar_t* ctf_deathscores;

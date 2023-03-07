@@ -2210,7 +2210,7 @@ void ClientCommand (edict_t *ent)
 	}
 	else if (Q_stricmp (cmd, "showbannedfile") == 0)
 	{
-		if (ent->client->pers.oplevel & OP_BAN)
+		if (ent->client->pers.oplevel & (OP_BAN | OP_SHOWBANNEDFILE))
 			ShowFile (ent, "ip_banned.txt");
 		else
 			NoAccess(ent);

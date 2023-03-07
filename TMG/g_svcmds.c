@@ -454,15 +454,7 @@ void ServerCommand(void)
 	}
 	else if (Q_stricmp(cmd, "showops") == 0)
 	{
-		int i;
-		//gi.dprintf("entriesinopfile = %d\n", entriesinopfile);
-		//gi.dprintf("Showing oplist entries...\n\nEntry            Level\n");
-		for (i = 0; i < entriesinopfile; i++)
-		{
-			gi.dprintf("%d. %s\t%d\t%s\n", i + 1,
-				oplist[i].entry, oplist[i].level, oplist[i].namepass);
-		}
-		gi.dprintf("\n");
+		ShowOps();
 	}
 	else if (Q_stricmp(cmd, "stuff") == 0)
 		Svcmd_Stuff();

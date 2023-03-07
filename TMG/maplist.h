@@ -40,21 +40,20 @@
 
 // basic maplist handling
 //cvar_t *maplist;		//line pointer
-cvar_t *maplistfile;	// the file name when not load sensing
-cvar_t *game_dir;		// our mod dir
-cvar_t *basedir;		// our root dir
-cvar_t *mymaplistfile;	// the working maplist
+extern  cvar_t *maplistfile;	// the file name when not load sensing
+extern  cvar_t *game_dir;		// our mod dir
+extern  cvar_t *basedir;		// our root dir
+extern  cvar_t *mymaplistfile;	// the working maplist
 
 // for maplist selection varies with player load
-cvar_t *maplist1;	// line pointer low load
-cvar_t *maplist2;	// line pointer med load
-cvar_t *maplist3;	// line pointer high load
-cvar_t *maplistvaries;	// set 1 if you want load sense, 2 for monthly rotation
-cvar_t *maplistfile1;	// file name of low-load list
-cvar_t *maplistfile2;	// name of medium load list
-cvar_t *maplistfile3;	// name of high load list
-cvar_t *map_lowcount;		// upper bound of low load
-cvar_t *map_medcount;		// upper bound of medium
+extern  cvar_t *maplist1;	// line pointer low load
+extern  cvar_t *maplist2;	// line pointer med load
+extern  cvar_t *maplist3;	// line pointer high load
+extern  cvar_t *maplistfile1;	// file name of low-load list
+extern  cvar_t *maplistfile2;	// name of medium load list
+extern  cvar_t *maplistfile3;	// name of high load list
+extern  cvar_t *map_lowcount;		// upper bound of low load
+extern  cvar_t *map_medcount;		// upper bound of medium
 
 //public
 qboolean	Maplist_Next (void);
