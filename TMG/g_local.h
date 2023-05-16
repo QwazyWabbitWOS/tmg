@@ -972,14 +972,6 @@ void tolower_text(char *src, char *dest);
 qboolean CheckFlood(edict_t *who);
 // end g_utils.c declarations
 
-//QW// in vote.c
-extern float yesvotes;
-extern float novotes;
-extern qboolean mapvoteactive;
-extern int mapvotetime;
-extern qboolean votemapnow;
-extern qboolean mapvotefilled;
-
 //
 // g_combat.c
 //

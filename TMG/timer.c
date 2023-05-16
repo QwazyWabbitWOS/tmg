@@ -6,6 +6,7 @@
 #include "timer.h"
 #include "s_map.h"
 #include "bot.h"
+#include "vote.h"
 
 // global
 int		match_state;

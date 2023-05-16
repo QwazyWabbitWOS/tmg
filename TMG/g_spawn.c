@@ -10,6 +10,7 @@
 #include "statslog.h"
 #include "highscore.h"
 #include "intro.h"
+#include "vote.h"
 
 char sys_time[32];
 char sys_date[32];

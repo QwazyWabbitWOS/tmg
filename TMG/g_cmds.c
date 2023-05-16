@@ -14,6 +14,7 @@
 #include "filtering.h"
 #include "hud.h"
 #include "runes.h"
+#include "vote.h"
 #include "maplist.h"
 #include "banner.h"
 #include "statslog.h"

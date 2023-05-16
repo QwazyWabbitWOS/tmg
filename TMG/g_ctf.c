@@ -14,6 +14,7 @@
 #include "bot.h"
 #include "runes.h"
 #include "statslog.h"
+#include "vote.h"
 #include "highscore.h"
 #include "performance.h"
 
