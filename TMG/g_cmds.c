@@ -2230,29 +2230,26 @@ void ClientCommand (edict_t *ent)
 		else
 			NoAccess(ent);
 	}
-	else if (Q_stricmp (cmd, "modop") == 0)
+	else if (Q_stricmp (cmd, "modop") == 0) // This command is duplicated in sv commands.
 	{
 		int oper_level;
-		if (ent->client->pers.oplevel & OP_MODOP)
+		if (ent->client->pers.oplevel & OP_MODOP) //QW// Client has access
 		{
-			if (IPMatch (gi.argv(1),  "*@*.*.*.*") == 1 && gi.argc() == 3)
+			if (IPMatch (gi.argv(1),  "*@*.*.*.*") && gi.argc() == 3)
 			{
 				if (atoi(gi.argv(2)) > ent->client->pers.oplevel)
 					oper_level = ent->client->pers.oplevel;
 				else
 					oper_level = atoi(gi.argv(2));
 
-				if (ModifyOpLevel(CheckOpFile (NULL, gi.argv(1), true), oper_level))
-					safe_cprintf (ent, PRINT_HIGH,
-								  "%s level changed to %d\n",
-								  gi.argv(1), oper_level);
+				int index = CheckOpFile(NULL, gi.argv(1), true); // The line to modify
+				if (ModifyOpLevel(index, oper_level))
+					safe_cprintf (ent, PRINT_HIGH, "%s level changed to %d\n", gi.argv(1), oper_level);
 				else
-					safe_cprintf (ent, PRINT_HIGH,
-								  "No matching entry found.\n");
+					safe_cprintf (ent, PRINT_HIGH, "No matching entry found.\n");
 			}
 			else
-				safe_cprintf(ent, PRINT_HIGH,
-							 "Usage: modop user@ip newlevel\n");
+				safe_cprintf(ent, PRINT_HIGH, "Usage: modop user@ip newlevel\n");
 		}
 		else
 			NoAccess(ent);
@@ -2476,8 +2473,7 @@ void ClientCommand (edict_t *ent)
 //JSW
 	else if (Q_stricmp (cmd, "download") == 0)
 	{
-		gi.dprintf ("download called by %s\n",
-					ent->client->pers.netname);
+		gi.dprintf ("download called by %s\n", ent->client->pers.netname);
 
 		if (strstr (gi.argv(1), ".txt") ||
 			strstr (gi.argv(1), ".log") ||
@@ -2500,9 +2496,7 @@ void ClientCommand (edict_t *ent)
 	else if (Q_stricmp (cmd, "iddist") == 0)
 	{
 		if (gi.argc() < 2)
-			safe_cprintf (ent, PRINT_HIGH,
-						  "Your iddist is %d\n",
-						  ent->client->resp.iddist);
+			safe_cprintf (ent, PRINT_HIGH, "Your iddist is %d\n", ent->client->resp.iddist);
 		else
 		{
 			if (atoi(gi.argv(1)) > (int)max_hud_dist->value)
@@ -2510,9 +2504,7 @@ void ClientCommand (edict_t *ent)
 			else
 				ent->client->resp.iddist = atoi(gi.argv(1));
 
-			safe_cprintf (ent, PRINT_HIGH,
-						  "Your iddist was set to %d",
-						  ent->client->resp.iddist);
+			safe_cprintf (ent, PRINT_HIGH, "Your iddist was set to %d", ent->client->resp.iddist);
 
 			if (ent->client->resp.iddist == (int)max_hud_dist->value)
 				safe_cprintf (ent, PRINT_HIGH, " (server max).\n");
@@ -2535,8 +2527,7 @@ void ClientCommand (edict_t *ent)
 	}
 	else if (Q_stricmp (cmd, "oplevel") == 0)
 	{
-		safe_cprintf(ent, PRINT_HIGH,
-					 "oplevel = %d\n", ent->client->pers.oplevel);
+		safe_cprintf(ent, PRINT_HIGH, "oplevel = %d\n", ent->client->pers.oplevel);
 	}
 	else if (Q_stricmp (cmd, "checkop") == 0) {
 		if (ent->client->pers.oplevel & OP_LOCKSERVER)

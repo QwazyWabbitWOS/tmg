@@ -835,7 +835,7 @@ size_t Q_strncpyz(char* dst, size_t dstSize, const char* src)
 	size_t        decSize = dstSize;
 
 	if (!dst || !src || dstSize < 1) {
-		DbgPrintf("Bad arguments passed to %s\n", __func__);
+		Com_Printf("Bad arguments passed to %s\n", __func__);
 		return 0;
 	}
 
@@ -857,7 +857,7 @@ size_t Q_strncatz(char* dst, size_t dstSize, const char* src)
 	size_t        dLen;
 
 	if (!dst || !src || dstSize < 1) {
-		DbgPrintf("Bad arguments passed to %s\n", __func__);
+		Com_Printf("Bad arguments passed to %s\n", __func__);
 		return 0;
 	}
 

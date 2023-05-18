@@ -17,7 +17,7 @@ void ShowOps(void)
 	gi.dprintf("OP  %-24s      %-5s        %-9s\n", "Entry", "Level","Password");
 	gi.dprintf("--- ----------------------  ------------------ --------\n");
 	for (int i = 0; i < entriesinopfile; i++) {
-		gi.dprintf("%d.  %-24s      %-4d       %s\n",
+		gi.dprintf("%d.  %-24s      %-6d       %s\n",
 			i + 1, oplist[i].entry, oplist[i].level, oplist[i].namepass);
 	}
 	gi.dprintf("\n");
@@ -303,30 +303,23 @@ int CheckOpFile (edict_t *ent, char* ip, qboolean returnindex)
 					a = 1;
 					for (result = strtok(line," \t\n"); result != NULL; result = strtok(NULL," \t\n"))
 					{
-						if (debug_ops->value)
-							DbgPrintf("%s result is .%s.\n", __func__, result);
 						if (a == 1)
 						{
 							strcpy(oplist[i].entry, result);
-							if (debug_ops->value)
-								DbgPrintf("%d oplist entry added for %s\n", i, oplist[i].entry);
 						}
 						else if (a == 2 && atoi(result))
 						{
 							oplist[i].level = atoi(result);
-							if (debug_ops->value)
-								DbgPrintf("%d oplist level added for %d\n", i, oplist[i].level);
 						}
 						else if (a == 3)
 						{
 							strcpy(oplist[i].namepass, result);
-							if (debug_ops->value)
-								DbgPrintf("%d oplist namepass added for %s\n", i, oplist[i].namepass);
 						}
 
-						if (IPMatch(ip, oplist[i].entry))
+						int ipmatch = IPMatch(ip, oplist[i].entry);
+						if (ipmatch)
 						{
-							if (ent != NULL)
+							if (ent != NULL) // If we're authenticating the client
 							{
 								if (Q_strnicmp(oplist[i].namepass, ent->client->pers.namepass, strlen(ent->client->pers.namepass)) == 0)
 								{
@@ -335,19 +328,14 @@ int CheckOpFile (edict_t *ent, char* ip, qboolean returnindex)
 									flagged = i;
 								}
 							}
+							else // We're making a modification to an operator in the list and have a match.
+							{
+								inFile = true;
+								oplist[i].flagged = true;
+								flagged = i;
+							}
 						}
 						a++;
-					}
-
-					if (ent != NULL)
-					{
-						if (debug_ops->value)
-							DbgPrintf("%d pass in file is %s, namepass is %s, "
-							"strlen of namepass is %d, "
-							"strlen is %d in file\n",
-							i, oplist[i].namepass, ent->client->pers.namepass,
-							strlen(ent->client->pers.namepass),
-							strlen(oplist[i].namepass));
 					}
 					i++;
 					entriesinopfile = i;
@@ -377,18 +365,6 @@ int CheckOpFile (edict_t *ent, char* ip, qboolean returnindex)
 		}
 	}
 
-	if (debug_ops->value)
-	{
-		gi.dprintf("%d entries in user_o.txt\n", entriesinopfile);
-		for (i = 0; i < entriesinopfile + 1; i++)
-		{
-			gi.dprintf("Entry #%d: [%s] Level: [%d] "
-				"Password: [%s] Flagged: [%d]\nFlagged = %d\n",
-				i + 1, oplist[i].entry, oplist[i].level,
-				oplist[i].namepass, oplist[i].flagged, flagged);
-		}
-	}
-
 	if (flagged < 0)
 	{
 		ent->client->pers.oplevel = 0;
@@ -399,9 +375,8 @@ int CheckOpFile (edict_t *ent, char* ip, qboolean returnindex)
 		strcpy(ent->client->pers.namepass, oplist[flagged].namepass);
 	}
 	if (debug_ops->value && flagged != -1)
-		gi.dprintf ("Player %s matches entry %s, level = %d\n",
-		ent->client->pers.netname,
-		oplist[flagged].entry, oplist[flagged].level);
+		DbgPrintf ("Player %s matches entry %s, level = %d\n",
+		ent->client->pers.netname, oplist[flagged].entry, oplist[flagged].level);
 
 	return flagged;
 }
@@ -457,9 +432,8 @@ qboolean CheckNameProtect (char name[MAX_QPATH], char namepass[MAX_QPATH])
 						{
 							inFile = true;
 							if (debug_ops->value)
-								DbgPrintf("name .%s. matched entry .%s. "
-									"and is in file.\n"
-									"Stricmp returns value %d, "
+								DbgPrintf("name .%s. matched entry .%s. and is in file.\n"
+									"Q_stricmp returns value %d, "
 									"namepass in oplist is .%s., "
 									"client pass is .%s.\n", name,
 									oplist[i].name,
@@ -504,9 +478,8 @@ qboolean CheckNameProtect (char name[MAX_QPATH], char namepass[MAX_QPATH])
 }
 
 /**
- Change the operator level of designated player index
- write the data to the operator file then force
- reload of the oplist array from the modified file.
+ Change the operator level of designated player entry
+ and write the data to the operator file.
  Returns true on success, otherwise false.
  */
 qboolean ModifyOpLevel (int entry, int newlevel)
@@ -518,27 +491,24 @@ qboolean ModifyOpLevel (int entry, int newlevel)
 	if (entry < 0)
 		return false;
 
-	oplist[entry].level = newlevel;
+	oplist[entry].level = newlevel; // Set the new level in the oplist.
 	opfile = tn_open("user_o.txt", "w", true);
 	if (opfile)
 	{
-		for (i = 0; i < entriesinopfile + 1; i++)
+		for (i = 0; i < entriesinopfile; i++)
 		{
-			Com_sprintf (line, sizeof line,
-				"%s\t%d\n", oplist[i].entry, oplist[i].level);
+			Com_sprintf (line, sizeof line, "%s %d %s\n", oplist[i].entry, oplist[i].level, oplist[i].namepass);
 			fputs(line, opfile);
 		}
 		fclose(opfile);
-	}
-	if (CheckOpFile(NULL, "*@*.*.*.*", false))
 		return true;
-	else
-		return false;
+	}
+	return false;
 }
 
 /**
- Add operator access level for named user @ IP address
- if user_o.txt file doesn't exist, create it.
+ Add operator access level for named user @ IP address.
+ If user_o.txt file doesn't exist, create it.
 */
 int AddOperator (char entry[MAX_QPATH], int op_lev, char pass[16])
 {
@@ -548,7 +518,7 @@ int AddOperator (char entry[MAX_QPATH], int op_lev, char pass[16])
 	opfile = tn_open("user_o.txt", "a+", true);
 	if (opfile)
 	{
-		Com_sprintf (line, sizeof line, "%s\t%d\t%s\n", entry, op_lev, pass);
+		Com_sprintf (line, sizeof line, "%s %d %s\n", entry, op_lev, pass);
 		fputs(line, opfile);
 		fclose(opfile);
 		CheckOpFile(NULL, "*@*.*.*.*", false);

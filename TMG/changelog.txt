@@ -326,6 +326,12 @@ No significant functional changes.
 Raise warning levels on Linux. Catch more lint.
 Tidy up code where initializers or indentation was wrong or fallthroughs occur.
 
+0.2.61
+Refactored sv showops command. Make it print a nice list.
+Upgraded GNUmakefile a little.
+Added MAX_OPS constant instead of magic number in the oplist initialization.
+Fixed modop command so it works correctly.
+
 Completed
 2. Player name on freecam was fixed, but I may have to fix it again so it's still on the list.
 3. Same with bug in lockteams on the admin menu.
