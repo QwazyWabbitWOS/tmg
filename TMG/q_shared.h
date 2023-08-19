@@ -24,10 +24,12 @@
 typedef unsigned char 		byte;
 typedef enum {false, true}	qboolean;
 
-#ifdef _WIN32
-  #ifndef __func__	// C++11 mandated identifier
-    #define __func__ __FUNCTION__ // else use the ANSI C (C9x)
-  #endif
+#ifdef _WIN32 
+#if _MSC_VER < 1900 // __func__ is supported in VS2015 and later.
+#ifndef __func__	// C++11 mandated identifier
+#define __func__ __FUNCTION__ // else use the ANSI C (C99)
+#endif
+#endif
 #endif
 
 #ifndef NULL
