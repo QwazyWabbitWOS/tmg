@@ -739,7 +739,7 @@ void safe_cprintf (edict_t *ent, int printlevel, char *fmt, ...)
 		return;
 
 	va_start (argptr, fmt);
-	(void) vsprintf (buffer, fmt, argptr);
+	vsprintf (buffer, fmt, argptr);
 	va_end (argptr);
 
 	// Safety check...
@@ -758,7 +758,7 @@ void safe_centerprintf (edict_t *ent, char *fmt, ...)
 		return;
 
 	va_start (argptr, fmt);
-	(void) vsprintf (buffer, fmt, argptr);
+	vsprintf (buffer, fmt, argptr);
 	va_end (argptr);
 
 	// Safety check...
@@ -775,7 +775,7 @@ void safe_bprintf (int printlevel, char *fmt, ...)
 	edict_t	*cl_ent;
 
 	va_start (argptr, fmt);
-	(void) vsprintf (buffer, fmt, argptr);
+	vsprintf (buffer, fmt, argptr);
 	va_end (argptr);
 
 	// This is to be compatible with Eraser (ACE)
