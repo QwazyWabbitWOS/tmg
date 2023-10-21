@@ -5,7 +5,7 @@
 // monster weapons
 //
 
-//FIXME mosnters should call these with a totally accurate direction
+//FIXME monsters should call these with a totally accurate direction
 // and we can mess it up based on skill.  Spread should be for normal
 // and we can tighten or loosen based on skill.  We could muck with
 // the damages too, but I'm not sure that's such a good idea.
@@ -481,7 +481,7 @@ void monster_think (edict_t *self)
 		self->monsterinfo.linkcount = self->linkcount;
 		M_CheckGround (self);
 	}
-	M_CatagorizePosition (self);
+	M_CategorizePosition (self);
 	M_WorldEffects (self);
 	M_SetEffects (self);
 }

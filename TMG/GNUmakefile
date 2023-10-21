@@ -25,10 +25,10 @@ CC = gcc -std=c11 -Wall -Werror -Wpedantic
 # this will let you build 32-bits on ia64 systems
 #
 # This is for native build
-CFLAGS=-O3 -DARCH="$(ARCH)"
+CFLAGS = -O3 -DARCH="$(ARCH)"
 # This is for 32-bit build on 64-bit host
 ifeq ($(ARCH),i386)
-CFLAGS =-m32 -O3 -fPIC -DARCH="$(ARCH)" -DSTDC_HEADERS -I/usr/include
+CFLAGS += -m32 -fPIC -DSTDC_HEADERS -I/usr/include
 endif
 
 # use this when debugging
@@ -39,7 +39,6 @@ ifeq ($(shell uname),Linux)
 #SVNDEV := -D'SVN_REV="$(shell svnversion -n .)"'
 #CFLAGS += $(SVNDEV)
 CFLAGS += -DLINUX
-LIBTOOL = ldd
 endif
 
 # OS X wants to be Linux and FreeBSD too.
@@ -47,7 +46,6 @@ ifeq ($(shell uname),Darwin)
 #SVNDEV := -D'SVN_REV="$(shell svnversion -n .)"'
 #CFLAGS += $(SVNDEV)
 CFLAGS += -DLINUX
-LIBTOOL = otool
 endif
 
 SHLIBEXT=so
@@ -78,7 +76,6 @@ GAME_OBJS = \
 
 game$(ARCH).real.$(SHLIBEXT) : $(GAME_OBJS)
 	$(CC) $(CFLAGS) -shared -o $@ $(GAME_OBJS) -ldl -lm
-	$(LIBTOOL) -r $@
 
 
 #############################################################################
