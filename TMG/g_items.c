@@ -1797,13 +1797,16 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 			{
 				VectorCopy (ent->s.origin, redflag_origin);
 				VectorCopy (ent->s.origin, redflagnow);
+				CTFResetFlag(CTF_TEAM1);	//QW// Some maps don't have flag bases, this sets them at "info_player_deathmatch" points.
 			}
 			if(strcmp(ent->classname, "item_flag_team2") == 0)
 			{
 				VectorCopy (ent->s.origin, blueflag_origin);
 				VectorCopy (ent->s.origin, blueflagnow);
+				CTFResetFlag(CTF_TEAM2);
 			}
-			gi.dprintf("%s spawned at %s \n", ent->classname, vtos(ent->s.origin));
+			if(debug_spawn->value)
+				gi.dprintf("%s: %s spawned at %s \n", __func__, ent->classname, vtos(ent->s.origin));
 		}
 		else
 		{
