@@ -455,22 +455,6 @@ void InitGame (void)
 	ffa_cfgfile = gi.cvar ("ffa_cfgfile", "ffa.cfg", 0);
 	ctf_cfgfile = gi.cvar ("ctf_cfgfile", "railwarz.cfg", 0);
 
-	/*
-	 allow_lasermines = gi.cvar ("allow_lasermines", "0", CVAR_LATCH);
-	 allow_energy_lasers = gi.cvar ("allow_energy_lasers", "1", CVAR_SERVERINFO);
-	 energylaser_cells = gi.cvar ("energylaser_cells", "20",	0);
-	 energylaser_damage = gi.cvar ("energylaser_damage", "15", 0);
-	 energylaser_time = gi.cvar ("energylaser_time", "25", 0);
-	 energylaser_mdamage = gi.cvar ("energylaser_mdamage", "50", 0);
-	 energylaser_mradius = gi.cvar ("energylaser_mradius", "64", 0);
-	 allownuke = gi.cvar ("allownuke", "1", CVAR_SERVERINFO);
-	 nuke_cells = gi.cvar ("nuke_cells", "100", 0);
-	 nuke_slugs = gi.cvar ("nuke_slugs", "10", 0);
-	 nuke_radius2 = gi.cvar ("nuke_radius2", "3000", 0);
-	 nuke_radius = gi.cvar ("nuke_radius", "1000", 0);
-	 lasermine_timeout = gi.cvar ("lasermine_timeout", "60", CVAR_LATCH);
-	 */
-
 	runes4all = gi.cvar ("runes4all", "0", CVAR_LATCH);
 	quad_notify = gi.cvar ("quad_notify", "0", 0);
 	teamtechs = gi.cvar ("teamtechs", "0", 0);

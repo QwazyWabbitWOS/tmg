@@ -784,22 +784,6 @@ extern	cvar_t* debug_ops;
 /* ops can select server configurations */
 extern	cvar_t *ctf_cfgfile;
 extern	cvar_t *ffa_cfgfile;
-
-/*
-extern	cvar_t	*allow_lasermines;
-extern	cvar_t	*allow_energy_lasers;
-extern cvar_t	*energylaser_time;
-extern cvar_t	*energylaser_damage;
-extern cvar_t	*energylaser_cells;
-extern cvar_t	*energylaser_mdamage;
-extern cvar_t	*energylaser_mradius;
-extern cvar_t	*lasermine_timeout;
-extern cvar_t	*allownuke;
-extern cvar_t	*nuke_slugs;
-extern cvar_t	*nuke_cells;
-extern cvar_t	*nuke_radius;
-extern cvar_t	*nuke_radius2;
-*/
 extern	cvar_t	*runes4all;
 extern	cvar_t	*quad_notify;
 extern	cvar_t	*teamtechs;
@@ -999,23 +983,23 @@ void T_RadiusDamage (edict_t *inflictor, edict_t *attacker, float damage, edict_
 //
 // g_monster.c
 //
-void monster_fire_bullet (edict_t *self, vec3_t start, vec3_t dir, int damage, int kick, int hspread, int vspread, int flashtype, int mod);
-void monster_fire_shotgun (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int count, int flashtype, int mod);
-void monster_fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int flashtype, int effect);
-void monster_fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, int flashtype);
-void monster_fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int flashtype);
-void monster_fire_railgun (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int flashtype);
-void monster_fire_bfg (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, int kick, float damage_radius, int flashtype);
+//void monster_fire_bullet (edict_t *self, vec3_t start, vec3_t dir, int damage, int kick, int hspread, int vspread, int flashtype, int mod);
+//void monster_fire_shotgun (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int count, int flashtype, int mod);
+//void monster_fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int flashtype, int effect);
+//void monster_fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, int flashtype);
+//void monster_fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int flashtype);
+//void monster_fire_railgun (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int flashtype);
+//void monster_fire_bfg (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, int kick, float damage_radius, int flashtype);
 void M_droptofloor (edict_t *ent);
-void monster_think (edict_t *self);
-void walkmonster_start (edict_t *self);
-void swimmonster_start (edict_t *self);
-void flymonster_start (edict_t *self);
-void AttackFinished (edict_t *self, float time);
-void monster_death_use (edict_t *self);
+//void monster_think (edict_t *self);
+//void walkmonster_start (edict_t *self);
+//void swimmonster_start (edict_t *self);
+//void flymonster_start (edict_t *self);
+//void AttackFinished (edict_t *self, float time);
+//void monster_death_use (edict_t *self);
 void M_CategorizePosition (edict_t *ent);
-qboolean M_CheckAttack (edict_t *self);
-void M_FlyCheck (edict_t *self);
+//qboolean M_CheckAttack (edict_t *self);
+//void M_FlyCheck (edict_t *self);
 void M_CheckGround (edict_t *ent);
 
 //
@@ -1064,23 +1048,23 @@ void SP_misc_teleporter_dest (edict_t *ent);
 //
 // g_ai.c
 //
-void AI_SetSightClient (void);
-
-void ai_stand (edict_t *self, float dist);
-void ai_move (edict_t *self, float dist);
-void ai_walk (edict_t *self, float dist);
-void ai_turn (edict_t *self, float dist);
-void ai_run (edict_t *self, float dist);
-void ai_charge (edict_t *self, float dist);
-int range (edict_t *self, edict_t *other);
-
-void FoundTarget (edict_t *self);
-qboolean infront (edict_t *self, edict_t *other);
+//void AI_SetSightClient (void);
+//
+//void ai_stand (edict_t *self, float dist);
+//void ai_move (edict_t *self, float dist);
+//void ai_walk (edict_t *self, float dist);
+//void ai_turn (edict_t *self, float dist);
+//void ai_run (edict_t *self, float dist);
+//void ai_charge (edict_t *self, float dist);
+//int range (edict_t *self, edict_t *other);
+//
+//void FoundTarget (edict_t *self);
+//qboolean infront (edict_t *self, edict_t *other);
 qboolean visible (edict_t *self, edict_t *other);
-qboolean FacingIdeal(edict_t *self);
-
-qboolean visible_box (edict_t *self, edict_t *other);
-qboolean visible_fullbox (edict_t *self, edict_t *other);
+//qboolean FacingIdeal(edict_t *self);
+//
+//qboolean visible_box (edict_t *self, edict_t *other);
+//qboolean visible_fullbox (edict_t *self, edict_t *other);
 
 //
 // g_weapon.c
@@ -1141,9 +1125,9 @@ void ShowGun(edict_t *ent);
 // m_move.c
 //
 qboolean M_CheckBottom (edict_t *ent);
-qboolean M_walkmove (edict_t *ent, float yaw, float dist);
-void M_MoveToGoal (edict_t *ent, float dist);
-void M_ChangeYaw (edict_t *ent);
+//qboolean M_walkmove (edict_t *ent, float yaw, float dist);
+//void M_MoveToGoal (edict_t *ent, float dist);
+//void M_ChangeYaw (edict_t *ent);
 
 //
 // g_phys.c

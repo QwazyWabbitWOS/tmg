@@ -499,29 +499,14 @@ static void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurfa
 	{
 		if (ent->spawnflags & 1)
 		{
-/*			if (allow_lasermines->value)
-			{
-				// T-MeK - Play Sound for hand grenade
-				gi.sound (ent, CHAN_VOICE, gi.soundindex ("tank/pain.wav"), 1, ATTN_NORM, 0);
-				// t-mek
-				if (surf && (Q_stricmp("hgrenade",ent->classname)==0))  //t-mek why is this check here?
-				{
-					ent->movetype = MOVETYPE_NONE;			// Make grenade stick to surface (stop moving)
-					Place_LaserMine( ent, plane, surf );	// Create LaserMine beam
-				}
-				//t-mek
-			}
+			if (random() > 0.5)
+				gi.sound(ent, CHAN_VOICE, gi.soundindex("weapons/hgrenb1a.wav"), 1, ATTN_NORM, 0);
 			else
-			{
-*/				if (random() > 0.5)
-					gi.sound (ent, CHAN_VOICE, gi.soundindex ("weapons/hgrenb1a.wav"), 1, ATTN_NORM, 0);
-				else
-					gi.sound (ent, CHAN_VOICE, gi.soundindex ("weapons/hgrenb2a.wav"), 1, ATTN_NORM, 0);
-//			}
+				gi.sound(ent, CHAN_VOICE, gi.soundindex("weapons/hgrenb2a.wav"), 1, ATTN_NORM, 0);
 		}
 		else
 		{
-			gi.sound (ent, CHAN_VOICE, gi.soundindex ("weapons/grenlb1b.wav"), 1, ATTN_NORM, 0);
+			gi.sound(ent, CHAN_VOICE, gi.soundindex("weapons/grenlb1b.wav"), 1, ATTN_NORM, 0);
 		}
 
 
@@ -588,50 +573,26 @@ void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int 
 	grenade->s.modelindex = gi.modelindex ("models/objects/grenade2/tris.md2");
 	grenade->owner = self;
 	grenade->touch = Grenade_Touch;
-
-	/*	if (allow_lasermines->value)
-	{
-	if (lasermine_timeout->value > 0 && lasermine_timeout->value < 4)
-			gi.cvar_set(")lasermine_timeout", "4");
-	if (lasermine_timeout->value > 0)
-			grenade->nextthink = level.time + lasermine_timeout->value;
-	}
-	else
-	{
-	 */
 	grenade->nextthink = level.time + timer;
-//	}
 	grenade->think = Grenade_Explode;
 	grenade->dmg = damage;
 	grenade->dmg_radius = damage_radius;
 	grenade->classname = "hgrenade";
-/*	if (allow_lasermines->value)
-	{
-		if (held)
-			grenade->spawnflags = 3;
-		else
-			grenade->spawnflags = 1;
-		
-		gi.sound (self, CHAN_WEAPON, gi.soundindex ("weapons/hgrent1a.wav"), 1, ATTN_NORM, 0);
-		gi.linkentity (grenade);
-	}
+
+	if (held)
+		grenade->spawnflags = 3;
+	else
+		grenade->spawnflags = 1;
+	grenade->s.sound = gi.soundindex("weapons/hgrenc1b.wav");
+	if (timer <= 0.0)
+		Grenade_Explode(grenade);
 	else
 	{
-*/		if (held)
-			grenade->spawnflags = 3;
-		else
-			grenade->spawnflags = 1;
-		grenade->s.sound = gi.soundindex("weapons/hgrenc1b.wav");
-		if (timer <= 0.0)
-			Grenade_Explode (grenade);
-		else
-		{
-			gi.sound (self, CHAN_WEAPON,
-					  gi.soundindex ("weapons/hgrent1a.wav"),
-					  1, ATTN_NORM, 0);
-			gi.linkentity (grenade);
-		}
-//	}
+		gi.sound(self, CHAN_WEAPON,
+			gi.soundindex("weapons/hgrent1a.wav"),
+			1, ATTN_NORM, 0);
+		gi.linkentity(grenade);
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////

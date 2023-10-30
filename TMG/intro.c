@@ -258,26 +258,16 @@ char* Wav_Mod_Next()
 /* 
 //QW// 
 This was in g_spawn.c and was called by SP_worldspawn.
-I'm placing it here for now until I can refactor and figure out
-if it's even needed. Caching a long list blows up the server
-when it can't cache the rest of the weapon and player sounds.
-Game limit is 256 sounds and the original code allowed for up to
-256 songs. I've tried to reconcile the manifest constants with
-the game limits in q_shared.h.
-As long as we don't cache them in the index we're ok.
-
-I think the proper fix for this is to index the next song into the
-configstring at the start of a new map to make it ready for play at
-the next intermission. Need to look into how this affects downloads.
-
-NOTE: First item in the intro list doesn't get precached? Why not?
-levels is 0 on entry, this looks like a bug to me.
+Caching a long list blows up the server when it can't cache 
+the rest of the weapon and player sounds.
+Game limit is 254 sounds (index 1 thru 255) and the original intro
+code allowed for up to 256 songs.
 */
 //RAV precache songs
-char names[MAXSONGS][MAX_QPATH];
 void PrecacheSongs(void)
 {
 	FILE *file;
+	static char names[MAXSONGS][MAX_QPATH];
 	char file_name[MAX_QPATH];
 	char song[MAX_QPATH] = { 0 };
 	int levels = 0;

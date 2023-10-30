@@ -798,14 +798,11 @@ void Weapon_Grenade(edict_t* ent)
 			if (!ent->client->grenade_time)
 			{
 				ent->client->grenade_time = level.time + GRENADE_TIMER + 0.2;
-				//				if (!allow_lasermines->value)
 				ent->client->weapon_sound =
 					gi.soundindex("weapons/hgrenc1b.wav");
 			}
 
 			// they waited too long, detonate it in their hand
-//			if (!allow_lasermines->value)
-//			{
 			if (!ent->client->grenade_blew_up &&
 				level.time >= ent->client->grenade_time)
 			{
@@ -813,7 +810,6 @@ void Weapon_Grenade(edict_t* ent)
 				weapon_grenade_fire(ent, true);
 				ent->client->grenade_blew_up = true;
 			}
-			//			}
 
 			if (ent->client->buttons & BUTTON_ATTACK)
 				return;
