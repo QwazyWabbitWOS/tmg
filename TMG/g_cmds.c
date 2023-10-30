@@ -2529,7 +2529,7 @@ void ClientCommand (edict_t *ent)
 	{
 		safe_cprintf(ent, PRINT_HIGH, "oplevel = %d\n", ent->client->pers.oplevel);
 	}
-	else if (Q_stricmp (cmd, "checkop") == 0) {
+	else if (Q_stricmp (cmd, "checkop") == 0) { // Query do I have lock permission?
 		if (ent->client->pers.oplevel & OP_LOCKSERVER)
 			safe_cprintf(ent, PRINT_HIGH, "Lock server permission on!");
 		else
@@ -2593,7 +2593,7 @@ void ClientCommand (edict_t *ent)
 					 ent->client->menu,
 					 ent->client->showscores);
 	}
-	else if (Q_stricmp (cmd, "permissions") == 0)
+	else if (Q_stricmp (cmd, "permissions") == 0) // List permissions you have as operator.
 	{
 		if (ent->client->pers.oplevel)
 		{

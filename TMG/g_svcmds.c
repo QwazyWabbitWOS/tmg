@@ -419,10 +419,8 @@ void ServerCommand(void)
 	{
 		if (IPMatch(gi.argv(2), "*@*.*.*.*") == 1 && gi.argc() == 4)
 		{
-			if (ModifyOpLevel(CheckOpFile(NULL, gi.argv(2), true),
-				atoi(gi.argv(3))))
-				gi.dprintf("%s level changed to %s\n",
-					gi.argv(2), gi.argv(3));
+			if (ModifyOpLevel(CheckOpFile(NULL, gi.argv(2), true), atoi(gi.argv(3))))
+				gi.dprintf("%s level changed to %s\n", gi.argv(2), gi.argv(3));
 			else
 				gi.dprintf("No matching entry found.\n");
 		}

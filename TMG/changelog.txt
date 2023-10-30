@@ -332,6 +332,15 @@ Upgraded GNUmakefile a little.
 Added MAX_OPS constant instead of magic number in the oplist initialization.
 Fixed modop command so it works correctly.
 
+0.2.62
+Fix incomplete spawns of flags at bases at info_player_deathmatch points in non-ctf maps.
+
+0.2.63
+Cleaned up some unused cvars, code and comments.
+Refactored the opfile functions. This fixes some issues with the way ops were assigned.
+Players can now assert their password in autoexec.cfg as "set namepass password u" and
+they will receive operator permissions per the user_o.txt file. 
+
 Completed
 2. Player name on freecam was fixed, but I may have to fix it again so it's still on the list.
 3. Same with bug in lockteams on the admin menu.

@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>+set sys_forcegamelib $(Q2DIR)\debug\gamex86.dll +set game ctf +set ctf 1 +exec ctfserver.cfg</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>+set sys_forcegamelib $(Q2DIR)\debug\gamex86.dll +set developer 1 +set game ctf +set ctf 1 +exec ctfserver.cfg</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>c:\quake2\r1q2ded.exe</LocalDebuggerCommand>
-    <LocalDebuggerWorkingDirectory>c:\quake2</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand>$(Q2DIR)\r1q2ded.exe</LocalDebuggerCommand>
+    <LocalDebuggerWorkingDirectory>$(Q2DIR)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LocalDebuggerCommand>c:\quake2\q2proded.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(Q2DIR)\q2proded.exe</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommandArguments>+set sys_forcegamelib $(Q2DIR)\release\gamex86.dll +set game ctf +exec ctfserver.cfg</LocalDebuggerCommandArguments>
-    <LocalDebuggerWorkingDirectory>c:\quake2</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerWorkingDirectory>$(Q2DIR)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommand>$(Q2DIR)\q2proded64.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(Q2DIR)\q2proded.exe</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerWorkingDirectory>c:\quake2</LocalDebuggerWorkingDirectory>
-    <LocalDebuggerCommandArguments>+set sys_forcegamelib $(Q2DIR)\debug\gamex86_64.dll +set game ctf +set ctf 1 +exec ctfserver.cfg</LocalDebuggerCommandArguments>
+    <LocalDebuggerWorkingDirectory>$(Q2DIR)</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommandArguments>+set developer 1 +set net_ip 192.168.4.32 +set sys_forcegamelib $(Q2DIR)\debug\gamex86_64.dll +set game ctf +set ctf 1 +exec ctfserver.cfg</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup>
     <ShowAllFiles>false</ShowAllFiles>
@@ -25,6 +25,6 @@
     <LocalDebuggerCommand>$(Q2DIR)\q2proded64.exe</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommandArguments>+set sys_forcegamelib $(Q2DIR)\release\gamex86_64.dll +set game ctf +set ctf 1 +exec ctfserver.cfg</LocalDebuggerCommandArguments>
-    <LocalDebuggerWorkingDirectory>c:\quake2</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerWorkingDirectory>$(Q2DIR)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
 </Project>

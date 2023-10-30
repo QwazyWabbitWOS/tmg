@@ -440,11 +440,6 @@ void InitGame (void)
 	log_chat = gi.cvar ("log_chat", "0", 0);
 	use_navfiles = gi.cvar("use_navfiles", "1", 0);
 
-	// operator list management
-	defaultoplevel = gi.cvar ("defaultoplevel", "0", 0); // be sure to specify some value in server.cfg
-	oplistBase = gi.TagMalloc (MAX_OPS * sizeof(oplist_t), TAG_GAME);
-	oplist = oplistBase + 1;
-
 	//QW// Set these for various debugging output
 	debug_spawn = gi.cvar ("debug_spawn", "0", 0);
 	debug_bots = gi.cvar("debug_bots", "0", 0);
@@ -515,7 +510,10 @@ void InitGame (void)
 
 	CTFInit();
 
-	CheckOpFile(NULL, "*@*.*.*.*", false);
+	// operator list management
+	defaultoplevel = gi.cvar("defaultoplevel", "0", 0); // be sure to specify some value in server.cfg
+	oplist = gi.TagMalloc(MAX_OPS * sizeof(oplist_t), TAG_GAME);
+	LoadOpFile();
 
 	// For the logs
 	GetDate();

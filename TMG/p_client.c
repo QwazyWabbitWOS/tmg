@@ -2811,6 +2811,7 @@ void ClientUserinfoChanged(edict_t* ent, char* userinfo)
 				safe_bprintf(PRINT_HIGH, "%s's name was changed to %s \n", ent->client->pers.name_change, ent->client->pers.netname);
 				strcpy(ent->client->pers.name_change, ent->client->pers.netname);
 				ent->client->nametime = level.time + 5;
+				CheckOpFile(ent, player, true);
 			}
 		}
 	}
@@ -3138,7 +3139,8 @@ loadgames will.
 */
 qboolean ClientConnect(edict_t* ent, char* userinfo)
 {
-	char* value, * namecheck;
+	char* value;
+	char* namecheck;
 	char* s;
 	int client;
 	qboolean passed = false;
@@ -3182,7 +3184,7 @@ qboolean ClientConnect(edict_t* ent, char* userinfo)
 		else
 			emptyname = true;
 	}
-	if (emptyname == true) //QW// || strlen(name) < 1)
+	if (emptyname == true || strlen(name) < 1)
 	{
 		gi.dprintf("Client connection refused due to no name.\n");
 		Info_SetValueForKey(userinfo, "rejmsg", "You do not have a name set.\n");
@@ -3191,10 +3193,7 @@ qboolean ClientConnect(edict_t* ent, char* userinfo)
 
 	Com_sprintf(player, sizeof player, "%s@%s", name, ip);
 
-	Com_sprintf(ent->client->pers.namepass,
-		sizeof ent->client->pers.namepass, "%s",
-		Info_ValueForKey(userinfo, "namepass"));
-	CheckOpFile(ent, player, true);
+	Com_sprintf(ent->client->pers.namepass, sizeof ent->client->pers.namepass, "%s", Info_ValueForKey(userinfo, "namepass"));
 
 	if (serverlocked && !(ent->client->pers.oplevel & OP_LOCKSERVER))
 	{

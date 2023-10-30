@@ -16,16 +16,16 @@ typedef struct oplist_s
 #define MAX_OPS	64
 
 extern oplist_t	*oplist;
-extern oplist_t	*oplistBase;
 
 void ShowOps(void);
 qboolean lessGeneral(char *line, char *comp);
 int checkAllowed (char *userinfo);
 char *NameAndIp (edict_t *ent);
 int IPMatch (char *clientIP, char *maskIP);
-qboolean entryInFile (char *filename, char ip[MAX_QPATH]);
+qboolean entryInFile (char *filename, char* ip);
+int LoadOpFile(void);
 int CheckOpFile (edict_t *ent, char* ip, qboolean returnindex);
-qboolean CheckNameProtect (char name[MAX_QPATH], char namepass[MAX_QPATH]);
+qboolean CheckNameProtect (const char* name, const char* namepass);
 qboolean ModifyOpLevel (int entry, int newlevel);
 int AddOperator (char entry[MAX_QPATH], int op_lev, char pass[16]);
 void AddEntry (char *filename, char *text);
