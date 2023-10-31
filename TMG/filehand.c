@@ -9,17 +9,17 @@ oplist_t* oplist;
 Display the operators and their access levels
 currently held in the server.
 */
-void ShowOps(void)
+void ShowOps(edict_t* ent)
 {
 	int numentries = LoadOpFile();
 
-	gi.dprintf("OP  %-24s      %-5s        %-9s\n", "Entry", "Level", "Password");
-	gi.dprintf("--- ----------------------  ------------------ --------\n");
+	safe_cprintf(ent, PRINT_HIGH, "OP  %-24s      %-5s        %-9s\n", "Entry", "Level", "Password");
+	safe_cprintf(ent, PRINT_HIGH, "--- ----------------------  ------------------ --------\n");
 	for (int i = 0; i < numentries; i++) {
-		gi.dprintf("%d.  %-24s      %-6d       %s\n",
+		safe_cprintf(ent, PRINT_HIGH, "%d.  %-24s      %-6d       %s\n",
 			i + 1, oplist[i].entry, oplist[i].level, oplist[i].namepass);
 	}
-	gi.dprintf("\n");
+	safe_cprintf(ent, PRINT_HIGH, "\n");
 }
 
 /**
@@ -310,7 +310,8 @@ int CheckOpFile(edict_t* ent, char* ip, qboolean returnindex)
 
 	for (i = 0; i < numentries; i++) {
 		if (IPMatch(ip, oplist[i].entry)) {
-			if (ent != NULL) {
+			if (ent != NULL)
+			{
 				if (debug_ops->value) {
 					gi.dprintf("Checking %s oplist[%i].namepass %s vs client->pers.namepass: %s\n",
 						ent->client->pers.netname, i, oplist[i].namepass, ent->client->pers.namepass);
@@ -337,9 +338,6 @@ int CheckOpFile(edict_t* ent, char* ip, qboolean returnindex)
 				flagged = i;
 			}
 		}
-	}
-	if (flagged < 0) {
-		ent->client->pers.oplevel = 0;
 	}
 
 	if (debug_ops->value)
