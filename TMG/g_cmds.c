@@ -2230,6 +2230,15 @@ void ClientCommand (edict_t *ent)
 		else
 			NoAccess(ent);
 	}
+	else if (Q_stricmp(cmd, "showops") == 0)
+	{
+		if (ent->client->pers.oplevel & (OP_ADDOP | OP_MODOP)) //QW// Client has access
+		{
+			ShowOps(ent);
+		}
+		else
+			NoAccess(ent);
+	}
 	else if (Q_stricmp (cmd, "modop") == 0) // This command is duplicated in sv commands.
 	{
 		int oper_level;
@@ -2263,7 +2272,6 @@ void ClientCommand (edict_t *ent)
 		{
 			if (IPMatch (gi.argv(1),  "*@*.*.*.*") == 1)
 			{
-				gi.dprintf("there are %d args\n", gi.argc());
 				if (gi.argc() < 3)
 					oper_level = (int)defaultoplevel->value;
 				else
@@ -2274,8 +2282,7 @@ void ClientCommand (edict_t *ent)
 					Com_sprintf(pass, sizeof pass, gi.argv(3));
 
 				safe_cprintf (ent, PRINT_HIGH,
-					"%s added to user_o.txt with level %d and password %s.\n",
-							  gi.argv(1), oper_level, pass);
+					"%s added to user_o.txt with level %d and password %s.\n", gi.argv(1), oper_level, pass);
 				AddOperator (gi.argv(1), oper_level, pass);
 			}
 			else

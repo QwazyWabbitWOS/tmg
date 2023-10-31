@@ -17,7 +17,7 @@ typedef struct oplist_s
 
 extern oplist_t	*oplist;
 
-void ShowOps(void);
+void ShowOps(edict_t* ent);
 qboolean lessGeneral(char *line, char *comp);
 int checkAllowed (char *userinfo);
 char *NameAndIp (edict_t *ent);

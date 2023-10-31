@@ -5199,8 +5199,9 @@ void OpMe(edict_t* ent, pmenu_t* p)
 	if (!G_EntExists(e))
 		return;
 
-	Com_sprintf(entry, sizeof entry, "addop %s %d nopass",
-		GetIp(e), (int)defaultoplevel->value);
+	Com_sprintf(entry, sizeof entry, "addop %s %d nopass", GetIp(e), (int)defaultoplevel->value);
+	gi.dprintf("%s promoted %s to operator status level %i\n",
+		ent->client->pers.netname, e->client->pers.netname, (int)defaultoplevel->value);
 	StuffCmd(ent, entry);
 }
 
@@ -5516,8 +5517,7 @@ char* GetIp(edict_t* ent)
 	char entry[32], namep[20], ipp1[3], ipp2[3], ipp3[3], ipp4[3];
 	int ec, j;
 
-	Com_sprintf(entry, sizeof entry, "%s@%s",
-		ent->client->pers.netname, ent->client->pers.ip);
+	Com_sprintf(entry, sizeof entry, "%s@%s", ent->client->pers.netname, ent->client->pers.ip);
 	j = 0;
 	ec = 0;
 	while (!strchr("@", entry[ec]))
@@ -5558,7 +5558,7 @@ char* GetIp(edict_t* ent)
 		j++;
 		ec++;
 	}
-	Com_sprintf(modif, sizeof modif, "*@%s.%s.%s.*", ipp1, ipp2, ipp3);
+	Com_sprintf(modif, sizeof modif, "%s@%s.%s.%s.*", ent->client->pers.netname, ipp1, ipp2, ipp3);
 	return (modif);
 }
 

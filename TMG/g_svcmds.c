@@ -450,10 +450,6 @@ void ServerCommand(void)
 		else
 			gi.dprintf("Usage: addop user@ip level password\n");
 	}
-	else if (Q_stricmp(cmd, "showops") == 0)
-	{
-		ShowOps();
-	}
 	else if (Q_stricmp(cmd, "stuff") == 0)
 		Svcmd_Stuff();
 
