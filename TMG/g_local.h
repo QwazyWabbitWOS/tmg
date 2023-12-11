@@ -797,6 +797,7 @@ extern	cvar_t	*vote_timeout;
 extern	cvar_t	*cfgdir;
 extern	cvar_t	*modversion;
 extern	cvar_t	*doors_stay_open;
+extern	cvar_t	*g_max_ops; // Admin configurable operator limit. (default 64)
 
 //JSW - Punish Suicide Flags
 #define	PS_RESETSCORE	1

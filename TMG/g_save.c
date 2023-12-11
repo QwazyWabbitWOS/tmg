@@ -472,6 +472,7 @@ void InitGame (void)
 
 	cfgdir = gi.cvar ("cfgdir", "cfg", CVAR_NOSET);
 	doors_stay_open = gi.cvar("doors_stay_open", "0", 0);
+	g_max_ops = gi.cvar("max_ops", "64", 0);
 
 	modversion = gi.cvar ("modversion", MOD" "MOD_VERSION" ", CVAR_SERVERINFO | CVAR_NOSET);
 
@@ -512,8 +513,8 @@ void InitGame (void)
 
 	// operator list management
 	defaultoplevel = gi.cvar("defaultoplevel", "0", 0); // be sure to specify some value in server.cfg
-	oplist = gi.TagMalloc(MAX_OPS * sizeof(oplist_t), TAG_GAME);
-	LoadOpFile();
+	oplist = gi.TagMalloc((int)g_max_ops->value * sizeof(oplist_t), TAG_GAME);
+	opcount = LoadOpFile();
 
 	// For the logs
 	GetDate();
