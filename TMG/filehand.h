@@ -13,9 +13,8 @@ typedef struct oplist_s
 	qboolean	flagged;
 } oplist_t;
 
-#define MAX_OPS	64
-
 extern oplist_t	*oplist;
+extern int opcount;
 
 void ShowOps(edict_t* ent);
 qboolean lessGeneral(char *line, char *comp);

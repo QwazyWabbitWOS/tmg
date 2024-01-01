@@ -3,7 +3,9 @@
 #include "filehand.h"
 #include "anticheat.h"
 
+cvar_t* g_max_ops;
 oplist_t* oplist;
+int	opcount;	// Number of ops in list
 
 /**
 Display the operators and their access levels
@@ -256,7 +258,8 @@ int LoadOpFile(void)
 	opfile = tn_open("user_o.txt", "r", true);
 	if (!opfile)
 	{
-		return -1;
+		opcount = -1;
+		return opcount;
 	}
 	else
 	{
@@ -298,7 +301,9 @@ int LoadOpFile(void)
 
 		fclose(opfile);
 	}
-	return i;
+
+	opcount = i;
+	return opcount;
 }
 
 int CheckOpFile(edict_t* ent, char* ip, qboolean returnindex)
@@ -306,79 +311,77 @@ int CheckOpFile(edict_t* ent, char* ip, qboolean returnindex)
 	int i = 0;
 	int flagged = -1;
 
-	int numentries = LoadOpFile();
+		int numentries = LoadOpFile();
+		if (numentries < 0)
+			return numentries;
 
-	for (i = 0; i < numentries; i++) {
-		if (IPMatch(ip, oplist[i].entry)) {
-			if (ent != NULL)
-			{
-				if (debug_ops->value) {
-					gi.dprintf("Checking %s oplist[%i].namepass %s vs client->pers.namepass: %s\n",
-						ent->client->pers.netname, i, oplist[i].namepass, ent->client->pers.namepass);
-				}
-				if (strcmp(oplist[i].namepass, ent->client->pers.namepass) == 0) {
-					oplist[i].flagged = true;
-					flagged = i;
-					ent->client->pers.oplevel = oplist[flagged].level;
-					if (ent && debug_ops->value && flagged != -1) {
-						gi.dprintf("Player %s matches entry %s, level = %d/%d\n",
-							ent->client->pers.netname, oplist[flagged].entry, oplist[flagged].level, ent->client->pers.oplevel);
+		for (i = 0; i < numentries; i++) {
+			if (IPMatch(ip, oplist[i].entry)) {
+				if (ent != NULL)
+				{
+					if (debug_ops->value) {
+						gi.dprintf("Checking %s oplist[%i].namepass %s vs client->pers.namepass: %s\n",
+							ent->client->pers.netname, i, oplist[i].namepass, ent->client->pers.namepass);
+					}
+					if (strcmp(oplist[i].namepass, ent->client->pers.namepass) == 0) {
+						oplist[i].flagged = true;
+						flagged = i;
+						ent->client->pers.oplevel = oplist[flagged].level;
+						if (ent && debug_ops->value && flagged != -1) {
+							gi.dprintf("Player %s matches entry %s, level = %d/%d\n",
+								ent->client->pers.netname, oplist[flagged].entry, oplist[flagged].level, ent->client->pers.oplevel);
+						}
+					}
+					else {
+						ent->client->pers.oplevel = 0;
+						oplist[i].flagged = true;
+						flagged = i;
+						return flagged;
 					}
 				}
-				else {
-					ent->client->pers.oplevel = 0;
+				else // We're making a modification to an operator in the list and have a match.
+				{
 					oplist[i].flagged = true;
 					flagged = i;
-					return flagged;
 				}
 			}
-			else // We're making a modification to an operator in the list and have a match.
-			{
-				oplist[i].flagged = true;
-				flagged = i;
-			}
 		}
-	}
 
-	if (debug_ops->value)
-		gi.dprintf("%s: returning %i\n", __func__, flagged);
+		if (debug_ops->value)
+			gi.dprintf("%s: returning %i\n", __func__, flagged);
 
-	return flagged;
+		return flagged;
 }
 
 /**
 	The oplist has two functions:
 	Set operator access for those registered as ops.
-	Protect registered player names.
+	Protect registered player names if protect is set.
 */
 qboolean CheckNameProtect(const char* name, const char* namepass)
 {
-	qboolean inFile = false;
-	qboolean namepassMatches = false;
+	qboolean namematched = 0;
+	qboolean passmatched = 0;
+	qboolean nameprotected = 0;
 
 	int numentries = LoadOpFile();
 
 	for (int i = 0; i < numentries; i++)
 	{
-		if (strcmp(oplist[i].name, name) == 0 && (oplist[i].level & OP_NAMEPASS))
-		{
-			inFile = true;
-			if (debug_ops->value)
-				gi.dprintf("name .%s. matched entry .%s. and is in file.\n"
-					"namepass in oplist is .%s., client pass is .%s.\n", name,
-					oplist[i].name, Q_stricmp(oplist[i].namepass, namepass), oplist[i].namepass, namepass);
+		if (strcmp(oplist[i].name, name) == 0)
+			namematched = true;	// name matched
 
-			if (strcmp(oplist[i].namepass, namepass) == 0)
-			{
-				namepassMatches = true;
-			}
-		}
+		if (oplist[i].level & OP_NAMEPASS)
+			nameprotected = true;
+
+		if (strcmp(oplist[i].namepass, namepass) == 0)
+			passmatched = true;
 	}
 
-	if (inFile && namepassMatches)
-		return false;
-	else
+	if (namematched && passmatched && nameprotected)
 		return true;
+	else
+		return false;
 }
 
 

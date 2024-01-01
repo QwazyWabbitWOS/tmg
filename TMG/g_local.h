@@ -829,6 +829,7 @@ extern	cvar_t	*g_max_ops; // Admin configurable operator limit. (default 64)
 #define OP_MODOP			65536	// Can modify an ops oplevel
 #define	OP_RCON				131072	// Can enter rconmode
 #define OP_NAMEPASS			262144	// OP name is password protected (malfunctions for clients using q2pro)
+
 #define OP_PLAYERCONTROL	(OP_SWITCH|OP_KICK|OP_SILENCE|OP_BAN|OP_ADDOP|OP_MODOP)
 
 //quad_notify flags

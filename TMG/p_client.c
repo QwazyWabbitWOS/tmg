@@ -2712,7 +2712,7 @@ void ClientUserinfoChanged(edict_t* ent, char* userinfo)
 	char* namepass;
 
 	if (gamedebug->value)
-		DbgPrintf("%s\n", __func__);
+		gi.dprintf("%s\n", __func__);
 
 	// check for malformed or illegal info strings
 	if (!Info_Validate(userinfo))
@@ -2792,13 +2792,13 @@ void ClientUserinfoChanged(edict_t* ent, char* userinfo)
 		{
 			if (!CheckNameProtect(Info_ValueForKey(userinfo, "name"), namepass))
 			{
-				//value = Info_ValueForKey (userinfo, "namepass");
-				//	if (strcmp(Info_ValueForKey (userinfo, "namepass"), ent->client->pers.namepass) != 0)
-				//	{
-				safe_cprintf(ent, PRINT_HIGH, "That name is protected\n");
-				ent->command = 2;
-				return;
-				//	}
+				value = Info_ValueForKey(userinfo, "namepass");
+				if (strcmp(Info_ValueForKey(userinfo, "namepass"), ent->client->pers.namepass) != 0)
+				{
+					safe_cprintf(ent, PRINT_HIGH, "That name is protected\n");
+					ent->command = 2;
+					return;
+				}
 			}
 			if (ent->client->nametime > level.time)
 			{
