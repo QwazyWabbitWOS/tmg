@@ -32,19 +32,15 @@ CFLAGS += -m32 -fPIC -DSTDC_HEADERS -I/usr/include
 endif
 
 # use this when debugging
-#CFLAGS=-g -Og -DDEBUG -DARCH="$(ARCH)" -Wall -pedantic
+#CFLAGS=-g -Og -DDEBUG -DARCH="$(ARCH)"
 
 # flavors of Linux
 ifeq ($(shell uname),Linux)
-#SVNDEV := -D'SVN_REV="$(shell svnversion -n .)"'
-#CFLAGS += $(SVNDEV)
 CFLAGS += -DLINUX
 endif
 
 # OS X wants to be Linux and FreeBSD too.
 ifeq ($(shell uname),Darwin)
-#SVNDEV := -D'SVN_REV="$(shell svnversion -n .)"'
-#CFLAGS += $(SVNDEV)
 CFLAGS += -DLINUX
 endif
 
@@ -91,7 +87,7 @@ depends:
 all:
 	$(MAKE) clean
 	$(MAKE) depends
-	$(MAKE)
+	$(MAKE) -j
 
 -include dependencies
 
