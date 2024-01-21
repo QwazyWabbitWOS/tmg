@@ -800,15 +800,14 @@ static inline int Q_tolower(int c)
 */
 int Q_stricmp(const char *s1, const char *s2)
 {
-	int result = 0;
-	const unsigned char* uc1 = (const unsigned char*)s1;
-	const unsigned char* uc2 = (const unsigned char*)s2;
+	const unsigned char
+		*uc1 = (const unsigned char *)s1,
+		*uc2 = (const unsigned char *)s2;
 
-	while ((result = Q_tolower(*uc1) - Q_tolower(*uc2++)) == 0)
+	while (Q_tolower(*uc1) == Q_tolower(*uc2++))
 		if (*uc1++ == '\0')
-			break;
-
-	return result;
+			return (0);
+	return (Q_tolower(*uc1) - Q_tolower(*--uc2));
 }
 
 int Q_strnicmp (const char *s1, const char *s2, size_t count)
