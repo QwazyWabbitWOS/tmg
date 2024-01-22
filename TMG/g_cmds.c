@@ -2643,6 +2643,8 @@ void ClientCommand (edict_t *ent)
 				safe_cprintf(ent, PRINT_HIGH, "OP_MODOP\n");
 			if (ent->client->pers.oplevel & OP_RCON)
 				safe_cprintf(ent, PRINT_HIGH, "OP_RCON\n");
+			if (ent->client->pers.oplevel & OP_NAMEPASS)
+				safe_cprintf(ent, PRINT_HIGH, "OP_NAMEPASS\n");
 		}
 		else
 			safe_cprintf(ent, PRINT_HIGH, "You have no special permissions.\n");

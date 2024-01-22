@@ -806,7 +806,7 @@ extern	cvar_t	*g_max_ops; // Admin configurable operator limit. (default 64)
 #define	PS_RESPAWN_CLOSEST	8
 
 //OP flags
-#define	OP_SPEC				1	// Can spectate even if specators are not allowed.
+#define	OP_SPEC				1	// Can spectate even if spectators are not allowed.
 #define	OP_SAY				2	// Ops can talk to anyone even if server is muted
 #define	OP_SWITCH			4	// Op can switch players around or force spectator
 #define	OP_CHANGEMAP		8	// Op force map change.

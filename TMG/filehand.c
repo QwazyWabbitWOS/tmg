@@ -311,7 +311,10 @@ int CheckOpFile(edict_t* ent, char* ip, qboolean returnindex)
 	int i = 0;
 	int flagged = -1;
 
-		int numentries = LoadOpFile();
+	if (ent->bot_client)
+		return -1; // bots can never be ops.
+
+	int numentries = LoadOpFile();
 		if (numentries < 0)
 			return numentries;
 
@@ -365,6 +368,9 @@ qboolean CheckNameProtect(const char* name, const char* namepass)
 	qboolean nameprotected = 0;
 
 	int numentries = LoadOpFile();
+
+	if (debug_ops->value)
+		gi.dprintf("%s: %s %s\n", __func__, name, namepass);
 
 	for (int i = 0; i < numentries; i++)
 	{
