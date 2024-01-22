@@ -798,16 +798,17 @@ static inline int Q_tolower(int c)
  If s1 is contained within s2 then return 0, they are "equal".
  else return the lexicographic difference between them.
 */
-int Q_stricmp(const char *s1, const char *s2)
+int Q_stricmp(const char* s1, const char* s2)
 {
-	const unsigned char
-		*uc1 = (const unsigned char *)s1,
-		*uc2 = (const unsigned char *)s2;
+	int result = 0;
+	const unsigned char* uc1 = (const unsigned char*)s1;
+	const unsigned char* uc2 = (const unsigned char*)s2;
 
-	while (Q_tolower(*uc1) == Q_tolower(*uc2++))
+	while ((result = Q_tolower(*uc1) - Q_tolower(*uc2++)) == 0)
 		if (*uc1++ == '\0')
-			return (0);
-	return (Q_tolower(*uc1) - Q_tolower(*--uc2));
+			break;
+
+	return result;
 }
 
 int Q_strnicmp (const char *s1, const char *s2, size_t count)
