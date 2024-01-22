@@ -800,9 +800,12 @@ static inline int Q_tolower(int c)
 */
 int Q_stricmp(const char* s1, const char* s2)
 {
-	int result = 0;
 	const unsigned char* uc1 = (const unsigned char*)s1;
 	const unsigned char* uc2 = (const unsigned char*)s2;
+	int result = 0;
+
+	if (s1 == s2)
+		return 0;
 
 	while ((result = Q_tolower(*uc1) - Q_tolower(*uc2++)) == 0)
 		if (*uc1++ == '\0')
@@ -811,22 +814,20 @@ int Q_stricmp(const char* s1, const char* s2)
 	return result;
 }
 
-int Q_strnicmp (const char *s1, const char *s2, size_t count)
+int Q_strnicmp(const char* s1, const char* s2, size_t count)
 {
-	if (count == 0)
-		return 0;
-	else
-	{
-		while (count-- != 0 && Q_tolower(*s1) == Q_tolower(*s2))
-		{
-			if (count == 0 || *s1 == '\0' || *s2 == '\0')
-				break;
-			s1++;
-			s2++;
-		}
+	const unsigned char* p1 = (const unsigned char*)s1;
+	const unsigned char* p2 = (const unsigned char*)s2;
+	int result;
 
-		return Q_tolower(*(unsigned char *) s1) - Q_tolower(*(unsigned char *) s2);
-	}
+	if (p1 == p2 || count == 0)
+		return 0;
+
+	while ((result = Q_tolower(*p1) - Q_tolower(*p2++)) == 0)
+		if (*p1++ == '\0' || --count == 0)
+			break;
+
+	return result;
 }
 
 size_t Q_strncpyz(char* dst, size_t dstSize, const char* src)
