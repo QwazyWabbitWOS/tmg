@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>+set sys_forcegamelib $(Q2DIR)\debug\gamex86.dll +set developer 1 +set game ctf +set ctf 1 +exec ctfserver.cfg</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>+set sys_forcegamelib $(Q2DIR)\ctf\lfire_2_152_gamex86.dll +set developer 1 +set game ctf +set ctf 1 +exec lfire_server.cfg</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(Q2DIR)\r1q2ded.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(Q2DIR)\q2proded32.exe</LocalDebuggerCommand>
     <LocalDebuggerWorkingDirectory>$(Q2DIR)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -22,7 +22,7 @@
     <ShowAllFiles>false</ShowAllFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommand>$(Q2DIR)\q2proded64.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(Q2DIR)\q2proded.exe</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommandArguments>+set sys_forcegamelib $(Q2DIR)\release\gamex86_64.dll +set game ctf +set ctf 1 +exec ctfserver.cfg</LocalDebuggerCommandArguments>
     <LocalDebuggerWorkingDirectory>$(Q2DIR)</LocalDebuggerWorkingDirectory>
