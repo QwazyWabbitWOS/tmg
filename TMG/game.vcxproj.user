@@ -16,7 +16,7 @@
     <LocalDebuggerCommand>$(Q2DIR)\q2proded.exe</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(Q2DIR)</LocalDebuggerWorkingDirectory>
-    <LocalDebuggerCommandArguments>+set developer 1 +set net_ip 192.168.4.32 +set sys_forcegamelib $(Q2DIR)\debug\gamex86_64.dll +set game ctf +set ctf 1 +exec ctfserver.cfg</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>+set developer 1 +set sys_forcegamelib $(Q2DIR)\debug\gamex86_64.dll +set game ctf +set ctf 1 +exec ctfserver.cfg</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup>
     <ShowAllFiles>false</ShowAllFiles>
