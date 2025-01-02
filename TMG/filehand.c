@@ -311,7 +311,7 @@ int CheckOpFile(edict_t* ent, char* ip, qboolean returnindex)
 	int i = 0;
 	int flagged = -1;
 
-	if (ent->bot_client)
+	if (!ent || ent->bot_client)
 		return -1; // bots can never be ops.
 
 	int numentries = LoadOpFile();
@@ -367,7 +367,7 @@ qboolean CheckNameProtect(const char* name, const char* namepass)
 	qboolean passmatched = 0;
 	qboolean nameprotected = 0;
 
-	int numentries = LoadOpFile();
+	int numentries = LoadOpFile(); // returns -1 if no file exists.
 
 	if (debug_ops->value)
 		gi.dprintf("%s: %s %s\n", __func__, name, namepass);
@@ -384,7 +384,7 @@ qboolean CheckNameProtect(const char* name, const char* namepass)
 			passmatched = true;
 	}
 
-	if (namematched && passmatched && nameprotected)
+	if (numentries == -1 || (namematched && passmatched && !nameprotected))
 		return true;
 	else
 		return false;
