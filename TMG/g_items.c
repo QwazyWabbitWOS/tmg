@@ -1786,7 +1786,7 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 {
 
 	//RAV
-	if (voosh->value)
+	if (voosh->value || (!voosh->value && ctf->value))
 	{
 		if(strcmp(ent->classname, "item_flag_team1") == 0 || strcmp(ent->classname, "item_flag_team2") == 0)
 		{

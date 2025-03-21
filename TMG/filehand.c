@@ -303,7 +303,10 @@ int LoadOpFile(void)
 	}
 
 	opcount = i;
-	return opcount;
+	if (opcount == 0) // opfile is empty
+		return -1;
+	else
+		return opcount; // number of entries in the oplist
 }
 
 int CheckOpFile(edict_t* ent, char* ip, qboolean returnindex)
