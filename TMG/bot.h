@@ -44,9 +44,9 @@ void		RemoveBot(void);
 void		SpawnBotReserving(void);
 
 // RAFAEL
-void Weapon_Ionripper (edict_t *ent);
-void Weapon_Phalanx (edict_t *ent);
-void Weapon_Trap (edict_t *ent);
+//void Weapon_Ionripper (edict_t *ent);
+//void Weapon_Phalanx (edict_t *ent);
+//void Weapon_Trap (edict_t *ent);
 
 // wideuse
 qboolean Bot_trace (edict_t *ent,edict_t *other);
@@ -85,7 +85,7 @@ void UsePrimaryWeapon(edict_t *ent);
 void UpdateExplIndex(edict_t* ent);
 
 //flag
-qboolean ZIGDrop_Flag(edict_t *ent, gitem_t *item);
+//qboolean ZIGDrop_Flag(edict_t *ent, gitem_t *item);
 
 //Bot AI routine
 void Bots_Move_NORM (edict_t *ent);		//normal AI
