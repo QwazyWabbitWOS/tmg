@@ -73,29 +73,28 @@ FIRE_AVOIDINV
 FIRE_JUMPROC
 */
 //combat flag set
-int			FFlg[MAX_BOTSKILL]
-=
+int FFlg[MAX_BOTSKILL] =
 {
 	//skill 0
-		FIRE_PRESTAYFIRE | FIRE_STAYFIRE | FIRE_REFUGE,
-		//skill 1
-			FIRE_REFUGE | FIRE_PRESTAYFIRE | FIRE_STAYFIRE | FIRE_REFUGE,
-			//skill 2
-				FIRE_REFUGE | FIRE_PRESTAYFIRE | FIRE_IGNORE | FIRE_QUADUSE,
-				//skill 3
-					FIRE_REFUGE | FIRE_EXPAVOID | FIRE_IGNORE | FIRE_QUADUSE,
-					//skill 4
-						FIRE_REFUGE | FIRE_EXPAVOID | FIRE_IGNORE | FIRE_QUADUSE,
-						//skill 5
-							FIRE_EXPAVOID | FIRE_IGNORE | FIRE_QUADUSE | FIRE_AVOIDINV | FIRE_IGNORE | FIRE_JUMPROC,
-							//skill 6
-								FIRE_EXPAVOID | FIRE_IGNORE | FIRE_QUADUSE | FIRE_AVOIDINV | FIRE_IGNORE | FIRE_JUMPROC,
-								//skill 7
-									FIRE_EXPAVOID | FIRE_IGNORE | FIRE_QUADUSE | FIRE_AVOIDINV | FIRE_IGNORE | FIRE_JUMPROC,
-									//skill 8
-										FIRE_EXPAVOID | FIRE_IGNORE | FIRE_QUADUSE | FIRE_AVOIDINV | FIRE_IGNORE | FIRE_JUMPROC,
-										//skill 9
-											FIRE_EXPAVOID | FIRE_IGNORE | FIRE_QUADUSE | FIRE_AVOIDINV | FIRE_IGNORE | FIRE_JUMPROC
+	FIRE_PRESTAYFIRE | FIRE_STAYFIRE | FIRE_REFUGE,
+	//skill 1
+	FIRE_REFUGE | FIRE_PRESTAYFIRE | FIRE_STAYFIRE | FIRE_REFUGE,
+	//skill 2
+	FIRE_REFUGE | FIRE_PRESTAYFIRE | FIRE_IGNORE | FIRE_QUADUSE,
+	//skill 3
+	FIRE_REFUGE | FIRE_EXPAVOID | FIRE_IGNORE | FIRE_QUADUSE,
+	//skill 4
+	FIRE_REFUGE | FIRE_EXPAVOID | FIRE_IGNORE | FIRE_QUADUSE,
+	//skill 5
+	FIRE_EXPAVOID | FIRE_IGNORE | FIRE_QUADUSE | FIRE_AVOIDINV | FIRE_IGNORE | FIRE_JUMPROC,
+	//skill 6
+	FIRE_EXPAVOID | FIRE_IGNORE | FIRE_QUADUSE | FIRE_AVOIDINV | FIRE_IGNORE | FIRE_JUMPROC,
+	//skill 7
+	FIRE_EXPAVOID | FIRE_IGNORE | FIRE_QUADUSE | FIRE_AVOIDINV | FIRE_IGNORE | FIRE_JUMPROC,
+	//skill 8
+	FIRE_EXPAVOID | FIRE_IGNORE | FIRE_QUADUSE | FIRE_AVOIDINV | FIRE_IGNORE | FIRE_JUMPROC,
+	//skill 9
+	FIRE_EXPAVOID | FIRE_IGNORE | FIRE_QUADUSE | FIRE_AVOIDINV | FIRE_IGNORE | FIRE_JUMPROC
 };
 
 static qboolean BotApplyStrength(edict_t* ent)
@@ -1472,7 +1471,7 @@ void Set_Combatstate(edict_t* ent, int foundedenemy)
 			return;
 		}
 		client->zc.zccmbstt |= CTS_ENEM_NSEE;//can't see
-//		return;
+		//return;
 	}
 	else
 	{
@@ -1841,9 +1840,9 @@ JUMPCATCH:
 	}
 
 	if (mode == 1) goto JMPCHK;//zc->second_target = NULL;
-//ponko	else zc->route_trace = false;
-//gi.bprintf(PRINT_HIGH,"j fall false\n");
-//	return false;
+	//ponko	else zc->route_trace = false;
+	//gi.bprintf(PRINT_HIGH,"j fall false\n");
+	//	return false;
 JMPCHK:
 	//gi.bprintf(PRINT_HIGH,"NJ \n");
 	if (Bot_Jump(ent, pos, dist)) return true;
