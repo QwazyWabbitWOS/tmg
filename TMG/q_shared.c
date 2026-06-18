@@ -588,11 +588,11 @@ void COM_FileBase(char *in, char *out)
 }
 
 /*
-============
+=============
 COM_FilePath
 
 Returns the path up to, but not including the last /
-============
+=============
 */
 void COM_FilePath(char *in, char *out)
 {
@@ -608,11 +608,6 @@ void COM_FilePath(char *in, char *out)
 }
 
 
-/*
-==================
-COM_DefaultExtension
-==================
-*/
 void COM_DefaultExtension(char *path, char *extension)
 {
 	char    *src;
@@ -672,80 +667,78 @@ Handles C and C++ comments.
 */
 char* COM_Parse(char** data_p)
 {
-	int         c;
-	int         len;
-	char* data;
-	char* s = com_token[com_tokidx++ & 3];
+    int c;
+    int len = 0;
+    char* data = *data_p;
+    char* s = com_token[com_tokidx++ & 3];
+    s[0] = 0;
 
-	data = *data_p;
-	len = 0;
-	s[0] = 0;
+    if (!data) {
+        *data_p = NULL;
+        return s;
+    }
 
-	if (!data) {
-		*data_p = NULL;
-		return s;
-	}
+    // skip whitespace and comments
+    while (1) {
+        // skip whitespace
+        while ((c = *data) <= ' ') {
+            if (c == 0) {
+                *data_p = NULL;
+                return s;
+            }
+            data++;
+        }
+        // skip // comments
+        if (c == '/' && data[1] == '/') {
+            data += 2;
+            while (*data && *data != '\n')
+                data++;
+            continue;
+        }
+        // skip /* */ comments
+        if (c == '/' && data[1] == '*') {
+            data += 2;
+            while (*data) {
+                if (data[0] == '*' && data[1] == '/') {
+                    data += 2;
+                    break;
+                }
+                data++;
+            }
+            continue;
+        }
+        break;
+    }
 
-	// skip whitespace
-skipwhite:
-	while ((c = *data) <= ' ') {
-		if (c == 0) {
-			*data_p = NULL;
-			return s;
-		}
-		data++;
-	}
+    // handle quoted strings
+    if (c == '"') {
+        data++;
+        while (1) {
+            c = *data++;
+            if (c == '"' || !c) {
+                break;
+            }
+            if (len < MAX_TOKEN_CHARS - 1) {
+                s[len++] = c;
+            }
+        }
+        s[len] = 0;
+        *data_p = data;
+        return s;
+    }
 
-	// skip // comments
-	if (c == '/' && data[1] == '/') {
-		data += 2;
-		while (*data && *data != '\n')
-			data++;
-		goto skipwhite;
-	}
+    // parse a regular word
+    do {
+        if (len < MAX_TOKEN_CHARS - 1) {
+            s[len++] = c;
+        }
+        data++;
+        c = *data;
+    } while (c > 32);
 
-	// skip /* */ comments
-	if (c == '/' && data[1] == '*') {
-		data += 2;
-		while (*data) {
-			if (data[0] == '*' && data[1] == '/') {
-				data += 2;
-				break;
-			}
-			data++;
-		}
-		goto skipwhite;
-	}
-
-	// handle quoted strings specially
-	if (c == '\"') {
-		data++;
-		while (1) {
-			c = *data++;
-			if (c == '\"' || !c) {
-				goto finish;
-			}
-
-			if (len < MAX_TOKEN_CHARS - 1) {
-				s[len++] = c;
-			}
-		}
-	}
-
-	// parse a regular word
-	do {
-		if (len < MAX_TOKEN_CHARS - 1) {
-			s[len++] = c;
-		}
-		data++;
-		c = *data;
-	} while (c > 32);
-
-finish:
-	s[len] = 0;
-
-	*data_p = data;
-	return s;
+    s[len] = 0;
+    *data_p = data;
+    return s;
 }
 
 
@@ -845,10 +838,10 @@ size_t Q_strncpyz(char* dst, size_t dstSize, const char* src)
 		*d++ = *s++;
 	*d = 0;
 
-	if (decSize == 0)    // Insufficent room in dst, return count + length of remaining src
-		return (s - src + strlen(s));
+	if (decSize == 0)    // Unsufficent room in dst, return count + length of remaining src
+		return (s - src - 1 + strlen(s));
 	else
-		return (s - src);    // returned count excludes NUL terminator
+		return (s - src - 1);    // returned count excludes NULL terminator
 }
 
 size_t Q_strncatz(char* dst, size_t dstSize, const char* src)
@@ -870,7 +863,7 @@ size_t Q_strncatz(char* dst, size_t dstSize, const char* src)
 	if (decSize == 0)
 		return (dLen + strlen(s));
 
-	if (decSize > 0) {
+	if (decSize > 0) { // Always true!
 		while (--decSize && *s)
 			*d++ = *s++;
 
@@ -966,9 +959,15 @@ void Info_RemoveKey(char *s, char *key)
 	char	value[MAX_INFO_STRING] = "";
 	char	*o;
 
-	if (strstr(key, "\\"))
+	if (strstr(key, "\\"))	// key contains a backslash
 	{
-		//Com_Printf ("Can't use a key with a \\\n");
+		Com_Printf ("Can't use a key with a \\\n");
+		return;
+	}
+
+	if (strstr(key, "\""))	// key contains a quote
+	{
+		Com_Printf ("Can't use a key with a \"\n");
 		return;
 	}
 

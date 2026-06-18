@@ -1,4 +1,3 @@
-
 #include "g_local.h"
 #include "g_items.h"
 #include "bot.h"
@@ -118,7 +117,7 @@ qboolean Bot_trace(edict_t* ent, edict_t* other)
 			|| other->classname[5] == 't'
 			|| other->classname[5] == 'i'
 			|| other->classname[5] == 'h'
-			|| other->classname[5] == 'a') 
+			|| other->classname[5] == 'a')
 		{
 			// nothing
 		}
@@ -215,87 +214,132 @@ qboolean Bot_trace2(edict_t* ent, vec3_t ttz)
 }
 
 //
-// Bot_traceS
+// Bot_traceS - Helper functions for line of sight checking
 //
 
+// Helper function to check if a trace is clear (no obstruction)
+static qboolean IsTraceClear(trace_t trace)
+{
+	return (trace.fraction == 1.0 && !trace.allsolid && !trace.startsolid);
+}
+
+// Helper function to check if surface is a water warp
+static qboolean IsWaterWarp(csurface_t* surface)
+{
+	return (surface != NULL && (surface->flags & SURF_WARP));
+}
+
+// Check line of sight when bot is in water, target is not
+static qboolean CheckWaterToAir(edict_t* ent, vec3_t start, vec3_t end)
+{
+	trace_t trace;
+
+	// Trace from target back to bot to check for water surface obstruction
+	trace = gi.trace(end, NULL, NULL, start, ent,
+		CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME | CONTENTS_WATER);
+
+	if (IsWaterWarp(trace.surface))
+		return false;
+
+	// Trace forward from bot to target without water
+	trace = gi.trace(start, NULL, NULL, end, ent,
+		CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
+
+	return IsTraceClear(trace);
+}
+
+// Check line of sight when both bot and target are in water
+static qboolean CheckWaterToWater(edict_t* ent, edict_t* other, vec3_t start)
+{
+	trace_t trace;
+	vec3_t adjusted_end = { 0 };
+
+	VectorCopy(other->s.origin, adjusted_end);
+	adjusted_end[2] -= 16;
+
+	trace = gi.trace(start, NULL, NULL, adjusted_end, ent,
+		CONTENTS_SOLID | CONTENTS_WINDOW);
+
+	return IsTraceClear(trace);
+}
+
+// Check line of sight when target is in water, bot is not
+static qboolean CheckAirToWater(edict_t* ent, edict_t* other, vec3_t start)
+{
+	trace_t trace;
+	vec3_t adjusted_end = { 0 };
+
+	VectorCopy(other->s.origin, adjusted_end);
+	adjusted_end[2] += 32;
+
+	trace = gi.trace(start, NULL, NULL, adjusted_end, ent,
+		CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_WATER);
+
+	if (IsWaterWarp(trace.surface))
+		return false;
+
+	// Standard line of sight check
+	trace = gi.trace(start, NULL, NULL, adjusted_end, ent,
+		CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
+
+	return IsTraceClear(trace);
+}
+
+//
+// Bot_traceS - Checks line of sight between bot and target, handling water environments
+//
 qboolean Bot_traceS(edict_t* ent, edict_t* other)
 {
-	trace_t		rs_trace;
-	vec3_t	start = { 0 };
-	vec3_t	end = { 0 };
-	int		mycont;
+	vec3_t start = { 0 };
+	vec3_t end = { 0 };
+	trace_t trace;
+	int start_contents;
+	qboolean bot_has_special_param;
 
-
+	// Setup eye positions
 	VectorCopy(ent->s.origin, start);
-	VectorCopy(other->s.origin, end);
-
 	start[2] += ent->viewheight - 8;
+
+	VectorCopy(other->s.origin, end);
 	end[2] += other->viewheight - 8;
 
-	if (Bot[ent->client->zc.botindex].param[BOP_NOSTHRWATER])
-		goto WATERMODE;
+	// Check if bot has special water-handling parameter
+	bot_has_special_param = Bot[ent->client->zc.botindex].param[BOP_NOSTHRWATER];
 
-	rs_trace = gi.trace(start, NULL, NULL, end, ent,
-		CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
-
-	if (rs_trace.fraction != 1.0)
-		return false;
-	return true;
-
-WATERMODE:
-	mycont = gi.pointcontents(start);
-
-	if ((mycont & CONTENTS_WATER) && !other->waterlevel)
+	// Standard line of sight check - used unless special water handling is needed
+	if (!bot_has_special_param)
 	{
-		rs_trace = gi.trace(end, NULL, NULL, start, ent,
-			CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA |
-			CONTENTS_SLIME | CONTENTS_WATER);
-		if (rs_trace.surface)
-		{
-			if (rs_trace.surface->flags & SURF_WARP)
-				return false;
-		}
-		rs_trace = gi.trace(start, NULL, NULL, end, ent,
+		trace = gi.trace(start, NULL, NULL, end, ent,
 			CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
-		if (rs_trace.fraction != 1.0)
-			return false;
-		return true;
-	}
-	else if ((mycont & CONTENTS_WATER) && other->waterlevel)
-	{
-		VectorCopy(other->s.origin, end);
-		end[2] -= 16;
-		rs_trace = gi.trace(start, NULL, NULL, end, ent,
-			CONTENTS_SOLID | CONTENTS_WINDOW);
-		if (rs_trace.fraction != 1.0)
-			return false;
-		return true;
+		return IsTraceClear(trace);
 	}
 
+	// Special water handling enabled - check water state at bot's position
+	start_contents = gi.pointcontents(start);
+
+	// Case 1: Bot in water, target not in water
+	if ((start_contents & CONTENTS_WATER) && !other->waterlevel)
+	{
+		return CheckWaterToAir(ent, start, end);
+	}
+
+	// Case 2: Both bot and target in water
+	if ((start_contents & CONTENTS_WATER) && other->waterlevel)
+	{
+		return CheckWaterToWater(ent, other, start);
+	}
+
+	// Case 3: Target in water, bot not in water
 	if (other->waterlevel)
 	{
-		VectorCopy(other->s.origin, end);
-		end[2] += 32;
-		rs_trace = gi.trace(start, NULL, NULL, end, ent,
-			CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_WATER);
-		if (rs_trace.surface)
-		{
-			if (rs_trace.surface->flags & SURF_WARP)
-			{
-				return false;
-			}
-		}
-		//		if(rs_trace.fraction != 1.0 ) return false;
-		//		return true;
+		return CheckAirToWater(ent, other, start);
 	}
 
-	rs_trace = gi.trace(start, NULL, NULL, end, ent,
+	// Case 4: Neither in water - standard line of sight check
+	trace = gi.trace(start, NULL, NULL, end, ent,
 		CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_LAVA | CONTENTS_SLIME);
-	if (rs_trace.fraction != 1.0)
-	{
-		return false;
-	}
-	return true;
+
+	return IsTraceClear(trace);
 }
 
 float Get_yaw(vec3_t vec)

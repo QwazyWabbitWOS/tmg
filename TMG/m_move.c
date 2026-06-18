@@ -17,7 +17,7 @@ int c_yes, c_no;
 
 qboolean M_CheckBottom (edict_t *ent)
 {
-	vec3_t	mins, maxs, start, stop;
+	vec3_t	mins = { 0 }, maxs = { 0 }, start = { 0 }, stop = { 0 };
 	trace_t	trace;
 	int		x, y;
 	float	mid, bottom;

@@ -7,16 +7,16 @@
     <LocalDebuggerWorkingDirectory>$(Q2DIR)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LocalDebuggerCommand>$(Q2DIR)\q2proded.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(Q2DIR)\r1q2ded.exe</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommandArguments>+set sys_forcegamelib $(Q2DIR)\release\gamex86.dll +set game ctf +exec ctfserver.cfg</LocalDebuggerCommandArguments>
     <LocalDebuggerWorkingDirectory>$(Q2DIR)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommand>$(Q2DIR)\q2proded64.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(Q2DIR)\q2proded.exe</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(Q2DIR)</LocalDebuggerWorkingDirectory>
-    <LocalDebuggerCommandArguments>+set developer 0 +set sys_forcegamelib $(Q2DIR)\debug\gamex86_64.dll +set game ctf +set ctf 1 +exec ctfserver.cfg</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>+set developer 0 +set sys_forcegamelib $(Q2DIR)\debug\gamex86_64.dll +set game ctf +set ctf 1 +exec railwarz.cfg</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup>
     <ShowAllFiles>false</ShowAllFiles>

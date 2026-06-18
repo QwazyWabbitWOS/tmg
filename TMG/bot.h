@@ -111,7 +111,7 @@ void TauntVictim(edict_t *ent, edict_t *victim);
 void RandomChat(edict_t *ent);
 qboolean InsideWall(edict_t *ent);
 void AdjustAngle(edict_t *ent, vec3_t targaim, float aim);
-int Get_NumOfPlayer (void);
+int GetClientCount (void);
 edict_t *Get_NewClient (void);
 void InitializeBot (edict_t *ent, int botindex);
 void AirSight_Think(edict_t *ent);
