@@ -275,7 +275,7 @@ int LoadOpFile(void)
 					{
 						if (a == 1)
 						{
-							strcpy(oplist[i].entry, result);
+							Q_strncpyz(oplist[i].entry, sizeof oplist[i].entry, result);
 						}
 						else if (a == 2 && atoi(result))
 						{
@@ -283,15 +283,15 @@ int LoadOpFile(void)
 						}
 						else if (a == 3)
 						{
-							strcpy(oplist[i].namepass, result);
+							Q_strncpyz(oplist[i].namepass, sizeof oplist[i].namepass, result);
 						}
 						a++;
 					}
 					// Update the rest of the struct. NOTE: We can't do this inside the 'for' loop.
-					strcpy(temp, oplist[i].entry); // temp storage for extractions
-					strcpy(oplist[i].name, strtok(temp, "@"));	// extract the name
-					strcpy(temp, oplist[i].entry);
-					strcpy(oplist[i].ip, strrchr(temp, '@') + 1); // extract the IP address
+					Q_strncpyz(temp, sizeof temp, oplist[i].entry); // temp storage for extractions
+					Q_strncpyz(oplist[i].name, sizeof oplist[i].name, strtok(temp, "@"));	// extract the name
+					Q_strncpyz(temp, sizeof temp, oplist[i].entry);
+					Q_strncpyz(oplist[i].ip, sizeof oplist[i].ip, strrchr(temp, '@') + 1); // extract the IP address
 					i++;
 				}
 			}
@@ -371,6 +371,8 @@ qboolean CheckNameProtect(const char* name, const char* namepass)
 	qboolean nameprotected = 0;
 
 	int numentries = LoadOpFile(); // returns -1 if no file exists.
+	if (numentries == -1)
+		return true; // No names are protected, early exit.
 
 	if (debug_ops->value)
 		gi.dprintf("%s: %s %s\n", __func__, name, namepass);
@@ -378,7 +380,7 @@ qboolean CheckNameProtect(const char* name, const char* namepass)
 	for (int i = 0; i < numentries; i++)
 	{
 		if (strcmp(oplist[i].name, name) == 0)
-			namematched = true;	// name matched
+			namematched = true;
 
 		if (oplist[i].level & OP_NAMEPASS)
 			nameprotected = true;
@@ -387,7 +389,11 @@ qboolean CheckNameProtect(const char* name, const char* namepass)
 			passmatched = true;
 	}
 
-	if (numentries == -1 || (namematched && passmatched && !nameprotected))
+	if (namematched && passmatched) // Accept
+		return true;
+	else if (namematched && !passmatched) // Reject
+		return false;
+	else if (!nameprotected) // Not in the list so accept.
 		return true;
 	else
 		return false;
@@ -474,9 +480,9 @@ void sv_ban_ip(edict_t* ent)
 	if ((ent == NULL) || (ent->client->pers.oplevel & OP_BAN))
 	{
 		if (ent == NULL)
-			strcpy(banned, gi.argv(2));
+			Q_strncpyz(banned, sizeof banned, gi.argv(2));
 		else
-			strcpy(banned, gi.argv(1));
+			Q_strncpyz(banned, sizeof banned, gi.argv(1));
 
 		if (IPMatch(banned, "*@*.*.*.*") == 1)
 		{
